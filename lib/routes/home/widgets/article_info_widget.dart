@@ -1,6 +1,6 @@
-import 'package:News/data/model/article.dart';
-import 'package:News/util/helper.dart';
 import 'package:flutter/material.dart';
+import 'package:samachar_hub/data/model/article.dart';
+import 'package:samachar_hub/util/helper.dart';
 
 class ArticleInfoWidget extends StatelessWidget {
 

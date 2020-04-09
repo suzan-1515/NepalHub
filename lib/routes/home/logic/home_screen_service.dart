@@ -1,4 +1,5 @@
-import 'package:News/common/preference_service.dart';
+
+import 'package:samachar_hub/common/preference_service.dart';
 
 class HomeScreenService {
   final PreferenceService preferenceService;

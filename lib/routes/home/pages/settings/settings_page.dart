@@ -1,7 +1,5 @@
 import 'dart:io';
 
-import 'package:News/data/api.dart';
-import 'package:News/util/country.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -17,8 +15,8 @@ class SettingsPage extends StatefulWidget {
   _SettingsPageState createState() => _SettingsPageState();
 }
 
-class _SettingsPageState extends State<SettingsPage> {
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+class _SettingsPageState extends State<SettingsPage>
+    with AutomaticKeepAliveClientMixin {
 
   // Reaction disposers
   List<ReactionDisposer> _disposers;
@@ -56,6 +54,7 @@ class _SettingsPageState extends State<SettingsPage> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Container(
       color: Theme.of(context).backgroundColor,
       padding: EdgeInsets.symmetric(horizontal: 24),
@@ -65,7 +64,8 @@ class _SettingsPageState extends State<SettingsPage> {
         children: <Widget>[
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 24),
-            child: Text('Settings', style: Theme.of(context).textTheme.headline),
+            child:
+                Text('Settings', style: Theme.of(context).textTheme.headline),
           ),
           Expanded(
             child: SingleChildScrollView(
@@ -77,161 +77,9 @@ class _SettingsPageState extends State<SettingsPage> {
                     children: <Widget>[
                       Container(
                         decoration: BoxDecoration(
-                          border: Border(bottom: BorderSide(color: Theme.of(context).dividerColor)),
-                        ),
-                        padding: EdgeInsets.only(bottom: 16),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: <Widget>[
-                            Icon(
-                              FontAwesomeIcons.plug,
-                              color: Theme.of(context).accentColor,
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(left: 8),
-                              child: Text(
-                                'News API',
-                                style: Theme.of(context).textTheme.subhead,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Observer(
-                        builder: (_) => Padding(
-                          padding: const EdgeInsets.only(left: 16, top: 16),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              Text(
-                                'API key',
-                                style: Theme.of(context).textTheme.title,
-                              ),
-                              Form(
-                                key: _formKey,
-                                child: TextFormField(
-                                  initialValue: widget.settingsStore.apiKeyValue,
-                                  decoration: InputDecoration(
-                                    hintText: 'Enter API key',
-                                  ),
-                                  onSaved: (String value) {
-                                    widget.settingsStore.setNonValidatedApiKey(value);
-                                  },
-                                  validator: (value) {
-                                    _formKey.currentState.save();
-                                    if (value.isEmpty) {
-                                      return 'Please enter API key';
-                                    }
-                                    return null;
-                                  },
-                                ),
-                              ),
-                              Align(
-                                alignment: Alignment.centerRight,
-                                child: Padding(
-                                  padding: const EdgeInsets.only(top: 8),
-                                  child: RaisedButton(
-                                    child: Text('Update'),
-                                    onPressed: () {
-                                      if (_formKey.currentState.validate()) {
-                                        widget.settingsStore.setApiKey();
-                                      }
-                                    },
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  Column(
-                    mainAxisSize: MainAxisSize.max,
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: <Widget>[
-                      Container(
-                        decoration: BoxDecoration(
-                          border: Border(bottom: BorderSide(color: Theme.of(context).dividerColor)),
-                        ),
-                        padding: EdgeInsets.only(bottom: 16),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: <Widget>[
-                            Icon(
-                              FontAwesomeIcons.database,
-                              color: Theme.of(context).accentColor,
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(left: 8),
-                              child: Text(
-                                'Data filter',
-                                style: Theme.of(context).textTheme.subhead,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      //Todo: Implementation missing
-                      Padding(
-                        padding: const EdgeInsets.only(left: 16, top: 16),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 8),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: <Widget>[
-                                  Expanded(
-                                    child: Column(
-                                      mainAxisAlignment: MainAxisAlignment.start,
-                                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                                      children: <Widget>[
-                                        Padding(
-                                          padding: const EdgeInsets.only(bottom: 4),
-                                          child: Text(
-                                            'Country',
-                                            style: Theme.of(context).textTheme.title,
-                                          ),
-                                        ),
-                                        Opacity(
-                                          opacity: 0.5,
-                                          child: Text(
-                                            'Only applied on Top Headlines',
-                                            style: Theme.of(context).textTheme.subtitle,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  Column(
-                                    children: <Widget>[
-                                      ClipRRect(
-                                        borderRadius: BorderRadius.circular(6),
-                                        child: Image.asset(getFlagAssetPathForCountry(Country.ind), width: 72),
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.only(top: 8),
-                                        child: Center(child: Text('India')),
-                                      ),
-                                    ],
-                                  )
-                                ],
-                              ),
-                            )
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                  Column(
-                    mainAxisSize: MainAxisSize.max,
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: <Widget>[
-                      Container(
-                        decoration: BoxDecoration(
-                          border: Border(bottom: BorderSide(color: Theme.of(context).dividerColor)),
+                          border: Border(
+                              bottom: BorderSide(
+                                  color: Theme.of(context).dividerColor)),
                         ),
                         padding: EdgeInsets.only(bottom: 16),
                         child: Row(
@@ -258,95 +106,130 @@ class _SettingsPageState extends State<SettingsPage> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
                               AbsorbPointer(
-                                absorbing: widget.settingsStore.themeSetBySystemValue,
+                                absorbing:
+                                    widget.settingsStore.themeSetBySystem,
                                 child: Opacity(
-                                  opacity: widget.settingsStore.themeSetBySystemValue ? 0.45 : 1.0,
+                                  opacity: widget.settingsStore.themeSetBySystem
+                                      ? 0.45
+                                      : 1.0,
                                   child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
                                     children: <Widget>[
                                       Text(
                                         'Use dark theme',
-                                        style: Theme.of(context).textTheme.title,
+                                        style:
+                                            Theme.of(context).textTheme.title,
                                       ),
                                       Switch(
-                                        value: widget.settingsStore.useDarkModeValue,
-                                        onChanged: widget.settingsStore.setDarkMode,
-                                        activeColor: Theme.of(context).accentColor,
+                                        value: widget.settingsStore.useDarkMode,
+                                        onChanged:
+                                            widget.settingsStore.setDarkMode,
+                                        activeColor:
+                                            Theme.of(context).accentColor,
                                       )
                                     ],
                                   ),
                                 ),
                               ),
                               Padding(
-                                padding: const EdgeInsets.symmetric(vertical: 8),
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 8),
                                 child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
                                   children: <Widget>[
                                     Expanded(
                                       child: Column(
-                                        mainAxisAlignment: MainAxisAlignment.start,
-                                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.stretch,
                                         children: <Widget>[
                                           Padding(
-                                            padding: const EdgeInsets.only(bottom: 4),
+                                            padding: const EdgeInsets.only(
+                                                bottom: 4),
                                             child: Text(
                                               'Use pitch black theme',
-                                              style: Theme.of(context).textTheme.title,
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .title,
                                             ),
                                           ),
                                           Opacity(
                                             opacity: 0.5,
                                             child: Text(
                                               'Only applies when dark mode is on',
-                                              style: Theme.of(context).textTheme.subtitle,
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .subtitle,
                                             ),
                                           ),
                                         ],
                                       ),
                                     ),
                                     Checkbox(
-                                      value: widget.settingsStore.usePitchBlackValue,
-                                      onChanged: widget.settingsStore.setPitchBlack,
-                                      activeColor: Theme.of(context).accentColor,
+                                      value: widget.settingsStore.usePitchBlack,
+                                      onChanged:
+                                          widget.settingsStore.setPitchBlack,
+                                      activeColor:
+                                          Theme.of(context).accentColor,
                                     )
                                   ],
                                 ),
                               ),
                               Padding(
-                                padding: const EdgeInsets.symmetric(vertical: 8),
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 8),
                                 child: AbsorbPointer(
-                                  absorbing: widget.settingsStore.useDarkModeValue,
+                                  absorbing: widget.settingsStore.useDarkMode,
                                   child: Opacity(
-                                    opacity: widget.settingsStore.useDarkModeValue ? 0.45 : 1.0,
+                                    opacity: widget.settingsStore.useDarkMode
+                                        ? 0.45
+                                        : 1.0,
                                     child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
                                       children: <Widget>[
                                         Expanded(
                                           child: Column(
-                                            mainAxisAlignment: MainAxisAlignment.start,
-                                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.start,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.stretch,
                                             children: <Widget>[
                                               Padding(
-                                                padding: const EdgeInsets.only(bottom: 4),
+                                                padding: const EdgeInsets.only(
+                                                    bottom: 4),
                                                 child: Text(
                                                   'Theme set by system',
-                                                  style: Theme.of(context).textTheme.title,
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .title,
                                                 ),
                                               ),
                                               Opacity(
-                                                opacity: widget.settingsStore.useDarkModeValue ? 1.0 : 0.5,
+                                                opacity: widget.settingsStore
+                                                        .useDarkMode
+                                                    ? 1.0
+                                                    : 0.5,
                                                 child: Text(
                                                   'Requires minimum OS version ${Platform.isAndroid ? 'Android 10' : 'IOS 13'}',
-                                                  style: Theme.of(context).textTheme.subtitle,
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .subtitle,
                                                 ),
                                               ),
                                             ],
                                           ),
                                         ),
                                         Checkbox(
-                                          value: widget.settingsStore.themeSetBySystemValue,
-                                          onChanged: widget.settingsStore.setSystemTheme,
-                                          activeColor: Theme.of(context).accentColor,
+                                          value: widget
+                                              .settingsStore.themeSetBySystem,
+                                          onChanged: widget
+                                              .settingsStore.setSystemTheme,
+                                          activeColor:
+                                              Theme.of(context).accentColor,
                                         )
                                       ],
                                     ),
@@ -367,4 +250,7 @@ class _SettingsPageState extends State<SettingsPage> {
       ),
     );
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }

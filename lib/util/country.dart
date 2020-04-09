@@ -1,4 +1,5 @@
-import 'package:News/data/api.dart';
+
+import 'package:samachar_hub/data/api.dart';
 
 const String _flagAssetDirectory = 'assets/images/flags/';
 const String _flagImageExtension = '.png';

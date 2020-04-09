@@ -9,77 +9,72 @@ part of 'settings_store.dart';
 // ignore_for_file: non_constant_identifier_names, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
 
 mixin _$SettingsStore on _SettingsStore, Store {
-  final _$apiKeyValueAtom = Atom(name: '_SettingsStore.apiKeyValue');
+  final _$useDarkModeAtom = Atom(name: '_SettingsStore.useDarkMode');
 
   @override
-  String get apiKeyValue {
-    _$apiKeyValueAtom.context.enforceReadPolicy(_$apiKeyValueAtom);
-    _$apiKeyValueAtom.reportObserved();
-    return super.apiKeyValue;
+  bool get useDarkMode {
+    _$useDarkModeAtom.context.enforceReadPolicy(_$useDarkModeAtom);
+    _$useDarkModeAtom.reportObserved();
+    return super.useDarkMode;
   }
 
   @override
-  set apiKeyValue(String value) {
-    _$apiKeyValueAtom.context.conditionallyRunInAction(() {
-      super.apiKeyValue = value;
-      _$apiKeyValueAtom.reportChanged();
-    }, _$apiKeyValueAtom, name: '${_$apiKeyValueAtom.name}_set');
+  set useDarkMode(bool value) {
+    _$useDarkModeAtom.context.conditionallyRunInAction(() {
+      super.useDarkMode = value;
+      _$useDarkModeAtom.reportChanged();
+    }, _$useDarkModeAtom, name: '${_$useDarkModeAtom.name}_set');
   }
 
-  final _$useDarkModeValueAtom = Atom(name: '_SettingsStore.useDarkModeValue');
+  final _$usePitchBlackAtom = Atom(name: '_SettingsStore.usePitchBlack');
 
   @override
-  bool get useDarkModeValue {
-    _$useDarkModeValueAtom.context.enforceReadPolicy(_$useDarkModeValueAtom);
-    _$useDarkModeValueAtom.reportObserved();
-    return super.useDarkModeValue;
-  }
-
-  @override
-  set useDarkModeValue(bool value) {
-    _$useDarkModeValueAtom.context.conditionallyRunInAction(() {
-      super.useDarkModeValue = value;
-      _$useDarkModeValueAtom.reportChanged();
-    }, _$useDarkModeValueAtom, name: '${_$useDarkModeValueAtom.name}_set');
-  }
-
-  final _$usePitchBlackValueAtom =
-      Atom(name: '_SettingsStore.usePitchBlackValue');
-
-  @override
-  bool get usePitchBlackValue {
-    _$usePitchBlackValueAtom.context
-        .enforceReadPolicy(_$usePitchBlackValueAtom);
-    _$usePitchBlackValueAtom.reportObserved();
-    return super.usePitchBlackValue;
+  bool get usePitchBlack {
+    _$usePitchBlackAtom.context.enforceReadPolicy(_$usePitchBlackAtom);
+    _$usePitchBlackAtom.reportObserved();
+    return super.usePitchBlack;
   }
 
   @override
-  set usePitchBlackValue(bool value) {
-    _$usePitchBlackValueAtom.context.conditionallyRunInAction(() {
-      super.usePitchBlackValue = value;
-      _$usePitchBlackValueAtom.reportChanged();
-    }, _$usePitchBlackValueAtom, name: '${_$usePitchBlackValueAtom.name}_set');
+  set usePitchBlack(bool value) {
+    _$usePitchBlackAtom.context.conditionallyRunInAction(() {
+      super.usePitchBlack = value;
+      _$usePitchBlackAtom.reportChanged();
+    }, _$usePitchBlackAtom, name: '${_$usePitchBlackAtom.name}_set');
   }
 
-  final _$themeSetBySystemValueAtom =
-      Atom(name: '_SettingsStore.themeSetBySystemValue');
+  final _$themeSetBySystemAtom = Atom(name: '_SettingsStore.themeSetBySystem');
 
   @override
-  bool get themeSetBySystemValue {
-    _$themeSetBySystemValueAtom.context
-        .enforceReadPolicy(_$themeSetBySystemValueAtom);
-    _$themeSetBySystemValueAtom.reportObserved();
-    return super.themeSetBySystemValue;
+  bool get themeSetBySystem {
+    _$themeSetBySystemAtom.context.enforceReadPolicy(_$themeSetBySystemAtom);
+    _$themeSetBySystemAtom.reportObserved();
+    return super.themeSetBySystem;
   }
 
   @override
-  set themeSetBySystemValue(bool value) {
-    _$themeSetBySystemValueAtom.context.conditionallyRunInAction(() {
-      super.themeSetBySystemValue = value;
-      _$themeSetBySystemValueAtom.reportChanged();
-    }, _$themeSetBySystemValueAtom,
-        name: '${_$themeSetBySystemValueAtom.name}_set');
+  set themeSetBySystem(bool value) {
+    _$themeSetBySystemAtom.context.conditionallyRunInAction(() {
+      super.themeSetBySystem = value;
+      _$themeSetBySystemAtom.reportChanged();
+    }, _$themeSetBySystemAtom, name: '${_$themeSetBySystemAtom.name}_set');
+  }
+
+  final _$openInAppAtom = Atom(name: '_SettingsStore.openInApp');
+
+  @override
+  bool get openInApp {
+    _$openInAppAtom.context.enforceReadPolicy(_$openInAppAtom);
+    _$openInAppAtom.reportObserved();
+    return super.openInApp;
+  }
+
+  @override
+  set openInApp(bool value) {
+    _$openInAppAtom.context.conditionallyRunInAction(() {
+      super.openInApp = value;
+      _$openInAppAtom.reportChanged();
+    }, _$openInAppAtom, name: '${_$openInAppAtom.name}_set');
   }
 
   final _$messageAtom = Atom(name: '_SettingsStore.message');
@@ -101,26 +96,6 @@ mixin _$SettingsStore on _SettingsStore, Store {
 
   final _$_SettingsStoreActionController =
       ActionController(name: '_SettingsStore');
-
-  @override
-  dynamic setNonValidatedApiKey(String value) {
-    final _$actionInfo = _$_SettingsStoreActionController.startAction();
-    try {
-      return super.setNonValidatedApiKey(value);
-    } finally {
-      _$_SettingsStoreActionController.endAction(_$actionInfo);
-    }
-  }
-
-  @override
-  dynamic setApiKey() {
-    final _$actionInfo = _$_SettingsStoreActionController.startAction();
-    try {
-      return super.setApiKey();
-    } finally {
-      _$_SettingsStoreActionController.endAction(_$actionInfo);
-    }
-  }
 
   @override
   dynamic setDarkMode(bool value) {
@@ -150,5 +125,22 @@ mixin _$SettingsStore on _SettingsStore, Store {
     } finally {
       _$_SettingsStoreActionController.endAction(_$actionInfo);
     }
+  }
+
+  @override
+  void setOpenInApp(bool updatedOpenInAppPreference) {
+    final _$actionInfo = _$_SettingsStoreActionController.startAction();
+    try {
+      return super.setOpenInApp(updatedOpenInAppPreference);
+    } finally {
+      _$_SettingsStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  String toString() {
+    final string =
+        'useDarkMode: ${useDarkMode.toString()},usePitchBlack: ${usePitchBlack.toString()},themeSetBySystem: ${themeSetBySystem.toString()},openInApp: ${openInApp.toString()},message: ${message.toString()}';
+    return '{$string}';
   }
 }

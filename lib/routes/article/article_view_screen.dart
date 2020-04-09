@@ -1,10 +1,10 @@
-import 'package:News/routes/home/widgets/article_image_widget.dart';
-import 'package:News/util/helper.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:News/data/api.dart' as Api;
+import 'package:samachar_hub/data/api.dart' as Api;
 import 'package:mobx/mobx.dart';
 import 'package:provider/provider.dart';
+import 'package:samachar_hub/routes/home/widgets/article_image_widget.dart';
+import 'package:samachar_hub/util/helper.dart';
 
 import 'logic/article_store.dart';
 

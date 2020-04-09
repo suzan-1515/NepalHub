@@ -38,4 +38,10 @@ mixin _$HomeScreenStore on _HomeScreenStore, Store {
       _$_HomeScreenStoreActionController.endAction(_$actionInfo);
     }
   }
+
+  @override
+  String toString() {
+    final string = 'selectedPage: ${selectedPage.toString()}';
+    return '{$string}';
+  }
 }

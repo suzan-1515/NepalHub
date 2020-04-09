@@ -1,16 +1,15 @@
-import 'package:News/common/preference_service.dart';
-import 'package:News/data/api.dart';
-import 'package:News/data/model/api_error.dart';
-import 'package:News/data/model/article.dart';
-import 'package:News/data/model/top_headlines.dart';
-import 'package:News/routes/article/article_view_screen.dart';
-import 'package:News/routes/article/logic/article_store.dart';
-import 'package:News/routes/home/pages/pages.dart';
-import 'package:News/routes/home/pages/topheadlines/logic/top_headlines_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mobx/mobx.dart';
 import 'package:provider/provider.dart';
+import 'package:samachar_hub/data/api.dart';
+import 'package:samachar_hub/data/model/api_error.dart';
+import 'package:samachar_hub/data/model/article.dart';
+import 'package:samachar_hub/data/model/top_headlines.dart';
+import 'package:samachar_hub/routes/article/article_view_screen.dart';
+import 'package:samachar_hub/routes/article/logic/article_store.dart';
+import 'package:samachar_hub/routes/home/pages/topheadlines/logic/top_headlines_service.dart';
+import 'package:samachar_hub/routes/home/pages/topheadlines/top_headlines_page.dart';
 
 part 'top_headlines_store.g.dart';
 
@@ -18,9 +17,8 @@ class TopHeadlinesStore = _TopHeadlinesStore with _$TopHeadlinesStore;
 
 abstract class _TopHeadlinesStore with Store {
   TopHeadlinesService _topHeadlinesService;
-  PreferenceService _preferenceService;
 
-  _TopHeadlinesStore(this._topHeadlinesService, this._preferenceService) {
+  _TopHeadlinesStore(this._topHeadlinesService) {
     fetchTopHeadlines(NewsCategory.general);
   }
 
@@ -49,7 +47,6 @@ abstract class _TopHeadlinesStore with Store {
       if (null != newsData[category]) return;
       loadingStatus[category] = true;
       newsData[category] = await _topHeadlinesService.getTopHeadlines(
-        _preferenceService.apiKey,
         newsCategory: category,
       );
     } on APIError catch (apiError) {

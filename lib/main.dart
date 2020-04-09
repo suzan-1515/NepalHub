@@ -1,12 +1,11 @@
-import 'package:News/routes/home/logic/home_screen_store.dart';
-import 'package:News/routes/home/pages/topheadlines/logic/top_headlines_service.dart';
-import 'package:News/routes/home/pages/topheadlines/logic/top_headlines_store.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:samachar_hub/routes/home/logic/home_screen_store.dart';
+import 'package:samachar_hub/routes/home/pages/settings/settings_store.dart';
+import 'package:samachar_hub/routes/home/pages/topheadlines/logic/top_headlines_service.dart';
+import 'package:samachar_hub/routes/home/pages/topheadlines/logic/top_headlines_store.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'common/app_store.dart';
-import 'package:News/routes/home/pages/settings/settings_store.dart';
 import 'common/preference_service.dart';
 import 'routes/routes.dart';
 import 'common/themes.dart' as Themes;
@@ -22,12 +21,12 @@ class App extends StatelessWidget {
 
   final SharedPreferences _sharedPreferences;
 
-  ThemeData _getTheme(AppStore appStore) {
-    return appStore.useDarkMode ? appStore.usePitchBlack ? Themes.pitchBlack : Themes.darkTheme : Themes.lightTheme;
+  ThemeData _getTheme(SettingsStore settingStore) {
+    return settingStore.useDarkMode ? settingStore.usePitchBlack ? Themes.pitchBlack : Themes.darkTheme : Themes.lightTheme;
   }
 
-  ThemeMode _getThemeMode(AppStore appStore) {
-    return appStore.themeSetBySystem ? ThemeMode.system : (appStore.useDarkMode ? ThemeMode.dark : ThemeMode.light);
+  ThemeMode _getThemeMode(SettingsStore settingStore) {
+    return settingStore.themeSetBySystem ? ThemeMode.system : (settingStore.useDarkMode ? ThemeMode.dark : ThemeMode.light);
   }
 
   @override
@@ -37,27 +36,27 @@ class App extends StatelessWidget {
         Provider<PreferenceService>(
           create: (_) => PreferenceService(_sharedPreferences),
         ),
-        ProxyProvider<PreferenceService, AppStore>(
-          update: (_, preferenceService, __) => AppStore(preferenceService),
+        ProxyProvider<PreferenceService, SettingsStore>(
+          update: (_, preferenceService, __) => SettingsStore(preferenceService),
         ),
-        ProxyProvider<AppStore, SettingsStore>(
-          update: (_, appStore, __) => SettingsStore(appStore),
+        ProxyProvider<PreferenceService, SettingsStore>(
+          update: (_, preferenceService, __) => SettingsStore(preferenceService),
         ),
         ProxyProvider<PreferenceService, TopHeadlinesStore>(
-          update: (_, preferenceService, __) => TopHeadlinesStore(TopHeadlinesService(), preferenceService),
+          update: (_, preferenceService, __) => TopHeadlinesStore(TopHeadlinesService()),
         ),
         ProxyProvider<PreferenceService, HomeScreenStore>(
           update: (_, preferenceService, __) => HomeScreenStore(preferenceService),
         )
       ],
-      child: Consumer<AppStore>(
-        builder: (context, appStore, _) {
+      child: Consumer<SettingsStore>(
+        builder: (context, settingStore, _) {
           return Observer(
             builder: (_) => MaterialApp(
-              theme: _getTheme(appStore),
-              home: (appStore.apiKey == null || appStore.apiKey.isEmpty) ? SetupScreen() : HomeScreen(),
-              themeMode: appStore.themeSetBySystem ? ThemeMode.system : _getThemeMode(appStore),
-              darkTheme: appStore.usePitchBlack ? Themes.pitchBlack : Themes.darkTheme,
+              theme: _getTheme(settingStore),
+              home: HomeScreen(),
+              themeMode: settingStore.themeSetBySystem ? ThemeMode.system : _getThemeMode(settingStore),
+              darkTheme: settingStore.usePitchBlack ? Themes.pitchBlack : Themes.darkTheme,
             ),
           );
         },

@@ -141,4 +141,11 @@ mixin _$TopHeadlinesStore on _TopHeadlinesStore, Store {
       _$_TopHeadlinesStoreActionController.endAction(_$actionInfo);
     }
   }
+
+  @override
+  String toString() {
+    final string =
+        'newsData: ${newsData.toString()},loadingStatus: ${loadingStatus.toString()},apiError: ${apiError.toString()},error: ${error.toString()},view: ${view.toString()},activeTabIndex: ${activeTabIndex.toString()}';
+    return '{$string}';
+  }
 }

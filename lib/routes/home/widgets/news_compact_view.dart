@@ -1,5 +1,5 @@
-import 'package:News/data/model/article.dart';
 import 'package:flutter/material.dart';
+import 'package:samachar_hub/data/model/article.dart';
 
 import 'article_image_widget.dart';
 import 'article_info_widget.dart';

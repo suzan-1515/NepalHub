@@ -1,6 +1,6 @@
-import 'package:News/data/model/article.dart';
-import 'package:News/routes/article/logic/article_service.dart';
 import 'package:mobx/mobx.dart';
+import 'package:samachar_hub/data/model/article.dart';
+import 'package:samachar_hub/routes/article/logic/article_service.dart';
 
 part 'article_store.g.dart';
 

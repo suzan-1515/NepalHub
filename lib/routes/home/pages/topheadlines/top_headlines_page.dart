@@ -1,14 +1,13 @@
-import 'package:News/data/api.dart';
-import 'package:News/data/model/api_error.dart';
-import 'package:News/data/model/article.dart';
-import 'package:News/data/model/top_headlines.dart';
-import 'package:News/routes/home/pages/topheadlines/logic/top_headlines_store.dart';
-import 'package:News/routes/home/widgets/news_compact_view.dart';
-import 'package:News/routes/home/widgets/news_thumbnail_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:mobx/mobx.dart';
+import 'package:samachar_hub/data/api.dart';
+import 'package:samachar_hub/data/model/api_error.dart';
+import 'package:samachar_hub/data/model/top_headlines.dart';
+import 'package:samachar_hub/routes/home/pages/topheadlines/logic/top_headlines_store.dart';
+import 'package:samachar_hub/routes/home/widgets/news_compact_view.dart';
+import 'package:samachar_hub/routes/home/widgets/news_thumbnail_view.dart';
 import '../../widgets/news_list_view.dart';
 
 class TopHeadlinesPage extends StatefulWidget {
@@ -20,17 +19,22 @@ class TopHeadlinesPage extends StatefulWidget {
   _TopHeadlinesPageState createState() => _TopHeadlinesPageState();
 }
 
-class _TopHeadlinesPageState extends State<TopHeadlinesPage> with SingleTickerProviderStateMixin {
+class _TopHeadlinesPageState extends State<TopHeadlinesPage>
+    with SingleTickerProviderStateMixin, AutomaticKeepAliveClientMixin {
   // Reaction disposers
   List<ReactionDisposer> _disposers;
   TabController _tabController;
   final List<Tab> _tabs = <Tab>[
     Tab(key: ValueKey<NewsCategory>(NewsCategory.general), text: 'General'),
     Tab(key: ValueKey<NewsCategory>(NewsCategory.business), text: 'Business'),
-    Tab(key: ValueKey<NewsCategory>(NewsCategory.entertainment), text: 'Entertainment'),
+    Tab(
+        key: ValueKey<NewsCategory>(NewsCategory.entertainment),
+        text: 'Entertainment'),
     Tab(key: ValueKey<NewsCategory>(NewsCategory.health), text: 'Health'),
     Tab(key: ValueKey<NewsCategory>(NewsCategory.science), text: 'Science'),
-    Tab(key: ValueKey<NewsCategory>(NewsCategory.technology), text: 'Technology'),
+    Tab(
+        key: ValueKey<NewsCategory>(NewsCategory.technology),
+        text: 'Technology'),
     Tab(key: ValueKey<NewsCategory>(NewsCategory.sports), text: 'Sports'),
   ];
 
@@ -44,7 +48,8 @@ class _TopHeadlinesPageState extends State<TopHeadlinesPage> with SingleTickerPr
     );
     _tabController.addListener(() {
       widget.store.setActiveTab(_tabController.index);
-      widget.store.fetchTopHeadlines((_tabs[_tabController.index].key as ValueKey<NewsCategory>).value);
+      widget.store.fetchTopHeadlines(
+          (_tabs[_tabController.index].key as ValueKey<NewsCategory>).value);
     });
     super.initState();
   }
@@ -73,7 +78,8 @@ class _TopHeadlinesPageState extends State<TopHeadlinesPage> with SingleTickerPr
         barrierDismissible: false, // user must tap button!
         builder: (BuildContext context) {
           return AlertDialog(
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
             title: Text(
               'API Error - ${apiError.code}',
               style: Theme.of(context).textTheme.subhead,
@@ -113,31 +119,30 @@ class _TopHeadlinesPageState extends State<TopHeadlinesPage> with SingleTickerPr
   }
 
   Widget _buildArticleList(TopHeadlines topHeadlines, MenuItem view) {
-    final List<Widget> items = <Widget>[];
-    topHeadlines.articles.forEach((Article article) {
-      Widget articleWidget;
-      switch (view) {
-        case MenuItem.LIST_VIEW:
-          articleWidget = NewsListView(article);
-          break;
-        case MenuItem.THUMBNAIL_VIEW:
-          articleWidget = NewsThumbnailView(article);
-          break;
-        case MenuItem.COMPACT_VIEW:
-          articleWidget = NewsCompactView(article);
-          break;
-      }
-      items.add(
-        Material(
-          color: Colors.transparent,
-          child: InkWell(
-            onTap: () => widget.store.onArticleClick(article, context),
-            child: articleWidget,
-          ),
-        ),
-      );
-    });
-    return ListView(padding: EdgeInsets.symmetric(vertical: 8), children: items);
+    return ListView.builder(
+        itemCount: topHeadlines.articles.length,
+        itemBuilder: (BuildContext context, int position) {
+          Widget articleWidget;
+          final article = topHeadlines.articles[position];
+          switch (view) {
+            case MenuItem.LIST_VIEW:
+              articleWidget = NewsListView(article);
+              break;
+            case MenuItem.THUMBNAIL_VIEW:
+              articleWidget = NewsThumbnailView(article);
+              break;
+            case MenuItem.COMPACT_VIEW:
+              articleWidget = NewsCompactView(article);
+              break;
+          }
+          return Material(
+            color: Colors.transparent,
+            child: InkWell(
+              onTap: () => widget.store.onArticleClick(article, context),
+              child: articleWidget,
+            ),
+          );
+        });
   }
 
   Widget _buildPage(NewsCategory category) {
@@ -158,6 +163,7 @@ class _TopHeadlinesPageState extends State<TopHeadlinesPage> with SingleTickerPr
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Container(
       color: Theme.of(context).backgroundColor,
       padding: EdgeInsets.symmetric(horizontal: 16),
@@ -166,15 +172,18 @@ class _TopHeadlinesPageState extends State<TopHeadlinesPage> with SingleTickerPr
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
           Padding(
-            padding: const EdgeInsets.only(top: 24, bottom: 8, left: 8, right: 8),
+            padding:
+                const EdgeInsets.only(top: 24, bottom: 8, left: 8, right: 8),
             child: Row(
               children: <Widget>[
                 Expanded(
-                  child: Text('Top Headlines', style: Theme.of(context).textTheme.headline),
+                  child: Text('Top Headlines',
+                      style: Theme.of(context).textTheme.headline),
                 ),
                 Padding(
                   padding: const EdgeInsets.all(8),
-                  child: Opacity(opacity: 0.65, child: Icon(FontAwesomeIcons.search)),
+                  child: Opacity(
+                      opacity: 0.65, child: Icon(FontAwesomeIcons.search)),
                 ),
                 Opacity(
                   opacity: 0.65,
@@ -184,7 +193,8 @@ class _TopHeadlinesPageState extends State<TopHeadlinesPage> with SingleTickerPr
                     child: PopupMenuButton<MenuItem>(
                       icon: Icon(FontAwesomeIcons.ellipsisV),
                       onSelected: widget.store.setView,
-                      itemBuilder: (BuildContext context) => <PopupMenuEntry<MenuItem>>[
+                      itemBuilder: (BuildContext context) =>
+                          <PopupMenuEntry<MenuItem>>[
                         //Todo: Create a separate widget for PopupMenuItem
                         PopupMenuItem<MenuItem>(
                           value: MenuItem.LIST_VIEW,
@@ -201,9 +211,13 @@ class _TopHeadlinesPageState extends State<TopHeadlinesPage> with SingleTickerPr
                                 child: Text(
                                   'List View',
                                   style: TextStyle(
-                                    color: widget.store.view == MenuItem.LIST_VIEW
-                                        ? Theme.of(context).accentColor
-                                        : Theme.of(context).textTheme.headline.color,
+                                    color:
+                                        widget.store.view == MenuItem.LIST_VIEW
+                                            ? Theme.of(context).accentColor
+                                            : Theme.of(context)
+                                                .textTheme
+                                                .headline
+                                                .color,
                                   ),
                                 ),
                               ),
@@ -216,18 +230,23 @@ class _TopHeadlinesPageState extends State<TopHeadlinesPage> with SingleTickerPr
                             children: <Widget>[
                               Icon(
                                 FontAwesomeIcons.addressCard,
-                                color: widget.store.view == MenuItem.THUMBNAIL_VIEW
-                                    ? Theme.of(context).accentColor
-                                    : Theme.of(context).iconTheme.color,
+                                color:
+                                    widget.store.view == MenuItem.THUMBNAIL_VIEW
+                                        ? Theme.of(context).accentColor
+                                        : Theme.of(context).iconTheme.color,
                               ),
                               Padding(
                                 padding: EdgeInsets.only(left: 16),
                                 child: Text(
                                   'Thumbnail View',
                                   style: TextStyle(
-                                    color: widget.store.view == MenuItem.THUMBNAIL_VIEW
+                                    color: widget.store.view ==
+                                            MenuItem.THUMBNAIL_VIEW
                                         ? Theme.of(context).accentColor
-                                        : Theme.of(context).textTheme.headline.color,
+                                        : Theme.of(context)
+                                            .textTheme
+                                            .headline
+                                            .color,
                                   ),
                                 ),
                               ),
@@ -240,18 +259,23 @@ class _TopHeadlinesPageState extends State<TopHeadlinesPage> with SingleTickerPr
                             children: <Widget>[
                               Icon(
                                 FontAwesomeIcons.image,
-                                color: widget.store.view == MenuItem.COMPACT_VIEW
-                                    ? Theme.of(context).accentColor
-                                    : Theme.of(context).iconTheme.color,
+                                color:
+                                    widget.store.view == MenuItem.COMPACT_VIEW
+                                        ? Theme.of(context).accentColor
+                                        : Theme.of(context).iconTheme.color,
                               ),
                               Padding(
                                 padding: EdgeInsets.only(left: 16),
                                 child: Text(
                                   'Compact View',
                                   style: TextStyle(
-                                    color: widget.store.view == MenuItem.COMPACT_VIEW
+                                    color: widget.store.view ==
+                                            MenuItem.COMPACT_VIEW
                                         ? Theme.of(context).accentColor
-                                        : Theme.of(context).textTheme.headline.color,
+                                        : Theme.of(context)
+                                            .textTheme
+                                            .headline
+                                            .color,
                                   ),
                                 ),
                               ),
@@ -288,6 +312,9 @@ class _TopHeadlinesPageState extends State<TopHeadlinesPage> with SingleTickerPr
       ),
     );
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }
 
 enum MenuItem {

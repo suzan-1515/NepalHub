@@ -48,4 +48,10 @@ mixin _$ArticleStore on _ArticleStore, Store {
       _$_ArticleStoreActionController.endAction(_$actionInfo);
     }
   }
+
+  @override
+  String toString() {
+    final string = 'message: ${message.toString()}';
+    return '{$string}';
+  }
 }

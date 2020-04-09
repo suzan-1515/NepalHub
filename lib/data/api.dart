@@ -1,14 +1,16 @@
 import 'dart:io';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:News/data/model/everything.dart';
-import 'package:News/data/model/sources.dart';
-import 'package:News/data/model/top_headlines.dart';
+import 'package:samachar_hub/data/model/everything.dart';
+import 'package:samachar_hub/data/model/sources.dart';
+import 'package:samachar_hub/data/model/top_headlines.dart';
 
 import 'model/api_error.dart';
 
 // Base URL
 const String _baseApiURL = 'newsapi.org'; //53ea041b1e1c4c659b41767532da63f2
+
+const String _apiKey = "53ea041b1e1c4c659b41767532da63f2";
 
 // URL for fetching publisher favicon
 const String _faviconBaseUrl = 'icon-locator.herokuapp.com';
@@ -115,7 +117,7 @@ String _getCategory(NewsCategory category) {
   return category.toString().split('.').last;
 }
 
-Future<TopHeadlines> getTopHeadlines(String apiKey,
+Future<TopHeadlines> getTopHeadlines(
     {Country country = Country.ind, NewsCategory category, String q, int pageSize, int page}) async {
   final Map<String, String> queryParams = _filterNullOrEmptyValuesFromMap({
     'country': _getCountryCode(country),
@@ -126,7 +128,7 @@ Future<TopHeadlines> getTopHeadlines(String apiKey,
   });
   final Uri uri = Uri.https(_baseApiURL, _topHeadlines, queryParams);
   final http.Response response = await http.get(uri, headers: {
-    HttpHeaders.authorizationHeader: 'Bearer $apiKey',
+    HttpHeaders.authorizationHeader: 'Bearer $_apiKey',
   });
   // If response is not ok
   _checkResponse(response);
@@ -138,7 +140,7 @@ Future<TopHeadlines> getTopHeadlines(String apiKey,
   }
 }
 
-Future<TopHeadlines> getTopHeadlinesFromSources(String apiKey, String sources,
+Future<TopHeadlines> getTopHeadlinesFromSources(String sources,
     {String q, int pageSize, int page}) async {
   final Map<String, String> queryParams = _filterNullOrEmptyValuesFromMap({
     'query': q,
@@ -147,7 +149,7 @@ Future<TopHeadlines> getTopHeadlinesFromSources(String apiKey, String sources,
   });
   final Uri uri = Uri.https(_baseApiURL, _topHeadlines, queryParams);
   final http.Response response = await http.get(uri, headers: {
-    HttpHeaders.authorizationHeader: 'Bearer $apiKey',
+    HttpHeaders.authorizationHeader: 'Bearer $_apiKey',
   });
   // If response is not ok
   _checkResponse(response);

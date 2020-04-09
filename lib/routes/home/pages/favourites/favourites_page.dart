@@ -5,9 +5,11 @@ class FavouritesPage extends StatefulWidget {
   _FavouritesPageState createState() => _FavouritesPageState();
 }
 
-class _FavouritesPageState extends State<FavouritesPage> {
+class _FavouritesPageState extends State<FavouritesPage>
+    with AutomaticKeepAliveClientMixin {
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Container(
       color: Theme.of(context).backgroundColor,
       padding: EdgeInsets.symmetric(horizontal: 24),
@@ -17,10 +19,14 @@ class _FavouritesPageState extends State<FavouritesPage> {
         children: <Widget>[
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 24),
-            child: Text('Favourites', style: Theme.of(context).textTheme.headline),
+            child:
+                Text('Favourites', style: Theme.of(context).textTheme.headline),
           ),
         ],
       ),
     );
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }

@@ -1,65 +1,57 @@
-import 'package:News/common/app_store.dart';
 import 'package:mobx/mobx.dart';
+import 'package:samachar_hub/common/preference_service.dart';
 
 part 'settings_store.g.dart';
 
 class SettingsStore = _SettingsStore with _$SettingsStore;
 
 abstract class _SettingsStore with Store {
-  AppStore _appStore;
-
-  _SettingsStore(this._appStore) {
-    apiKeyValue = _appStore.apiKey;
-    useDarkModeValue = _appStore.useDarkMode;
-    usePitchBlackValue = _appStore.usePitchBlack;
-    themeSetBySystemValue = _appStore.themeSetBySystem;
-  }
+  PreferenceService _preferenceService;
 
   @observable
-  String apiKeyValue;
+  bool useDarkMode;
 
   @observable
-  bool useDarkModeValue;
+  bool usePitchBlack;
 
   @observable
-  bool usePitchBlackValue;
+  bool themeSetBySystem;
 
   @observable
-  bool themeSetBySystemValue;
+  bool openInApp;
 
   // Todo: Probably use a common store
   @observable
   String message;
 
-  @action
-  setNonValidatedApiKey(String value) {
-    apiKeyValue = value;
-  }
-
-  @action
-  setApiKey() {
-    if (this.apiKeyValue != _appStore.apiKey) {
-      message = 'News API key updated!';
-    }
-    _appStore.setApiKey(apiKeyValue);
-    this.apiKeyValue = apiKeyValue;
+  _SettingsStore(this._preferenceService) {
+    useDarkMode = _preferenceService.useDarkMode;
+    usePitchBlack = _preferenceService.usePitchBlack;
+    themeSetBySystem = _preferenceService.themeSetBySystem;
+    openInApp = _preferenceService.openInApp;
   }
 
   @action
   setDarkMode(bool value) {
-    _appStore.setDarkMode(value);
-    useDarkModeValue = value;
+    _preferenceService.useDarkMode = value;
+    useDarkMode = value;
   }
 
   @action
   setPitchBlack(bool value) {
-    _appStore.setPitchBlack(value);
-    usePitchBlackValue = value;
+    _preferenceService.usePitchBlack = value;
+    usePitchBlack = value;
   }
 
   @action
   setSystemTheme(bool value) {
-    _appStore.setSystemTheme(value);
-    themeSetBySystemValue = value;
+    _preferenceService.themeSetBySystem = value;
+    themeSetBySystem = value;
+  }
+
+  @action
+  void setOpenInApp(bool updatedOpenInAppPreference) {
+    _preferenceService.openInApp = updatedOpenInAppPreference;
+    openInApp = updatedOpenInAppPreference;
   }
 }

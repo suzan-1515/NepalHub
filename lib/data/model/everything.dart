@@ -1,5 +1,5 @@
-import 'package:News/data/model/article.dart';
 import 'package:json_annotation/json_annotation.dart';
+import 'package:samachar_hub/data/model/article.dart';
 
 part 'everything.g.dart';
 

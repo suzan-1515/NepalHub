@@ -23,15 +23,23 @@ class PreferenceService {
     _sharedPreferences.setBool(_themeSetBySystemKey, value);
   }
 
-  set apiKey(String value) {
-    _sharedPreferences.setString(_apiKey, value);
+  set openInApp(bool openInApp) {
+    _sharedPreferences.setBool(_openInAppKey, openInApp);
   }
 
-  String get apiKey => _sharedPreferences.getString(_apiKey);
+  set favourites(List<String> favourites) {
+    _sharedPreferences.setStringList(_favouritesKey, favourites);
+  }
 
-  bool get themeSetBySystem => _sharedPreferences.getBool(_themeSetBySystemKey) ?? false;
+  bool get themeSetBySystem =>
+      _sharedPreferences.getBool(_themeSetBySystemKey) ?? false;
 
-  bool get useDarkMode => _sharedPreferences.getBool(_themeKey) ?? false;
+  bool get useDarkMode => _sharedPreferences.getBool(_useDarkModeKey) ?? false;
 
   bool get usePitchBlack => _sharedPreferences.getBool(_pitchBlackKey) ?? false;
+
+  bool get openInApp => _sharedPreferences.getBool(_openInAppKey) ?? true;
+
+  List<String> get favourites =>
+      _sharedPreferences.getStringList(_favouritesKey) ?? List<String>();
 }

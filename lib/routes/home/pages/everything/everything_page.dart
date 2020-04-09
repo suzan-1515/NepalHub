@@ -5,9 +5,11 @@ class EverythingPage extends StatefulWidget {
   _EverythingPageState createState() => _EverythingPageState();
 }
 
-class _EverythingPageState extends State<EverythingPage> {
+class _EverythingPageState extends State<EverythingPage>
+    with AutomaticKeepAliveClientMixin {
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Container(
       color: Theme.of(context).backgroundColor,
       padding: EdgeInsets.symmetric(horizontal: 24),
@@ -17,10 +19,14 @@ class _EverythingPageState extends State<EverythingPage> {
         children: <Widget>[
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 24),
-            child: Text('Everything', style: Theme.of(context).textTheme.headline),
+            child:
+                Text('Everything', style: Theme.of(context).textTheme.headline),
           ),
         ],
       ),
     );
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }

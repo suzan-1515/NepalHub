@@ -1,8 +1,8 @@
-import 'package:News/routes/home/pages/topheadlines/logic/top_headlines_store.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:samachar_hub/routes/home/pages/topheadlines/logic/top_headlines_store.dart';
 import 'pages/settings/settings_store.dart';
 import 'logic/home_screen_store.dart';
 import 'pages/pages.dart';
@@ -13,6 +13,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  final _pageController = PageController();
 
   Widget _buildEverythingPage() {
     return EverythingPage();
@@ -28,31 +29,25 @@ class _HomeScreenState extends State<HomeScreen> {
       backgroundColor: Theme.of(context).backgroundColor,
       body: SafeArea(
         child: Center(
-          child: Observer(builder: (_) {
-            switch (Provider.of<HomeScreenStore>(context).selectedPage) {
-              case 0:
-                return Consumer<TopHeadlinesStore>(
-                  builder: (context, headlinesStore, _) => Material(
-                    child: TopHeadlinesPage(headlinesStore),
-                  ),
-                );
-                break;
-              case 1:
-                return _buildEverythingPage();
-                break;
-              case 2:
-                return _buildFavouritesPage();
-                break;
-              case 3:
-                return Consumer<SettingsStore>(
-                  builder: (context, settingsStore, _) => Material(
-                    child: SettingsPage(settingsStore),
-                  ),
-                );
-                break;
-            }
-            return null;
-          }),
+          child: PageView(
+            controller: _pageController,
+            onPageChanged: Provider.of<HomeScreenStore>(context).setPage,
+            children: <Widget>[
+              Consumer<TopHeadlinesStore>(
+                builder: (context, headlinesStore, _) => Material(
+                  child: TopHeadlinesPage(headlinesStore),
+                ),
+              ),
+              _buildEverythingPage(),
+              _buildFavouritesPage(),
+              Consumer<SettingsStore>(
+                builder: (context, settingsStore, _) => Material(
+                  child: SettingsPage(settingsStore),
+                ),
+              ),
+            ],
+            physics: NeverScrollableScrollPhysics(),
+          ),
         ),
       ),
       bottomNavigationBar: Observer(
@@ -80,9 +75,15 @@ class _HomeScreenState extends State<HomeScreen> {
           ],
           type: BottomNavigationBarType.fixed,
           currentIndex: Provider.of<HomeScreenStore>(context).selectedPage,
-          onTap: Provider.of<HomeScreenStore>(context).setPage,
+          onTap: _pageController.jumpToPage,
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
   }
 }
