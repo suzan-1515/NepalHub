@@ -4,20 +4,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:mobx/mobx.dart';
+import 'package:provider/provider.dart';
 import 'settings_store.dart';
 
 class SettingsPage extends StatefulWidget {
-  SettingsPage(this.settingsStore);
-
-  final SettingsStore settingsStore;
-
   @override
   _SettingsPageState createState() => _SettingsPageState();
 }
 
 class _SettingsPageState extends State<SettingsPage>
     with AutomaticKeepAliveClientMixin {
-
   // Reaction disposers
   List<ReactionDisposer> _disposers;
 
@@ -40,7 +36,8 @@ class _SettingsPageState extends State<SettingsPage>
     _disposers = [
       // Listens for error message
       autorun((_) {
-        final String message = widget.settingsStore.message;
+        final String message =
+            Provider.of<SettingsStore>(context, listen: false).message;
         _showMessage(message);
       }),
     ];
@@ -68,125 +65,76 @@ class _SettingsPageState extends State<SettingsPage>
                 Text('Settings', style: Theme.of(context).textTheme.headline),
           ),
           Expanded(
-            child: SingleChildScrollView(
-              child: Column(
-                children: <Widget>[
-                  Column(
-                    mainAxisSize: MainAxisSize.max,
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
+            child: Consumer<SettingsStore>(
+              builder: (BuildContext context, SettingsStore settingsStore,
+                  Widget child) {
+                return SingleChildScrollView(
+                  child: Column(
                     children: <Widget>[
-                      Container(
-                        decoration: BoxDecoration(
-                          border: Border(
-                              bottom: BorderSide(
-                                  color: Theme.of(context).dividerColor)),
-                        ),
-                        padding: EdgeInsets.only(bottom: 16),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: <Widget>[
-                            Icon(
-                              FontAwesomeIcons.paintRoller,
-                              color: Theme.of(context).accentColor,
+                      Column(
+                        mainAxisSize: MainAxisSize.max,
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: <Widget>[
+                          Container(
+                            decoration: BoxDecoration(
+                              border: Border(
+                                  bottom: BorderSide(
+                                      color: Theme.of(context).dividerColor)),
                             ),
-                            Padding(
-                              padding: const EdgeInsets.only(left: 8),
-                              child: Text(
-                                'Customization',
-                                style: Theme.of(context).textTheme.subhead,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Observer(
-                        builder: (_) => Padding(
-                          padding: const EdgeInsets.only(left: 16, top: 16),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              AbsorbPointer(
-                                absorbing:
-                                    widget.settingsStore.themeSetBySystem,
-                                child: Opacity(
-                                  opacity: widget.settingsStore.themeSetBySystem
-                                      ? 0.45
-                                      : 1.0,
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: <Widget>[
-                                      Text(
-                                        'Use dark theme',
-                                        style:
-                                            Theme.of(context).textTheme.title,
-                                      ),
-                                      Switch(
-                                        value: widget.settingsStore.useDarkMode,
-                                        onChanged:
-                                            widget.settingsStore.setDarkMode,
-                                        activeColor:
-                                            Theme.of(context).accentColor,
-                                      )
-                                    ],
+                            padding: EdgeInsets.only(bottom: 16),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: <Widget>[
+                                Icon(
+                                  FontAwesomeIcons.paintRoller,
+                                  color: Theme.of(context).accentColor,
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 8),
+                                  child: Text(
+                                    'Customization',
+                                    style: Theme.of(context).textTheme.subhead,
                                   ),
                                 ),
-                              ),
-                              Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 8),
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: <Widget>[
-                                    Expanded(
-                                      child: Column(
+                              ],
+                            ),
+                          ),
+                          Observer(
+                            builder: (_) => Padding(
+                              padding: const EdgeInsets.only(left: 16, top: 16),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: <Widget>[
+                                  AbsorbPointer(
+                                    absorbing: settingsStore.themeSetBySystem,
+                                    child: Opacity(
+                                      opacity: settingsStore.themeSetBySystem
+                                          ? 0.45
+                                          : 1.0,
+                                      child: Row(
                                         mainAxisAlignment:
-                                            MainAxisAlignment.start,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.stretch,
+                                            MainAxisAlignment.spaceBetween,
                                         children: <Widget>[
-                                          Padding(
-                                            padding: const EdgeInsets.only(
-                                                bottom: 4),
-                                            child: Text(
-                                              'Use pitch black theme',
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .title,
-                                            ),
+                                          Text(
+                                            'Use dark theme',
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .title,
                                           ),
-                                          Opacity(
-                                            opacity: 0.5,
-                                            child: Text(
-                                              'Only applies when dark mode is on',
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .subtitle,
-                                            ),
-                                          ),
+                                          Switch(
+                                            value: settingsStore.useDarkMode,
+                                            onChanged:
+                                                settingsStore.setDarkMode,
+                                            activeColor:
+                                                Theme.of(context).accentColor,
+                                          )
                                         ],
                                       ),
                                     ),
-                                    Checkbox(
-                                      value: widget.settingsStore.usePitchBlack,
-                                      onChanged:
-                                          widget.settingsStore.setPitchBlack,
-                                      activeColor:
-                                          Theme.of(context).accentColor,
-                                    )
-                                  ],
-                                ),
-                              ),
-                              Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 8),
-                                child: AbsorbPointer(
-                                  absorbing: widget.settingsStore.useDarkMode,
-                                  child: Opacity(
-                                    opacity: widget.settingsStore.useDarkMode
-                                        ? 0.45
-                                        : 1.0,
+                                  ),
+                                  Padding(
+                                    padding:
+                                        const EdgeInsets.symmetric(vertical: 8),
                                     child: Row(
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceBetween,
@@ -202,19 +150,16 @@ class _SettingsPageState extends State<SettingsPage>
                                                 padding: const EdgeInsets.only(
                                                     bottom: 4),
                                                 child: Text(
-                                                  'Theme set by system',
+                                                  'Use pitch black theme',
                                                   style: Theme.of(context)
                                                       .textTheme
                                                       .title,
                                                 ),
                                               ),
                                               Opacity(
-                                                opacity: widget.settingsStore
-                                                        .useDarkMode
-                                                    ? 1.0
-                                                    : 0.5,
+                                                opacity: 0.5,
                                                 child: Text(
-                                                  'Requires minimum OS version ${Platform.isAndroid ? 'Android 10' : 'IOS 13'}',
+                                                  'Only applies when dark mode is on',
                                                   style: Theme.of(context)
                                                       .textTheme
                                                       .subtitle,
@@ -224,26 +169,84 @@ class _SettingsPageState extends State<SettingsPage>
                                           ),
                                         ),
                                         Checkbox(
-                                          value: widget
-                                              .settingsStore.themeSetBySystem,
-                                          onChanged: widget
-                                              .settingsStore.setSystemTheme,
+                                          value: settingsStore.usePitchBlack,
+                                          onChanged:
+                                              settingsStore.setPitchBlack,
                                           activeColor:
                                               Theme.of(context).accentColor,
                                         )
                                       ],
                                     ),
                                   ),
-                                ),
-                              )
-                            ],
+                                  Padding(
+                                    padding:
+                                        const EdgeInsets.symmetric(vertical: 8),
+                                    child: AbsorbPointer(
+                                      absorbing: settingsStore.useDarkMode,
+                                      child: Opacity(
+                                        opacity: settingsStore.useDarkMode
+                                            ? 0.45
+                                            : 1.0,
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: <Widget>[
+                                            Expanded(
+                                              child: Column(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.start,
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.stretch,
+                                                children: <Widget>[
+                                                  Padding(
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                            bottom: 4),
+                                                    child: Text(
+                                                      'Theme set by system',
+                                                      style: Theme.of(context)
+                                                          .textTheme
+                                                          .title,
+                                                    ),
+                                                  ),
+                                                  Opacity(
+                                                    opacity: settingsStore
+                                                            .useDarkMode
+                                                        ? 1.0
+                                                        : 0.5,
+                                                    child: Text(
+                                                      'Requires minimum OS version ${Platform.isAndroid ? 'Android 10' : 'IOS 13'}',
+                                                      style: Theme.of(context)
+                                                          .textTheme
+                                                          .subtitle,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                            Checkbox(
+                                              value: settingsStore
+                                                  .themeSetBySystem,
+                                              onChanged:
+                                                  settingsStore.setSystemTheme,
+                                              activeColor:
+                                                  Theme.of(context).accentColor,
+                                            )
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ),
                           ),
-                        ),
+                        ],
                       ),
                     ],
                   ),
-                ],
-              ),
+                );
+              },
             ),
           )
         ],

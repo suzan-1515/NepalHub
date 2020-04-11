@@ -1,20 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:mobx/mobx.dart';
+import 'package:provider/provider.dart';
 import 'package:samachar_hub/data/api.dart';
 import 'package:samachar_hub/data/model/api_error.dart';
-import 'package:samachar_hub/data/model/top_headlines.dart';
 import 'package:samachar_hub/routes/home/pages/topheadlines/logic/top_headlines_store.dart';
-import 'package:samachar_hub/routes/home/widgets/news_compact_view.dart';
-import 'package:samachar_hub/routes/home/widgets/news_thumbnail_view.dart';
-import '../../widgets/news_list_view.dart';
+import 'package:samachar_hub/routes/home/pages/topheadlines/top_headlines_category_view.dart';
 
 class TopHeadlinesPage extends StatefulWidget {
-  TopHeadlinesPage(this.store);
-
-  final TopHeadlinesStore store;
-
   @override
   _TopHeadlinesPageState createState() => _TopHeadlinesPageState();
 }
@@ -40,15 +33,16 @@ class _TopHeadlinesPageState extends State<TopHeadlinesPage>
 
   @override
   void initState() {
-    _setupObserver();
+    final store = Provider.of<TopHeadlinesStore>(context, listen: false);
+    _setupObserver(store);
     _tabController = TabController(
-      initialIndex: widget.store.activeTabIndex,
+      initialIndex: store.activeTabIndex,
       vsync: this,
       length: _tabs.length,
     );
     _tabController.addListener(() {
-      widget.store.setActiveTab(_tabController.index);
-      widget.store.fetchTopHeadlines(
+      store.setActiveTab(_tabController.index);
+      store.fetchTopHeadlines(
           (_tabs[_tabController.index].key as ValueKey<NewsCategory>).value);
     });
     super.initState();
@@ -103,62 +97,37 @@ class _TopHeadlinesPageState extends State<TopHeadlinesPage>
       );
   }
 
-  _setupObserver() {
+  _setupObserver(store) {
     _disposers = [
       // Listens for error message
       autorun((_) {
-        final String message = widget.store.error;
+        final String message = store.error;
         _showMessage(message);
       }),
       // Listens for API error
       autorun((_) {
-        final APIError error = widget.store.apiError;
+        final APIError error = store.apiError;
         _showErrorDialog(error);
       })
     ];
   }
 
-  Widget _buildArticleList(TopHeadlines topHeadlines, MenuItem view) {
-    return ListView.builder(
-        itemCount: topHeadlines.articles.length,
-        itemBuilder: (BuildContext context, int position) {
-          Widget articleWidget;
-          final article = topHeadlines.articles[position];
-          switch (view) {
-            case MenuItem.LIST_VIEW:
-              articleWidget = NewsListView(article);
-              break;
-            case MenuItem.THUMBNAIL_VIEW:
-              articleWidget = NewsThumbnailView(article);
-              break;
-            case MenuItem.COMPACT_VIEW:
-              articleWidget = NewsCompactView(article);
-              break;
-          }
-          return Material(
-            color: Colors.transparent,
-            child: InkWell(
-              onTap: () => widget.store.onArticleClick(article, context),
-              child: articleWidget,
+  Widget _newsPopupMenuItem(icon, color, title, value) {
+    return PopupMenuItem<MenuItem>(
+      value: value,
+      child: Row(
+        children: <Widget>[
+          Icon(icon, color: color),
+          Padding(
+            padding: EdgeInsets.only(left: 16),
+            child: Text(
+              title,
+              style: TextStyle(color: color),
             ),
-          );
-        });
-  }
-
-  Widget _buildPage(NewsCategory category) {
-    return Observer(builder: (_) {
-      final TopHeadlines topHeadlines = widget.store.newsData[category];
-      if (widget.store.loadingStatus[category] ?? true) {
-        return Center(
-          // Todo: Replace with Shimmer
-          child: CircularProgressIndicator(),
-        );
-      }
-      if (null != topHeadlines && topHeadlines.articles.isNotEmpty)
-        return _buildArticleList(topHeadlines, widget.store.view);
-      else
-        return Center(child: Text('Error!'));
-    });
+          ),
+        ],
+      ),
+    );
   }
 
   @override
@@ -167,148 +136,88 @@ class _TopHeadlinesPageState extends State<TopHeadlinesPage>
     return Container(
       color: Theme.of(context).backgroundColor,
       padding: EdgeInsets.symmetric(horizontal: 16),
-      child: Column(
-        mainAxisSize: MainAxisSize.max,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: <Widget>[
-          Padding(
-            padding:
-                const EdgeInsets.only(top: 24, bottom: 8, left: 8, right: 8),
-            child: Row(
-              children: <Widget>[
-                Expanded(
-                  child: Text('Top Headlines',
-                      style: Theme.of(context).textTheme.headline),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8),
-                  child: Opacity(
-                      opacity: 0.65, child: Icon(FontAwesomeIcons.search)),
-                ),
-                Opacity(
-                  opacity: 0.65,
-                  child: SizedBox(
-                    height: 40,
-                    width: 40,
-                    child: PopupMenuButton<MenuItem>(
-                      icon: Icon(FontAwesomeIcons.ellipsisV),
-                      onSelected: widget.store.setView,
-                      itemBuilder: (BuildContext context) =>
-                          <PopupMenuEntry<MenuItem>>[
-                        //Todo: Create a separate widget for PopupMenuItem
-                        PopupMenuItem<MenuItem>(
-                          value: MenuItem.LIST_VIEW,
-                          child: Row(
-                            children: <Widget>[
-                              Icon(
+      child: Consumer<TopHeadlinesStore>(
+        builder: (context, topHeadlinesStore, child) {
+          return Column(
+            mainAxisSize: MainAxisSize.max,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.only(
+                    top: 24, bottom: 8, left: 8, right: 8),
+                child: Row(
+                  children: <Widget>[
+                    Expanded(
+                      child: Text('Top Headlines',
+                          style: Theme.of(context).textTheme.headline),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8),
+                      child: Opacity(
+                          opacity: 0.65, child: Icon(FontAwesomeIcons.search)),
+                    ),
+                    Opacity(
+                      opacity: 0.65,
+                      child: SizedBox(
+                        height: 40,
+                        width: 40,
+                        child: PopupMenuButton<MenuItem>(
+                          icon: Icon(FontAwesomeIcons.ellipsisV),
+                          onSelected: topHeadlinesStore.setView,
+                          itemBuilder: (BuildContext context) =>
+                              <PopupMenuEntry<MenuItem>>[
+                            //Todo: Create a separate widget for PopupMenuItem
+                            _newsPopupMenuItem(
                                 FontAwesomeIcons.list,
-                                color: widget.store.view == MenuItem.LIST_VIEW
+                                topHeadlinesStore.view == MenuItem.LIST_VIEW
                                     ? Theme.of(context).accentColor
                                     : Theme.of(context).iconTheme.color,
-                              ),
-                              Padding(
-                                padding: EdgeInsets.only(left: 16),
-                                child: Text(
-                                  'List View',
-                                  style: TextStyle(
-                                    color:
-                                        widget.store.view == MenuItem.LIST_VIEW
-                                            ? Theme.of(context).accentColor
-                                            : Theme.of(context)
-                                                .textTheme
-                                                .headline
-                                                .color,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        PopupMenuItem<MenuItem>(
-                          value: MenuItem.THUMBNAIL_VIEW,
-                          child: Row(
-                            children: <Widget>[
-                              Icon(
+                                'List View',
+                                MenuItem.LIST_VIEW),
+                            _newsPopupMenuItem(
                                 FontAwesomeIcons.addressCard,
-                                color:
-                                    widget.store.view == MenuItem.THUMBNAIL_VIEW
-                                        ? Theme.of(context).accentColor
-                                        : Theme.of(context).iconTheme.color,
-                              ),
-                              Padding(
-                                padding: EdgeInsets.only(left: 16),
-                                child: Text(
-                                  'Thumbnail View',
-                                  style: TextStyle(
-                                    color: widget.store.view ==
-                                            MenuItem.THUMBNAIL_VIEW
-                                        ? Theme.of(context).accentColor
-                                        : Theme.of(context)
-                                            .textTheme
-                                            .headline
-                                            .color,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        PopupMenuItem<MenuItem>(
-                          value: MenuItem.COMPACT_VIEW,
-                          child: Row(
-                            children: <Widget>[
-                              Icon(
+                                topHeadlinesStore.view ==
+                                        MenuItem.THUMBNAIL_VIEW
+                                    ? Theme.of(context).accentColor
+                                    : Theme.of(context).iconTheme.color,
+                                'Thumbnail View',
+                                MenuItem.THUMBNAIL_VIEW),
+                            _newsPopupMenuItem(
                                 FontAwesomeIcons.image,
-                                color:
-                                    widget.store.view == MenuItem.COMPACT_VIEW
-                                        ? Theme.of(context).accentColor
-                                        : Theme.of(context).iconTheme.color,
-                              ),
-                              Padding(
-                                padding: EdgeInsets.only(left: 16),
-                                child: Text(
-                                  'Compact View',
-                                  style: TextStyle(
-                                    color: widget.store.view ==
-                                            MenuItem.COMPACT_VIEW
-                                        ? Theme.of(context).accentColor
-                                        : Theme.of(context)
-                                            .textTheme
-                                            .headline
-                                            .color,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
+                                topHeadlinesStore.view == MenuItem.COMPACT_VIEW
+                                    ? Theme.of(context).accentColor
+                                    : Theme.of(context).iconTheme.color,
+                                'Compact View',
+                                MenuItem.COMPACT_VIEW),
+                          ],
                         ),
-                      ],
+                      ),
                     ),
-                  ),
+                  ],
                 ),
-              ],
-            ),
-          ),
-          TabBar(
-            controller: _tabController,
-            tabs: _tabs,
-            isScrollable: true,
-          ),
-          Expanded(
-            child: TabBarView(
-              controller: _tabController,
-              children: <Widget>[
-                _buildPage(NewsCategory.general),
-                _buildPage(NewsCategory.business),
-                _buildPage(NewsCategory.entertainment),
-                _buildPage(NewsCategory.health),
-                _buildPage(NewsCategory.science),
-                _buildPage(NewsCategory.technology),
-                _buildPage(NewsCategory.sports),
-              ],
-            ),
-          ),
-        ],
+              ),
+              TabBar(
+                controller: _tabController,
+                tabs: _tabs,
+                isScrollable: true,
+              ),
+              Expanded(
+                child: TabBarView(
+                  controller: _tabController,
+                  children: <Widget>[
+                    TopHeadlinesCategoryView(NewsCategory.general),
+                    TopHeadlinesCategoryView(NewsCategory.business),
+                    TopHeadlinesCategoryView(NewsCategory.entertainment),
+                    TopHeadlinesCategoryView(NewsCategory.health),
+                    TopHeadlinesCategoryView(NewsCategory.science),
+                    TopHeadlinesCategoryView(NewsCategory.technology),
+                    TopHeadlinesCategoryView(NewsCategory.sports),
+                  ],
+                ),
+              ),
+            ],
+          );
+        },
       ),
     );
   }

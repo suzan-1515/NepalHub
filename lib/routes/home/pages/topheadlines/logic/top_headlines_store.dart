@@ -22,9 +22,7 @@ abstract class _TopHeadlinesStore with Store {
     fetchTopHeadlines(NewsCategory.general);
   }
 
-  //Todo: merge both maps
-  @observable
-  ObservableMap<NewsCategory, TopHeadlines> newsData = ObservableMap<NewsCategory, TopHeadlines>();
+  Map<NewsCategory, TopHeadlines> newsData = Map<NewsCategory, TopHeadlines>();
 
   @observable
   ObservableMap<NewsCategory, bool> loadingStatus = ObservableMap<NewsCategory,bool>();

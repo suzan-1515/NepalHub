@@ -10,12 +10,13 @@ class ArticleImageWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Hero(
-      tag: imageURL ?? 'Photo',
+      tag: UniqueKey(),
       child: imageURL != null
           ? Image.network(
               imageURL,
               fit: BoxFit.cover,
-              loadingBuilder: (BuildContext context, Widget child, ImageChunkEvent loadingProgress) {
+              loadingBuilder: (BuildContext context, Widget child,
+                  ImageChunkEvent loadingProgress) {
                 if (loadingProgress == null) return child;
                 return Center(
                   child: Stack(
@@ -23,7 +24,8 @@ class ArticleImageWidget extends StatelessWidget {
                     children: [
                       CircularProgressIndicator(
                         value: loadingProgress.expectedTotalBytes != null
-                            ? loadingProgress.cumulativeBytesLoaded / loadingProgress.expectedTotalBytes
+                            ? loadingProgress.cumulativeBytesLoaded /
+                                loadingProgress.expectedTotalBytes
                             : null,
                       ),
                       Icon(FontAwesomeIcons.image, size: 16),

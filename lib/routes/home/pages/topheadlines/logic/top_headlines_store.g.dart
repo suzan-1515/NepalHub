@@ -9,23 +9,6 @@ part of 'top_headlines_store.dart';
 // ignore_for_file: non_constant_identifier_names, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
 
 mixin _$TopHeadlinesStore on _TopHeadlinesStore, Store {
-  final _$newsDataAtom = Atom(name: '_TopHeadlinesStore.newsData');
-
-  @override
-  ObservableMap<NewsCategory, TopHeadlines> get newsData {
-    _$newsDataAtom.context.enforceReadPolicy(_$newsDataAtom);
-    _$newsDataAtom.reportObserved();
-    return super.newsData;
-  }
-
-  @override
-  set newsData(ObservableMap<NewsCategory, TopHeadlines> value) {
-    _$newsDataAtom.context.conditionallyRunInAction(() {
-      super.newsData = value;
-      _$newsDataAtom.reportChanged();
-    }, _$newsDataAtom, name: '${_$newsDataAtom.name}_set');
-  }
-
   final _$loadingStatusAtom = Atom(name: '_TopHeadlinesStore.loadingStatus');
 
   @override
@@ -145,7 +128,7 @@ mixin _$TopHeadlinesStore on _TopHeadlinesStore, Store {
   @override
   String toString() {
     final string =
-        'newsData: ${newsData.toString()},loadingStatus: ${loadingStatus.toString()},apiError: ${apiError.toString()},error: ${error.toString()},view: ${view.toString()},activeTabIndex: ${activeTabIndex.toString()}';
+        'loadingStatus: ${loadingStatus.toString()},apiError: ${apiError.toString()},error: ${error.toString()},view: ${view.toString()},activeTabIndex: ${activeTabIndex.toString()}';
     return '{$string}';
   }
 }
