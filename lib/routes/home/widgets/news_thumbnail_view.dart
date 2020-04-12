@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:samachar_hub/data/model/article.dart';
+import 'package:samachar_hub/data/model/feed.dart';
 import 'package:samachar_hub/routes/home/widgets/article_image_widget.dart';
 import 'package:samachar_hub/routes/home/widgets/article_info_widget.dart';
 
 class NewsThumbnailView extends StatelessWidget {
   NewsThumbnailView(this.article);
 
-  final Article article;
+  final Feed article;
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +24,7 @@ class NewsThumbnailView extends StatelessWidget {
               Expanded(
                 child: ConstrainedBox(
                   constraints: BoxConstraints(minHeight: 160),
-                  child: ArticleImageWidget(article.urlToImage),
+                  child: ArticleImageWidget(article.image,tag: article.id),
                 ),
               ),
               Padding(

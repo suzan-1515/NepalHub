@@ -4,28 +4,29 @@ import 'package:mobx/mobx.dart';
 import 'package:provider/provider.dart';
 import 'package:samachar_hub/data/api.dart';
 import 'package:samachar_hub/data/model/api_error.dart';
-import 'package:samachar_hub/data/model/article.dart';
-import 'package:samachar_hub/data/model/top_headlines.dart';
+import 'package:samachar_hub/data/model/feed.dart';
+import 'package:samachar_hub/data/model/news.dart';
 import 'package:samachar_hub/routes/article/article_view_screen.dart';
 import 'package:samachar_hub/routes/article/logic/article_store.dart';
-import 'package:samachar_hub/routes/home/pages/topheadlines/logic/top_headlines_service.dart';
-import 'package:samachar_hub/routes/home/pages/topheadlines/top_headlines_page.dart';
+import 'package:samachar_hub/routes/home/pages/everything/logic/everything_service.dart';
+import 'package:samachar_hub/routes/home/pages/pages.dart';
 
-part 'top_headlines_store.g.dart';
+part 'everything_store.g.dart';
 
-class TopHeadlinesStore = _TopHeadlinesStore with _$TopHeadlinesStore;
+class EverythingStore = _EverythingStore with _$EverythingStore;
 
-abstract class _TopHeadlinesStore with Store {
-  TopHeadlinesService _topHeadlinesService;
+abstract class _EverythingStore with Store {
+  EverythingService _everythingService;
 
-  _TopHeadlinesStore(this._topHeadlinesService) {
-    fetchTopHeadlines(NewsCategory.general);
+  _EverythingStore(this._everythingService) {
+    fetchFeeds(NewsCategory.tops);
   }
 
-  Map<NewsCategory, TopHeadlines> newsData = Map<NewsCategory, TopHeadlines>();
+  Map<NewsCategory, News> newsData = Map<NewsCategory, News>();
 
   @observable
-  ObservableMap<NewsCategory, bool> loadingStatus = ObservableMap<NewsCategory,bool>();
+  ObservableMap<NewsCategory, bool> loadingStatus =
+      ObservableMap<NewsCategory, bool>();
 
   @observable
   APIError apiError;
@@ -40,11 +41,11 @@ abstract class _TopHeadlinesStore with Store {
   int activeTabIndex = 0;
 
   @action
-  fetchTopHeadlines(NewsCategory category) async {
+  fetchFeeds(NewsCategory category) async {
     try {
       if (null != newsData[category]) return;
       loadingStatus[category] = true;
-      newsData[category] = await _topHeadlinesService.getTopHeadlines(
+      newsData[category] = await _everythingService.getFeedsByCategory(
         newsCategory: category,
       );
     } on APIError catch (apiError) {
@@ -67,7 +68,7 @@ abstract class _TopHeadlinesStore with Store {
   }
 
   // Todo: Use proper named navigation. Should navigation be done here?
-  onArticleClick(Article article, BuildContext context) {
+  onFeedClick(Feed article, BuildContext context) {
     Navigator.push(
       context,
       MaterialPageRoute(

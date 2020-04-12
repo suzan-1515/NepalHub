@@ -1,217 +1,102 @@
-import 'dart:io';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:samachar_hub/data/model/everything.dart';
+import 'package:samachar_hub/data/model/news.dart';
 import 'package:samachar_hub/data/model/sources.dart';
-import 'package:samachar_hub/data/model/top_headlines.dart';
+import 'package:samachar_hub/util/news_category.dart';
 
 import 'model/api_error.dart';
 
 // Base URL
-const String _baseApiURL = 'newsapi.org'; //53ea041b1e1c4c659b41767532da63f2
+const String _baseApiURL = 'timesofnepal.com.np';
 
-const String _apiKey = "53ea041b1e1c4c659b41767532da63f2";
-
-// URL for fetching publisher favicon
-const String _faviconBaseUrl = 'icon-locator.herokuapp.com';
+// const String _apiKey = "53ea041b1e1c4c659b41767532da63f2";
 
 // API Endpoints
-const String _topHeadlines = '/v2/top-headlines';
-const String _everything = '/v2/everything';
-const String _sources = '/v2/sources';
-// For fetching favicon
-const String _favicon = '/icon';
-
-// Parameter values
-enum Country {
-  ae,
-  ar,
-  at,
-  au,
-  be,
-  bg,
-  br,
-  ca,
-  ch,
-  cn,
-  co,
-  cu,
-  cz,
-  de,
-  eg,
-  fr,
-  gb,
-  gr,
-  hk,
-  hu,
-  id,
-  ie,
-  il,
-  ind, //'in' is a keyword, translate to 'in' string during runtime
-  it,
-  jp,
-  kr,
-  lt,
-  lv,
-  ma,
-  mx,
-  my,
-  ng,
-  nl,
-  no,
-  nz,
-  ph,
-  pl,
-  pt,
-  ro,
-  rs,
-  ru,
-  sa,
-  se,
-  sg,
-  si,
-  sk,
-  th,
-  tr,
-  tw,
-  ua,
-  us,
-  ve,
-  za,
-}
+const String _latestNews = '/newsv4/infinite_feeds.php';
+const String _trendingNews = '/newsv4/feeds_top.php';
+const String _categoryNews = '/newsv4/infinite_feeds_category.php';
+const String _trendingTags = '/newsv4/tags.php';
+const String _newsSources = '/newsv4/sources.php';
 
 enum NewsCategory {
-  business,
-  entertainment,
-  general,
-  health,
-  science,
-  sports,
-  technology,
+  tops,
+  pltc,
+  sprt,
+  scte,
+  wrld,
+  busi,
+  entm,
+  hlth,
+  blog,
+  oths,
 }
-
-enum NewsLanguage { ar, de, en, es, fr, he, it, nl, no, pt, ru, se, ud, zh }
 
 enum SortBy { relevancy, popularity, publishedAt }
 
-String getPublisherIconUrl(String publisherUrl) {
-  if(null == publisherUrl || publisherUrl.isEmpty)
-    return null;
-  final Map<String, String> queryParams = {
-    'url': publisherUrl,
-    'size': '70..120..200',
-  };
-  return Uri.https(_faviconBaseUrl, _favicon, queryParams).toString();
-}
-
-String _getCountryCode(Country country) {
-  if (null == country) return null;
-  if (country == Country.ind)
-    return 'in';
-  else
-    return country.toString().split('.').last;
-}
-
-String _getCategory(NewsCategory category) {
+String _getCategoryCode(NewsCategory category) {
   if (null == category) return null;
   return category.toString().split('.').last;
 }
 
-Future<TopHeadlines> getTopHeadlines(
-    {Country country = Country.ind, NewsCategory category, String q, int pageSize, int page}) async {
-  final Map<String, String> queryParams = _filterNullOrEmptyValuesFromMap({
-    'country': _getCountryCode(country),
-    'category': _getCategory(category),
-    'query': q,
-    'pageSize': pageSize?.toString(),
-    'page': page?.toString(),
+Future<News> getLatestNews() async {
+  var sourceCall = http.get(Uri.https(_baseApiURL, _newsSources));
+  var latestNewsCall = http.get(Uri.https(_baseApiURL, _latestNews));
+  var results =
+      await Future.wait([sourceCall, latestNewsCall], eagerError: true)
+          .catchError((err) {
+    throw err;
   });
-  final Uri uri = Uri.https(_baseApiURL, _topHeadlines, queryParams);
-  final http.Response response = await http.get(uri, headers: {
-    HttpHeaders.authorizationHeader: 'Bearer $_apiKey',
-  });
+
+  var sourceResponse = results.first;
   // If response is not ok
-  _checkResponse(response);
+  _checkResponse(sourceResponse);
   // Deserialize
+  var newsResponse = results.last;
+  // If response is not ok
+  _checkResponse(newsResponse);
+  // Deserialize
+
   try {
-    return TopHeadlines.fromJson(json.decode(response.body));
+    return News.fromJson(
+        json.decode(newsResponse.body), json.decode(sourceResponse.body));
   } on Exception catch (e) {
     throw e;
   }
 }
 
-Future<TopHeadlines> getTopHeadlinesFromSources(String sources,
-    {String q, int pageSize, int page}) async {
+Future<News> getNewsByCategory(NewsCategory category,
+    {int lastFeedId}) async {
+  var sourceCall = http.get(Uri.https(_baseApiURL, _newsSources));
   final Map<String, String> queryParams = _filterNullOrEmptyValuesFromMap({
-    'query': q,
-    'pageSize': pageSize?.toString(),
-    'page': page?.toString(),
+    'category': _getCategoryCode(category),
+    'id': lastFeedId?.toString(),
   });
-  final Uri uri = Uri.https(_baseApiURL, _topHeadlines, queryParams);
-  final http.Response response = await http.get(uri, headers: {
-    HttpHeaders.authorizationHeader: 'Bearer $_apiKey',
+  var newsCall = http.get(Uri.https(_baseApiURL, _categoryNews, queryParams));
+  var results = await Future.wait([sourceCall, newsCall], eagerError: true)
+      .catchError((err) {
+    throw err;
   });
+
+  var sourceResponse = results.first;
   // If response is not ok
-  _checkResponse(response);
+  _checkResponse(sourceResponse);
   // Deserialize
+  var newsResponse = results.last;
+  // If response is not ok
+  _checkResponse(newsResponse);
+  // Deserialize
+
   try {
-    return TopHeadlines.fromJson(json.decode(response.body));
+    return News.fromJson(
+        json.decode(newsResponse.body), json.decode(sourceResponse.body));
   } on Exception catch (e) {
     throw e;
   }
 }
 
-Future<Everything> getEverything(
-  String apiKey, {
-  String q,
-  String qInTitle,
-  String sources,
-  String domains,
-  String excludeDomains,
-  DateTime from,
-  DateTime to,
-  NewsLanguage language,
-  SortBy sortBy,
-  int pageSize,
-  int page,
-}) async {
-  final Map<String, String> queryParams = _filterNullOrEmptyValuesFromMap({
-    'query': q,
-    'qInTitle': qInTitle,
-    'sources': sources,
-    'domains': domains,
-    'excludeDomains': excludeDomains,
-    'from': from.toIso8601String(),
-    'to': to?.toIso8601String(),
-    'language': language?.toString()?.split('.')?.last,
-    'sortBy': sortBy?.toString()?.split('.')?.last,
-    'pageSize': pageSize?.toString(),
-    'page': page?.toString(),
-  });
-  final Uri uri = Uri.https(_baseApiURL, _everything, queryParams);
-  final http.Response response = await http.get(uri, headers: {
-    HttpHeaders.authorizationHeader: 'Bearer $apiKey',
-  });
-  // If response is not ok
-  _checkResponse(response);
-  // Deserialize
-  try {
-    return Everything.fromJson(json.decode(response.body));
-  } on Exception catch (e) {
-    throw e;
-  }
-}
-
-Future<Sources> getSources(String apiKey, {NewsCategory category, NewsLanguage language, Country country}) async {
-  final Map<String, String> queryParams = _filterNullOrEmptyValuesFromMap({
-    'country': _getCountryCode(country),
-    'category': category?.toString(),
-    'language': language?.toString(),
-  });
-  final Uri uri = Uri.https(_baseApiURL, _sources, queryParams);
-  final http.Response response = await http.get(uri, headers: {
-    HttpHeaders.authorizationHeader: 'Bearer $apiKey',
-  });
+Future<Sources> getSources() async {
+  final Uri uri = Uri.https(_baseApiURL, _newsSources);
+  final http.Response response = await http.get(uri);
   // If response is not ok
   _checkResponse(response);
   // Deserialize

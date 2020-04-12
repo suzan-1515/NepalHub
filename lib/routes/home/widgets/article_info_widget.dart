@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:samachar_hub/data/model/article.dart';
+import 'package:samachar_hub/data/model/feed.dart';
 import 'package:samachar_hub/util/helper.dart';
 
 class ArticleInfoWidget extends StatelessWidget {
 
   ArticleInfoWidget(this.article);
 
-  final Article article;
+  final Feed article;
 
-  String _articleSource(ArticleSource source) => source == null ? '' : source.name + ' • ';
+  String _articleSource(FeedSource source) => source == null ? '' : source.name + ' • ';
 
   String _publishedAt(String publishedAt) =>
       publishedAt == null ? '' : relativeTimeString(DateTime.parse(publishedAt));

@@ -1,5 +1,5 @@
 import 'package:mobx/mobx.dart';
-import 'package:samachar_hub/data/model/article.dart';
+import 'package:samachar_hub/data/model/feed.dart';
 import 'package:samachar_hub/routes/article/logic/article_service.dart';
 
 part 'article_store.g.dart';
@@ -10,16 +10,16 @@ abstract class _ArticleStore with Store {
   _ArticleStore(this.article) : _articleService = ArticleService();
 
   final ArticleService _articleService;
-  final Article article;
+  final Feed article;
 
   @observable
   String message;
 
   @action
   share() {
-    if (null != article.url)
+    if (null != article.link)
       try {
-        _articleService.shareArticle(article.title, article.url);
+        _articleService.shareArticle(article.title, article.link);
       } on Exception catch (e) {
         message = 'Error - ' + e.toString();
       }
@@ -27,9 +27,9 @@ abstract class _ArticleStore with Store {
 
   @action
   openLink() {
-    if (null != article.url)
+    if (null != article.link)
       try {
-        _articleService.openLink(article.url);
+        _articleService.openLink(article.link);
       } on Exception catch (e) {
         message = 'Error - ' + e.toString();
       }

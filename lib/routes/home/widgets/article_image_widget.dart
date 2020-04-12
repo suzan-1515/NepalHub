@@ -3,14 +3,15 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class ArticleImageWidget extends StatelessWidget {
-  ArticleImageWidget(this.imageURL);
+  ArticleImageWidget(this.imageURL, {this.tag});
 
   final String imageURL;
+  final String tag;
 
   @override
   Widget build(BuildContext context) {
     return Hero(
-      tag: UniqueKey(),
+      tag: tag ?? UniqueKey(),
       child: imageURL != null
           ? Image.network(
               imageURL,

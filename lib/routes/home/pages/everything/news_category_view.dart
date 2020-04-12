@@ -2,38 +2,38 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:provider/provider.dart';
 import 'package:samachar_hub/data/api.dart';
-import 'package:samachar_hub/data/model/top_headlines.dart';
-import 'package:samachar_hub/routes/home/pages/topheadlines/logic/top_headlines_store.dart';
-import 'package:samachar_hub/routes/home/pages/topheadlines/top_headlines_page.dart';
+import 'package:samachar_hub/data/model/news.dart';
+import 'package:samachar_hub/routes/home/pages/everything/logic/everything_store.dart';
+import 'package:samachar_hub/routes/home/pages/pages.dart';
 import 'package:samachar_hub/routes/home/widgets/news_compact_view.dart';
 import 'package:samachar_hub/routes/home/widgets/news_list_view.dart';
 import 'package:samachar_hub/routes/home/widgets/news_thumbnail_view.dart';
 
-class TopHeadlinesCategoryView extends StatelessWidget {
+class NewsCategoryView extends StatelessWidget {
   final NewsCategory category;
 
-  TopHeadlinesCategoryView(this.category);
+  NewsCategoryView(this.category);
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<TopHeadlinesStore>(
-      builder: (context, topHeadlinesStore, child) {
+    return Consumer<EverythingStore>(
+      builder: (context, everythingStore, child) {
         return Observer(builder: (_) {
-          if (topHeadlinesStore.loadingStatus[category] ?? true) {
+          if (everythingStore.loadingStatus[category] ?? true) {
             return Center(
               // Todo: Replace with Shimmer
               child: CircularProgressIndicator(),
             );
           }
-          final TopHeadlines topHeadlines =
-              topHeadlinesStore.newsData[category];
-          if (null != topHeadlines && topHeadlines.articles.isNotEmpty) {
-            final MenuItem viewType = topHeadlinesStore.view;
+          final News topHeadlines =
+              everythingStore.newsData[category];
+          if (null != topHeadlines && topHeadlines.feeds.isNotEmpty) {
+            final MenuItem viewType = everythingStore.view;
             return ListView.builder(
-                itemCount: topHeadlines.articles.length,
+                itemCount: topHeadlines.feeds.length,
                 itemBuilder: (BuildContext context, int position) {
                   Widget articleWidget;
-                  final article = topHeadlines.articles[position];
+                  final article = topHeadlines.feeds[position];
                   switch (viewType) {
                     case MenuItem.LIST_VIEW:
                       articleWidget = NewsListView(article);
@@ -49,7 +49,7 @@ class TopHeadlinesCategoryView extends StatelessWidget {
                     color: Colors.transparent,
                     child: InkWell(
                       onTap: () =>
-                          topHeadlinesStore.onArticleClick(article, context),
+                          everythingStore.onFeedClick(article, context),
                       child: articleWidget,
                     ),
                   );

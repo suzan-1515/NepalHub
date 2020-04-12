@@ -4,6 +4,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'logic/home_screen_store.dart';
 import 'pages/pages.dart';
+import 'pages/personalised/personalised_page.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -25,7 +26,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 controller: _pageController,
                 onPageChanged: homeStore.setPage,
                 children: <Widget>[
-                  TopHeadlinesPage(),
+                  PersonalisedPage(),
                   EverythingPage(),
                   FavouritesPage(),
                   SettingsPage(),
@@ -41,8 +42,8 @@ class _HomeScreenState extends State<HomeScreen> {
               backgroundColor: Theme.of(context).backgroundColor,
               items: const <BottomNavigationBarItem>[
                 BottomNavigationBarItem(
-                  icon: Icon(FontAwesomeIcons.bolt),
-                  title: Text('Top Headlines'),
+                  icon: Icon(FontAwesomeIcons.user),
+                  title: Text('For You'),
                 ),
                 BottomNavigationBarItem(
                   icon: Icon(FontAwesomeIcons.globe),

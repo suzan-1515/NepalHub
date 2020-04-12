@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:samachar_hub/routes/home/logic/home_screen_store.dart';
+import 'package:samachar_hub/routes/home/pages/everything/logic/everything_service.dart';
+import 'package:samachar_hub/routes/home/pages/everything/logic/everything_store.dart';
+import 'package:samachar_hub/routes/home/pages/personalised/logic/personalised_service.dart';
+import 'package:samachar_hub/routes/home/pages/personalised/logic/personalised_store.dart';
 import 'package:samachar_hub/routes/home/pages/settings/settings_store.dart';
-import 'package:samachar_hub/routes/home/pages/topheadlines/logic/top_headlines_service.dart';
-import 'package:samachar_hub/routes/home/pages/topheadlines/logic/top_headlines_store.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'common/preference_service.dart';
 import 'routes/routes.dart';
@@ -39,11 +41,11 @@ class App extends StatelessWidget {
         ProxyProvider<PreferenceService, SettingsStore>(
           update: (_, preferenceService, __) => SettingsStore(preferenceService),
         ),
-        ProxyProvider<PreferenceService, SettingsStore>(
-          update: (_, preferenceService, __) => SettingsStore(preferenceService),
+        ProxyProvider<PreferenceService, EverythingStore>(
+          update: (_, preferenceService, __) => EverythingStore(EverythingService()),
         ),
-        ProxyProvider<PreferenceService, TopHeadlinesStore>(
-          update: (_, preferenceService, __) => TopHeadlinesStore(TopHeadlinesService()),
+        ProxyProvider<PreferenceService, PersonalisedFeedStore>(
+          update: (_, preferenceService, __) => PersonalisedFeedStore(PersonalisedFeedService()),
         ),
         ProxyProvider<PreferenceService, HomeScreenStore>(
           update: (_, preferenceService, __) => HomeScreenStore(preferenceService),

@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:samachar_hub/data/model/article.dart';
+import 'package:samachar_hub/data/model/feed.dart';
 import 'package:samachar_hub/routes/home/widgets/article_image_widget.dart';
 import 'package:samachar_hub/routes/home/widgets/article_info_widget.dart';
 
 class NewsListView extends StatelessWidget {
   NewsListView(this.article);
 
-  final Article article;
+  final Feed article;
 
   @override
   Widget build(BuildContext context) {
@@ -23,12 +23,13 @@ class NewsListView extends StatelessWidget {
             children: <Widget>[
               Expanded(
                 flex: 2,
-                child: ArticleImageWidget(article.urlToImage),
+                child: ArticleImageWidget(article.image,tag: article.id),
               ),
               Expanded(
                 flex: 4,
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                   child: ArticleInfoWidget(article),
                 ),
               ),

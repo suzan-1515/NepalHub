@@ -1,26 +1,15 @@
 import 'package:json_annotation/json_annotation.dart';
+import 'package:samachar_hub/data/model/feed.dart';
 
 part 'sources.g.dart';
 
 @JsonSerializable()
 class Sources {
-  final String status;
-  final List<Publisher> sources;
+  final List<FeedSource> sources;
+  final List<FeedCategory> categories;
 
-  Sources(this.status, this.sources);
+  Sources(this.sources, this.categories);
 
   factory Sources.fromJson(Map<String, dynamic> json) => _$SourcesFromJson(json);
-}
-
-@JsonSerializable()
-class Publisher {
-  final String id;
-  final String url;
-  final String category;
-  final String language;
-  final String country;
-
-  Publisher(this.id, this.url, this.category, this.language, this.country);
-
-  factory Publisher.fromJson(Map<String, dynamic> json) => _$PublisherFromJson(json);
+  Map<String, dynamic> toJson() => _$SourcesToJson(this);
 }

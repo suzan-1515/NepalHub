@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'top_headlines_store.dart';
+part of 'everything_store.dart';
 
 // **************************************************************************
 // StoreGenerator
@@ -8,8 +8,8 @@ part of 'top_headlines_store.dart';
 
 // ignore_for_file: non_constant_identifier_names, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
 
-mixin _$TopHeadlinesStore on _TopHeadlinesStore, Store {
-  final _$loadingStatusAtom = Atom(name: '_TopHeadlinesStore.loadingStatus');
+mixin _$EverythingStore on _EverythingStore, Store {
+  final _$loadingStatusAtom = Atom(name: '_EverythingStore.loadingStatus');
 
   @override
   ObservableMap<NewsCategory, bool> get loadingStatus {
@@ -26,7 +26,7 @@ mixin _$TopHeadlinesStore on _TopHeadlinesStore, Store {
     }, _$loadingStatusAtom, name: '${_$loadingStatusAtom.name}_set');
   }
 
-  final _$apiErrorAtom = Atom(name: '_TopHeadlinesStore.apiError');
+  final _$apiErrorAtom = Atom(name: '_EverythingStore.apiError');
 
   @override
   APIError get apiError {
@@ -43,7 +43,7 @@ mixin _$TopHeadlinesStore on _TopHeadlinesStore, Store {
     }, _$apiErrorAtom, name: '${_$apiErrorAtom.name}_set');
   }
 
-  final _$errorAtom = Atom(name: '_TopHeadlinesStore.error');
+  final _$errorAtom = Atom(name: '_EverythingStore.error');
 
   @override
   String get error {
@@ -60,7 +60,7 @@ mixin _$TopHeadlinesStore on _TopHeadlinesStore, Store {
     }, _$errorAtom, name: '${_$errorAtom.name}_set');
   }
 
-  final _$viewAtom = Atom(name: '_TopHeadlinesStore.view');
+  final _$viewAtom = Atom(name: '_EverythingStore.view');
 
   @override
   MenuItem get view {
@@ -77,7 +77,7 @@ mixin _$TopHeadlinesStore on _TopHeadlinesStore, Store {
     }, _$viewAtom, name: '${_$viewAtom.name}_set');
   }
 
-  final _$activeTabIndexAtom = Atom(name: '_TopHeadlinesStore.activeTabIndex');
+  final _$activeTabIndexAtom = Atom(name: '_EverythingStore.activeTabIndex');
 
   @override
   int get activeTabIndex {
@@ -94,34 +94,33 @@ mixin _$TopHeadlinesStore on _TopHeadlinesStore, Store {
     }, _$activeTabIndexAtom, name: '${_$activeTabIndexAtom.name}_set');
   }
 
-  final _$fetchTopHeadlinesAsyncAction = AsyncAction('fetchTopHeadlines');
+  final _$fetchFeedsAsyncAction = AsyncAction('fetchFeeds');
 
   @override
-  Future fetchTopHeadlines(NewsCategory category) {
-    return _$fetchTopHeadlinesAsyncAction
-        .run(() => super.fetchTopHeadlines(category));
+  Future fetchFeeds(NewsCategory category) {
+    return _$fetchFeedsAsyncAction.run(() => super.fetchFeeds(category));
   }
 
-  final _$_TopHeadlinesStoreActionController =
-      ActionController(name: '_TopHeadlinesStore');
+  final _$_EverythingStoreActionController =
+      ActionController(name: '_EverythingStore');
 
   @override
   dynamic setView(MenuItem value) {
-    final _$actionInfo = _$_TopHeadlinesStoreActionController.startAction();
+    final _$actionInfo = _$_EverythingStoreActionController.startAction();
     try {
       return super.setView(value);
     } finally {
-      _$_TopHeadlinesStoreActionController.endAction(_$actionInfo);
+      _$_EverythingStoreActionController.endAction(_$actionInfo);
     }
   }
 
   @override
   dynamic setActiveTab(int value) {
-    final _$actionInfo = _$_TopHeadlinesStoreActionController.startAction();
+    final _$actionInfo = _$_EverythingStoreActionController.startAction();
     try {
       return super.setActiveTab(value);
     } finally {
-      _$_TopHeadlinesStoreActionController.endAction(_$actionInfo);
+      _$_EverythingStoreActionController.endAction(_$actionInfo);
     }
   }
 

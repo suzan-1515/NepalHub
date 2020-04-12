@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:samachar_hub/data/model/article.dart';
+import 'package:samachar_hub/data/model/feed.dart';
 
 import 'article_image_widget.dart';
 import 'article_info_widget.dart';
@@ -7,7 +7,7 @@ import 'article_info_widget.dart';
 class NewsCompactView extends StatelessWidget {
   NewsCompactView(this.article);
 
-  final Article article;
+  final Feed article;
 
   @override
   Widget build(BuildContext context) {
@@ -23,13 +23,16 @@ class NewsCompactView extends StatelessWidget {
             children: <Widget>[
               ConstrainedBox(
                 constraints: BoxConstraints(minHeight: 160),
-                child: ArticleImageWidget(article.urlToImage),
+                child: ArticleImageWidget(article.image,tag: article.id),
               ),
               // Gradient overlay
               Container(
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
-                    colors: <Color>[Colors.transparent, Theme.of(context).cardColor],
+                    colors: <Color>[
+                      Colors.transparent,
+                      Theme.of(context).cardColor
+                    ],
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
                   ),
@@ -40,7 +43,8 @@ class NewsCompactView extends StatelessWidget {
                 right: 0,
                 left: 0,
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
                   child: ArticleInfoWidget(article),
                 ),
               ),
