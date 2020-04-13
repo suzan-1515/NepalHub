@@ -11,7 +11,7 @@ class ArticleImageWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Hero(
-      tag: tag ?? UniqueKey(),
+      tag: tag,
       child: imageURL != null
           ? Image.network(
               imageURL,

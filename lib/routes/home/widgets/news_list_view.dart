@@ -23,7 +23,8 @@ class NewsListView extends StatelessWidget {
             children: <Widget>[
               Expanded(
                 flex: 2,
-                child: ArticleImageWidget(article.image,tag: article.id),
+                child: ArticleImageWidget(article.image,
+                    tag: article.uuid+article.id),
               ),
               Expanded(
                 flex: 4,

@@ -1,11 +1,14 @@
+import 'package:json_annotation/json_annotation.dart';
 import 'package:samachar_hub/data/model/feed.dart';
 import 'package:samachar_hub/data/model/sources.dart';
 
 class News {
   final int version;
   final List<Feed> feeds;
+  @JsonKey(ignore: true)
+  final Sources sources;
 
-  News(this.version, this.feeds);
+  News(this.version, this.feeds, this.sources);
 
   factory News.fromJson(
       Map<String, dynamic> json, Map<String, dynamic> sourceJson) {
@@ -14,7 +17,7 @@ class News {
       json['version'] as int,
       (json['feeds'] as List)?.map((e) {
         if (e == null) return null;
-        Map<String, dynamic> feed = Map.fromEntries((e as Map<String, dynamic>).entries);
+        var feed = e as Map<String, dynamic>;
         
         if (feed.containsKey('source')) {
           try {
@@ -24,9 +27,7 @@ class News {
                     source.code == (feed['source'] as String))
                 .first;
             feed.update('source', (update) => source.toJson());
-          } catch (e) {
-            print("Source not available");
-          }
+          } catch (e) {}
         }
         if (feed.containsKey('category')) {
           try {
@@ -36,12 +37,12 @@ class News {
                     category.code == feed['category'] as String)
                 .first;
             feed.update('category', (update) => category.toJson());
-          } catch (e) {
-            print("Category not available");
-          }
+          } catch (e) {}
         }
-        return Feed.fromJson(feed);
+
+        return Feed.fromJson(feed,sources);
       })?.toList(),
+      sources
     );
   }
 

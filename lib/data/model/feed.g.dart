@@ -6,43 +6,6 @@ part of 'feed.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-Feed _$FeedFromJson(Map<String, dynamic> json) {
-  return Feed(
-    json['id'] as String,
-    json['source'] == null
-        ? null
-        : FeedSource.fromJson(json['source'] as Map<String, dynamic>),
-    json['category'] == null
-        ? null
-        : FeedCategory.fromJson(json['category'] as Map<String, dynamic>),
-    json['author'] as String,
-    json['title'] as String,
-    json['description'] as String,
-    json['link'] as String,
-    json['image'] as String,
-    json['pub_date'] as String,
-    json['content'] as String,
-    (json['related'] as List)
-        ?.map(
-            (e) => e == null ? null : Feed.fromJson(e as Map<String, dynamic>))
-        ?.toList(),
-  );
-}
-
-Map<String, dynamic> _$FeedToJson(Feed instance) => <String, dynamic>{
-      'id': instance.id,
-      'source': instance.source,
-      'category': instance.category,
-      'author': instance.author,
-      'title': instance.title,
-      'description': instance.description,
-      'link': instance.link,
-      'image': instance.image,
-      'pub_date': instance.publishedAt,
-      'content': instance.content,
-      'related': instance.related,
-    };
-
 FeedSource _$FeedSourceFromJson(Map<String, dynamic> json) {
   return FeedSource(
     json['id'] as int,

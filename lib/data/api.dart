@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:samachar_hub/data/model/news.dart';
 import 'package:samachar_hub/data/model/sources.dart';
-import 'package:samachar_hub/util/news_category.dart';
 
 import 'model/api_error.dart';
 

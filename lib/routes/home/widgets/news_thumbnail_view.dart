@@ -24,7 +24,7 @@ class NewsThumbnailView extends StatelessWidget {
               Expanded(
                 child: ConstrainedBox(
                   constraints: BoxConstraints(minHeight: 160),
-                  child: ArticleImageWidget(article.image,tag: article.id),
+                  child: ArticleImageWidget(article.image,tag: article.uuid+article.id),
                 ),
               ),
               Padding(

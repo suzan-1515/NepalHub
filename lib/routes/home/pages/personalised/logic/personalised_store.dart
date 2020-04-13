@@ -32,7 +32,7 @@ abstract class _PersonalisedFeedStore with Store {
   String error;
 
   @observable
-  MenuItem view = MenuItem.LIST_VIEW;
+  MenuItem view = MenuItem.THUMBNAIL_VIEW;
 
   @action
   fetchFeeds() async {

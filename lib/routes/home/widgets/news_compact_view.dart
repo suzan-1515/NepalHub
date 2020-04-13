@@ -23,7 +23,7 @@ class NewsCompactView extends StatelessWidget {
             children: <Widget>[
               ConstrainedBox(
                 constraints: BoxConstraints(minHeight: 160),
-                child: ArticleImageWidget(article.image,tag: article.id),
+                child: ArticleImageWidget(article.image,tag: article.uuid+article.id),
               ),
               // Gradient overlay
               Container(

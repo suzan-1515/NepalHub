@@ -155,7 +155,7 @@ class _EverythingPageState extends State<EverythingPage>
     super.build(context);
     return Container(
       color: Theme.of(context).backgroundColor,
-      padding: EdgeInsets.symmetric(horizontal: 16),
+      padding: EdgeInsets.symmetric(horizontal: 8),
       child: Consumer<EverythingStore>(
         builder: (context, topHeadlinesStore, child) {
           return Column(
@@ -164,7 +164,7 @@ class _EverythingPageState extends State<EverythingPage>
             children: <Widget>[
               Padding(
                 padding: const EdgeInsets.only(
-                    top: 24, bottom: 8, left: 8, right: 8),
+                    top: 24, bottom: 8, left: 16, right: 16),
                 child: Row(
                   children: <Widget>[
                     Expanded(

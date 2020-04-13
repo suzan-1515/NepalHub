@@ -96,57 +96,60 @@ class _PersonalisedPageState extends State<PersonalisedPage>
     super.build(context);
     return Container(
       color: Theme.of(context).backgroundColor,
-      padding: EdgeInsets.symmetric(horizontal: 24),
+      padding: EdgeInsets.symmetric(horizontal: 8),
       child: Column(
         mainAxisSize: MainAxisSize.max,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: 24),
+            padding: const EdgeInsets.symmetric(vertical: 24,horizontal: 16),
             child: Text('Top Stories',
                 style: Theme.of(context).textTheme.headline),
           ),
-          Consumer<PersonalisedFeedStore>(
-            builder: (context, personalisedStore, child) {
-              return Observer(builder: (_) {
-                if (personalisedStore.loadingStatus) {
-                  return Center(
-                    // Todo: Replace with Shimmer
-                    child: CircularProgressIndicator(),
-                  );
-                }
-                final News newsData = personalisedStore.newsData;
-                if (null != newsData && newsData.feeds.isNotEmpty) {
-                  final MenuItem viewType = personalisedStore.view;
-                  return ListView.builder(
-                      itemCount: newsData.feeds.length,
-                      itemBuilder: (BuildContext context, int position) {
-                        Widget articleWidget;
-                        final article = newsData.feeds[position];
-                        switch (viewType) {
-                          case MenuItem.LIST_VIEW:
-                            articleWidget = NewsListView(article);
-                            break;
-                          case MenuItem.THUMBNAIL_VIEW:
-                            articleWidget = NewsThumbnailView(article);
-                            break;
-                          case MenuItem.COMPACT_VIEW:
-                            articleWidget = NewsCompactView(article);
-                            break;
-                        }
-                        return Material(
-                          color: Colors.transparent,
-                          child: InkWell(
-                            onTap: () =>
-                                personalisedStore.onFeedClick(article, context),
-                            child: articleWidget,
-                          ),
-                        );
-                      });
-                } else
-                  return Center(child: Text('Error!'));
-              });
-            },
+          Expanded(
+            child: Consumer<PersonalisedFeedStore>(
+              builder: (context, personalisedStore, child) {
+                return Observer(builder: (_) {
+                  if (personalisedStore.loadingStatus) {
+                    return Center(
+                      // Todo: Replace with Shimmer
+                      child: CircularProgressIndicator(),
+                    );
+                  }
+                  final News newsData = personalisedStore.newsData;
+                  if (null != newsData && newsData.feeds.isNotEmpty) {
+                    final MenuItem viewType = personalisedStore.view;
+                    return ListView.builder(
+                        scrollDirection: Axis.vertical,
+                        itemCount: newsData.feeds.length,
+                        itemBuilder: (BuildContext context, int position) {
+                          Widget articleWidget;
+                          final article = newsData.feeds[position];
+                          switch (viewType) {
+                            case MenuItem.LIST_VIEW:
+                              articleWidget = NewsListView(article);
+                              break;
+                            case MenuItem.THUMBNAIL_VIEW:
+                              articleWidget = NewsThumbnailView(article);
+                              break;
+                            case MenuItem.COMPACT_VIEW:
+                              articleWidget = NewsCompactView(article);
+                              break;
+                          }
+                          return Material(
+                            color: Colors.transparent,
+                            child: InkWell(
+                              onTap: () => personalisedStore.onFeedClick(
+                                  article, context),
+                              child: articleWidget,
+                            ),
+                          );
+                        });
+                  } else
+                    return Center(child: Text('Error!'));
+                });
+              },
+            ),
           ),
         ],
       ),
