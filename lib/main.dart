@@ -6,9 +6,9 @@ import 'package:samachar_hub/routes/home/pages/everything/logic/everything_servi
 import 'package:samachar_hub/routes/home/pages/everything/logic/everything_store.dart';
 import 'package:samachar_hub/routes/home/pages/personalised/logic/personalised_service.dart';
 import 'package:samachar_hub/routes/home/pages/personalised/logic/personalised_store.dart';
-import 'package:samachar_hub/routes/home/pages/settings/settings_store.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'common/preference_service.dart';
+import 'routes/home/pages/settings/logic/settings_store.dart';
 import 'routes/routes.dart';
 import 'common/themes.dart' as Themes;
 

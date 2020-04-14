@@ -65,7 +65,9 @@ class Feed {
                       source.code == (feed['source'] as String))
                   .first;
               feed.update('source', (update) => source.toJson());
-            } catch (e) {}
+            } catch (e) {
+              feed.update('source', (update) => Map<String,dynamic>.from({'name':feed['source'],'code':feed['source']}));
+            }
           }
           if (feed.containsKey('category')) {
             try {
@@ -75,7 +77,9 @@ class Feed {
                       category.code == feed['category'] as String)
                   .first;
               feed.update('category', (update) => category.toJson());
-            } catch (e) {}
+            } catch (e) {
+              feed.update('category', (update) => Map<String,dynamic>.from({'name':feed['category'],'code':feed['category']}));
+            }
           }
           return Feed.fromJson(e as Map<String, dynamic>, sources);
         })?.toList(),

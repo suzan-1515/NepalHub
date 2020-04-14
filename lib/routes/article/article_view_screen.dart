@@ -56,7 +56,7 @@ class _ArticleViewScreenState extends State<ArticleViewScreen> {
           ),
           Builder(
             builder: (BuildContext context) {
-              final String faviconUrl = widget.store.article.source?.favicon;
+              final String faviconUrl = widget.store.article.source?.favicon ?? '';
               return Padding(
                 padding: EdgeInsets.only(bottom: 16),
                 child: Row(
