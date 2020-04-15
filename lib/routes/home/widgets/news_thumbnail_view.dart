@@ -14,25 +14,28 @@ class NewsThumbnailView extends StatelessWidget {
       color: Theme.of(context).cardColor,
       margin: EdgeInsets.symmetric(horizontal: 4, vertical: 6),
       elevation: 0,
-      child: ClipRRect(
+      shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(6),
-        child: IntrinsicHeight(
-          child: Column(
-            mainAxisSize: MainAxisSize.max,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
-              Expanded(
-                child: ConstrainedBox(
-                  constraints: BoxConstraints(minHeight: 160),
-                  child: ArticleImageWidget(article.image,tag: article.uuid+article.id),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                child: ArticleInfoWidget(article),
-              ),
-            ],
-          ),
+      ),
+      child: IntrinsicHeight(
+        child: Column(
+          mainAxisSize: MainAxisSize.max,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: <Widget>[
+            AspectRatio(
+              aspectRatio: 16 / 9,
+              child: ClipRRect(
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(6),
+                  ),
+                  child: ArticleImageWidget(article.image,
+                      tag: article.uuid + article.id)),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+              child: ArticleInfoWidget(article),
+            ),
+          ],
         ),
       ),
     );

@@ -164,7 +164,7 @@ class _EverythingPageState extends State<EverythingPage>
             children: <Widget>[
               Padding(
                 padding: const EdgeInsets.only(
-                    top: 24, bottom: 8, left: 16, right: 16),
+                    top: 24, bottom: 8, left: 16, right: 8),
                 child: Row(
                   children: <Widget>[
                     Expanded(

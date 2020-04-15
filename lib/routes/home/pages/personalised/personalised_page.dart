@@ -4,9 +4,7 @@ import 'package:mobx/mobx.dart';
 import 'package:provider/provider.dart';
 import 'package:samachar_hub/data/model/api_error.dart';
 import 'package:samachar_hub/data/model/news.dart';
-import 'package:samachar_hub/routes/home/pages/pages.dart';
 import 'package:samachar_hub/routes/home/pages/personalised/logic/personalised_store.dart';
-import 'package:samachar_hub/routes/home/widgets/news_compact_view.dart';
 import 'package:samachar_hub/routes/home/widgets/news_list_view.dart';
 import 'package:samachar_hub/routes/home/widgets/news_thumbnail_view.dart';
 
@@ -102,7 +100,7 @@ class _PersonalisedPageState extends State<PersonalisedPage>
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: 24,horizontal: 16),
+            padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 16),
             child: Text('Top Stories',
                 style: Theme.of(context).textTheme.headline),
           ),
@@ -118,24 +116,18 @@ class _PersonalisedPageState extends State<PersonalisedPage>
                   }
                   final News newsData = personalisedStore.newsData;
                   if (null != newsData && newsData.feeds.isNotEmpty) {
-                    final MenuItem viewType = personalisedStore.view;
                     return ListView.builder(
                         scrollDirection: Axis.vertical,
                         itemCount: newsData.feeds.length,
                         itemBuilder: (BuildContext context, int position) {
                           Widget articleWidget;
                           final article = newsData.feeds[position];
-                          switch (viewType) {
-                            case MenuItem.LIST_VIEW:
-                              articleWidget = NewsListView(article);
-                              break;
-                            case MenuItem.THUMBNAIL_VIEW:
-                              articleWidget = NewsThumbnailView(article);
-                              break;
-                            case MenuItem.COMPACT_VIEW:
-                              articleWidget = NewsCompactView(article);
-                              break;
+                          if (position % 3 == 0) {
+                            articleWidget = NewsThumbnailView(article);
+                          } else {
+                            articleWidget = NewsListView(article);
                           }
+
                           return Material(
                             color: Colors.transparent,
                             child: InkWell(

@@ -42,107 +42,125 @@ class _ArticleViewScreenState extends State<ArticleViewScreen> {
       padding: const EdgeInsets.symmetric(horizontal: 24),
       child: Column(
         mainAxisSize: MainAxisSize.max,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          Padding(
-            padding: EdgeInsets.symmetric(vertical: 16),
-            child: Text(
-              widget.store.article.title,
-              style: Theme.of(context)
-                  .textTheme
-                  .headline
-                  .copyWith(fontSize: 24), //Todo: Use proper style
-            ),
+          SizedBox(
+            height: 16,
+          ),
+          Text(
+            widget.store.article.title,
+            style: Theme.of(context)
+                .textTheme
+                .headline
+                .copyWith(fontSize: 24), //Todo: Use proper style
+          ),
+          SizedBox(
+            height: 16,
           ),
           Builder(
             builder: (BuildContext context) {
-              final String faviconUrl = widget.store.article.source?.favicon ?? '';
-              return Padding(
-                padding: EdgeInsets.only(bottom: 16),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  mainAxisSize: MainAxisSize.max,
-                  children: <Widget>[
-                    Row(
-                      children: <Widget>[
-                        Image.network(
-                          faviconUrl,
-                          width: 48,
-                        ),
-                        Padding(
-                          padding: EdgeInsets.only(left: 8),
-                          child: Text(
-                            'Article\nPublished on\n${widget.store.article.source?.name}',
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ),
-                      ],
-                    ),
-                    Container(
-                      decoration: BoxDecoration(
-                        border: Border(
-                          left:
-                              BorderSide(color: Theme.of(context).dividerColor),
-                        ),
-                      ),
-                      margin: EdgeInsets.only(left: 8),
-                      padding: EdgeInsets.symmetric(horizontal: 16),
-                      child: Column(
-                        children: <Widget>[
-                          Icon(
-                            FontAwesomeIcons.solidHeart,
-                            size: 36,
-                            color: Theme.of(context).accentColor,
-                          ),
-                          Padding(
-                            padding: EdgeInsets.only(top: 4),
-                            child:
-                                Text('Favourite', textAlign: TextAlign.center),
-                          )
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              );
-            },
-          ),
-          Padding(
-            padding: const EdgeInsets.only(bottom: 16),
-            child: Row(
-              children: <Widget>[
-                Icon(FontAwesomeIcons.solidUserCircle),
-                Padding(
-                  padding: const EdgeInsets.only(left: 8),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+              final String faviconUrl =
+                  widget.store.article.source?.getFavicon();
+              return Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisSize: MainAxisSize.max,
+                children: <Widget>[
+                  Row(
                     children: <Widget>[
-                      Text(
-                        'By ${widget.store.article.getAuthor()}',
-                        style: Theme.of(context).textTheme.display2.copyWith(
-                              color: Theme.of(context).accentColor,
-                            ),
-                        overflow: TextOverflow.ellipsis,
+                      SizedBox(
+                        height: 48,
+                        width: 48,
+                        child: ArticleImageWidget(faviconUrl),
                       ),
-                      Text(
-                        widget.store.article == null
-                            ? 'Publication time N/A'
-                            : relativeTimeString(DateTime.parse(
-                                widget.store.article.publishedAt)),
-                        style: Theme.of(context).textTheme.display3,
+                      Padding(
+                        padding: EdgeInsets.only(left: 8),
+                        child: Text(
+                          'Article\nPublished on\n${widget.store.article.formatedSource()}',
+                          overflow: TextOverflow.ellipsis,
+                        ),
                       ),
                     ],
                   ),
+                  Container(
+                    decoration: BoxDecoration(
+                      border: Border(
+                        left: BorderSide(color: Theme.of(context).dividerColor),
+                      ),
+                    ),
+                    margin: EdgeInsets.only(left: 8),
+                    padding: EdgeInsets.symmetric(horizontal: 16),
+                    child: Column(
+                      children: <Widget>[
+                        Icon(
+                          FontAwesomeIcons.solidHeart,
+                          size: 36,
+                          color: Theme.of(context).accentColor,
+                        ),
+                        Padding(
+                          padding: EdgeInsets.only(top: 4),
+                          child: Text('Favourite', textAlign: TextAlign.center),
+                        )
+                      ],
+                    ),
+                  ),
+                ],
+              );
+            },
+          ),
+          SizedBox(
+            height: 16,
+          ),
+          Row(
+            children: <Widget>[
+              Icon(FontAwesomeIcons.solidUserCircle),
+              SizedBox(width: 6),
+              RichText(
+                text: TextSpan(
+                    text: 'By ${widget.store.article.getAuthor()}',
+                    style: Theme.of(context).textTheme.display2.copyWith(
+                          color: Theme.of(context).accentColor,
+                        ),
+                    children: <TextSpan>[
+                      TextSpan(
+                        text:
+                            '\n${widget.store.article.formatedPublishedDate()}',
+                        style: Theme.of(context).textTheme.display3,
+                      )
+                    ]),
+                overflow: TextOverflow.ellipsis,
+              ),
+              Expanded(
+                child: SizedBox(
+                  width: 8,
                 ),
-              ],
-            ),
+              ),
+              Container(
+                padding: const EdgeInsets.all(6),
+                decoration: BoxDecoration(
+                    color: Colors.blueGrey,
+                    borderRadius: BorderRadius.all(Radius.circular(12))),
+                child: Text(
+                  widget.store.article.formatedCategory(),
+                  style: Theme.of(context)
+                      .textTheme
+                      .body1
+                      .copyWith(color: Colors.white),
+                ),
+              ),
+            ],
+          ),
+          SizedBox(
+            height: 16,
           ),
           Opacity(
             opacity: 0.75,
             child: Text(
               widget.store.article.description ??
                   'No article content available.',
-              style: Theme.of(context).textTheme.body2.copyWith(fontWeight:FontWeight.w500),
+              style: Theme.of(context)
+                  .textTheme
+                  .body2
+                  .copyWith(fontWeight: FontWeight.w500),
             ),
           ),
           Container(
@@ -191,7 +209,9 @@ class _ArticleViewScreenState extends State<ArticleViewScreen> {
                   mainAxisSize: MainAxisSize.max,
                   children: <Widget>[
                     Expanded(
-                        child: ArticleImageWidget(widget.store.article.image,tag: widget.store.article.uuid+widget.store.article.id)),
+                        child: ArticleImageWidget(widget.store.article.image,
+                            tag: widget.store.article.uuid +
+                                widget.store.article.id)),
                     Expanded(
                       child: SingleChildScrollView(
                           child: _articleDetails(context)),
@@ -206,8 +226,10 @@ class _ArticleViewScreenState extends State<ArticleViewScreen> {
                   mainAxisSize: MainAxisSize.max,
                   children: <Widget>[
                     AspectRatio(
-                      aspectRatio: 4 / 2,
-                      child: ArticleImageWidget(widget.store.article.image,tag: widget.store.article.uuid+widget.store.article.id),
+                      aspectRatio: 16 / 9,
+                      child: ArticleImageWidget(widget.store.article.image,
+                          tag: widget.store.article.uuid +
+                              widget.store.article.id),
                     ),
                     _articleDetails(context),
                   ],

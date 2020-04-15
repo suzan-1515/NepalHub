@@ -14,24 +14,30 @@ class NewsListView extends StatelessWidget {
       color: Theme.of(context).cardColor,
       margin: EdgeInsets.symmetric(horizontal: 4, vertical: 6),
       elevation: 0,
-      child: ClipRRect(
+      shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(6),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
         child: IntrinsicHeight(
           child: Row(
             mainAxisSize: MainAxisSize.max,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
               Expanded(
-                flex: 2,
-                child: ArticleImageWidget(article.image,
-                    tag: article.uuid+article.id),
+                flex: 4,
+                child: ArticleInfoWidget(article),
+              ),
+              SizedBox(
+                width: 8,
+                height: 8,
               ),
               Expanded(
-                flex: 4,
-                child: Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                  child: ArticleInfoWidget(article),
+                flex: 2,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.all(Radius.circular(6)),
+                  child: ArticleImageWidget(article.image,
+                      tag: article.uuid + article.id),
                 ),
               ),
             ],
