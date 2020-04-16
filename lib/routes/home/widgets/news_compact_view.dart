@@ -24,16 +24,16 @@ class NewsCompactView extends StatelessWidget {
           children: <Widget>[
             AspectRatio(
               aspectRatio: 16 / 9,
-              child: ArticleImageWidget(article.image,tag: article.uuid+article.id),
+              child: ArticleImageWidget(article.image,
+                  tag: article.uuid + article.id),
             ),
             // Gradient overlay
             Container(
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   colors: <Color>[
-                    Colors.black12,
-                    Colors.white54,
-                    Colors.white60,
+                    Colors.transparent,
+                    Colors.white70,
                     Colors.white
                   ],
                   begin: Alignment.topCenter,
@@ -46,9 +46,16 @@ class NewsCompactView extends StatelessWidget {
               right: 0,
               left: 0,
               child: Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                child: ArticleInfoWidget(article),
+                padding: const EdgeInsets.symmetric(horizontal: 8),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    FeedSourceSection(article),
+                    SizedBox(height: 8),
+                    FeedTitleDescriptionSection(article),
+                  ],
+                ),
               ),
             ),
           ],

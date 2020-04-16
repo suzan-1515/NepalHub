@@ -17,23 +17,30 @@ class NewsThumbnailView extends StatelessWidget {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(6),
       ),
-      child: IntrinsicHeight(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
         child: Column(
           mainAxisSize: MainAxisSize.max,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
+            FeedSourceSection(article),
+            SizedBox(height: 8),
             AspectRatio(
               aspectRatio: 16 / 9,
               child: ClipRRect(
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(6),
-                  ),
-                  child: ArticleImageWidget(article.image,
-                      tag: article.uuid + article.id)),
+                borderRadius: BorderRadius.all(
+                  Radius.circular(6),
+                ),
+                child: ArticleImageWidget(article.image,
+                    tag: article.uuid + article.id),
+              ),
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-              child: ArticleInfoWidget(article),
+            SizedBox(height: 8),
+            FeedTitleDescriptionSection(article),
+            SizedBox(height: 8),
+            Divider(),
+            FeedOptionsSection(
+              article: article,
             ),
           ],
         ),

@@ -19,29 +19,42 @@ class NewsListView extends StatelessWidget {
       ),
       child: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: IntrinsicHeight(
-          child: Row(
-            mainAxisSize: MainAxisSize.max,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
-              Expanded(
-                flex: 4,
-                child: ArticleInfoWidget(article),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            FeedSourceSection(article),
+            SizedBox(height: 8),
+            IntrinsicHeight(
+                          child: Row(
+                mainAxisSize: MainAxisSize.max,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: <Widget>[
+                  Expanded(
+                    flex: 4,
+                    child: FeedTitleDescriptionSection(article),
+                  ),
+                  SizedBox(
+                    width: 8,
+                    height: 8,
+                  ),
+                  Expanded(
+                    flex: 2,
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.all(Radius.circular(6)),
+                      child: ArticleImageWidget(article.image,
+                          tag: article.uuid + article.id),
+                    ),
+                  ),
+                ],
               ),
-              SizedBox(
-                width: 8,
-                height: 8,
-              ),
-              Expanded(
-                flex: 2,
-                child: ClipRRect(
-                  borderRadius: BorderRadius.all(Radius.circular(6)),
-                  child: ArticleImageWidget(article.image,
-                      tag: article.uuid + article.id),
-                ),
-              ),
-            ],
-          ),
+            ),
+            SizedBox(height: 8),
+            Divider(),
+            FeedOptionsSection(
+              article: article,
+            ),
+          ],
         ),
       ),
     );
