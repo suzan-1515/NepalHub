@@ -62,7 +62,7 @@ class _EverythingPageState extends State<EverythingPage>
     );
     _tabController.addListener(() {
       store.setActiveTab(_tabController.index);
-      store.fetchFeeds(
+      store.loadInitialFeeds(
           (_tabs[_tabController.index].key as ValueKey<NewsCategory>).value);
     });
     super.initState();

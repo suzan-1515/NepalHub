@@ -1,3 +1,4 @@
+import 'package:async/async.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mobx/mobx.dart';
@@ -16,17 +17,23 @@ part 'everything_store.g.dart';
 class EverythingStore = _EverythingStore with _$EverythingStore;
 
 abstract class _EverythingStore with Store {
-  EverythingService _everythingService;
+  final EverythingService _everythingService;
+  final Map<NewsCategory, AsyncMemoizer> _asyncMemoizer =
+      Map<NewsCategory, AsyncMemoizer>();
+  final Map<NewsCategory, bool> isLoadingMore = Map<NewsCategory, bool>();
 
   _EverythingStore(this._everythingService) {
-    fetchFeeds(NewsCategory.tops);
+    // loadInitialFeeds(NewsCategory.tops);
   }
+
+  @observable
+  ObservableMap<NewsCategory, ObservableFuture> loadFeedItemsFuture =
+      ObservableMap<NewsCategory, ObservableFuture>();
 
   Map<NewsCategory, News> newsData = Map<NewsCategory, News>();
 
-  @observable
-  ObservableMap<NewsCategory, bool> loadingStatus =
-      ObservableMap<NewsCategory, bool>();
+  Map<NewsCategory, bool> hasMoreData =
+      Map<NewsCategory, bool>();
 
   @observable
   APIError apiError;
@@ -41,19 +48,68 @@ abstract class _EverythingStore with Store {
   int activeTabIndex = 0;
 
   @action
-  fetchFeeds(NewsCategory category) async {
+  void loadInitialFeeds(NewsCategory category) {
+    if (!_asyncMemoizer.containsKey(category))
+      _asyncMemoizer[category] = AsyncMemoizer();
+    loadFeedItemsFuture[category] =
+        ObservableFuture(_asyncMemoizer[category].runOnce(() async {
+      await _loadFirstPageFeeds(category);
+    }));
+  }
+
+  @action
+  Future<void> _loadFirstPageFeeds(NewsCategory category) async {
+    newsData.remove(category);
+    await loadMoreData(category);
+  }
+
+  @action
+  Future<void> refresh(NewsCategory category) async {
+    return _loadFirstPageFeeds(category);
+  }
+
+  @action
+  void retry(NewsCategory category) {
+    loadFeedItemsFuture[category] =
+        ObservableFuture(_loadFirstPageFeeds(category));
+  }
+
+  @action
+  Future<void> loadMoreData(NewsCategory category) async {
     try {
-      if (null != newsData[category]) return;
-      loadingStatus[category] = true;
-      newsData[category] = await _everythingService.getFeedsByCategory(
-        newsCategory: category,
-      );
+      if (isLoadingMore[category] ?? false) return;
+      isLoadingMore[category] = true;
+
+      News cachedNews = newsData[category];
+      if (cachedNews == null ||
+          cachedNews.feeds == null ||
+          cachedNews.feeds.isEmpty) {
+        News moreNews =
+            await _everythingService.getFeedsByCategory(newsCategory: category);
+        if (moreNews != null) {
+          if (moreNews.feeds != null && moreNews.feeds.isNotEmpty) {
+            newsData[category] = moreNews;
+            hasMoreData[category] = true;
+          } else
+            hasMoreData[category] = false;
+        }
+      } else {
+        News moreNews = await _everythingService.getFeedsByCategory(
+            newsCategory: category, lastFeedId: cachedNews.feeds.last.id);
+        if (moreNews != null) {
+          if (moreNews.feeds != null && moreNews.feeds.isNotEmpty) {
+            cachedNews.feeds.addAll(moreNews.feeds);
+            hasMoreData[category] = true;
+          } else
+            hasMoreData[category] = false;
+        }
+      }
     } on APIError catch (apiError) {
       this.apiError = apiError;
     } on Exception catch (e) {
       this.error = e.toString();
     } finally {
-      loadingStatus[category] = false;
+      isLoadingMore[category] = false;
     }
   }
 

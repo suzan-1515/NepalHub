@@ -64,11 +64,11 @@ Future<News> getLatestNews() async {
 }
 
 Future<News> getNewsByCategory(NewsCategory category,
-    {int lastFeedId}) async {
+    {String lastFeedId}) async {
   var sourceCall = http.get(Uri.https(_baseApiURL, _newsSources));
   final Map<String, String> queryParams = _filterNullOrEmptyValuesFromMap({
     'category': _getCategoryCode(category),
-    'id': lastFeedId?.toString(),
+    'id': lastFeedId,
   });
   var newsCall = http.get(Uri.https(_baseApiURL, _categoryNews, queryParams));
   var results = await Future.wait([sourceCall, newsCall], eagerError: true)

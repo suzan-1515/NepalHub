@@ -9,21 +9,26 @@ part of 'everything_store.dart';
 // ignore_for_file: non_constant_identifier_names, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
 
 mixin _$EverythingStore on _EverythingStore, Store {
-  final _$loadingStatusAtom = Atom(name: '_EverythingStore.loadingStatus');
+  final _$loadFeedItemsFutureAtom =
+      Atom(name: '_EverythingStore.loadFeedItemsFuture');
 
   @override
-  ObservableMap<NewsCategory, bool> get loadingStatus {
-    _$loadingStatusAtom.context.enforceReadPolicy(_$loadingStatusAtom);
-    _$loadingStatusAtom.reportObserved();
-    return super.loadingStatus;
+  ObservableMap<NewsCategory, ObservableFuture<dynamic>>
+      get loadFeedItemsFuture {
+    _$loadFeedItemsFutureAtom.context
+        .enforceReadPolicy(_$loadFeedItemsFutureAtom);
+    _$loadFeedItemsFutureAtom.reportObserved();
+    return super.loadFeedItemsFuture;
   }
 
   @override
-  set loadingStatus(ObservableMap<NewsCategory, bool> value) {
-    _$loadingStatusAtom.context.conditionallyRunInAction(() {
-      super.loadingStatus = value;
-      _$loadingStatusAtom.reportChanged();
-    }, _$loadingStatusAtom, name: '${_$loadingStatusAtom.name}_set');
+  set loadFeedItemsFuture(
+      ObservableMap<NewsCategory, ObservableFuture<dynamic>> value) {
+    _$loadFeedItemsFutureAtom.context.conditionallyRunInAction(() {
+      super.loadFeedItemsFuture = value;
+      _$loadFeedItemsFutureAtom.reportChanged();
+    }, _$loadFeedItemsFutureAtom,
+        name: '${_$loadFeedItemsFutureAtom.name}_set');
   }
 
   final _$apiErrorAtom = Atom(name: '_EverythingStore.apiError');
@@ -94,15 +99,50 @@ mixin _$EverythingStore on _EverythingStore, Store {
     }, _$activeTabIndexAtom, name: '${_$activeTabIndexAtom.name}_set');
   }
 
-  final _$fetchFeedsAsyncAction = AsyncAction('fetchFeeds');
+  final _$_loadFirstPageFeedsAsyncAction = AsyncAction('_loadFirstPageFeeds');
 
   @override
-  Future fetchFeeds(NewsCategory category) {
-    return _$fetchFeedsAsyncAction.run(() => super.fetchFeeds(category));
+  Future<void> _loadFirstPageFeeds(NewsCategory category) {
+    return _$_loadFirstPageFeedsAsyncAction
+        .run(() => super._loadFirstPageFeeds(category));
+  }
+
+  final _$refreshAsyncAction = AsyncAction('refresh');
+
+  @override
+  Future<void> refresh(NewsCategory category) {
+    return _$refreshAsyncAction.run(() => super.refresh(category));
+  }
+
+  final _$loadMoreDataAsyncAction = AsyncAction('loadMoreData');
+
+  @override
+  Future<void> loadMoreData(NewsCategory category) {
+    return _$loadMoreDataAsyncAction.run(() => super.loadMoreData(category));
   }
 
   final _$_EverythingStoreActionController =
       ActionController(name: '_EverythingStore');
+
+  @override
+  void loadInitialFeeds(NewsCategory category) {
+    final _$actionInfo = _$_EverythingStoreActionController.startAction();
+    try {
+      return super.loadInitialFeeds(category);
+    } finally {
+      _$_EverythingStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void retry(NewsCategory category) {
+    final _$actionInfo = _$_EverythingStoreActionController.startAction();
+    try {
+      return super.retry(category);
+    } finally {
+      _$_EverythingStoreActionController.endAction(_$actionInfo);
+    }
+  }
 
   @override
   dynamic setView(MenuItem value) {
@@ -127,7 +167,7 @@ mixin _$EverythingStore on _EverythingStore, Store {
   @override
   String toString() {
     final string =
-        'loadingStatus: ${loadingStatus.toString()},apiError: ${apiError.toString()},error: ${error.toString()},view: ${view.toString()},activeTabIndex: ${activeTabIndex.toString()}';
+        'loadFeedItemsFuture: ${loadFeedItemsFuture.toString()},apiError: ${apiError.toString()},error: ${error.toString()},view: ${view.toString()},activeTabIndex: ${activeTabIndex.toString()}';
     return '{$string}';
   }
 }

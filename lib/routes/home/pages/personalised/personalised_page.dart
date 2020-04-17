@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:incrementally_loading_listview/incrementally_loading_listview.dart';
 import 'package:mobx/mobx.dart';
 import 'package:provider/provider.dart';
 import 'package:samachar_hub/data/model/api_error.dart';
@@ -116,29 +117,46 @@ class _PersonalisedPageState extends State<PersonalisedPage>
                   }
                   final News newsData = personalisedStore.newsData;
                   if (null != newsData && newsData.feeds.isNotEmpty) {
-                    return ListView.builder(
-                        scrollDirection: Axis.vertical,
-                        itemCount: newsData.feeds.length,
-                        itemBuilder: (BuildContext context, int position) {
-                          Widget articleWidget;
-                          final article = newsData.feeds[position];
-                          if (position % 3 == 0) {
-                            articleWidget = NewsThumbnailView(article);
-                          } else {
-                            articleWidget = NewsListView(article);
-                          }
+                    return RefreshIndicator(
+                      onRefresh: ()=> personalisedStore.fetchFeeds(),
+                      child: IncrementallyLoadingListView(
+                          hasMore: () => false,
+                          loadMore: () async {},
+                          loadMoreOffsetFromBottom: 2,
+                          onLoadMoreFinished: () {},
+                          itemCount: () => newsData.feeds.length,
+                          itemBuilder: (BuildContext context, int position) {
+                            Widget articleWidget;
+                            final article = newsData.feeds[position];
+                            if (position % 3 == 0) {
+                              articleWidget = NewsThumbnailView(article);
+                            } else {
+                              articleWidget = NewsListView(article);
+                            }
 
-                          return Material(
-                            color: Colors.transparent,
-                            child: InkWell(
-                              onTap: () => personalisedStore.onFeedClick(
-                                  article, context),
-                              child: articleWidget,
-                            ),
-                          );
-                        });
+                            return Material(
+                              color: Colors.transparent,
+                              child: InkWell(
+                                onTap: () => personalisedStore.onFeedClick(
+                                    article, context),
+                                child: articleWidget,
+                              ),
+                            );
+                          }),
+                    );
                   } else
-                    return Center(child: Text('Error!'));
+                    return Center(
+                      child: Column(
+                        children: <Widget>[
+                          Text('Error!'),
+                          RaisedButton(
+                              child: Text('Retry'),
+                              onPressed: () async {
+                                personalisedStore.fetchFeeds();
+                              }),
+                        ],
+                      ),
+                    );
                 });
               },
             ),
