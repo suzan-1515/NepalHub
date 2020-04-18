@@ -28,9 +28,9 @@ class NewsCategoryView extends StatelessWidget {
               child: CircularProgressIndicator(),
             );
           case FutureStatus.rejected:
-          print('rejected');
             return Center(
               child: Column(
+                mainAxisSize: MainAxisSize.max,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text('Oops something went wrong'),
@@ -107,6 +107,8 @@ class NewsCategoryView extends StatelessWidget {
             }
             return Center(
               child: Column(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   Text('Empty Data!'),
                   RaisedButton(

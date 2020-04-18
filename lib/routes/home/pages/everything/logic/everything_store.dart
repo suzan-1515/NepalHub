@@ -11,6 +11,7 @@ import 'package:samachar_hub/routes/article/article_view_screen.dart';
 import 'package:samachar_hub/routes/article/logic/article_store.dart';
 import 'package:samachar_hub/routes/home/pages/everything/logic/everything_service.dart';
 import 'package:samachar_hub/routes/home/pages/pages.dart';
+import 'package:throttling/throttling.dart';
 
 part 'everything_store.g.dart';
 
@@ -21,9 +22,11 @@ abstract class _EverythingStore with Store {
   final Map<NewsCategory, AsyncMemoizer> _asyncMemoizer =
       Map<NewsCategory, AsyncMemoizer>();
   final Map<NewsCategory, bool> isLoadingMore = Map<NewsCategory, bool>();
+  final Map<NewsCategory, Throttling> _throttling =
+      Map<NewsCategory, Throttling>();
 
   _EverythingStore(this._everythingService) {
-    // loadInitialFeeds(NewsCategory.tops);
+    loadInitialFeeds(NewsCategory.tops);
   }
 
   @observable
@@ -32,8 +35,7 @@ abstract class _EverythingStore with Store {
 
   Map<NewsCategory, News> newsData = Map<NewsCategory, News>();
 
-  Map<NewsCategory, bool> hasMoreData =
-      Map<NewsCategory, bool>();
+  Map<NewsCategory, bool> hasMoreData = Map<NewsCategory, bool>();
 
   @observable
   APIError apiError;
@@ -49,12 +51,17 @@ abstract class _EverythingStore with Store {
 
   @action
   void loadInitialFeeds(NewsCategory category) {
-    if (!_asyncMemoizer.containsKey(category))
-      _asyncMemoizer[category] = AsyncMemoizer();
-    loadFeedItemsFuture[category] =
-        ObservableFuture(_asyncMemoizer[category].runOnce(() async {
-      await _loadFirstPageFeeds(category);
-    }));
+    if (!_throttling.containsKey(category))
+      _throttling[category] = Throttling(duration: Duration(minutes: 1));
+
+    _throttling[category].throttle(() {
+      if (!_asyncMemoizer.containsKey(category))
+        _asyncMemoizer[category] = AsyncMemoizer();
+      loadFeedItemsFuture[category] =
+          ObservableFuture(_asyncMemoizer[category].runOnce(() async {
+        await _loadFirstPageFeeds(category);
+      }));
+    });
   }
 
   @action
@@ -136,5 +143,15 @@ abstract class _EverythingStore with Store {
         ),
       ),
     );
+  }
+
+  dispose() {
+    _throttling.forEach((key,value)=> value.dispose());
+    _throttling.clear();
+    _asyncMemoizer.clear();
+    isLoadingMore.clear();
+    loadFeedItemsFuture.clear();
+    newsData.clear();
+    hasMoreData.clear();
   }
 }

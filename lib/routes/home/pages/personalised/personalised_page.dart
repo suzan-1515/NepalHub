@@ -23,7 +23,7 @@ class _PersonalisedPageState extends State<PersonalisedPage>
   void initState() {
     final store = Provider.of<PersonalisedFeedStore>(context, listen: false);
     _setupObserver(store);
-    store.fetchFeeds();
+    store.loadInitialFeeds();
     super.initState();
   }
 
@@ -109,54 +109,103 @@ class _PersonalisedPageState extends State<PersonalisedPage>
             child: Consumer<PersonalisedFeedStore>(
               builder: (context, personalisedStore, child) {
                 return Observer(builder: (_) {
-                  if (personalisedStore.loadingStatus) {
-                    return Center(
-                      // Todo: Replace with Shimmer
-                      child: CircularProgressIndicator(),
-                    );
-                  }
-                  final News newsData = personalisedStore.newsData;
-                  if (null != newsData && newsData.feeds.isNotEmpty) {
-                    return RefreshIndicator(
-                      onRefresh: ()=> personalisedStore.fetchFeeds(),
-                      child: IncrementallyLoadingListView(
-                          hasMore: () => false,
-                          loadMore: () async {},
-                          loadMoreOffsetFromBottom: 2,
-                          onLoadMoreFinished: () {},
-                          itemCount: () => newsData.feeds.length,
-                          itemBuilder: (BuildContext context, int position) {
-                            Widget articleWidget;
-                            final article = newsData.feeds[position];
-                            if (position % 3 == 0) {
-                              articleWidget = NewsThumbnailView(article);
-                            } else {
-                              articleWidget = NewsListView(article);
-                            }
-
-                            return Material(
-                              color: Colors.transparent,
-                              child: InkWell(
-                                onTap: () => personalisedStore.onFeedClick(
-                                    article, context),
-                                child: articleWidget,
-                              ),
-                            );
-                          }),
-                    );
-                  } else
-                    return Center(
-                      child: Column(
-                        children: <Widget>[
-                          Text('Error!'),
-                          RaisedButton(
+                  switch (personalisedStore.loadFeedItemsFuture.status) {
+                    case FutureStatus.pending:
+                      return Center(
+                        // Todo: Replace with Shimmer
+                        child: CircularProgressIndicator(),
+                      );
+                    case FutureStatus.rejected:
+                      return Center(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.max,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text('Oops something went wrong'),
+                            RaisedButton(
                               child: Text('Retry'),
-                              onPressed: () async {
-                                personalisedStore.fetchFeeds();
+                              onPressed: () {
+                                personalisedStore.retry();
+                              },
+                            ),
+                          ],
+                        ),
+                      );
+                    case FutureStatus.fulfilled:
+                      final News newsData = personalisedStore.newsData;
+                      if (null != newsData && newsData.feeds.isNotEmpty) {
+                        return RefreshIndicator(
+                          child: IncrementallyLoadingListView(
+                              hasMore: () => personalisedStore.hasMoreData,
+                              itemCount: () => newsData.feeds.length,
+                              loadMore: () async {
+                                await personalisedStore.loadMoreData();
+                              },
+                              loadMoreOffsetFromBottom: 2,
+                              itemBuilder: (BuildContext context, int index) {
+                                final feed = newsData.feeds[index];
+                                Widget articleWidget;
+                                final article = newsData.feeds[index];
+                                if (index % 3 == 0) {
+                                  articleWidget = NewsThumbnailView(article);
+                                } else {
+                                  articleWidget = NewsListView(article);
+                                }
+                                if (index == newsData.feeds.length - 1 &&
+                                    personalisedStore.hasMoreData &&
+                                    !personalisedStore.isLoadingMore) {
+                                  return Column(
+                                    children: <Widget>[
+                                      Material(
+                                        color: Colors.transparent,
+                                        child: InkWell(
+                                          onTap: () => personalisedStore
+                                              .onFeedClick(feed, context),
+                                          child: articleWidget,
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: CircularProgressIndicator(),
+                                      ),
+                                    ],
+                                  );
+                                } else {
+                                  return Material(
+                                    color: Colors.transparent,
+                                    child: InkWell(
+                                      onTap: () => personalisedStore
+                                          .onFeedClick(feed, context),
+                                      child: articleWidget,
+                                    ),
+                                  );
+                                }
                               }),
-                        ],
-                      ),
-                    );
+                          onRefresh: () async {
+                            await personalisedStore.refresh();
+                          },
+                        );
+                      }
+                      return Center(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.max,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Text('Empty Data!'),
+                            RaisedButton(
+                                child: Text('Retry'),
+                                onPressed: () async {
+                                  personalisedStore.retry();
+                                }),
+                          ],
+                        ),
+                      );
+                    default:
+                      return Center(
+                        // Todo: Replace with Shimmer
+                        child: CircularProgressIndicator(),
+                      );
+                  }
                 });
               },
             ),

@@ -24,11 +24,15 @@ class App extends StatelessWidget {
   final SharedPreferences _sharedPreferences;
 
   ThemeData _getTheme(SettingsStore settingStore) {
-    return settingStore.useDarkMode ? settingStore.usePitchBlack ? Themes.pitchBlack : Themes.darkTheme : Themes.lightTheme;
+    return settingStore.useDarkMode
+        ? settingStore.usePitchBlack ? Themes.pitchBlack : Themes.darkTheme
+        : Themes.lightTheme;
   }
 
   ThemeMode _getThemeMode(SettingsStore settingStore) {
-    return settingStore.themeSetBySystem ? ThemeMode.system : (settingStore.useDarkMode ? ThemeMode.dark : ThemeMode.light);
+    return settingStore.themeSetBySystem
+        ? ThemeMode.system
+        : (settingStore.useDarkMode ? ThemeMode.dark : ThemeMode.light);
   }
 
   @override
@@ -39,16 +43,21 @@ class App extends StatelessWidget {
           create: (_) => PreferenceService(_sharedPreferences),
         ),
         ProxyProvider<PreferenceService, SettingsStore>(
-          update: (_, preferenceService, __) => SettingsStore(preferenceService),
+          update: (_, preferenceService, __) =>
+              SettingsStore(preferenceService),
         ),
         ProxyProvider<PreferenceService, EverythingStore>(
-          update: (_, preferenceService, __) => EverythingStore(EverythingService()),
+          update: (_, preferenceService, __) =>
+              EverythingStore(EverythingService()),
+          dispose: (context, everythingStore) => everythingStore.dispose(),
         ),
         ProxyProvider<PreferenceService, PersonalisedFeedStore>(
-          update: (_, preferenceService, __) => PersonalisedFeedStore(PersonalisedFeedService()),
+          update: (_, preferenceService, __) => PersonalisedFeedStore(
+              preferenceService, PersonalisedFeedService()),
         ),
         ProxyProvider<PreferenceService, HomeScreenStore>(
-          update: (_, preferenceService, __) => HomeScreenStore(preferenceService),
+          update: (_, preferenceService, __) =>
+              HomeScreenStore(preferenceService),
         )
       ],
       child: Consumer<SettingsStore>(
@@ -57,8 +66,12 @@ class App extends StatelessWidget {
             builder: (_) => MaterialApp(
               theme: _getTheme(settingStore),
               home: HomeScreen(),
-              themeMode: settingStore.themeSetBySystem ? ThemeMode.system : _getThemeMode(settingStore),
-              darkTheme: settingStore.usePitchBlack ? Themes.pitchBlack : Themes.darkTheme,
+              themeMode: settingStore.themeSetBySystem
+                  ? ThemeMode.system
+                  : _getThemeMode(settingStore),
+              darkTheme: settingStore.usePitchBlack
+                  ? Themes.pitchBlack
+                  : Themes.darkTheme,
             ),
           );
         },

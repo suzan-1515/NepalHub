@@ -75,11 +75,7 @@ class FeedSourceSection extends StatelessWidget {
               ],
             ),
           ),
-          Expanded(
-            child: SizedBox(
-              width: 4,
-            ),
-          ),
+          Spacer(),
           Container(
             padding: const EdgeInsets.all(6),
             decoration: BoxDecoration(

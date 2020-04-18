@@ -26,7 +26,7 @@ class NewsListView extends StatelessWidget {
             FeedSourceSection(article),
             SizedBox(height: 8),
             IntrinsicHeight(
-                          child: Row(
+              child: Row(
                 mainAxisSize: MainAxisSize.max,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: <Widget>[

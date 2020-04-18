@@ -35,6 +35,7 @@ dependencies:
   share: ^0.6.3+6
   incrementally_loading_listview: ^0.3.0
   cached_network_image: ^2.1.0+1
+  throttling: ^0.8.0
 
 dev_dependencies:
   flutter_test:
