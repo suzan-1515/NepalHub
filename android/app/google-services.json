@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "490570615779",
+    "firebase_url": "https://samachar-hub.firebaseio.com",
+    "project_id": "samachar-hub",
+    "storage_bucket": "samachar-hub.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:490570615779:android:fe33d1bc477d76363a2ed6",
+        "android_client_info": {
+          "package_name": "com.cognota.samacharhub"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "490570615779-928h4neljtieq1qjkt788adthd27d5ol.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.cognota.samacharhub",
+            "certificate_hash": "2cebc92e5339defd90925cbc02dabf56c9fae0bb"
+          }
+        },
+        {
+          "client_id": "490570615779-06gbvm53mpvjjq774g36qpdtnfhu7hg3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCNLxaSnCTpeBamDjbOcdgIREwL1V2Uhs8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "490570615779-06gbvm53mpvjjq774g36qpdtnfhu7hg3.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

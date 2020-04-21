@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:samachar_hub/data/model/sources.dart';
 import 'package:samachar_hub/util/helper.dart';
@@ -34,7 +35,8 @@ class Feed {
       this.related,
       this.uuid);
 
-  String getAuthor() => author == null || author.isEmpty ? formatedSource() : author;
+  String getAuthor() =>
+      author == null || author.isEmpty ? formatedSource() : author;
 
   String formatedPublishedDate() {
     var fomattedDate = publishedAt;
@@ -114,8 +116,8 @@ class Feed {
   }
   Map<String, dynamic> toJson() => <String, dynamic>{
         'id': this.id,
-        'source': this.source,
-        'category': this.category,
+        'source': this.source.toJson(),
+        'category': this.category.toJson(),
         'author': this.author,
         'title': this.title,
         'description': this.description,
@@ -123,10 +125,36 @@ class Feed {
         'image': this.image,
         'pub_date': this.publishedAt,
         'content': this.content,
-        (this.related != null && this.related.isNotEmpty)
-            ? 'related'
-            : this.related: [],
+        'related': this.related?.map((e) {
+          if (e == null) return [];
+          return e.toJson();
+        })?.toList(),
+        'uuid': this.uuid,
       };
+
+  factory Feed.fromSnapshot(Map<String, dynamic> json) {
+    return Feed(
+      json['id'] as String,
+      json['source'] == null
+          ? null
+          : FeedSource.fromJson(json['source'] as Map<String, dynamic>),
+      json['category'] == null
+          ? null
+          : FeedCategory.fromJson(json['category'] as Map<String, dynamic>),
+      json['author'] as String,
+      json['title'] as String,
+      json['description'] as String,
+      json['link'] as String,
+      json['image'] as String,
+      json['pub_date'] as String,
+      json['content'] as String,
+      (json['related'] as List)?.map((e) {
+        if (e == null) return null;
+        return Feed.fromSnapshot(e as Map<String, dynamic>);
+      })?.toList(),
+      json['uuid'] as String,
+    );
+  }
 }
 
 @JsonSerializable()

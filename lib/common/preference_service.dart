@@ -6,6 +6,7 @@ class PreferenceService {
   final String _themeSetBySystemKey = 'themeSetBySystem';
   final String _openInAppKey = 'openInApp';
   final String _favouritesKey = 'favourites';
+  final String _userId = 'userId';
 
   final SharedPreferences _sharedPreferences;
 
@@ -31,6 +32,10 @@ class PreferenceService {
     _sharedPreferences.setStringList(_favouritesKey, favourites);
   }
 
+  set userId(String userId) {
+    _sharedPreferences.setString(_userId, userId);
+  }
+
   bool get themeSetBySystem =>
       _sharedPreferences.getBool(_themeSetBySystemKey) ?? false;
 
@@ -42,4 +47,6 @@ class PreferenceService {
 
   List<String> get favourites =>
       _sharedPreferences.getStringList(_favouritesKey) ?? List<String>();
+
+  String get userId => _sharedPreferences.getString(_userId) ?? null;
 }

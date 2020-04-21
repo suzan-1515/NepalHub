@@ -1,9 +1,15 @@
+import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:firebase_analytics/observer.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:samachar_hub/common/auth_service.dart';
 import 'package:samachar_hub/routes/home/logic/home_screen_store.dart';
 import 'package:samachar_hub/routes/home/pages/everything/logic/everything_service.dart';
 import 'package:samachar_hub/routes/home/pages/everything/logic/everything_store.dart';
+import 'package:samachar_hub/routes/home/pages/favourites/logic/favourites_service.dart';
+import 'package:samachar_hub/routes/home/pages/favourites/logic/favourites_store.dart';
 import 'package:samachar_hub/routes/home/pages/personalised/logic/personalised_service.dart';
 import 'package:samachar_hub/routes/home/pages/personalised/logic/personalised_store.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -14,14 +20,17 @@ import 'common/themes.dart' as Themes;
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  FlutterError.onError = Crashlytics.instance.recordFlutterError;
   final SharedPreferences sp = await SharedPreferences.getInstance();
-  runApp(App(sp));
+  final FirebaseAnalytics analytics = FirebaseAnalytics();
+  runApp(App(sp, analytics));
 }
 
 class App extends StatelessWidget {
-  App(this._sharedPreferences);
+  App(this._sharedPreferences, this._analytics);
 
   final SharedPreferences _sharedPreferences;
+  final FirebaseAnalytics _analytics;
 
   ThemeData _getTheme(SettingsStore settingStore) {
     return settingStore.useDarkMode
@@ -42,26 +51,44 @@ class App extends StatelessWidget {
         Provider<PreferenceService>(
           create: (_) => PreferenceService(_sharedPreferences),
         ),
-        ProxyProvider<PreferenceService, SettingsStore>(
-          update: (_, preferenceService, __) =>
-              SettingsStore(preferenceService),
+        Provider<EverythingService>(
+          create: (_) => EverythingService(),
         ),
-        ProxyProvider<PreferenceService, EverythingStore>(
-          update: (_, preferenceService, __) =>
-              EverythingStore(EverythingService()),
-          dispose: (context, everythingStore) => everythingStore.dispose(),
+        Provider<FavouritesService>(
+          create: (_) => FavouritesService(),
         ),
-        ProxyProvider<PreferenceService, PersonalisedFeedStore>(
-          update: (_, preferenceService, __) => PersonalisedFeedStore(
-              preferenceService, PersonalisedFeedService()),
+        Provider<PersonalisedFeedService>(
+          create: (_) => PersonalisedFeedService(),
+        ),
+        ProxyProvider<PreferenceService, AuthService>(
+          update: (_, _preferenceService, __) =>
+              AuthService(_preferenceService),
         ),
         ProxyProvider<PreferenceService, HomeScreenStore>(
           update: (_, preferenceService, __) =>
               HomeScreenStore(preferenceService),
-        )
+        ),
+        ProxyProvider2<PreferenceService, PersonalisedFeedService,
+            PersonalisedFeedStore>(
+          update: (_, preferenceService, personalisedFeedService, __) =>
+              PersonalisedFeedStore(preferenceService, personalisedFeedService),
+        ),
+        ProxyProvider2<PreferenceService, EverythingService, EverythingStore>(
+          update: (_, preferenceService, everythingService, __) =>
+              EverythingStore(everythingService),
+          dispose: (context, everythingStore) => everythingStore.dispose(),
+        ),
+        ProxyProvider3<PreferenceService, AuthService, FavouritesService, FavouritesStore>(
+          update: (_, preferenceService, authService, favouriteService, __) =>
+              FavouritesStore(preferenceService, authService, favouriteService),
+        ),
+        ProxyProvider<PreferenceService, SettingsStore>(
+          update: (_, preferenceService, __) =>
+              SettingsStore(preferenceService),
+        ),
       ],
-      child: Consumer<SettingsStore>(
-        builder: (context, settingStore, _) {
+      child: Consumer2<SettingsStore, PreferenceService>(
+        builder: (context, settingStore, preferenceService, _) {
           return Observer(
             builder: (_) => MaterialApp(
               theme: _getTheme(settingStore),
@@ -72,6 +99,9 @@ class App extends StatelessWidget {
               darkTheme: settingStore.usePitchBlack
                   ? Themes.pitchBlack
                   : Themes.darkTheme,
+              navigatorObservers: [
+                FirebaseAnalyticsObserver(analytics: _analytics),
+              ],
             ),
           );
         },

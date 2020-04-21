@@ -1,7 +1,9 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:provider/provider.dart';
 import 'package:samachar_hub/data/model/feed.dart';
+import 'package:samachar_hub/routes/home/pages/favourites/logic/favourites_store.dart';
 
 class DefaultFeedInfoWidget extends StatelessWidget {
   DefaultFeedInfoWidget(this.article);
@@ -137,47 +139,51 @@ class FeedOptionsSection extends StatelessWidget {
   const FeedOptionsSection({Key key, this.article}) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisSize: MainAxisSize.max,
-      mainAxisAlignment: MainAxisAlignment.spaceAround,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: <Widget>[
-        IconButton(
-          icon: Icon(
-            FontAwesomeIcons.heart,
-            size: 16,
-          ),
-          onPressed: () {},
-        ),
-        IconButton(
-          icon: Icon(
-            FontAwesomeIcons.shareAlt,
-            size: 16,
-          ),
-          onPressed: () {},
-        ),
-        IconButton(
-          icon: Icon(
-            FontAwesomeIcons.comment,
-            size: 16,
-          ),
-          onPressed: () {},
-        ),
-        IconButton(
-          icon: Icon(
-            FontAwesomeIcons.bookmark,
-            size: 16,
-          ),
-          onPressed: () {},
-        ),
-        IconButton(
-          icon: Icon(
-            FontAwesomeIcons.ellipsisV,
-          ),
-          iconSize: 18,
-          onPressed: () {},
-        ),
-      ],
+    return Consumer<FavouritesStore>(
+      builder: (context, favouriteStore, child) {
+        return Row(
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            IconButton(
+              icon: Icon(
+                FontAwesomeIcons.heart,
+                size: 16,
+              ),
+              onPressed: () {},
+            ),
+            IconButton(
+              icon: Icon(
+                FontAwesomeIcons.shareAlt,
+                size: 16,
+              ),
+              onPressed: () {},
+            ),
+            IconButton(
+              icon: Icon(
+                FontAwesomeIcons.comment,
+                size: 16,
+              ),
+              onPressed: () {},
+            ),
+            IconButton(
+              icon: Icon(
+                FontAwesomeIcons.bookmark,
+                size: 16,
+              ),
+              onPressed: () => favouriteStore.addFavouriteFeed(feed: article),
+            ),
+            IconButton(
+              icon: Icon(
+                FontAwesomeIcons.ellipsisV,
+              ),
+              iconSize: 18,
+              onPressed: () {},
+            ),
+          ],
+        );
+      },
     );
   }
 }
