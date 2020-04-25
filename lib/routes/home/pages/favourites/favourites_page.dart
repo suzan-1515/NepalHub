@@ -4,8 +4,8 @@ import 'package:incrementally_loading_listview/incrementally_loading_listview.da
 import 'package:mobx/mobx.dart';
 import 'package:provider/provider.dart';
 import 'package:samachar_hub/data/model/feed.dart';
-import 'package:samachar_hub/routes/home/pages/favourites/logic/favourites_store.dart';
-import 'package:samachar_hub/routes/home/widgets/news_list_view.dart';
+import 'package:samachar_hub/store/bookmark_store.dart';
+import 'package:samachar_hub/widgets/news_list_view.dart';
 
 class FavouritesPage extends StatefulWidget {
   @override
@@ -14,10 +14,40 @@ class FavouritesPage extends StatefulWidget {
 
 class _FavouritesPageState extends State<FavouritesPage>
     with AutomaticKeepAliveClientMixin {
+  List<ReactionDisposer> _disposers;
+
   @override
   void initState() {
-    Provider.of<FavouritesStore>(context, listen: false).loadInitialFeeds();
+    var store = Provider.of<BookmarkStore>(context, listen: false);
+    _setupObserver(store);
+    store.loadInitialData();
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    // Dispose reactions
+    for (final d in _disposers) {
+      d();
+    }
+    super.dispose();
+  }
+
+  _showMessage(String message) {
+    if (null != message)
+      Scaffold.of(context).showSnackBar(
+        SnackBar(content: Text(message)),
+      );
+  }
+
+  _setupObserver(store) {
+    _disposers = [
+      // Listens for error message
+      autorun((_) {
+        final String message = store.error;
+        _showMessage(message);
+      }),
+    ];
   }
 
   @override
@@ -36,98 +66,93 @@ class _FavouritesPageState extends State<FavouritesPage>
                 Text('Favourites', style: Theme.of(context).textTheme.headline),
           ),
           Expanded(
-            child: Consumer<FavouritesStore>(
-                builder: (context, favouriteStore, child) {
-              return Observer(builder: (_) {
-                switch (favouriteStore.loadFeedItemsFuture.status) {
-                  case FutureStatus.pending:
-                    return Center(
-                      // Todo: Replace with Shimmer
-                      child: CircularProgressIndicator(),
-                    );
-                  case FutureStatus.rejected:
-                    return Center(
-                      child: Column(
-                        mainAxisSize: MainAxisSize.max,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text('Oops something went wrong'),
-                          RaisedButton(
-                            child: Text('Retry'),
-                            onPressed: () {
-                              favouriteStore.retry();
-                            },
-                          ),
-                        ],
-                      ),
-                    );
-                  case FutureStatus.fulfilled:
-                    final List<Feed> newsData = favouriteStore.feedData;
-                    if (null != newsData && newsData.isNotEmpty) {
-                      return RefreshIndicator(
-                        child: IncrementallyLoadingListView(
-                            hasMore: () => favouriteStore.hasMoreData,
-                            itemCount: () => newsData.length,
-                            loadMore: () async {
-                              await favouriteStore.loadMoreData();
-                            },
-                            loadMoreOffsetFromBottom: 2,
-                            itemBuilder: (BuildContext context, int index) {
-                              final article = newsData[index];
-                              if (index == newsData.length - 1 &&
-                                  favouriteStore.hasMoreData &&
-                                  !favouriteStore.isLoadingMore) {
-                                return Column(
-                                  children: <Widget>[
-                                    Material(
-                                      color: Colors.transparent,
-                                      child: InkWell(
-                                        onTap: () => favouriteStore.onFeedClick(
-                                            article, context),
-                                        child: NewsListView(article),
-                                      ),
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: CircularProgressIndicator(),
-                                    ),
-                                  ],
-                                );
-                              } else {
-                                return Material(
-                                  color: Colors.transparent,
-                                  child: InkWell(
-                                    onTap: () => favouriteStore.onFeedClick(
-                                        article, context),
-                                    child: NewsListView(article),
-                                  ),
-                                );
-                              }
-                            }),
-                        onRefresh: () async {favouriteStore.refresh();},
+            child: Consumer<BookmarkStore>(
+                builder: (context, _bookmarkStore, child) {
+              return StreamBuilder<List<Feed>>(
+                  stream: _bookmarkStore.feedStream,
+                  builder: (context, snapshot) {
+                    if (snapshot.hasError) {
+                      return Center(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.max,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text('Oops something went wrong'),
+                            RaisedButton(
+                              child: Text('Retry'),
+                              onPressed: () {
+                                _bookmarkStore.retry();
+                              },
+                            ),
+                          ],
+                        ),
                       );
                     }
-                    return Center(
-                      child: Column(
-                        mainAxisSize: MainAxisSize.max,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Text('Empty Data!'),
-                          RaisedButton(
-                              child: Text('Retry'),
-                              onPressed: () async {
-                                favouriteStore.retry();
-                              }),
-                        ],
-                      ),
-                    );
-                  default:
-                    return Center(
-                      // Todo: Replace with Shimmer
-                      child: CircularProgressIndicator(),
-                    );
-                }
-              });
+                    switch (snapshot.connectionState) {
+                      case ConnectionState.waiting:
+                        return Center(
+                          // Todo: Replace with Shimmer
+                          child: CircularProgressIndicator(),
+                        );
+                      default:
+                        if (snapshot.hasData && snapshot.data.isNotEmpty) {
+                          final List<Feed> newsData = snapshot.data;
+                          return IncrementallyLoadingListView(
+                              hasMore: () => _bookmarkStore.hasMoreData,
+                              itemCount: () => newsData.length,
+                              loadMore: () async {
+                                await _bookmarkStore.loadMoreData();
+                              },
+                              loadMoreOffsetFromBottom: 2,
+                              itemBuilder: (BuildContext context, int index) {
+                                final article = newsData[index];
+                                if (index == newsData.length - 1 &&
+                                    _bookmarkStore.hasMoreData &&
+                                    !_bookmarkStore.isLoadingMore) {
+                                  return Column(
+                                    children: <Widget>[
+                                      Material(
+                                        color: Colors.transparent,
+                                        child: InkWell(
+                                          onTap: () => _bookmarkStore
+                                              .onFeedClick(article, context),
+                                          child: NewsListView(article),
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: CircularProgressIndicator(),
+                                      ),
+                                    ],
+                                  );
+                                } else {
+                                  return Material(
+                                    color: Colors.transparent,
+                                    child: InkWell(
+                                      onTap: () => _bookmarkStore.onFeedClick(
+                                          article, context),
+                                      child: NewsListView(article),
+                                    ),
+                                  );
+                                }
+                              });
+                        }
+                        return Center(
+                          child: Column(
+                            mainAxisSize: MainAxisSize.max,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              Text('Empty Data!'),
+                              RaisedButton(
+                                  child: Text('Retry'),
+                                  onPressed: () async {
+                                    _bookmarkStore.retry();
+                                  }),
+                            ],
+                          ),
+                        );
+                    }
+                  });
             }),
           ),
         ],

@@ -2,10 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:mobx/mobx.dart';
 import 'package:provider/provider.dart';
-import 'package:samachar_hub/routes/home/widgets/article_image_widget.dart';
-import 'package:samachar_hub/util/helper.dart';
-
-import 'logic/article_store.dart';
+import 'package:samachar_hub/store/article_store.dart';
+import 'package:samachar_hub/widgets/article_image_widget.dart';
 
 class ArticleViewScreen extends StatefulWidget {
   ArticleViewScreen(this.store);
@@ -36,6 +34,7 @@ class _ArticleViewScreenState extends State<ArticleViewScreen> {
     if (null != _disposer) _disposer();
     super.dispose();
   }
+  
 
   Widget _articleDetails(BuildContext context) {
     return Padding(

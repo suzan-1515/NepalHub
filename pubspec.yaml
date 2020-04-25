@@ -37,6 +37,8 @@ dependencies:
   cached_network_image: ^2.1.0+1
   throttling: ^0.8.0
   uuid: 2.0.4
+  timeago: ^2.0.26
+  webview_flutter: ^0.3.20+2
   
   cloud_firestore: ^0.13.5
   google_sign_in: ^4.4.2

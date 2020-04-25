@@ -33,7 +33,7 @@ class Feed {
       this.publishedAt,
       this.content,
       this.related,
-      this.uuid);
+      this.uuid,);
 
   String getAuthor() =>
       author == null || author.isEmpty ? formatedSource() : author;

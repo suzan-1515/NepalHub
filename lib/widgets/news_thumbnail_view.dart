@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:samachar_hub/data/model/feed.dart';
-import 'package:samachar_hub/routes/home/widgets/article_image_widget.dart';
-import 'package:samachar_hub/routes/home/widgets/article_info_widget.dart';
+import 'package:samachar_hub/widgets/article_image_widget.dart';
+import 'package:samachar_hub/widgets/article_info_widget.dart';
 
 class NewsThumbnailView extends StatelessWidget {
   NewsThumbnailView(this.article);

@@ -1,9 +1,11 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:mobx/mobx.dart';
 import 'package:provider/provider.dart';
 import 'package:samachar_hub/data/model/feed.dart';
-import 'package:samachar_hub/routes/home/pages/favourites/logic/favourites_store.dart';
+import 'package:samachar_hub/store/bookmark_store.dart';
 
 class DefaultFeedInfoWidget extends StatelessWidget {
   DefaultFeedInfoWidget(this.article);
@@ -136,11 +138,11 @@ class FeedTitleDescriptionSection extends StatelessWidget {
 class FeedOptionsSection extends StatelessWidget {
   final Feed article;
 
-  const FeedOptionsSection({Key key, this.article}) : super(key: key);
+  FeedOptionsSection({Key key, this.article}) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    return Consumer<FavouritesStore>(
-      builder: (context, favouriteStore, child) {
+    return Consumer<BookmarkStore>(
+      builder: (context, bookmarkStore, child) {
         return Row(
           mainAxisSize: MainAxisSize.max,
           mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -169,10 +171,14 @@ class FeedOptionsSection extends StatelessWidget {
             ),
             IconButton(
               icon: Icon(
-                FontAwesomeIcons.bookmark,
+                bookmarkStore.isBookmarked(feed: article)
+                    ? FontAwesomeIcons.solidBookmark
+                    : FontAwesomeIcons.bookmark,
                 size: 16,
               ),
-              onPressed: () => favouriteStore.addFavouriteFeed(feed: article),
+              onPressed: () async {
+                await bookmarkStore.toggleBookmark(feed: article);
+              },
             ),
             IconButton(
               icon: Icon(

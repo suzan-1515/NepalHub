@@ -8,9 +8,9 @@ import 'package:samachar_hub/data/model/api_error.dart';
 import 'package:samachar_hub/data/model/feed.dart';
 import 'package:samachar_hub/data/model/news.dart';
 import 'package:samachar_hub/routes/article/article_view_screen.dart';
-import 'package:samachar_hub/routes/article/logic/article_store.dart';
-import 'package:samachar_hub/routes/home/pages/everything/logic/everything_service.dart';
 import 'package:samachar_hub/routes/home/pages/pages.dart';
+import 'package:samachar_hub/service/everything_service.dart';
+import 'package:samachar_hub/store/article_store.dart';
 import 'package:throttling/throttling.dart';
 
 part 'everything_store.g.dart';

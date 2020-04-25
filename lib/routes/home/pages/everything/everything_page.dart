@@ -4,8 +4,8 @@ import 'package:mobx/mobx.dart';
 import 'package:provider/provider.dart';
 import 'package:samachar_hub/data/api.dart';
 import 'package:samachar_hub/data/model/api_error.dart';
-import 'package:samachar_hub/routes/home/pages/everything/logic/everything_store.dart';
 import 'package:samachar_hub/routes/home/pages/everything/news_category_view.dart';
+import 'package:samachar_hub/store/everything_store.dart';
 import 'package:samachar_hub/util/news_category.dart';
 
 class EverythingPage extends StatefulWidget {

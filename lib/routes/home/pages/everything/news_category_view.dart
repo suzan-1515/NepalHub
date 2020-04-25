@@ -5,11 +5,11 @@ import 'package:mobx/mobx.dart';
 import 'package:provider/provider.dart';
 import 'package:samachar_hub/data/api.dart';
 import 'package:samachar_hub/data/model/news.dart';
-import 'package:samachar_hub/routes/home/pages/everything/logic/everything_store.dart';
 import 'package:samachar_hub/routes/home/pages/pages.dart';
-import 'package:samachar_hub/routes/home/widgets/news_compact_view.dart';
-import 'package:samachar_hub/routes/home/widgets/news_list_view.dart';
-import 'package:samachar_hub/routes/home/widgets/news_thumbnail_view.dart';
+import 'package:samachar_hub/store/everything_store.dart';
+import 'package:samachar_hub/widgets/news_compact_view.dart';
+import 'package:samachar_hub/widgets/news_list_view.dart';
+import 'package:samachar_hub/widgets/news_thumbnail_view.dart';
 
 class NewsCategoryView extends StatelessWidget {
   final NewsCategory category;

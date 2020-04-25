@@ -3,14 +3,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mobx/mobx.dart';
 import 'package:provider/provider.dart';
-import 'package:samachar_hub/common/preference_service.dart';
 import 'package:samachar_hub/data/model/api_error.dart';
 import 'package:samachar_hub/data/model/feed.dart';
 import 'package:samachar_hub/data/model/news.dart';
-import 'package:samachar_hub/routes/article/article_view_screen.dart';
-import 'package:samachar_hub/routes/article/logic/article_store.dart';
 import 'package:samachar_hub/routes/home/pages/pages.dart';
-import 'package:samachar_hub/routes/home/pages/personalised/logic/personalised_service.dart';
+import 'package:samachar_hub/routes/routes.dart';
+import 'package:samachar_hub/service/personalised_service.dart';
+import 'package:samachar_hub/service/preference_service.dart';
+import 'package:samachar_hub/store/article_store.dart';
 
 part 'personalised_store.g.dart';
 

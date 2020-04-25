@@ -1,5 +1,5 @@
 import 'package:mobx/mobx.dart';
-import 'package:samachar_hub/common/preference_service.dart';
+import 'package:samachar_hub/service/preference_service.dart';
 
 part 'settings_store.g.dart';
 

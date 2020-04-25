@@ -5,7 +5,7 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:mobx/mobx.dart';
 import 'package:provider/provider.dart';
-import 'package:samachar_hub/routes/home/pages/settings/logic/settings_store.dart';
+import 'package:samachar_hub/store/settings_store.dart';
 
 class SettingsPage extends StatefulWidget {
   @override

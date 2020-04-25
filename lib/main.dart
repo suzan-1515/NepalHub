@@ -1,20 +1,23 @@
-import 'package:firebase_analytics/firebase_analytics.dart';
-import 'package:firebase_analytics/observer.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:samachar_hub/common/auth_service.dart';
-import 'package:samachar_hub/routes/home/logic/home_screen_store.dart';
-import 'package:samachar_hub/routes/home/pages/everything/logic/everything_service.dart';
-import 'package:samachar_hub/routes/home/pages/everything/logic/everything_store.dart';
-import 'package:samachar_hub/routes/home/pages/favourites/logic/favourites_service.dart';
-import 'package:samachar_hub/routes/home/pages/favourites/logic/favourites_store.dart';
-import 'package:samachar_hub/routes/home/pages/personalised/logic/personalised_service.dart';
-import 'package:samachar_hub/routes/home/pages/personalised/logic/personalised_store.dart';
+import 'package:samachar_hub/manager/bookmark_manager.dart';
+import 'package:samachar_hub/service/analytics_service.dart';
+import 'package:samachar_hub/service/authentication_service.dart';
+import 'package:samachar_hub/service/bookmark_service.dart';
+import 'package:samachar_hub/service/cloud_storage_service.dart';
+import 'package:samachar_hub/service/everything_service.dart';
+import 'package:samachar_hub/service/firestore_service.dart';
+import 'package:samachar_hub/service/personalised_service.dart';
+import 'package:samachar_hub/service/preference_service.dart';
+import 'package:samachar_hub/store/bookmark_store.dart';
+import 'package:samachar_hub/store/everything_store.dart';
+import 'package:samachar_hub/store/home_screen_store.dart';
+import 'package:samachar_hub/store/personalised_store.dart';
+import 'package:samachar_hub/store/settings_store.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'common/preference_service.dart';
-import 'routes/home/pages/settings/logic/settings_store.dart';
 import 'routes/routes.dart';
 import 'common/themes.dart' as Themes;
 
@@ -22,15 +25,13 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   FlutterError.onError = Crashlytics.instance.recordFlutterError;
   final SharedPreferences sp = await SharedPreferences.getInstance();
-  final FirebaseAnalytics analytics = FirebaseAnalytics();
-  runApp(App(sp, analytics));
+  runApp(App(sp));
 }
 
 class App extends StatelessWidget {
-  App(this._sharedPreferences, this._analytics);
+  App(this._sharedPreferences);
 
   final SharedPreferences _sharedPreferences;
-  final FirebaseAnalytics _analytics;
 
   ThemeData _getTheme(SettingsStore settingStore) {
     return settingStore.useDarkMode
@@ -51,18 +52,36 @@ class App extends StatelessWidget {
         Provider<PreferenceService>(
           create: (_) => PreferenceService(_sharedPreferences),
         ),
+        Provider<AnalyticsService>(
+          create: (_) => AnalyticsService(),
+        ),
+        Provider<FirestoreService>(
+          create: (_) => FirestoreService(),
+        ),
+        Provider<CloudStorageService>(
+          create: (_) => CloudStorageService(),
+        ),
+        ProxyProvider2<FirestoreService, AnalyticsService,
+            AuthenticationService>(
+          update: (_, _firestoreService, _analyticsService, __) =>
+              AuthenticationService(
+                  FirebaseAuth.instance, _firestoreService, _analyticsService),
+        ),
         Provider<EverythingService>(
           create: (_) => EverythingService(),
         ),
-        Provider<FavouritesService>(
-          create: (_) => FavouritesService(),
+        Provider<BookmarkService>(
+          create: (_) => BookmarkService(),
         ),
         Provider<PersonalisedFeedService>(
           create: (_) => PersonalisedFeedService(),
         ),
-        ProxyProvider<PreferenceService, AuthService>(
-          update: (_, _preferenceService, __) =>
-              AuthService(_preferenceService),
+        ProxyProvider3<BookmarkService, AnalyticsService, AuthenticationService,
+            BookmarkManager>(
+          update: (_, _bookmarkService, _analyticsService,
+                  _authenticationService, __) =>
+              BookmarkManager(
+                  _authenticationService, _bookmarkService, _analyticsService),
         ),
         ProxyProvider<PreferenceService, HomeScreenStore>(
           update: (_, preferenceService, __) =>
@@ -78,31 +97,36 @@ class App extends StatelessWidget {
               EverythingStore(everythingService),
           dispose: (context, everythingStore) => everythingStore.dispose(),
         ),
-        ProxyProvider3<PreferenceService, AuthService, FavouritesService, FavouritesStore>(
-          update: (_, preferenceService, authService, favouriteService, __) =>
-              FavouritesStore(preferenceService, authService, favouriteService),
+        ProxyProvider2<PreferenceService, BookmarkManager, BookmarkStore>(
+          update: (_, preferenceService, _favouriteManager, __) =>
+              BookmarkStore(preferenceService, _favouriteManager),
         ),
         ProxyProvider<PreferenceService, SettingsStore>(
           update: (_, preferenceService, __) =>
               SettingsStore(preferenceService),
         ),
       ],
-      child: Consumer2<SettingsStore, PreferenceService>(
-        builder: (context, settingStore, preferenceService, _) {
+      child: Consumer3<SettingsStore, AuthenticationService, AnalyticsService>(
+        builder: (context, settingStore, _authenticationService,
+            _analyticsService, _) {
           return Observer(
-            builder: (_) => MaterialApp(
-              theme: _getTheme(settingStore),
-              home: HomeScreen(),
-              themeMode: settingStore.themeSetBySystem
-                  ? ThemeMode.system
-                  : _getThemeMode(settingStore),
-              darkTheme: settingStore.usePitchBlack
-                  ? Themes.pitchBlack
-                  : Themes.darkTheme,
-              navigatorObservers: [
-                FirebaseAnalyticsObserver(analytics: _analytics),
-              ],
-            ),
+            builder: (_) {
+              _authenticationService.loginWithEmail(
+                  email: 'admin@gmail.com', password: '12345678');
+              return MaterialApp(
+                theme: _getTheme(settingStore),
+                home: HomeScreen(),
+                themeMode: settingStore.themeSetBySystem
+                    ? ThemeMode.system
+                    : _getThemeMode(settingStore),
+                darkTheme: settingStore.usePitchBlack
+                    ? Themes.pitchBlack
+                    : Themes.darkTheme,
+                navigatorObservers: [
+                  _analyticsService.getAnalyticsObserver(),
+                ],
+              );
+            },
           );
         },
       ),

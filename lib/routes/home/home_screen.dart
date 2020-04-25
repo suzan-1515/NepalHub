@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
-import 'logic/home_screen_store.dart';
+import 'package:samachar_hub/store/home_screen_store.dart';
 import 'pages/pages.dart';
 import 'pages/personalised/personalised_page.dart';
 
@@ -51,7 +51,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 BottomNavigationBarItem(
                   icon: Icon(FontAwesomeIcons.solidHeart),
-                  title: Text('Favourites'),
+                  title: Text('Bookmarks'),
                 ),
                 BottomNavigationBarItem(
                   icon: Icon(FontAwesomeIcons.cog),
