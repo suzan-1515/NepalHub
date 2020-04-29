@@ -1,6 +1,7 @@
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_analytics/observer.dart';
 import 'package:flutter/foundation.dart';
+import 'package:samachar_hub/data/feed_activity_event.dart';
 
 class AnalyticsService {
   final FirebaseAnalytics _analytics = FirebaseAnalytics();
@@ -8,9 +9,8 @@ class AnalyticsService {
   FirebaseAnalyticsObserver getAnalyticsObserver() =>
       FirebaseAnalyticsObserver(analytics: _analytics);
 
-  Future setUserProperties({@required String userId, String userRole}) async {
+  Future setUser({@required String userId}) async {
     await _analytics.setUserId(userId);
-    await _analytics.setUserProperty(name: 'user_role', value: userRole);
   }
 
   Future logLogin() async {
@@ -21,10 +21,67 @@ class AnalyticsService {
     return await _analytics.logSignUp(signUpMethod: 'email');
   }
 
+  Future logLogout() async {
+    return await _analytics
+        .logEvent(name: "logout", parameters: {'logout_method': 'email'});
+  }
+
+  Future logFeedAdded({String userId, String feedId}) async {
+    return await _analytics.logEvent(
+      name: 'feed',
+      parameters: {'user_id': userId, 'feed_id': feedId, 'action': 'added'},
+    );
+  }
+
+  Future logFeedRemoved({String userId, String feedId}) async {
+    return await _analytics.logEvent(
+      name: 'feed',
+      parameters: {'user_id': userId, 'feed_id': feedId, 'action': 'removed'},
+    );
+  }
+
   Future logFeedBookmarkAdded({String userId, String feedId}) async {
     return await _analytics.logEvent(
       name: 'bookmarked_feed',
       parameters: {'user_id': userId, 'feed_id': feedId, 'action': 'added'},
+    );
+  }
+
+  Future logFeedActivityAdded(
+      {String userId, String feedId, String event}) async {
+    return await _analytics.logEvent(
+      name: 'feed_activity',
+      parameters: {
+        'user_id': userId,
+        'feed_id': feedId,
+        'event': event,
+        'action': 'added'
+      },
+    );
+  }
+
+  Future logFeedActivityRemoved(
+      {String userId, String feedId, String event}) async {
+    return await _analytics.logEvent(
+      name: 'feed_activity',
+      parameters: {
+        'user_id': userId,
+        'feed_id': feedId,
+        'event': event,
+        'action': 'removed'
+      },
+    );
+  }
+
+  Future logFeedActivityFetched(
+      {String userId, String event}) async {
+    return await _analytics.logEvent(
+      name: 'feed_activity',
+      parameters: {
+        'user_id': userId,
+        'event': event,
+        'action': 'fetched'
+      },
     );
   }
 

@@ -1,8 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:mobx/mobx.dart';
 import 'package:provider/provider.dart';
 import 'package:samachar_hub/data/model/feed.dart';
 import 'package:samachar_hub/store/bookmark_store.dart';
@@ -135,10 +133,19 @@ class FeedTitleDescriptionSection extends StatelessWidget {
   }
 }
 
-class FeedOptionsSection extends StatelessWidget {
+class FeedOptionsSection extends StatefulWidget {
   final Feed article;
 
   FeedOptionsSection({Key key, this.article}) : super(key: key);
+
+  @override
+  _FeedOptionsSectionState createState() => _FeedOptionsSectionState();
+}
+
+class _FeedOptionsSectionState extends State<FeedOptionsSection> {
+  bool isBookmarked = false;
+  bool isLiked = false;
+
   @override
   Widget build(BuildContext context) {
     return Consumer<BookmarkStore>(
@@ -150,7 +157,7 @@ class FeedOptionsSection extends StatelessWidget {
           children: <Widget>[
             IconButton(
               icon: Icon(
-                FontAwesomeIcons.heart,
+                isLiked ? FontAwesomeIcons.solidHeart : FontAwesomeIcons.heart,
                 size: 16,
               ),
               onPressed: () {},
@@ -171,13 +178,18 @@ class FeedOptionsSection extends StatelessWidget {
             ),
             IconButton(
               icon: Icon(
-                bookmarkStore.isBookmarked(feed: article)
+                isBookmarked
                     ? FontAwesomeIcons.solidBookmark
                     : FontAwesomeIcons.bookmark,
                 size: 16,
               ),
               onPressed: () async {
-                await bookmarkStore.toggleBookmark(feed: article);
+                setState(() {
+                  isBookmarked = !isBookmarked;
+                });
+                await bookmarkStore
+                    .toggleBookmark(feed: widget.article)
+                    .then((onValue) => isBookmarked = onValue);
               },
             ),
             IconButton(

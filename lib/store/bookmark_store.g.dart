@@ -65,6 +65,14 @@ mixin _$BookmarkStore on _BookmarkStore, Store {
         .run(() => super.removeBookmarkedFeed(feed: feed));
   }
 
+  final _$isBookmarkedFeedAsyncAction = AsyncAction('isBookmarkedFeed');
+
+  @override
+  Future<bool> isBookmarkedFeed({@required Feed feed}) {
+    return _$isBookmarkedFeedAsyncAction
+        .run(() => super.isBookmarkedFeed(feed: feed));
+  }
+
   final _$refreshAsyncAction = AsyncAction('refresh');
 
   @override

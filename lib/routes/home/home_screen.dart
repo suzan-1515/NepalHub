@@ -28,7 +28,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 children: <Widget>[
                   PersonalisedPage(),
                   EverythingPage(),
-                  FavouritesPage(),
+                  BookmarkPage(),
                   SettingsPage(),
                 ],
                 physics: NeverScrollableScrollPhysics(),

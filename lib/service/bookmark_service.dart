@@ -16,6 +16,13 @@ class BookmarkService {
     return await _bookmarkedCollectionReference.document(feedId).delete();
   }
 
+  Future<bool> isBookmarkedFeed({feedId}) async {
+    return await _bookmarkedCollectionReference
+        .document(feedId)
+        .get()
+        .then((onValue) => onValue.exists);
+  }
+
   Stream<QuerySnapshot> fetchBookmarksAsStream({userId, limit}) {
     var pageQuery = _bookmarkedCollectionReference
         .where('user_id', isEqualTo: userId)
@@ -49,4 +56,5 @@ class BookmarkService {
       return onValue;
     });
   }
+
 }

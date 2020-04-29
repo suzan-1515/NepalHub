@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:incrementally_loading_listview/incrementally_loading_listview.dart';
 import 'package:mobx/mobx.dart';
 import 'package:provider/provider.dart';
@@ -7,12 +6,12 @@ import 'package:samachar_hub/data/model/feed.dart';
 import 'package:samachar_hub/store/bookmark_store.dart';
 import 'package:samachar_hub/widgets/news_list_view.dart';
 
-class FavouritesPage extends StatefulWidget {
+class BookmarkPage extends StatefulWidget {
   @override
-  _FavouritesPageState createState() => _FavouritesPageState();
+  _BookmarkPageState createState() => _BookmarkPageState();
 }
 
-class _FavouritesPageState extends State<FavouritesPage>
+class _BookmarkPageState extends State<BookmarkPage>
     with AutomaticKeepAliveClientMixin {
   List<ReactionDisposer> _disposers;
 
@@ -63,7 +62,7 @@ class _FavouritesPageState extends State<FavouritesPage>
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 16),
             child:
-                Text('Favourites', style: Theme.of(context).textTheme.headline),
+                Text('Bookmarks', style: Theme.of(context).textTheme.headline),
           ),
           Expanded(
             child: Consumer<BookmarkStore>(
@@ -138,18 +137,7 @@ class _FavouritesPageState extends State<FavouritesPage>
                               });
                         }
                         return Center(
-                          child: Column(
-                            mainAxisSize: MainAxisSize.max,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: <Widget>[
-                              Text('Empty Data!'),
-                              RaisedButton(
-                                  child: Text('Retry'),
-                                  onPressed: () async {
-                                    _bookmarkStore.retry();
-                                  }),
-                            ],
-                          ),
+                          child: Text('Empty Data!'),
                         );
                     }
                   });

@@ -3,13 +3,18 @@ import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:samachar_hub/manager/authentication_manager.dart';
 import 'package:samachar_hub/manager/bookmark_manager.dart';
+import 'package:samachar_hub/manager/feed_manager.dart';
+import 'package:samachar_hub/manager/like_manager.dart';
 import 'package:samachar_hub/service/analytics_service.dart';
 import 'package:samachar_hub/service/authentication_service.dart';
+import 'package:samachar_hub/service/bookmark_activity_service.dart';
 import 'package:samachar_hub/service/bookmark_service.dart';
 import 'package:samachar_hub/service/cloud_storage_service.dart';
 import 'package:samachar_hub/service/everything_service.dart';
-import 'package:samachar_hub/service/firestore_service.dart';
+import 'package:samachar_hub/service/feed_service.dart';
+import 'package:samachar_hub/service/like_activity_service.dart';
 import 'package:samachar_hub/service/personalised_service.dart';
 import 'package:samachar_hub/service/preference_service.dart';
 import 'package:samachar_hub/store/bookmark_store.dart';
@@ -55,17 +60,14 @@ class App extends StatelessWidget {
         Provider<AnalyticsService>(
           create: (_) => AnalyticsService(),
         ),
-        Provider<FirestoreService>(
-          create: (_) => FirestoreService(),
-        ),
         Provider<CloudStorageService>(
           create: (_) => CloudStorageService(),
         ),
-        ProxyProvider2<FirestoreService, AnalyticsService,
-            AuthenticationService>(
-          update: (_, _firestoreService, _analyticsService, __) =>
-              AuthenticationService(
-                  FirebaseAuth.instance, _firestoreService, _analyticsService),
+        Provider<AuthenticationService>(
+          create: (_) => AuthenticationService(FirebaseAuth.instance),
+        ),
+        Provider<FeedService>(
+          create: (_) => FeedService(),
         ),
         Provider<EverythingService>(
           create: (_) => EverythingService(),
@@ -76,12 +78,34 @@ class App extends StatelessWidget {
         Provider<PersonalisedFeedService>(
           create: (_) => PersonalisedFeedService(),
         ),
-        ProxyProvider3<BookmarkService, AnalyticsService, AuthenticationService,
+        ProxyProvider2<AnalyticsService, AuthenticationService,
+            AuthenticationManager>(
+          update: (_, _analyticsService, _authenticationService, __) =>
+              AuthenticationManager(_authenticationService, _analyticsService),
+        ),
+        ProxyProvider3<AnalyticsService, AuthenticationManager, FeedService,
+            FeedManager>(
+          update: (_, _analyticsService, _authenticationManager, _feedService,
+                  __) =>
+              FeedManager(
+                  _authenticationManager, _feedService, _analyticsService),
+        ),
+        ProxyProvider2<AnalyticsService, AuthenticationManager,
             BookmarkManager>(
-          update: (_, _bookmarkService, _analyticsService,
-                  _authenticationService, __) =>
+          update: (_, _analyticsService, _authenticationManager, __) =>
               BookmarkManager(
-                  _authenticationService, _bookmarkService, _analyticsService),
+                  authenticationManager: _authenticationManager,
+                  activityService: BookmarkActivityService(),
+                  analyticsService: _analyticsService),
+        ),
+        ProxyProvider2<AnalyticsService, AuthenticationManager,
+            LikeManager>(
+          update: (_, _analyticsService, _authenticationManager,
+                  __) =>
+              LikeManager(
+                  authenticationManager: _authenticationManager,
+                  activityService: LikeActivityService(),
+                  analyticsService: _analyticsService),
         ),
         ProxyProvider<PreferenceService, HomeScreenStore>(
           update: (_, preferenceService, __) =>
@@ -106,12 +130,12 @@ class App extends StatelessWidget {
               SettingsStore(preferenceService),
         ),
       ],
-      child: Consumer3<SettingsStore, AuthenticationService, AnalyticsService>(
-        builder: (context, settingStore, _authenticationService,
+      child: Consumer3<SettingsStore, AuthenticationManager, AnalyticsService>(
+        builder: (context, settingStore, _authenticationManager,
             _analyticsService, _) {
           return Observer(
             builder: (_) {
-              _authenticationService.loginWithEmail(
+              _authenticationManager.loginWithEmail(
                   email: 'admin@gmail.com', password: '12345678');
               return MaterialApp(
                 theme: _getTheme(settingStore),

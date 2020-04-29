@@ -1,44 +1,25 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
-import 'package:samachar_hub/data/model/user_data.dart';
-import 'package:samachar_hub/service/analytics_service.dart';
-import 'package:samachar_hub/service/firestore_service.dart';
 
 class AuthenticationService {
   final FirebaseAuth _firebaseAuth;
-  final FirestoreService _firestoreService;
-  final AnalyticsService _analyticsService;
+  final CollectionReference _usersCollectionReference =
+      Firestore.instance.collection('users');
 
-  FirebaseUser _currentUser;
+  AuthenticationService(this._firebaseAuth);
 
-  AuthenticationService(
-      this._firebaseAuth, this._firestoreService, this._analyticsService);
-
-  FirebaseUser get currentUser => _currentUser;
-
-  Future<bool> loginWithEmail({
+  Future<AuthResult> loginWithEmail({
     @required String email,
     @required String password,
   }) async {
-    return await _firebaseAuth
-        .signInWithEmailAndPassword(
+    return await _firebaseAuth.signInWithEmailAndPassword(
       email: email,
       password: password,
-    )
-        .then((auth) {
-      if (auth != null) {
-        _analyticsService.logLogin();
-      }
-
-      _currentUser = auth.user;
-
-      return auth.user != null;
-    }, onError: (error) {
-      print('Error login: '+error.toString());
-    });
+    );
   }
 
-  Future<bool> signUpWithEmail({
+  Future<AuthResult> signUpWithEmail({
     @required String email,
     @required String password,
     @required String fullName,
@@ -51,24 +32,29 @@ class AuthenticationService {
     )
         .then((auth) {
       if (auth != null) {
-        // create a new user profile on firestore
-        var _currentUser = User(
-          id: auth.user.uid,
-          email: email,
-          fullName: fullName,
-          avatar: avatar,
-        );
-
-        _firestoreService.createUser(_currentUser).whenComplete(() {
-          _analyticsService.logSignUp();
-        });
-        return true;
+        return _usersCollectionReference.document(auth.user.uid).setData({
+          'id': auth.user.uid,
+          'full_name': fullName,
+          'email': email,
+          'avatar': avatar
+        }, merge: true).then((onValue) => auth);
       }
-      return false;
+      return auth;
     });
   }
 
-  Future<bool> isUserLoggedIn() async {
+  Future<DocumentSnapshot> getUserProfile({@required String uid}) async {
+    return await _usersCollectionReference.document(uid).get();
+  }
+
+  Future<bool> isLoggedIn() async {
     return (await _firebaseAuth.currentUser()) != null;
   }
+
+  Future<void> logout() async {
+    return await _firebaseAuth.signOut();
+  }
+
+  DocumentReference getUserDocumentReference({@required String userId}) =>
+      _usersCollectionReference.document(userId);
 }
