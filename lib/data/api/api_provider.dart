@@ -1,9 +1,8 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:samachar_hub/data/model/news.dart';
-import 'package:samachar_hub/data/model/sources.dart';
-
-import 'model/api_error.dart';
+import 'package:samachar_hub/data/api/api.dart';
+import 'package:samachar_hub/data/api/response/api_response.dart';
+import 'package:samachar_hub/data/api/response/feed_api_response_parser.dart';
 
 // Base URL
 const String _baseApiURL = 'timesofnepal.com.np';
@@ -37,7 +36,7 @@ String _getCategoryCode(NewsCategory category) {
   return category.toString().split('.').last;
 }
 
-Future<News> getLatestNews() async {
+Future<NewsApiResponse> getLatestNews() async {
   var sourceCall = http.get(Uri.https(_baseApiURL, _newsSources));
   var latestNewsCall = http.get(Uri.https(_baseApiURL, _latestNews));
   var results =
@@ -56,14 +55,13 @@ Future<News> getLatestNews() async {
   // Deserialize
 
   try {
-    return News.fromJson(
-        json.decode(newsResponse.body), json.decode(sourceResponse.body));
+    return FeedApiParser.parse(feeds:json.decode(newsResponse.body), sources:json.decode(sourceResponse.body));
   } on Exception catch (e) {
     throw e;
   }
 }
 
-Future<News> getNewsByCategory(NewsCategory category,
+Future<NewsApiResponse> getNewsByCategory(NewsCategory category,
     {String lastFeedId}) async {
   var sourceCall = http.get(Uri.https(_baseApiURL, _newsSources));
   final Map<String, String> queryParams = _filterNullOrEmptyValuesFromMap({
@@ -86,21 +84,20 @@ Future<News> getNewsByCategory(NewsCategory category,
   // Deserialize
 
   try {
-    return News.fromJson(
-        json.decode(newsResponse.body), json.decode(sourceResponse.body));
+    return FeedApiParser.parse(feeds:json.decode(newsResponse.body), sources:json.decode(sourceResponse.body));
   } on Exception catch (e) {
     throw e;
   }
 }
 
-Future<Sources> getSources() async {
+Future<FeedSourcesApiResponse> getSources() async {
   final Uri uri = Uri.https(_baseApiURL, _newsSources);
   final http.Response response = await http.get(uri);
   // If response is not ok
   _checkResponse(response);
   // Deserialize
   try {
-    return Sources.fromJson(json.decode(response.body));
+    return FeedSourcesApiResponse.fromJson(json.decode(response.body));
   } on Exception catch (e) {
     throw e;
   }
@@ -117,15 +114,6 @@ Map<String, String> _filterNullOrEmptyValuesFromMap(Map<String, String> map) {
 _checkResponse(http.Response response) {
   if (response.statusCode != 200) {
     // Try to build api_error object
-    try {
-      final APIError apiError = APIError.fromJson(json.decode(response.body));
-      throw apiError;
-    } on Exception catch (e) {
-      // Rethrow
-      if (e is APIError)
-        throw e;
-      else // Deserialization error
-        throw Exception(response.body);
-    }
+    throw APIException('Bad response. Try again.');
   }
 }

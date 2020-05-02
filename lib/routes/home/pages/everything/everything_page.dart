@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:mobx/mobx.dart';
 import 'package:provider/provider.dart';
-import 'package:samachar_hub/data/api.dart';
-import 'package:samachar_hub/data/model/api_error.dart';
+import 'package:samachar_hub/data/api/api.dart';
 import 'package:samachar_hub/routes/home/pages/everything/news_category_view.dart';
 import 'package:samachar_hub/store/everything_store.dart';
 import 'package:samachar_hub/util/news_category.dart';
@@ -85,7 +84,7 @@ class _EverythingPageState extends State<EverythingPage>
       );
   }
 
-  _showErrorDialog(APIError apiError) {
+  _showErrorDialog(APIException apiError) {
     if (null != apiError)
       showDialog<void>(
         context: context,
@@ -95,7 +94,7 @@ class _EverythingPageState extends State<EverythingPage>
             shape:
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
             title: Text(
-              'API Error - ${apiError.code}',
+              'API Error - ${apiError.message}',
               style: Theme.of(context).textTheme.subhead,
             ),
             content: SingleChildScrollView(
@@ -126,7 +125,7 @@ class _EverythingPageState extends State<EverythingPage>
       }),
       // Listens for API error
       autorun((_) {
-        final APIError error = store.apiError;
+        final APIException error = store.apiError;
         _showErrorDialog(error);
       })
     ];

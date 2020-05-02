@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:mobx/mobx.dart';
 import 'package:provider/provider.dart';
-import 'package:samachar_hub/data/model/feed.dart';
+import 'package:samachar_hub/data/dto/feed_dto.dart';
 import 'package:samachar_hub/manager/bookmark_manager.dart';
 import 'package:samachar_hub/routes/article/article_view_screen.dart';
 import 'package:samachar_hub/service/preference_service.dart';

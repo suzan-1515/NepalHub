@@ -1,5 +1,5 @@
 import 'package:mobx/mobx.dart';
-import 'package:samachar_hub/data/model/feed.dart';
+import 'package:samachar_hub/data/dto/feed_dto.dart';
 import 'package:samachar_hub/service/article_service.dart';
 
 part 'article_store.g.dart';

@@ -3,9 +3,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mobx/mobx.dart';
 import 'package:provider/provider.dart';
-import 'package:samachar_hub/data/model/api_error.dart';
-import 'package:samachar_hub/data/model/feed.dart';
-import 'package:samachar_hub/data/model/news.dart';
+import 'package:samachar_hub/data/api/api.dart';
+import 'package:samachar_hub/data/dto/feed_dto.dart';
 import 'package:samachar_hub/routes/home/pages/pages.dart';
 import 'package:samachar_hub/routes/routes.dart';
 import 'package:samachar_hub/service/personalised_service.dart';
@@ -27,13 +26,13 @@ abstract class _PersonalisedFeedStore with Store {
   _PersonalisedFeedStore(
       this._preferenceService, this._personalisedFeedService);
 
-  News newsData;
+  List<Feed> newsData = List<Feed>();
 
   @observable
   ObservableFuture loadFeedItemsFuture;
 
   @observable
-  APIError apiError;
+  APIException apiError;
 
   @observable
   String error;
@@ -50,7 +49,7 @@ abstract class _PersonalisedFeedStore with Store {
 
   @action
   Future<void> _loadFirstPageFeeds() async {
-    newsData = null;
+    newsData.clear();
     await loadMoreData();
   }
 
@@ -70,11 +69,11 @@ abstract class _PersonalisedFeedStore with Store {
       if (isLoadingMore) return;
       isLoadingMore = true;
 
-      News moreNews = await _personalisedFeedService.getLatestFeeds();
+      List<Feed> moreNews = await _personalisedFeedService.getLatestFeeds();
       if (moreNews != null) {
-        newsData = moreNews;
+        newsData.addAll(moreNews);
       }
-    } on APIError catch (apiError) {
+    } on APIException catch (apiError) {
       this.apiError = apiError;
     } on Exception catch (e) {
       this.error = e.toString();

@@ -2,8 +2,10 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:samachar_hub/data/api/api.dart';
+import 'package:samachar_hub/data/dto/feed_dto.dart';
 import 'package:samachar_hub/data/feed_activity_event.dart';
-import 'package:samachar_hub/data/model/feed.dart';
+import 'package:samachar_hub/data/mapper/feed_mapper.dart';
 import 'package:samachar_hub/manager/authentication_manager.dart';
 import 'package:samachar_hub/service/analytics_service.dart';
 import 'package:samachar_hub/service/feed_activity_service.dart';
@@ -32,7 +34,6 @@ abstract class FeedActivityManager {
       if (onValue) {
         return null;
       }
-
       feedData['user_id'] = _authenticationManager.currentUser.uId;
       feedData['event'] = _feedActivityEvent.asString();
       feedData['timestamp'] = FieldValue.serverTimestamp();
@@ -77,7 +78,8 @@ abstract class FeedActivityManager {
         .where((snapshot) => snapshot != null)
         .map((snapshot) => snapshot.documents
             .where((snapshot) => snapshot != null && snapshot.exists)
-            .map((snapshot) => Feed.fromSnapshot(snapshot.data))
+            .map((snapshot) => FeedFirestoreResponse.fromJson(snapshot.data))
+            .map((feed)=>FeedMapper.fromFeedFirestore(feed))
             .toList());
   }
 
@@ -93,7 +95,8 @@ abstract class FeedActivityManager {
           onValue.documents.isNotEmpty) {
         return onValue.documents
             .where((snapshot) => snapshot != null && snapshot.exists)
-            .map((snapshot) => Feed.fromSnapshot(snapshot.data))
+            .map((snapshot) => FeedFirestoreResponse.fromJson(snapshot.data))
+            .map((feed)=>FeedMapper.fromFeedFirestore(feed))
             .toList();
       }
       return List<Feed>();

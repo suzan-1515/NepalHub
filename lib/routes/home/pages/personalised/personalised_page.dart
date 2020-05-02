@@ -3,8 +3,8 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:incrementally_loading_listview/incrementally_loading_listview.dart';
 import 'package:mobx/mobx.dart';
 import 'package:provider/provider.dart';
-import 'package:samachar_hub/data/model/api_error.dart';
-import 'package:samachar_hub/data/model/news.dart';
+import 'package:samachar_hub/data/api/api.dart';
+import 'package:samachar_hub/data/dto/feed_dto.dart';
 import 'package:samachar_hub/store/personalised_store.dart';
 import 'package:samachar_hub/widgets/news_list_view.dart';
 import 'package:samachar_hub/widgets/news_thumbnail_view.dart';
@@ -43,7 +43,7 @@ class _PersonalisedPageState extends State<PersonalisedPage>
       );
   }
 
-  _showErrorDialog(APIError apiError) {
+  _showErrorDialog(APIException apiError) {
     if (null != apiError)
       showDialog<void>(
         context: context,
@@ -53,7 +53,7 @@ class _PersonalisedPageState extends State<PersonalisedPage>
             shape:
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
             title: Text(
-              'API Error - ${apiError.code}',
+              'API Error - ${apiError.message}',
               style: Theme.of(context).textTheme.subhead,
             ),
             content: SingleChildScrollView(
@@ -84,7 +84,7 @@ class _PersonalisedPageState extends State<PersonalisedPage>
       }),
       // Listens for API error
       autorun((_) {
-        final APIError error = store.apiError;
+        final APIException error = store.apiError;
         _showErrorDialog(error);
       })
     ];
@@ -132,26 +132,26 @@ class _PersonalisedPageState extends State<PersonalisedPage>
                         ),
                       );
                     case FutureStatus.fulfilled:
-                      final News newsData = personalisedStore.newsData;
-                      if (null != newsData && newsData.feeds.isNotEmpty) {
+                      final List<Feed> newsData = personalisedStore.newsData;
+                      if (null != newsData && newsData.isNotEmpty) {
                         return RefreshIndicator(
                           child: IncrementallyLoadingListView(
                               hasMore: () => personalisedStore.hasMoreData,
-                              itemCount: () => newsData.feeds.length,
+                              itemCount: () => newsData.length,
                               loadMore: () async {
                                 await personalisedStore.loadMoreData();
                               },
                               loadMoreOffsetFromBottom: 2,
                               itemBuilder: (BuildContext context, int index) {
-                                final feed = newsData.feeds[index];
+                                final feed = newsData[index];
                                 Widget articleWidget;
-                                final article = newsData.feeds[index];
+                                final article = newsData[index];
                                 if (index % 3 == 0) {
                                   articleWidget = NewsThumbnailView(article);
                                 } else {
                                   articleWidget = NewsListView(article);
                                 }
-                                if (index == newsData.feeds.length - 1 &&
+                                if (index == newsData.length - 1 &&
                                     personalisedStore.hasMoreData &&
                                     !personalisedStore.isLoadingMore) {
                                   return Column(

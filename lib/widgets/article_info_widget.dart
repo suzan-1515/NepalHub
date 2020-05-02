@@ -2,7 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
-import 'package:samachar_hub/data/model/feed.dart';
+import 'package:samachar_hub/data/dto/feed_dto.dart';
 import 'package:samachar_hub/store/bookmark_store.dart';
 
 class DefaultFeedInfoWidget extends StatelessWidget {
@@ -52,7 +52,7 @@ class FeedSourceSection extends StatelessWidget {
             ),
             child: CachedNetworkImage(
               fit: BoxFit.cover,
-              imageUrl: article.source?.getFavicon(),
+              imageUrl: article.sourceFavicon,
               placeholder: (context, _) =>
                   Icon(FontAwesomeIcons.image, size: 28),
               errorWidget: (context, url, error) =>
@@ -65,14 +65,14 @@ class FeedSourceSection extends StatelessWidget {
           ),
           RichText(
             text: TextSpan(
-              text: article.formatedSource(),
+              text: article.source,
               style: Theme.of(context)
                   .textTheme
                   .body1
                   .copyWith(fontWeight: FontWeight.w600),
               children: <TextSpan>[
                 TextSpan(
-                    text: '\n${article.formatedPublishedDate()}',
+                    text: '\n${article.publishedAt}',
                     style: Theme.of(context).textTheme.display4)
               ],
             ),
@@ -84,7 +84,7 @@ class FeedSourceSection extends StatelessWidget {
                 color: Colors.blueGrey,
                 borderRadius: BorderRadius.all(Radius.circular(12))),
             child: Text(
-              article.formatedCategory(),
+              article.category,
               style: Theme.of(context)
                   .textTheme
                   .display4
@@ -143,8 +143,6 @@ class FeedOptionsSection extends StatefulWidget {
 }
 
 class _FeedOptionsSectionState extends State<FeedOptionsSection> {
-  bool isBookmarked = false;
-  bool isLiked = false;
 
   @override
   Widget build(BuildContext context) {
@@ -155,12 +153,21 @@ class _FeedOptionsSectionState extends State<FeedOptionsSection> {
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
-            IconButton(
-              icon: Icon(
-                isLiked ? FontAwesomeIcons.solidHeart : FontAwesomeIcons.heart,
-                size: 16,
-              ),
-              onPressed: () {},
+            ValueListenableBuilder(
+              valueListenable: widget.article.liked,
+              builder: (context, value, child) {
+                return IconButton(
+                  icon: Icon(
+                    value
+                        ? FontAwesomeIcons.solidHeart
+                        : FontAwesomeIcons.heart,
+                    size: 16,
+                  ),
+                  onPressed: () {
+                    widget.article.liked.value = !value;
+                  },
+                );
+              },
             ),
             IconButton(
               icon: Icon(
@@ -176,20 +183,32 @@ class _FeedOptionsSectionState extends State<FeedOptionsSection> {
               ),
               onPressed: () {},
             ),
-            IconButton(
-              icon: Icon(
-                isBookmarked
-                    ? FontAwesomeIcons.solidBookmark
-                    : FontAwesomeIcons.bookmark,
-                size: 16,
-              ),
-              onPressed: () async {
-                setState(() {
-                  isBookmarked = !isBookmarked;
-                });
-                await bookmarkStore
-                    .toggleBookmark(feed: widget.article)
-                    .then((onValue) => isBookmarked = onValue);
+            ValueListenableBuilder(
+              valueListenable: widget.article.bookmarked,
+              builder: (context, value, child) {
+                return IconButton(
+                  icon: Icon(
+                    value
+                        ? FontAwesomeIcons.solidBookmark
+                        : FontAwesomeIcons.bookmark,
+                    size: 16,
+                  ),
+                  onPressed: () {
+                    if (value) {
+                      widget.article.bookmarked.value = false;
+                      bookmarkStore
+                          .removeBookmarkedFeed(feed: widget.article)
+                          .then((onValue) =>
+                              widget.article.bookmarked.value = !onValue);
+                    } else {
+                      widget.article.bookmarked.value = true;
+                      bookmarkStore
+                          .addBookmarkedFeed(feed: widget.article)
+                          .then((onValue) =>
+                              widget.article.bookmarked.value = onValue);
+                    }
+                  },
+                );
               },
             ),
             IconButton(

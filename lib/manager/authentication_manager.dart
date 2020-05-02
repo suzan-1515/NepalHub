@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
-import 'package:samachar_hub/data/model/user_data.dart';
+import 'package:samachar_hub/data/api/api.dart';
 import 'package:samachar_hub/service/analytics_service.dart';
 import 'package:samachar_hub/service/authentication_service.dart';
 

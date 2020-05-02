@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:samachar_hub/data/model/feed.dart';
+import 'package:samachar_hub/data/dto/feed_dto.dart';
 
 import 'article_image_widget.dart';
 import 'article_info_widget.dart';

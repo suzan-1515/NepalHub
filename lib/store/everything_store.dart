@@ -3,10 +3,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mobx/mobx.dart';
 import 'package:provider/provider.dart';
-import 'package:samachar_hub/data/api.dart';
-import 'package:samachar_hub/data/model/api_error.dart';
-import 'package:samachar_hub/data/model/feed.dart';
-import 'package:samachar_hub/data/model/news.dart';
+import 'package:samachar_hub/data/api/api.dart';
+import 'package:samachar_hub/data/dto/feed_dto.dart';
 import 'package:samachar_hub/routes/article/article_view_screen.dart';
 import 'package:samachar_hub/routes/home/pages/pages.dart';
 import 'package:samachar_hub/service/everything_service.dart';
@@ -33,15 +31,15 @@ abstract class _EverythingStore with Store {
   ObservableMap<NewsCategory, ObservableFuture> loadFeedItemsFuture =
       ObservableMap<NewsCategory, ObservableFuture>();
 
-  Map<NewsCategory, News> newsData = Map<NewsCategory, News>();
+  Map<NewsCategory, List<Feed>> newsData = Map<NewsCategory, List<Feed>>();
 
   Map<NewsCategory, bool> hasMoreData = Map<NewsCategory, bool>();
 
   @observable
-  APIError apiError;
+  String error;
 
   @observable
-  String error;
+  APIException apiError;
 
   @observable
   MenuItem view = MenuItem.LIST_VIEW;
@@ -87,31 +85,29 @@ abstract class _EverythingStore with Store {
       if (isLoadingMore[category] ?? false) return;
       isLoadingMore[category] = true;
 
-      News cachedNews = newsData[category];
-      if (cachedNews == null ||
-          cachedNews.feeds == null ||
-          cachedNews.feeds.isEmpty) {
-        News moreNews =
+      List<Feed> cachedNews = newsData[category];
+      if (cachedNews == null || cachedNews.isEmpty) {
+        List<Feed> moreNews =
             await _everythingService.getFeedsByCategory(newsCategory: category);
         if (moreNews != null) {
-          if (moreNews.feeds != null && moreNews.feeds.isNotEmpty) {
+          if (moreNews.isNotEmpty) {
             newsData[category] = moreNews;
             hasMoreData[category] = true;
           } else
             hasMoreData[category] = false;
         }
       } else {
-        News moreNews = await _everythingService.getFeedsByCategory(
-            newsCategory: category, lastFeedId: cachedNews.feeds.last.id);
+        List<Feed> moreNews = await _everythingService.getFeedsByCategory(
+            newsCategory: category, lastFeedId: cachedNews.last.id);
         if (moreNews != null) {
-          if (moreNews.feeds != null && moreNews.feeds.isNotEmpty) {
-            cachedNews.feeds.addAll(moreNews.feeds);
+          if (moreNews.isNotEmpty) {
+            cachedNews.addAll(moreNews);
             hasMoreData[category] = true;
           } else
             hasMoreData[category] = false;
         }
       }
-    } on APIError catch (apiError) {
+    } on APIException catch (apiError) {
       this.apiError = apiError;
     } on Exception catch (e) {
       this.error = e.toString();
@@ -146,7 +142,7 @@ abstract class _EverythingStore with Store {
   }
 
   dispose() {
-    _throttling.forEach((key,value)=> value.dispose());
+    _throttling.forEach((key, value) => value.dispose());
     _throttling.clear();
     _asyncMemoizer.clear();
     isLoadingMore.clear();

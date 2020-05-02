@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:incrementally_loading_listview/incrementally_loading_listview.dart';
 import 'package:mobx/mobx.dart';
 import 'package:provider/provider.dart';
-import 'package:samachar_hub/data/model/feed.dart';
+import 'package:samachar_hub/data/dto/feed_dto.dart';
 import 'package:samachar_hub/store/bookmark_store.dart';
 import 'package:samachar_hub/widgets/news_list_view.dart';
 

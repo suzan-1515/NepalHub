@@ -32,14 +32,14 @@ mixin _$PersonalisedFeedStore on _PersonalisedFeedStore, Store {
   final _$apiErrorAtom = Atom(name: '_PersonalisedFeedStore.apiError');
 
   @override
-  APIError get apiError {
+  APIException get apiError {
     _$apiErrorAtom.context.enforceReadPolicy(_$apiErrorAtom);
     _$apiErrorAtom.reportObserved();
     return super.apiError;
   }
 
   @override
-  set apiError(APIError value) {
+  set apiError(APIException value) {
     _$apiErrorAtom.context.conditionallyRunInAction(() {
       super.apiError = value;
       _$apiErrorAtom.reportChanged();

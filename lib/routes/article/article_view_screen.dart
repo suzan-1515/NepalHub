@@ -34,7 +34,6 @@ class _ArticleViewScreenState extends State<ArticleViewScreen> {
     if (null != _disposer) _disposer();
     super.dispose();
   }
-  
 
   Widget _articleDetails(BuildContext context) {
     return Padding(
@@ -58,8 +57,7 @@ class _ArticleViewScreenState extends State<ArticleViewScreen> {
           ),
           Builder(
             builder: (BuildContext context) {
-              final String faviconUrl =
-                  widget.store.article.source?.getFavicon();
+              final String faviconUrl = widget.store.article.sourceFavicon;
               return Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 mainAxisSize: MainAxisSize.max,
@@ -74,7 +72,7 @@ class _ArticleViewScreenState extends State<ArticleViewScreen> {
                       Padding(
                         padding: EdgeInsets.only(left: 8),
                         child: Text(
-                          'Article\nPublished on\n${widget.store.article.formatedSource()}',
+                          'Article\nPublished on\n${widget.store.article.source}',
                           overflow: TextOverflow.ellipsis,
                         ),
                       ),
@@ -115,14 +113,13 @@ class _ArticleViewScreenState extends State<ArticleViewScreen> {
               SizedBox(width: 6),
               RichText(
                 text: TextSpan(
-                    text: 'By ${widget.store.article.getAuthor()}',
+                    text: 'By ${widget.store.article.author}',
                     style: Theme.of(context).textTheme.display2.copyWith(
                           color: Theme.of(context).accentColor,
                         ),
                     children: <TextSpan>[
                       TextSpan(
-                        text:
-                            '\n${widget.store.article.formatedPublishedDate()}',
+                        text: '\n${widget.store.article.publishedAt}',
                         style: Theme.of(context).textTheme.display3,
                       )
                     ]),
@@ -139,7 +136,7 @@ class _ArticleViewScreenState extends State<ArticleViewScreen> {
                     color: Colors.blueGrey,
                     borderRadius: BorderRadius.all(Radius.circular(12))),
                 child: Text(
-                  widget.store.article.formatedCategory(),
+                  widget.store.article.category,
                   style: Theme.of(context)
                       .textTheme
                       .body1

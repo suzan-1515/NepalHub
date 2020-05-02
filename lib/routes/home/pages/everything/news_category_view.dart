@@ -3,8 +3,8 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:incrementally_loading_listview/incrementally_loading_listview.dart';
 import 'package:mobx/mobx.dart';
 import 'package:provider/provider.dart';
-import 'package:samachar_hub/data/api.dart';
-import 'package:samachar_hub/data/model/news.dart';
+import 'package:samachar_hub/data/api/api.dart';
+import 'package:samachar_hub/data/dto/feed_dto.dart';
 import 'package:samachar_hub/routes/home/pages/pages.dart';
 import 'package:samachar_hub/store/everything_store.dart';
 import 'package:samachar_hub/widgets/news_compact_view.dart';
@@ -44,20 +44,20 @@ class NewsCategoryView extends StatelessWidget {
               ),
             );
           case FutureStatus.fulfilled:
-            final News newsData = everythingStore.newsData[category];
-            if (null != newsData && newsData.feeds.isNotEmpty) {
+            final List<Feed> newsData = everythingStore.newsData[category];
+            if (null != newsData && newsData.isNotEmpty) {
               final MenuItem viewType = everythingStore.view;
               return RefreshIndicator(
                 child: IncrementallyLoadingListView(
                     hasMore: () =>
                         everythingStore.hasMoreData[category] ?? true,
-                    itemCount: () => newsData.feeds.length,
+                    itemCount: () => newsData.length,
                     loadMore: () async {
                       await everythingStore.loadMoreData(category);
                     },
                     loadMoreOffsetFromBottom: 2,
                     itemBuilder: (BuildContext context, int index) {
-                      final feed = newsData.feeds[index];
+                      final feed = newsData[index];
                       Widget articleWidget;
                       switch (viewType) {
                         case MenuItem.LIST_VIEW:
@@ -70,9 +70,10 @@ class NewsCategoryView extends StatelessWidget {
                           articleWidget = NewsCompactView(feed);
                           break;
                       }
-                      if (index == newsData.feeds.length - 1 &&
-                          everythingStore.hasMoreData[category] ?? true &&
-                          !everythingStore.isLoadingMore[category] ?? false) {
+                      if (index == newsData.length - 1 &&
+                              everythingStore.hasMoreData[category] ??
+                          true && !everythingStore.isLoadingMore[category] ??
+                          false) {
                         return Column(
                           children: <Widget>[
                             Material(

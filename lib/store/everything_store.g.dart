@@ -31,23 +31,6 @@ mixin _$EverythingStore on _EverythingStore, Store {
         name: '${_$loadFeedItemsFutureAtom.name}_set');
   }
 
-  final _$apiErrorAtom = Atom(name: '_EverythingStore.apiError');
-
-  @override
-  APIError get apiError {
-    _$apiErrorAtom.context.enforceReadPolicy(_$apiErrorAtom);
-    _$apiErrorAtom.reportObserved();
-    return super.apiError;
-  }
-
-  @override
-  set apiError(APIError value) {
-    _$apiErrorAtom.context.conditionallyRunInAction(() {
-      super.apiError = value;
-      _$apiErrorAtom.reportChanged();
-    }, _$apiErrorAtom, name: '${_$apiErrorAtom.name}_set');
-  }
-
   final _$errorAtom = Atom(name: '_EverythingStore.error');
 
   @override
@@ -63,6 +46,23 @@ mixin _$EverythingStore on _EverythingStore, Store {
       super.error = value;
       _$errorAtom.reportChanged();
     }, _$errorAtom, name: '${_$errorAtom.name}_set');
+  }
+
+  final _$apiErrorAtom = Atom(name: '_EverythingStore.apiError');
+
+  @override
+  APIException get apiError {
+    _$apiErrorAtom.context.enforceReadPolicy(_$apiErrorAtom);
+    _$apiErrorAtom.reportObserved();
+    return super.apiError;
+  }
+
+  @override
+  set apiError(APIException value) {
+    _$apiErrorAtom.context.conditionallyRunInAction(() {
+      super.apiError = value;
+      _$apiErrorAtom.reportChanged();
+    }, _$apiErrorAtom, name: '${_$apiErrorAtom.name}_set');
   }
 
   final _$viewAtom = Atom(name: '_EverythingStore.view');
@@ -167,7 +167,7 @@ mixin _$EverythingStore on _EverythingStore, Store {
   @override
   String toString() {
     final string =
-        'loadFeedItemsFuture: ${loadFeedItemsFuture.toString()},apiError: ${apiError.toString()},error: ${error.toString()},view: ${view.toString()},activeTabIndex: ${activeTabIndex.toString()}';
+        'loadFeedItemsFuture: ${loadFeedItemsFuture.toString()},error: ${error.toString()},apiError: ${apiError.toString()},view: ${view.toString()},activeTabIndex: ${activeTabIndex.toString()}';
     return '{$string}';
   }
 }
