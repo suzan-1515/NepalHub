@@ -206,8 +206,7 @@ class _ArticleViewScreenState extends State<ArticleViewScreen> {
                   children: <Widget>[
                     Expanded(
                         child: ArticleImageWidget(widget.store.article.image,
-                            tag: widget.store.article.uuid +
-                                widget.store.article.id)),
+                            tag: widget.store.article.tag)),
                     Expanded(
                       child: SingleChildScrollView(
                           child: _articleDetails(context)),

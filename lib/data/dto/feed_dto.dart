@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:samachar_hub/data/api/response/api_response.dart';
+import 'package:uuid/uuid.dart';
 
 class Feed {
   final FeedApiResponse rawData;
@@ -18,6 +19,7 @@ class Feed {
   final List<Feed> related;
   ValueNotifier<bool> bookmarked = ValueNotifier(false);
   ValueNotifier<bool> liked = ValueNotifier(false);
+  String tag = Uuid().v4();
 
   Feed(this.rawData,
       {@required this.id,

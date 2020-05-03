@@ -10,7 +10,6 @@ import 'package:samachar_hub/manager/like_manager.dart';
 import 'package:samachar_hub/service/analytics_service.dart';
 import 'package:samachar_hub/service/authentication_service.dart';
 import 'package:samachar_hub/service/bookmark_activity_service.dart';
-import 'package:samachar_hub/service/bookmark_service.dart';
 import 'package:samachar_hub/service/cloud_storage_service.dart';
 import 'package:samachar_hub/service/everything_service.dart';
 import 'package:samachar_hub/service/feed_service.dart';
@@ -20,6 +19,7 @@ import 'package:samachar_hub/service/preference_service.dart';
 import 'package:samachar_hub/store/bookmark_store.dart';
 import 'package:samachar_hub/store/everything_store.dart';
 import 'package:samachar_hub/store/home_screen_store.dart';
+import 'package:samachar_hub/store/like_store.dart';
 import 'package:samachar_hub/store/personalised_store.dart';
 import 'package:samachar_hub/store/settings_store.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -72,9 +72,6 @@ class App extends StatelessWidget {
         Provider<EverythingService>(
           create: (_) => EverythingService(),
         ),
-        Provider<BookmarkService>(
-          create: (_) => BookmarkService(),
-        ),
         Provider<PersonalisedFeedService>(
           create: (_) => PersonalisedFeedService(),
         ),
@@ -124,6 +121,10 @@ class App extends StatelessWidget {
         ProxyProvider2<PreferenceService, BookmarkManager, BookmarkStore>(
           update: (_, preferenceService, _favouriteManager, __) =>
               BookmarkStore(preferenceService, _favouriteManager),
+        ),
+        ProxyProvider2<PreferenceService, LikeManager, LikeStore>(
+          update: (_, preferenceService, _likeManager, __) =>
+              LikeStore(preferenceService, _likeManager),
         ),
         ProxyProvider<PreferenceService, SettingsStore>(
           update: (_, preferenceService, __) =>

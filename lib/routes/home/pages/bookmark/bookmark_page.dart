@@ -3,8 +3,8 @@ import 'package:incrementally_loading_listview/incrementally_loading_listview.da
 import 'package:mobx/mobx.dart';
 import 'package:provider/provider.dart';
 import 'package:samachar_hub/data/dto/feed_dto.dart';
+import 'package:samachar_hub/routes/home/pages/bookmark/bookmark_list_item.dart';
 import 'package:samachar_hub/store/bookmark_store.dart';
-import 'package:samachar_hub/widgets/news_list_view.dart';
 
 class BookmarkPage extends StatefulWidget {
   @override
@@ -115,7 +115,7 @@ class _BookmarkPageState extends State<BookmarkPage>
                                         child: InkWell(
                                           onTap: () => _bookmarkStore
                                               .onFeedClick(article, context),
-                                          child: NewsListView(article),
+                                          child: BookmarkListItem(article),
                                         ),
                                       ),
                                       Padding(
@@ -130,7 +130,7 @@ class _BookmarkPageState extends State<BookmarkPage>
                                     child: InkWell(
                                       onTap: () => _bookmarkStore.onFeedClick(
                                           article, context),
-                                      child: NewsListView(article),
+                                      child: BookmarkListItem(article),
                                     ),
                                   );
                                 }

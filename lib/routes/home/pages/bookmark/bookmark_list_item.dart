@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:provider/provider.dart';
 import 'package:samachar_hub/data/dto/feed_dto.dart';
+import 'package:samachar_hub/store/bookmark_store.dart';
 import 'package:samachar_hub/widgets/article_image_widget.dart';
 import 'package:samachar_hub/widgets/article_info_widget.dart';
 
-class NewsListView extends StatelessWidget {
-  NewsListView(this.article);
+class BookmarkListItem extends StatelessWidget {
+  BookmarkListItem(this.article);
 
   final Feed article;
 
@@ -42,8 +45,8 @@ class NewsListView extends StatelessWidget {
                     flex: 2,
                     child: ClipRRect(
                       borderRadius: BorderRadius.all(Radius.circular(6)),
-                      child: ArticleImageWidget(article.image,
-                          tag: article.tag),
+                      child:
+                          ArticleImageWidget(article.image, tag: article.tag),
                     ),
                   ),
                 ],
@@ -51,8 +54,40 @@ class NewsListView extends StatelessWidget {
             ),
             SizedBox(height: 8),
             Divider(),
-            FeedOptionsSection(
-              article: article,
+            Consumer<BookmarkStore>(
+              builder: (context, bookmarkStore, child) {
+                return Row(
+                  mainAxisSize: MainAxisSize.max,
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    IconButton(
+                      icon: Icon(
+                        FontAwesomeIcons.shareAlt,
+                        size: 16,
+                      ),
+                      onPressed: () {},
+                    ),
+                    IconButton(
+                      icon: Icon(
+                        FontAwesomeIcons.comment,
+                        size: 16,
+                      ),
+                      onPressed: () {},
+                    ),
+                    IconButton(
+                      icon: Icon(
+                        FontAwesomeIcons.solidBookmark,
+                        size: 16,
+                      ),
+                      onPressed: () async {
+                        bookmarkStore.removeBookmarkedFeed(feed: article).then(
+                            (onValue) => article.bookmarked.value = !onValue);
+                      },
+                    ),
+                  ],
+                );
+              },
             ),
           ],
         ),

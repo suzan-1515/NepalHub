@@ -4,6 +4,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:samachar_hub/data/dto/feed_dto.dart';
 import 'package:samachar_hub/store/bookmark_store.dart';
+import 'package:samachar_hub/store/like_store.dart';
 
 class DefaultFeedInfoWidget extends StatelessWidget {
   DefaultFeedInfoWidget(this.article);
@@ -143,11 +144,10 @@ class FeedOptionsSection extends StatefulWidget {
 }
 
 class _FeedOptionsSectionState extends State<FeedOptionsSection> {
-
   @override
   Widget build(BuildContext context) {
-    return Consumer<BookmarkStore>(
-      builder: (context, bookmarkStore, child) {
+    return Consumer2<BookmarkStore, LikeStore>(
+      builder: (context, bookmarkStore, likeStore, child) {
         return Row(
           mainAxisSize: MainAxisSize.max,
           mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -163,8 +163,16 @@ class _FeedOptionsSectionState extends State<FeedOptionsSection> {
                         : FontAwesomeIcons.heart,
                     size: 16,
                   ),
-                  onPressed: () {
-                    widget.article.liked.value = !value;
+                  onPressed: () async{
+                    if (value) {
+                      widget.article.liked.value = false;
+                      likeStore.removeLikedFeed(feed: widget.article).then(
+                          (onValue) => widget.article.liked.value = !onValue);
+                    } else {
+                      widget.article.liked.value = true;
+                      likeStore.addLikedFeed(feed: widget.article).then(
+                          (onValue) => widget.article.liked.value = onValue);
+                    }
                   },
                 );
               },
@@ -193,7 +201,7 @@ class _FeedOptionsSectionState extends State<FeedOptionsSection> {
                         : FontAwesomeIcons.bookmark,
                     size: 16,
                   ),
-                  onPressed: () {
+                  onPressed: () async{
                     if (value) {
                       widget.article.bookmarked.value = false;
                       bookmarkStore
