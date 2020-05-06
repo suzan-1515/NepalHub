@@ -3,28 +3,22 @@ import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:samachar_hub/manager/authentication_manager.dart';
-import 'package:samachar_hub/manager/bookmark_manager.dart';
-import 'package:samachar_hub/manager/feed_manager.dart';
-import 'package:samachar_hub/manager/like_manager.dart';
-import 'package:samachar_hub/service/analytics_service.dart';
-import 'package:samachar_hub/service/authentication_service.dart';
-import 'package:samachar_hub/service/bookmark_activity_service.dart';
-import 'package:samachar_hub/service/cloud_storage_service.dart';
-import 'package:samachar_hub/service/everything_service.dart';
-import 'package:samachar_hub/service/feed_service.dart';
-import 'package:samachar_hub/service/like_activity_service.dart';
-import 'package:samachar_hub/service/personalised_service.dart';
-import 'package:samachar_hub/service/preference_service.dart';
-import 'package:samachar_hub/store/bookmark_store.dart';
-import 'package:samachar_hub/store/everything_store.dart';
-import 'package:samachar_hub/store/home_screen_store.dart';
-import 'package:samachar_hub/store/like_store.dart';
-import 'package:samachar_hub/store/personalised_store.dart';
-import 'package:samachar_hub/store/settings_store.dart';
+import 'package:samachar_hub/common/manager/managers.dart';
+import 'package:samachar_hub/common/service/navigation_service.dart';
+import 'package:samachar_hub/common/service/services.dart';
+import 'package:samachar_hub/common/store/like_store.dart';
+import 'package:samachar_hub/pages/bookmark/bookmark_activity_service.dart';
+import 'package:samachar_hub/pages/bookmark/bookmark_manager.dart';
+import 'package:samachar_hub/pages/bookmark/bookmark_store.dart';
+import 'package:samachar_hub/pages/category/categories_store.dart';
+import 'package:samachar_hub/pages/home/home_screen_store.dart';
+import 'package:samachar_hub/pages/pages.dart';
+import 'package:samachar_hub/pages/personalised/personalised_service.dart';
+import 'package:samachar_hub/pages/personalised/personalised_store.dart';
+import 'package:samachar_hub/pages/settings/settings_store.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'routes/routes.dart';
 import 'common/themes.dart' as Themes;
+import 'pages/category/categories_service.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -57,6 +51,9 @@ class App extends StatelessWidget {
         Provider<PreferenceService>(
           create: (_) => PreferenceService(_sharedPreferences),
         ),
+        Provider<NavigationService>(
+          create: (_) => NavigationService(),
+        ),
         Provider<AnalyticsService>(
           create: (_) => AnalyticsService(),
         ),
@@ -69,8 +66,8 @@ class App extends StatelessWidget {
         Provider<FeedService>(
           create: (_) => FeedService(),
         ),
-        Provider<EverythingService>(
-          create: (_) => EverythingService(),
+        Provider<CategoriesService>(
+          create: (_) => CategoriesService(),
         ),
         Provider<PersonalisedFeedService>(
           create: (_) => PersonalisedFeedService(),
@@ -95,10 +92,8 @@ class App extends StatelessWidget {
                   activityService: BookmarkActivityService(),
                   analyticsService: _analyticsService),
         ),
-        ProxyProvider2<AnalyticsService, AuthenticationManager,
-            LikeManager>(
-          update: (_, _analyticsService, _authenticationManager,
-                  __) =>
+        ProxyProvider2<AnalyticsService, AuthenticationManager, LikeManager>(
+          update: (_, _analyticsService, _authenticationManager, __) =>
               LikeManager(
                   authenticationManager: _authenticationManager,
                   activityService: LikeActivityService(),
@@ -113,9 +108,9 @@ class App extends StatelessWidget {
           update: (_, preferenceService, personalisedFeedService, __) =>
               PersonalisedFeedStore(preferenceService, personalisedFeedService),
         ),
-        ProxyProvider2<PreferenceService, EverythingService, EverythingStore>(
+        ProxyProvider2<PreferenceService, CategoriesService, CategoriesStore>(
           update: (_, preferenceService, everythingService, __) =>
-              EverythingStore(everythingService),
+              CategoriesStore(everythingService),
           dispose: (context, everythingStore) => everythingStore.dispose(),
         ),
         ProxyProvider2<PreferenceService, BookmarkManager, BookmarkStore>(

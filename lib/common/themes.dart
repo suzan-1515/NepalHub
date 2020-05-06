@@ -32,7 +32,11 @@ final lightTheme = ThemeData(
   scaffoldBackgroundColor: Colors.grey[100],
   backgroundColor: Colors.grey[100],
   cardColor: Colors.white,
+  splashColor: Colors.red[200],
   bottomAppBarColor: Colors.white,
+  iconTheme: IconThemeData(
+    color: Colors.black
+  ),
   buttonTheme: ButtonThemeData(
     buttonColor: Colors.white70,
     textTheme: ButtonTextTheme.normal,
@@ -58,7 +62,11 @@ final darkTheme = ThemeData(
   scaffoldBackgroundColor: Colors.grey[850],
   backgroundColor: Colors.grey[850],
   cardColor: Colors.grey[800],
+  splashColor: Colors.red[100],
   bottomAppBarColor: Colors.grey[700],
+  iconTheme: IconThemeData(
+    color: Colors.white
+  ),
   buttonTheme: ButtonThemeData(
     buttonColor: Colors.white30,
     textTheme: ButtonTextTheme.normal,
@@ -84,6 +92,7 @@ final pitchBlack = ThemeData(
   scaffoldBackgroundColor: Colors.black,
   backgroundColor: Colors.black,
   cardColor: Colors.grey[900],
+  splashColor: Colors.red[100],
   bottomAppBarColor: Colors.grey[900],
   buttonTheme: ButtonThemeData(
     buttonColor: Colors.white30,
