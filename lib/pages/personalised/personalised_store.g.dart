@@ -9,26 +9,6 @@ part of 'personalised_store.dart';
 // ignore_for_file: non_constant_identifier_names, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
 
 mixin _$PersonalisedFeedStore on _PersonalisedFeedStore, Store {
-  final _$loadFeedItemsFutureAtom =
-      Atom(name: '_PersonalisedFeedStore.loadFeedItemsFuture');
-
-  @override
-  ObservableFuture<dynamic> get loadFeedItemsFuture {
-    _$loadFeedItemsFutureAtom.context
-        .enforceReadPolicy(_$loadFeedItemsFutureAtom);
-    _$loadFeedItemsFutureAtom.reportObserved();
-    return super.loadFeedItemsFuture;
-  }
-
-  @override
-  set loadFeedItemsFuture(ObservableFuture<dynamic> value) {
-    _$loadFeedItemsFutureAtom.context.conditionallyRunInAction(() {
-      super.loadFeedItemsFuture = value;
-      _$loadFeedItemsFutureAtom.reportChanged();
-    }, _$loadFeedItemsFutureAtom,
-        name: '${_$loadFeedItemsFutureAtom.name}_set');
-  }
-
   final _$apiErrorAtom = Atom(name: '_PersonalisedFeedStore.apiError');
 
   @override
@@ -80,14 +60,6 @@ mixin _$PersonalisedFeedStore on _PersonalisedFeedStore, Store {
     }, _$viewAtom, name: '${_$viewAtom.name}_set');
   }
 
-  final _$_loadFirstPageFeedsAsyncAction = AsyncAction('_loadFirstPageFeeds');
-
-  @override
-  Future<void> _loadFirstPageFeeds() {
-    return _$_loadFirstPageFeedsAsyncAction
-        .run(() => super._loadFirstPageFeeds());
-  }
-
   final _$refreshAsyncAction = AsyncAction('refresh');
 
   @override
@@ -95,21 +67,21 @@ mixin _$PersonalisedFeedStore on _PersonalisedFeedStore, Store {
     return _$refreshAsyncAction.run(() => super.refresh());
   }
 
-  final _$loadMoreDataAsyncAction = AsyncAction('loadMoreData');
+  final _$loadLatestNewsAsyncAction = AsyncAction('loadLatestNews');
 
   @override
-  Future<void> loadMoreData() {
-    return _$loadMoreDataAsyncAction.run(() => super.loadMoreData());
+  Future<void> loadLatestNews() {
+    return _$loadLatestNewsAsyncAction.run(() => super.loadLatestNews());
   }
 
   final _$_PersonalisedFeedStoreActionController =
       ActionController(name: '_PersonalisedFeedStore');
 
   @override
-  void loadInitialFeeds() {
+  void loadInitialData() {
     final _$actionInfo = _$_PersonalisedFeedStoreActionController.startAction();
     try {
-      return super.loadInitialFeeds();
+      return super.loadInitialData();
     } finally {
       _$_PersonalisedFeedStoreActionController.endAction(_$actionInfo);
     }
@@ -138,7 +110,7 @@ mixin _$PersonalisedFeedStore on _PersonalisedFeedStore, Store {
   @override
   String toString() {
     final string =
-        'loadFeedItemsFuture: ${loadFeedItemsFuture.toString()},apiError: ${apiError.toString()},error: ${error.toString()},view: ${view.toString()}';
+        'apiError: ${apiError.toString()},error: ${error.toString()},view: ${view.toString()}';
     return '{$string}';
   }
 }

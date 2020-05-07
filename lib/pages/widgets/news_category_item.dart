@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:samachar_hub/common/service/navigation_service.dart';
-import 'package:samachar_hub/data/dto/news_category_dto.dart';
+import 'package:samachar_hub/data/dto/news_category_menu_dto.dart';
 
 class NewsCategoryMenuItem extends StatelessWidget {
   final NewsCategoryMenu category;
@@ -30,13 +30,15 @@ class NewsCategoryMenuItem extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: CircleAvatar(
-                          backgroundColor: Theme.of(context).backgroundColor,
-                          child: Icon(
-                            category.icon,
-                          ),
+                      child: Container(
+                        padding: EdgeInsets.all(8),
+                        alignment: Alignment.center,
+                        decoration: BoxDecoration(
+                            color: Theme.of(context).backgroundColor,
+                            shape: BoxShape.circle),
+                        child: Icon(
+                          category.icon,
+                          color: Theme.of(context).accentColor,
                         ),
                       ),
                     ),

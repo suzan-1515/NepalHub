@@ -1,24 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:samachar_hub/data/api/api_provider.dart';
-import 'package:samachar_hub/data/dto/news_category_dto.dart';
+import 'package:samachar_hub/data/dto/news_category_menu_dto.dart';
 import 'package:samachar_hub/pages/widgets/news_category_item.dart';
-import 'package:samachar_hub/util/news_category.dart';
 
 class NewsCategoryMenuSection extends StatelessWidget {
-  final List<NewsCategoryMenu> newsMenus = [
-    NewsCategoryMenu('1', newsCategoryNameByCode[NewsCategory.tops],
-        FontAwesomeIcons.newspaper),
-    NewsCategoryMenu(
-        '2', newsCategoryNameByCode[NewsCategory.pltc], Icons.assistant_photo),
-    NewsCategoryMenu('3', newsCategoryNameByCode[NewsCategory.sprt],
-        FontAwesomeIcons.running),
-    NewsCategoryMenu(
-        '4', newsCategoryNameByCode[NewsCategory.scte], FontAwesomeIcons.phone),
-    NewsCategoryMenu(
-        '5', newsCategoryNameByCode[NewsCategory.wrld], FontAwesomeIcons.globe),
-  ];
+final List<NewsCategoryMenu> newsMenus;
 
+  const NewsCategoryMenuSection({Key key, this.newsMenus}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Container(

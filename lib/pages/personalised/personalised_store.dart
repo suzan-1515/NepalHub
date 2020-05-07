@@ -1,13 +1,14 @@
-import 'package:async/async.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
+import 'dart:async';
+
 import 'package:mobx/mobx.dart';
-import 'package:provider/provider.dart';
 import 'package:samachar_hub/common/service/services.dart';
 import 'package:samachar_hub/data/api/api.dart';
 import 'package:samachar_hub/data/dto/feed_dto.dart';
+import 'package:samachar_hub/data/dto/heading.dart';
+import 'package:samachar_hub/data/dto/progress.dart';
 import 'package:samachar_hub/pages/pages.dart';
 import 'package:samachar_hub/pages/personalised/personalised_service.dart';
+import 'package:samachar_hub/util/news_category.dart';
 
 part 'personalised_store.g.dart';
 
@@ -17,17 +18,18 @@ class PersonalisedFeedStore = _PersonalisedFeedStore
 abstract class _PersonalisedFeedStore with Store {
   final PersonalisedFeedService _personalisedFeedService;
   final PreferenceService _preferenceService;
-  final AsyncMemoizer _asyncMemoizer = AsyncMemoizer();
-  bool isLoadingMore = false;
-  bool hasMoreData = false;
+
+  StreamController<List> _dataStreamController =
+      StreamController<List>.broadcast();
+
+  Stream<List> get dataStream => _dataStreamController.stream;
 
   _PersonalisedFeedStore(
       this._preferenceService, this._personalisedFeedService);
 
-  List<Feed> newsData = List<Feed>();
+  List<Feed> latestNewsData = List<Feed>();
 
-  @observable
-  ObservableFuture loadFeedItemsFuture;
+  List data = List();
 
   @observable
   APIException apiError;
@@ -39,50 +41,75 @@ abstract class _PersonalisedFeedStore with Store {
   MenuItem view = MenuItem.THUMBNAIL_VIEW;
 
   @action
-  void loadInitialFeeds() {
-    loadFeedItemsFuture = ObservableFuture(_asyncMemoizer.runOnce(() async {
-      await _loadFirstPageFeeds();
-    }));
-  }
-
-  @action
-  Future<void> _loadFirstPageFeeds() async {
-    newsData.clear();
-    await loadMoreData();
+  void loadInitialData() {
+    buildData();
   }
 
   @action
   Future<void> refresh() async {
-    return _loadFirstPageFeeds();
+    return buildData();
   }
 
   @action
   void retry() {
-    loadFeedItemsFuture = ObservableFuture(_loadFirstPageFeeds());
+    buildData();
   }
 
   @action
-  Future<void> loadMoreData() async {
+  Future<void> loadLatestNews() async {
     try {
-      if (isLoadingMore) return;
-      isLoadingMore = true;
-
       List<Feed> moreNews = await _personalisedFeedService.getLatestFeeds();
       if (moreNews != null) {
-        newsData.addAll(moreNews);
+        latestNewsData = moreNews;
       }
     } on APIException catch (apiError) {
       this.apiError = apiError;
+      throw apiError;
     } on Exception catch (e) {
       this.error = e.toString();
-    } finally {
-      isLoadingMore = false;
+      throw e;
     }
+  }
+
+  buildData(){
+    //Clear all data
+    latestNewsData.clear();
+    data.clear();
+
+    //add initial loading indicator
+    _dataStreamController.add([LoadingData()]);
+
+    //build new category menu section
+    data.addAll([
+      SectionHeading(
+          'Discover', 'Get the latest news on your favourite category'),
+      newsCategoryMenus,
+    ]);
+
+    //TODO: build news tags section
+    //TODO: build news sources menu section
+    //TODO: build trending news section
+
+    data.addAll([
+      SectionHeading('Latest stories for you',
+          'Latest news from various sources and categories'),
+    ]);
+    var tempData = List.of(data);
+    tempData.add(LoadingData());
+    _dataStreamController.add(tempData);
+    //build latest news section
+    loadLatestNews().then((onValue) {
+      //remove loading indicator
+      data.addAll(latestNewsData);
+      _dataStreamController.add(data);
+    }).catchError((onError) {
+      //remove loading indicator
+      _dataStreamController.add(data);
+    });
   }
 
   @action
   setView(MenuItem value) {
     view = value;
   }
-
 }

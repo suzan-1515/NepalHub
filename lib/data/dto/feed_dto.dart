@@ -49,14 +49,18 @@ class Feed {
   }
 }
 
-class FeedSourceDTO extends FeedSourceApiResponse {
-  FeedSourceDTO(int id, String name, String code, String icon, int priority,
+class FeedSource extends FeedSourceApiResponse {
+  FeedSource(int id, String name, String code, String icon, int priority,
       String favicon)
       : super(id, name, code, icon, priority, favicon);
 }
 
-class FeedCategoryDTO extends FeedCategoryApiResponse {
-  FeedCategoryDTO(int id, String name, String nameNp, String code, String icon,
+class FeedCategory extends FeedCategoryApiResponse {
+  FeedCategory(int id, String name, String nameNp, String code, String icon,
       int priority, String enable)
       : super(id, name, nameNp, code, icon, priority, enable);
+}
+
+class NewsTags extends NewsTagsApiResponse{
+  NewsTags(List<String> tags) : super(tags);
 }

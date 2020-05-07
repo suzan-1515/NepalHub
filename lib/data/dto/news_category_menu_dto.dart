@@ -4,6 +4,7 @@ class NewsCategoryMenu {
   final String id;
   final String title;
   final IconData icon;
+  final int index;
 
-  NewsCategoryMenu(this.id, this.title, this.icon);
+  NewsCategoryMenu({@required this.id, @required this.title, this.icon, @required this.index});
 }

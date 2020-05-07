@@ -18,9 +18,7 @@ abstract class _CategoriesStore with Store {
   final Map<NewsCategory, Throttling> _throttling =
       Map<NewsCategory, Throttling>();
 
-  _CategoriesStore(this._categoriesService) {
-    loadInitialFeeds(NewsCategory.tops);
-  }
+  _CategoriesStore(this._categoriesService);
 
   @observable
   ObservableMap<NewsCategory, ObservableFuture> loadFeedItemsFuture =

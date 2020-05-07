@@ -140,3 +140,15 @@ class FeedCategoryApiResponse {
       _$FeedCategoryApiResponseFromJson(json);
   Map<String, dynamic> toJson() => _$FeedCategoryApiResponseToJson(this);
 }
+
+@JsonSerializable()
+class NewsTagsApiResponse{
+  final List<String> tags;
+
+  NewsTagsApiResponse(this.tags);
+
+factory NewsTagsApiResponse.fromJson(Map<String, dynamic> json) =>
+      _$NewsTagsApiResponseFromJson(json);
+  Map<String, dynamic> toJson() => _$NewsTagsApiResponseToJson(this);
+
+}

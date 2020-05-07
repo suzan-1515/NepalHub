@@ -103,6 +103,19 @@ Future<FeedSourcesApiResponse> getSources() async {
   }
 }
 
+Future<NewsTagsApiResponse> getTags() async {
+  final Uri uri = Uri.https(_baseApiURL, _trendingTags);
+  final http.Response response = await http.get(uri);
+  // If response is not ok
+  _checkResponse(response);
+  // Deserialize
+  try {
+    return NewsTagsApiResponse.fromJson(json.decode(response.body));
+  } on Exception catch (e) {
+    throw e;
+  }
+}
+
 Map<String, String> _filterNullOrEmptyValuesFromMap(Map<String, String> map) {
   final Map<String, String> filteredMap = <String, String>{};
   map.forEach((String key, String value) {

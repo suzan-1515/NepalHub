@@ -60,10 +60,11 @@ class _CategoriesPageState extends State<CategoriesPage>
       length: _tabs.length,
     );
     _tabController.addListener(() {
-      store.setActiveTab(_tabController.index);
       store.loadInitialFeeds(
           (_tabs[_tabController.index].key as ValueKey<NewsCategory>).value);
     });
+    store.loadInitialFeeds(
+          (_tabs[_tabController.index].key as ValueKey<NewsCategory>).value);
     super.initState();
   }
 
@@ -116,7 +117,7 @@ class _CategoriesPageState extends State<CategoriesPage>
       );
   }
 
-  _setupObserver(store) {
+  _setupObserver(CategoriesStore store) {
     _disposers = [
       // Listens for error message
       autorun((_) {
@@ -127,6 +128,10 @@ class _CategoriesPageState extends State<CategoriesPage>
       autorun((_) {
         final APIException error = store.apiError;
         _showErrorDialog(error);
+      }),
+      // Listens tab change
+      autorun((_) {
+         _tabController.index = store.activeTabIndex;
       })
     ];
   }
@@ -167,7 +172,7 @@ class _CategoriesPageState extends State<CategoriesPage>
                 child: Row(
                   children: <Widget>[
                     Expanded(
-                      child: Text('Everything',
+                      child: Text('Categories',
                           style: Theme.of(context).textTheme.headline),
                     ),
                     Padding(

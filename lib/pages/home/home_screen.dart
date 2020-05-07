@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:mobx/mobx.dart';
 import 'package:provider/provider.dart';
 import 'package:samachar_hub/pages/home/home_screen_store.dart';
 import 'package:samachar_hub/pages/pages.dart';
-import 'package:samachar_hub/pages/widgets/news_category_section.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -13,6 +13,24 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final _pageController = PageController();
+
+// Reaction disposers
+  List<ReactionDisposer> _disposers;
+
+  @override
+  void initState() {
+    final store = Provider.of<HomeScreenStore>(context, listen: false);
+    _setupObserver(store);
+    super.initState();
+  }
+
+  _setupObserver(HomeScreenStore store) {
+    _disposers = [
+      autorun((_) {
+        _pageController.jumpToPage(store.selectedPage);
+      }),
+    ];
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +42,7 @@ class _HomeScreenState extends State<HomeScreen> {
             child: Center(
               child: PageView(
                 controller: _pageController,
-                onPageChanged: homeStore.setPage,
+                onPageChanged: (index) => {},
                 children: <Widget>[
                   PersonalisedPage(),
                   CategoriesPage(),
@@ -60,7 +78,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ],
               type: BottomNavigationBarType.fixed,
               currentIndex: homeStore.selectedPage,
-              onTap: _pageController.jumpToPage,
+              onTap: homeStore.setPage,
             ),
           ),
         );
@@ -71,6 +89,10 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void dispose() {
     _pageController.dispose();
+    // Dispose reactions
+    for (final d in _disposers) {
+      d();
+    }
     super.dispose();
   }
 }

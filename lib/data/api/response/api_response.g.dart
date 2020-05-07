@@ -136,3 +136,15 @@ Map<String, dynamic> _$FeedCategoryApiResponseToJson(
       'priority': instance.priority,
       'enable': instance.enable,
     };
+
+NewsTagsApiResponse _$NewsTagsApiResponseFromJson(Map<String, dynamic> json) {
+  return NewsTagsApiResponse(
+    (json['tags'] as List)?.map((e) => e as String)?.toList(),
+  );
+}
+
+Map<String, dynamic> _$NewsTagsApiResponseToJson(
+        NewsTagsApiResponse instance) =>
+    <String, dynamic>{
+      'tags': instance.tags,
+    };
