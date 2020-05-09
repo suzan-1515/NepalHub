@@ -3,13 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:samachar_hub/common/store/like_store.dart';
-import 'package:samachar_hub/data/dto/feed_dto.dart';
+import 'package:samachar_hub/data/dto/dto.dart';
 import 'package:samachar_hub/pages/bookmark/bookmark_store.dart';
 
 class DefaultFeedInfoWidget extends StatelessWidget {
-  DefaultFeedInfoWidget(this.article);
+  DefaultFeedInfoWidget(this.feed);
 
-  final Feed article;
+  final Feed feed;
 
   @override
   Widget build(BuildContext context) {
@@ -17,13 +17,13 @@ class DefaultFeedInfoWidget extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: <Widget>[
-        FeedSourceSection(article),
+        FeedSourceSection(feed),
         SizedBox(height: 16),
-        FeedTitleDescriptionSection(article),
+        FeedTitleDescriptionSection(feed),
         SizedBox(height: 8),
         Divider(),
         FeedOptionsSection(
-          article: article,
+          article: feed,
         )
       ],
     );
@@ -40,24 +40,23 @@ class FeedSourceSection extends StatelessWidget {
     return IntrinsicHeight(
       child: Row(
         mainAxisSize: MainAxisSize.max,
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
-          Container(
-            width: 28,
-            height: 28,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.all(
-                Radius.circular(6),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(15),
+            child: Container(
+              width: 28,
+              height: 28,
+              alignment: Alignment.center,
+              color: Colors.grey[100],
+              child: CachedNetworkImage(
+                fit: BoxFit.cover,
+                imageUrl: article.sourceFavicon,
+                placeholder: (context, _) => Icon(FontAwesomeIcons.image),
+                errorWidget: (context, url, error) =>
+                    Icon(FontAwesomeIcons.image),
               ),
-            ),
-            child: CachedNetworkImage(
-              fit: BoxFit.cover,
-              imageUrl: article.sourceFavicon,
-              placeholder: (context, _) =>
-                  Icon(FontAwesomeIcons.image, size: 28),
-              errorWidget: (context, url, error) =>
-                  Icon(FontAwesomeIcons.image, size: 28),
             ),
           ),
           SizedBox(
@@ -79,17 +78,21 @@ class FeedSourceSection extends StatelessWidget {
             ),
           ),
           Spacer(),
-          Container(
-            padding: const EdgeInsets.all(6),
-            decoration: BoxDecoration(
-                border: Border.all(color: Colors.grey),
-                borderRadius: BorderRadius.all(Radius.circular(12))),
-            child: Text(
-              article.category,
-              style: Theme.of(context)
-                  .textTheme
-                  .display3,
+          // Container(
+          //   padding: const EdgeInsets.all(6),
+          //   decoration: BoxDecoration(
+          //       border: Border.all(color: Colors.grey),
+          //       borderRadius: BorderRadius.all(Radius.circular(12))),
+          //   child: Text(
+          //     article.category,
+          //     style: Theme.of(context).textTheme.display3,
+          //   ),
+          // ),
+          IconButton(
+            icon: Icon(
+              Icons.more_vert,
             ),
+            onPressed: () {},
           ),
         ],
       ),
@@ -158,11 +161,11 @@ class _FeedOptionsSectionState extends State<FeedOptionsSection> {
                 return IconButton(
                   icon: Icon(
                     value
-                        ? FontAwesomeIcons.solidHeart
-                        : FontAwesomeIcons.heart,
+                        ? FontAwesomeIcons.solidThumbsUp
+                        : FontAwesomeIcons.thumbsUp,
                     size: 16,
                   ),
-                  onPressed: () async{
+                  onPressed: () async {
                     if (value) {
                       widget.article.liked.value = false;
                       likeStore.removeLikedFeed(feed: widget.article).then(
@@ -178,18 +181,19 @@ class _FeedOptionsSectionState extends State<FeedOptionsSection> {
             ),
             IconButton(
               icon: Icon(
-                FontAwesomeIcons.shareAlt,
+                FontAwesomeIcons.comment,
                 size: 16,
               ),
               onPressed: () {},
             ),
             IconButton(
               icon: Icon(
-                FontAwesomeIcons.comment,
+                FontAwesomeIcons.shareAlt,
                 size: 16,
               ),
               onPressed: () {},
             ),
+            Spacer(),
             ValueListenableBuilder(
               valueListenable: widget.article.bookmarked,
               builder: (context, value, child) {
@@ -200,7 +204,7 @@ class _FeedOptionsSectionState extends State<FeedOptionsSection> {
                         : FontAwesomeIcons.bookmark,
                     size: 16,
                   ),
-                  onPressed: () async{
+                  onPressed: () async {
                     if (value) {
                       widget.article.bookmarked.value = false;
                       bookmarkStore
@@ -217,13 +221,6 @@ class _FeedOptionsSectionState extends State<FeedOptionsSection> {
                   },
                 );
               },
-            ),
-            IconButton(
-              icon: Icon(
-                FontAwesomeIcons.ellipsisV,
-              ),
-              iconSize: 18,
-              onPressed: () {},
             ),
           ],
         );

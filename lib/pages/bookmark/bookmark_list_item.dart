@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
-import 'package:samachar_hub/data/dto/feed_dto.dart';
+import 'package:samachar_hub/data/dto/dto.dart';
 import 'package:samachar_hub/pages/bookmark/bookmark_store.dart';
 import 'package:samachar_hub/pages/widgets/article_info_widget.dart';
 import 'package:samachar_hub/widgets/article_image_widget.dart';

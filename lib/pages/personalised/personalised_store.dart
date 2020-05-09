@@ -3,11 +3,12 @@ import 'dart:async';
 import 'package:mobx/mobx.dart';
 import 'package:samachar_hub/common/service/services.dart';
 import 'package:samachar_hub/data/api/api.dart';
-import 'package:samachar_hub/data/dto/feed_dto.dart';
-import 'package:samachar_hub/data/dto/heading.dart';
-import 'package:samachar_hub/data/dto/progress.dart';
+import 'package:samachar_hub/data/dto/dto.dart';
 import 'package:samachar_hub/pages/pages.dart';
-import 'package:samachar_hub/pages/personalised/personalised_service.dart';
+import 'package:samachar_hub/repository/corona_repository.dart';
+import 'package:samachar_hub/repository/forex_repository.dart';
+import 'package:samachar_hub/repository/horoscope_repository.dart';
+import 'package:samachar_hub/repository/news_repository.dart';
 import 'package:samachar_hub/util/news_category.dart';
 
 part 'personalised_store.g.dart';
@@ -16,7 +17,10 @@ class PersonalisedFeedStore = _PersonalisedFeedStore
     with _$PersonalisedFeedStore;
 
 abstract class _PersonalisedFeedStore with Store {
-  final PersonalisedFeedService _personalisedFeedService;
+  final NewsRepository _newsRepository;
+  final CoronaRepository _coronaRepository;
+  final HoroscopeRepository _horoscopeRepository;
+  final ForexRepository _forexRepository;
   final PreferenceService _preferenceService;
 
   StreamController<List> _dataStreamController =
@@ -24,10 +28,10 @@ abstract class _PersonalisedFeedStore with Store {
 
   Stream<List> get dataStream => _dataStreamController.stream;
 
-  _PersonalisedFeedStore(
-      this._preferenceService, this._personalisedFeedService);
+  _PersonalisedFeedStore(this._preferenceService, this._newsRepository,
+      this._coronaRepository, this._horoscopeRepository, this._forexRepository);
 
-  List<Feed> latestNewsData = List<Feed>();
+  // List<Feed> latestNewsData = List<Feed>();
 
   List data = List();
 
@@ -55,29 +59,9 @@ abstract class _PersonalisedFeedStore with Store {
     buildData();
   }
 
-  @action
-  Future<void> loadLatestNews() async {
-    try {
-      List<Feed> moreNews = await _personalisedFeedService.getLatestFeeds();
-      if (moreNews != null) {
-        latestNewsData = moreNews;
-      }
-    } on APIException catch (apiError) {
-      this.apiError = apiError;
-      throw apiError;
-    } on Exception catch (e) {
-      this.error = e.toString();
-      throw e;
-    }
-  }
-
-  buildData(){
+  buildData() {
     //Clear all data
-    latestNewsData.clear();
     data.clear();
-
-    //add initial loading indicator
-    _dataStreamController.add([LoadingData()]);
 
     //build new category menu section
     data.addAll([
@@ -87,25 +71,47 @@ abstract class _PersonalisedFeedStore with Store {
     ]);
 
     //TODO: build news tags section
-    //TODO: build news sources menu section
-    //TODO: build trending news section
-
-    data.addAll([
-      SectionHeading('Latest stories for you',
-          'Latest news from various sources and categories'),
-    ]);
-    var tempData = List.of(data);
-    tempData.add(LoadingData());
-    _dataStreamController.add(tempData);
-    //build latest news section
-    loadLatestNews().then((onValue) {
-      //remove loading indicator
-      data.addAll(latestNewsData);
+    _newsRepository.getTags().then((onValue) {
+      data.addAll([
+        SectionHeading('Trending Topics',
+            'Get the latest news on currently trending topics'),
+        onValue
+      ]);
       _dataStreamController.add(data);
     }).catchError((onError) {
-      //remove loading indicator
-      _dataStreamController.add(data);
+      this.apiError = onError;
+    }, test: (e) => e is APIException).catchError((onError) {
+      this.error = onError.toString();
     });
+
+    //TODO: build news sources menu section
+    _newsRepository.getSources().then((onValue) {
+      data.addAll([
+        SectionHeading(
+            'News Sources', 'Explore news from your favourite news sources'),
+        onValue
+      ]);
+      _dataStreamController.add(data);
+    }).catchError((onError) {
+      this.apiError = onError;
+    }, test: (e) => e is APIException).catchError(
+        (onError) => this.error = onError.toString());
+
+    //TODO: build trending news section
+
+    //build latest news section
+    _newsRepository.getLatestFeeds().then((onValue) {
+      data.add(
+        SectionHeading('Latest stories for you',
+            'Latest news from various sources and categories'),
+      );
+      data.addAll(onValue);
+      _dataStreamController.add(data);
+    }).catchError((onError) {
+      this.apiError = onError;
+    }, test: (e) => e is APIException).catchError(
+        (onError) => this.error = onError.toString());
+
   }
 
   @action

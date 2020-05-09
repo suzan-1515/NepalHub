@@ -2,21 +2,22 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:samachar_hub/common/service/news_firestore_activity_service.dart';
 import 'package:samachar_hub/common/service/services.dart';
 import 'package:samachar_hub/data/api/api.dart';
-import 'package:samachar_hub/data/dto/feed_dto.dart';
+import 'package:samachar_hub/data/dto/dto.dart';
 import 'package:samachar_hub/data/feed_activity_event.dart';
-import 'package:samachar_hub/data/mapper/feed_mapper.dart';
+import 'package:samachar_hub/data/mapper/news_mapper.dart';
 
 import 'managers.dart';
 
-abstract class FeedActivityManager {
+abstract class NewsFirestoreActivityManager {
   final AuthenticationManager _authenticationManager;
-  final FeedActivityService _activityService;
+  final NewsFirestoreActivityService _activityService;
   final AnalyticsService _analyticsService;
   final FeedActivityEvent _feedActivityEvent;
 
-  FeedActivityManager(this._authenticationManager, this._analyticsService,
+  NewsFirestoreActivityManager(this._authenticationManager, this._analyticsService,
       this._activityService, this._feedActivityEvent);
 
   static const int DATA_LIMIT = 20;
@@ -79,7 +80,7 @@ abstract class FeedActivityManager {
         .map((snapshot) => snapshot.documents
             .where((snapshot) => snapshot != null && snapshot.exists)
             .map((snapshot) => FeedFirestoreResponse.fromJson(snapshot.data))
-            .map((feed)=>FeedMapper.fromFeedFirestore(feed))
+            .map((feed)=>NewsMapper.fromFeedFirestore(feed))
             .toList());
   }
 
@@ -96,7 +97,7 @@ abstract class FeedActivityManager {
         return onValue.documents
             .where((snapshot) => snapshot != null && snapshot.exists)
             .map((snapshot) => FeedFirestoreResponse.fromJson(snapshot.data))
-            .map((feed)=>FeedMapper.fromFeedFirestore(feed))
+            .map((feed)=>NewsMapper.fromFeedFirestore(feed))
             .toList();
       }
       return List<Feed>();

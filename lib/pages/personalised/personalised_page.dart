@@ -5,8 +5,10 @@ import 'package:provider/provider.dart';
 import 'package:samachar_hub/data/api/api.dart';
 import 'package:samachar_hub/pages/personalised/personalised_item_builder.dart';
 import 'package:samachar_hub/pages/personalised/personalised_store.dart';
+import 'package:samachar_hub/pages/widgets/api_error_dialog.dart';
 import 'package:samachar_hub/pages/widgets/empty_data_widget.dart';
 import 'package:samachar_hub/pages/widgets/error_data_widget.dart';
+import 'package:samachar_hub/pages/widgets/page_heading_widget.dart';
 import 'package:samachar_hub/pages/widgets/progress_widget.dart';
 
 class PersonalisedPage extends StatefulWidget {
@@ -49,27 +51,8 @@ class _PersonalisedPageState extends State<PersonalisedPage>
         context: context,
         barrierDismissible: false, // user must tap button!
         builder: (BuildContext context) {
-          return AlertDialog(
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-            title: Text(
-              'API Error - ${apiError.message}',
-              style: Theme.of(context).textTheme.subhead,
-            ),
-            content: SingleChildScrollView(
-              child: Text(
-                apiError.message,
-                style: Theme.of(context).textTheme.body1,
-              ),
-            ),
-            actions: <Widget>[
-              FlatButton(
-                child: Text('OK'),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              ),
-            ],
+          return ApiErrorDialog(
+            apiError: apiError,
           );
         },
       );
@@ -88,13 +71,6 @@ class _PersonalisedPageState extends State<PersonalisedPage>
         _showErrorDialog(error);
       })
     ];
-  }
-
-  Widget _buildHeading(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 16),
-      child: Text('Top Stories', style: Theme.of(context).textTheme.headline),
-    );
   }
 
   Widget _buildList() {
@@ -127,9 +103,15 @@ class _PersonalisedPageState extends State<PersonalisedPage>
                     items: snapshot.data,
                     widgetBuilders: <MultiTypeWidgetBuilder>[
                       SectionHeadingItemBuilder(),
-                      CategoryMenuItemBuilder(),
-                      LatestFeddItemBuilder(),
+                      NewsCategoryMenuItemBuilder(),
+                      NewsSourceMenuItemBuilder(),
+                      NewsTagsItemBuilder(),
+                      LatestFeedItemBuilder(),
                       ProgressItemBuilder(),
+                      EmptyItemBuilder(
+                          onRetry: () => personalisedStore.refresh()),
+                      ErrorItemBuilder(
+                          onRetry: () => personalisedStore.retry()),
                     ],
                     showDebugPlaceHolder: true,
                   ),
@@ -143,23 +125,21 @@ class _PersonalisedPageState extends State<PersonalisedPage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return Builder(
-      builder: (BuildContext context) {
-        return Container(
-          color: Theme.of(context).backgroundColor,
-          padding: EdgeInsets.symmetric(horizontal: 8),
-          child: Column(
-            mainAxisSize: MainAxisSize.max,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
-              _buildHeading(context),
-              Expanded(
-                child: _buildList(),
-              ),
-            ],
+    return Container(
+      color: Theme.of(context).backgroundColor,
+      padding: EdgeInsets.symmetric(horizontal: 8),
+      child: Column(
+        mainAxisSize: MainAxisSize.max,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          PageHeading(
+            title: 'Top Stories',
           ),
-        );
-      },
+          Expanded(
+            child: _buildList(),
+          ),
+        ],
+      ),
     );
   }
 

@@ -1,5 +1,5 @@
-import 'package:samachar_hub/common/service/services.dart';
+import 'package:samachar_hub/common/service/news_firestore_activity_service.dart';
 
-class LikeActivityService extends FeedActivityService {
+class LikeActivityService extends NewsFirestoreActivityService {
   LikeActivityService();
 }

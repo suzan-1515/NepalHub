@@ -1,6 +1,6 @@
 
 import 'package:samachar_hub/common/service/services.dart';
 
-class ShareActivityService extends FeedActivityService {
+class ShareActivityService extends NewsFirestoreActivityService {
   ShareActivityService();
 }

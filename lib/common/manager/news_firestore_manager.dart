@@ -4,17 +4,17 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:samachar_hub/common/service/services.dart';
 import 'package:samachar_hub/data/api/api.dart';
-import 'package:samachar_hub/data/dto/feed_dto.dart';
-import 'package:samachar_hub/data/mapper/feed_mapper.dart';
+import 'package:samachar_hub/data/dto/dto.dart';
+import 'package:samachar_hub/data/mapper/news_mapper.dart';
 
 import 'managers.dart';
 
-class FeedManager {
+class NewsFirestoreManager {
   final AuthenticationManager _authenticationManager;
-  final FeedService _feedService;
+  final NewsFirestoreService _feedService;
   final AnalyticsService _analyticsService;
 
-  FeedManager(
+  NewsFirestoreManager(
       this._authenticationManager, this._feedService, this._analyticsService);
 
   static const int DATA_LIMIT = 20;
@@ -60,7 +60,7 @@ class FeedManager {
         .map((snapshot) => snapshot.documents
             .where((snapshot) => snapshot != null && snapshot.exists)
             .map((snapshot) => FeedFirestoreResponse.fromJson(snapshot.data))
-            .map((feed) => FeedMapper.fromFeedFirestore(feed))
+            .map((feed) => NewsMapper.fromFeedFirestore(feed))
             .toList());
   }
 
@@ -72,7 +72,7 @@ class FeedManager {
         return onValue.documents
             .where((snapshot) => snapshot != null && snapshot.exists)
             .map((snapshot) => FeedFirestoreResponse.fromJson(snapshot.data))
-            .map((feed) => FeedMapper.fromFeedFirestore(feed))
+            .map((feed) => NewsMapper.fromFeedFirestore(feed))
             .toList();
       }
       return List<Feed>();

@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
-abstract class FeedActivityService {
+abstract class NewsFirestoreActivityService {
   final CollectionReference _activityCollectionReference =
       Firestore.instance.collection('feed_activities');
 
@@ -22,8 +22,7 @@ abstract class FeedActivityService {
     return await _activityCollectionReference.document(activityId).delete();
   }
 
-  Future<bool> doesActivityExist(
-      {@required activityId}) async {
+  Future<bool> doesActivityExist({@required activityId}) async {
     return await _activityCollectionReference
         .document(activityId)
         .get()

@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:samachar_hub/common/service/navigation_service.dart';
-import 'package:samachar_hub/data/dto/feed_dto.dart';
+import 'package:samachar_hub/data/dto/dto.dart';
 import 'package:samachar_hub/widgets/article_image_widget.dart';
 
 import 'article_info_widget.dart';
 
 class NewsCompactView extends StatelessWidget {
-  NewsCompactView(this.article);
+  NewsCompactView(this.feed);
 
-  final Feed article;
+  final Feed feed;
 
   @override
   Widget build(BuildContext context) {
@@ -26,14 +26,14 @@ class NewsCompactView extends StatelessWidget {
           return Material(
             color: Colors.transparent,
             child: InkWell(
-              onTap: () => navigationService.onFeedClick(article, context),
+              onTap: () => navigationService.onFeedClick(feed, context),
               child: IntrinsicHeight(
                 child: Stack(
                   children: <Widget>[
                     AspectRatio(
                       aspectRatio: 16 / 9,
-                      child: ArticleImageWidget(article.image,
-                          tag: article.uuid + article.id),
+                      child: ArticleImageWidget(feed.image,
+                          tag: feed.uuid + feed.id),
                     ),
                     // Gradient overlay
                     Container(
@@ -59,9 +59,9 @@ class NewsCompactView extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisSize: MainAxisSize.min,
                           children: <Widget>[
-                            FeedSourceSection(article),
+                            FeedSourceSection(feed),
                             SizedBox(height: 8),
-                            FeedTitleDescriptionSection(article),
+                            FeedTitleDescriptionSection(feed),
                           ],
                         ),
                       ),

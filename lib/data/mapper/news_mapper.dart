@@ -1,8 +1,7 @@
 import 'package:samachar_hub/data/api/api.dart';
-import 'package:samachar_hub/data/api/response/api_response.dart';
-import 'package:samachar_hub/data/dto/feed_dto.dart';
+import 'package:samachar_hub/data/dto/dto.dart';
 
-class FeedMapper {
+class NewsMapper {
   static Feed fromFeedApi(FeedApiResponse response) {
     return Feed(response,
         id: response.id,
@@ -37,5 +36,32 @@ class FeedMapper {
         related: response.related?.map((f) => fromFeedApi(f))?.toList(),
         bookmarked: response.bookmarked,
         liked: response.liked);
+  }
+
+  static NewsTags fromTagsApi(NewsTagsApiResponse response) {
+    return NewsTags(response.tags);
+  }
+
+  static FeedSource fromSourceApi(FeedSourceApiResponse response) {
+    return FeedSource(
+      id: response.id,
+      name: response.name,
+      code: response.code,
+      favicon: response.favicon,
+      icon: response.icon,
+      priority: response.priority,
+    );
+  }
+
+  static FeedCategory fromCategoryApi(FeedCategoryApiResponse response) {
+    return FeedCategory(
+      id: response.id,
+      name: response.name,
+      nameNp: response.nameNp,
+      code: response.code,
+      icon: response.icon,
+      priority: response.priority,
+      enable: response.enable,
+    );
   }
 }

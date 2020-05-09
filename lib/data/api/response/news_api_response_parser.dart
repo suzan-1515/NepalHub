@@ -1,5 +1,5 @@
 
-import 'package:samachar_hub/data/api/response/api_response.dart';
+import 'package:samachar_hub/data/api/response/news_api_response.dart';
 
 class FeedApiParser {
   static NewsApiResponse parse({Map<String,dynamic> feeds, Map<String,dynamic> sources}) {

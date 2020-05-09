@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:samachar_hub/data/api/response/api_response.dart';
+import 'package:samachar_hub/data/api/api.dart';
 import 'package:uuid/uuid.dart';
 
 class Feed {
@@ -50,17 +50,28 @@ class Feed {
 }
 
 class FeedSource extends FeedSourceApiResponse {
-  FeedSource(int id, String name, String code, String icon, int priority,
-      String favicon)
+  FeedSource(
+      {@required int id,
+      @required String name,
+      @required String code,
+      @required String icon,
+      @required int priority,
+      @required String favicon})
       : super(id, name, code, icon, priority, favicon);
 }
 
 class FeedCategory extends FeedCategoryApiResponse {
-  FeedCategory(int id, String name, String nameNp, String code, String icon,
-      int priority, String enable)
+  FeedCategory(
+      {@required int id,
+      @required String name,
+      @required String nameNp,
+      @required String code,
+      @required String icon,
+      @required int priority,
+      @required String enable})
       : super(id, name, nameNp, code, icon, priority, enable);
 }
 
-class NewsTags extends NewsTagsApiResponse{
+class NewsTags extends NewsTagsApiResponse {
   NewsTags(List<String> tags) : super(tags);
 }

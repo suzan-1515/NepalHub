@@ -67,13 +67,6 @@ mixin _$PersonalisedFeedStore on _PersonalisedFeedStore, Store {
     return _$refreshAsyncAction.run(() => super.refresh());
   }
 
-  final _$loadLatestNewsAsyncAction = AsyncAction('loadLatestNews');
-
-  @override
-  Future<void> loadLatestNews() {
-    return _$loadLatestNewsAsyncAction.run(() => super.loadLatestNews());
-  }
-
   final _$_PersonalisedFeedStoreActionController =
       ActionController(name: '_PersonalisedFeedStore');
 

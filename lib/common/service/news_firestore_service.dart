@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
-class FeedService {
+class NewsFirestoreService {
   final CollectionReference _feedCollectionReference =
       Firestore.instance.collection('feeds_meta');
 
@@ -29,10 +29,11 @@ class FeedService {
     return await _feedCollectionReference.document(feedId).delete();
   }
 
-  Future<bool> doesFeedExist({@required feedId}) async {
+  Future<bool> doesFeedExist(
+      {@required feedId, Source source = Source.serverAndCache}) async {
     return await _feedCollectionReference
         .document(feedId)
-        .get()
+        .get(source: source)
         .then((onValue) => onValue.exists);
   }
 

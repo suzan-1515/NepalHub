@@ -1,13 +1,16 @@
 import 'dart:convert';
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:samachar_hub/data/api/api.dart';
-import 'package:samachar_hub/data/api/response/api_response.dart';
-import 'package:samachar_hub/data/api/response/feed_api_response_parser.dart';
+import 'package:samachar_hub/data/api/response/corona_api_response.dart';
+import 'package:samachar_hub/data/api/response/forex_api_response.dart';
+import 'package:samachar_hub/data/api/response/horoscope_api_response.dart';
 
 // Base URL
-const String _baseApiURL = 'timesofnepal.com.np';
-
-// const String _apiKey = "53ea041b1e1c4c659b41767532da63f2";
+const String _baseNewsApiURL = 'timesofnepal.com.np';
+const String _baseHoroscopeApiURL = 'nepalipatro.com.np';
+const String _baseForexApiURL = 'api.nepalipatro.com.np';
+const String _baseCoronaApiURL = 'corona.lmao.ninja';
 
 // API Endpoints
 const String _latestNews = '/newsv4/infinite_feeds.php';
@@ -15,6 +18,15 @@ const String _trendingNews = '/newsv4/feeds_top.php';
 const String _categoryNews = '/newsv4/infinite_feeds_category.php';
 const String _trendingTags = '/newsv4/tags.php';
 const String _newsSources = '/newsv4/sources.php';
+
+const String _coronaWorldWide = '/v2/all';
+const String _coronaByCountry = '/v2/countries/'; //default to Nepal
+
+const String _horoscope = '/rashifal/getv5/type/dwmy';
+
+const String _forexToday = '/forex';
+const String _forexByCountry =
+    '/forex/currencycode'; //body: currency_code,from (date),to(date)
 
 enum NewsCategory {
   tops,
@@ -36,9 +48,9 @@ String _getCategoryCode(NewsCategory category) {
   return category.toString().split('.').last;
 }
 
-Future<NewsApiResponse> getLatestNews() async {
-  var sourceCall = http.get(Uri.https(_baseApiURL, _newsSources));
-  var latestNewsCall = http.get(Uri.https(_baseApiURL, _latestNews));
+Future<NewsApiResponse> fetchLatestNews() async {
+  var sourceCall = http.get(Uri.https(_baseNewsApiURL, _newsSources));
+  var latestNewsCall = http.get(Uri.https(_baseNewsApiURL, _latestNews));
   var results =
       await Future.wait([sourceCall, latestNewsCall], eagerError: true)
           .catchError((err) {
@@ -55,20 +67,54 @@ Future<NewsApiResponse> getLatestNews() async {
   // Deserialize
 
   try {
-    return FeedApiParser.parse(feeds:json.decode(newsResponse.body), sources:json.decode(sourceResponse.body));
+    return FeedApiParser.parse(
+        feeds: json.decode(newsResponse.body),
+        sources: json.decode(sourceResponse.body));
   } on Exception catch (e) {
     throw e;
   }
 }
 
-Future<NewsApiResponse> getNewsByCategory(NewsCategory category,
+Future<NewsApiResponse> fetchTrendingNews({String limit}) async {
+  var sourceCall = http.get(Uri.https(_baseNewsApiURL, _newsSources));
+  final Map<String, String> queryParams = _filterNullOrEmptyValuesFromMap({
+    'limit': limit,
+  });
+  var trendingNewsCall =
+      http.get(Uri.https(_baseNewsApiURL, _trendingNews, queryParams));
+  var results =
+      await Future.wait([sourceCall, trendingNewsCall], eagerError: true)
+          .catchError((err) {
+    throw err;
+  });
+
+  var sourceResponse = results.first;
+  // If response is not ok
+  _checkResponse(sourceResponse);
+  // Deserialize
+  var newsResponse = results.last;
+  // If response is not ok
+  _checkResponse(newsResponse);
+  // Deserialize
+
+  try {
+    return FeedApiParser.parse(
+        feeds: json.decode(newsResponse.body),
+        sources: json.decode(sourceResponse.body));
+  } on Exception catch (e) {
+    throw e;
+  }
+}
+
+Future<NewsApiResponse> fetchNewsByCategory(NewsCategory category,
     {String lastFeedId}) async {
-  var sourceCall = http.get(Uri.https(_baseApiURL, _newsSources));
+  var sourceCall = http.get(Uri.https(_baseNewsApiURL, _newsSources));
   final Map<String, String> queryParams = _filterNullOrEmptyValuesFromMap({
     'category': _getCategoryCode(category),
     'id': lastFeedId,
   });
-  var newsCall = http.get(Uri.https(_baseApiURL, _categoryNews, queryParams));
+  var newsCall =
+      http.get(Uri.https(_baseNewsApiURL, _categoryNews, queryParams));
   var results = await Future.wait([sourceCall, newsCall], eagerError: true)
       .catchError((err) {
     throw err;
@@ -84,33 +130,110 @@ Future<NewsApiResponse> getNewsByCategory(NewsCategory category,
   // Deserialize
 
   try {
-    return FeedApiParser.parse(feeds:json.decode(newsResponse.body), sources:json.decode(sourceResponse.body));
+    return FeedApiParser.parse(
+        feeds: json.decode(newsResponse.body),
+        sources: json.decode(sourceResponse.body));
   } on Exception catch (e) {
     throw e;
   }
 }
 
-Future<FeedSourcesApiResponse> getSources() async {
-  final Uri uri = Uri.https(_baseApiURL, _newsSources);
+Future<NewsSourcesApiResponse> fetchSources() async {
+  final Uri uri = Uri.https(_baseNewsApiURL, _newsSources);
   final http.Response response = await http.get(uri);
   // If response is not ok
   _checkResponse(response);
   // Deserialize
   try {
-    return FeedSourcesApiResponse.fromJson(json.decode(response.body));
+    return NewsSourcesApiResponse.fromJson(json.decode(response.body));
   } on Exception catch (e) {
     throw e;
   }
 }
 
-Future<NewsTagsApiResponse> getTags() async {
-  final Uri uri = Uri.https(_baseApiURL, _trendingTags);
+Future<NewsTagsApiResponse> fetchTags() async {
+  final Uri uri = Uri.https(_baseNewsApiURL, _trendingTags);
   final http.Response response = await http.get(uri);
   // If response is not ok
   _checkResponse(response);
   // Deserialize
   try {
     return NewsTagsApiResponse.fromJson(json.decode(response.body));
+  } on Exception catch (e) {
+    throw e;
+  }
+}
+
+Future<CoronaWorldwideApiResponse> fetchCoronaWorldwideStat() async {
+  final Uri uri = Uri.https(_baseCoronaApiURL, _coronaWorldWide);
+  final http.Response response = await http.get(uri);
+  // If response is not ok
+  _checkResponse(response);
+  // Deserialize
+  try {
+    return CoronaWorldwideApiResponse.fromJson(json.decode(response.body));
+  } on Exception catch (e) {
+    throw e;
+  }
+}
+
+Future<CoronaCountrySpecificApiResponse> fetchCoronaStatByCountry(
+    {@required String country}) async {
+  final Uri uri = Uri.https(_baseCoronaApiURL, _coronaByCountry + country);
+  final http.Response response = await http.get(uri);
+  // If response is not ok
+  _checkResponse(response);
+  // Deserialize
+  try {
+    return CoronaCountrySpecificApiResponse.fromJson(
+        json.decode(response.body));
+  } on Exception catch (e) {
+    throw e;
+  }
+}
+
+Future<HoroscopeApiResponse> fetchHoroscope() async {
+  final Uri uri = Uri.https(_baseHoroscopeApiURL, _horoscope);
+  final http.Response response = await http.get(uri);
+  // If response is not ok
+  _checkResponse(response);
+  // Deserialize
+  try {
+    return HoroscopeApiResponse.fromJson(json.decode(response.body));
+  } on Exception catch (e) {
+    throw e;
+  }
+}
+
+Future<ForexApiResponse> fetchTodayForex() async {
+  final Uri uri = Uri.https(_baseForexApiURL, _forexToday);
+  final http.Response response = await http.get(uri);
+  // If response is not ok
+  _checkResponse(response);
+  // Deserialize
+  try {
+    return ForexApiResponse.fromJson(json.decode(response.body));
+  } on Exception catch (e) {
+    throw e;
+  }
+}
+
+Future<ForexApiResponse> fetchForexByCountry(
+    {@required String currencyCode,
+    @required String fromDate,
+    @required String toDate}) async {
+  final Map<String, String> body = _filterNullOrEmptyValuesFromMap({
+    'currency_code': currencyCode,
+    'from': fromDate,
+    'to': toDate,
+  });
+  final Uri uri = Uri.https(_baseForexApiURL, _forexByCountry);
+  final http.Response response = await http.post(uri, body: body);
+  // If response is not ok
+  _checkResponse(response);
+  // Deserialize
+  try {
+    return ForexApiResponse.fromJson(json.decode(response.body));
   } on Exception catch (e) {
     throw e;
   }

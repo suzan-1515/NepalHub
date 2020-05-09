@@ -3,9 +3,12 @@ import 'package:incrementally_loading_listview/incrementally_loading_listview.da
 import 'package:mobx/mobx.dart';
 import 'package:provider/provider.dart';
 import 'package:samachar_hub/common/service/navigation_service.dart';
-import 'package:samachar_hub/data/dto/feed_dto.dart';
+import 'package:samachar_hub/data/dto/dto.dart';
 import 'package:samachar_hub/pages/bookmark/bookmark_list_item.dart';
 import 'package:samachar_hub/pages/bookmark/bookmark_store.dart';
+import 'package:samachar_hub/pages/widgets/error_data_widget.dart';
+import 'package:samachar_hub/pages/widgets/page_heading_widget.dart';
+import 'package:samachar_hub/pages/widgets/progress_widget.dart';
 
 class BookmarkPage extends StatefulWidget {
   @override
@@ -60,10 +63,8 @@ class _BookmarkPageState extends State<BookmarkPage>
         mainAxisSize: MainAxisSize.max,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 16),
-            child:
-                Text('Bookmarks', style: Theme.of(context).textTheme.headline),
+          PageHeading(
+            title: 'Bookmarks',
           ),
           Expanded(
             child: Consumer2<BookmarkStore, NavigationService>(
@@ -73,26 +74,15 @@ class _BookmarkPageState extends State<BookmarkPage>
                   builder: (context, snapshot) {
                     if (snapshot.hasError) {
                       return Center(
-                        child: Column(
-                          mainAxisSize: MainAxisSize.max,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text('Oops something went wrong'),
-                            RaisedButton(
-                              child: Text('Retry'),
-                              onPressed: () {
-                                _bookmarkStore.retry();
-                              },
-                            ),
-                          ],
-                        ),
-                      );
+                          child: ErrorDataView(
+                        onRetry: () => _bookmarkStore.retry(),
+                      ));
                     }
                     switch (snapshot.connectionState) {
                       case ConnectionState.waiting:
                         return Center(
                           // Todo: Replace with Shimmer
-                          child: CircularProgressIndicator(),
+                          child: ProgressView(),
                         );
                       default:
                         if (snapshot.hasData && snapshot.data.isNotEmpty) {

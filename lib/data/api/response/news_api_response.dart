@@ -1,7 +1,7 @@
 import 'package:json_annotation/json_annotation.dart';
 import 'package:samachar_hub/util/helper.dart';
 
-part 'api_response.g.dart';
+part 'news_api_response.g.dart';
 
 @JsonSerializable()
 class NewsApiResponse {
@@ -16,15 +16,15 @@ class NewsApiResponse {
 }
 
 @JsonSerializable()
-class FeedSourcesApiResponse {
+class NewsSourcesApiResponse {
   final List<FeedSourceApiResponse> sources;
   final List<FeedCategoryApiResponse> categories;
 
-  FeedSourcesApiResponse(this.sources, this.categories);
+  NewsSourcesApiResponse(this.sources, this.categories);
 
-  factory FeedSourcesApiResponse.fromJson(Map<String, dynamic> json) =>
-      _$FeedSourcesApiResponseFromJson(json);
-  Map<String, dynamic> toJson() => _$FeedSourcesApiResponseToJson(this);
+  factory NewsSourcesApiResponse.fromJson(Map<String, dynamic> json) =>
+      _$NewsSourcesApiResponseFromJson(json);
+  Map<String, dynamic> toJson() => _$NewsSourcesApiResponseToJson(this);
 }
 
 @JsonSerializable()
@@ -56,7 +56,8 @@ class FeedApiResponse {
     this.publishedAt,
     this.content,
     this.related,
-    this.uuid,);
+    this.uuid,
+  );
 
   String get formatedSource =>
       (source == null || source.name == null || source.name.isEmpty)
@@ -142,13 +143,12 @@ class FeedCategoryApiResponse {
 }
 
 @JsonSerializable()
-class NewsTagsApiResponse{
+class NewsTagsApiResponse {
   final List<String> tags;
 
   NewsTagsApiResponse(this.tags);
 
-factory NewsTagsApiResponse.fromJson(Map<String, dynamic> json) =>
+  factory NewsTagsApiResponse.fromJson(Map<String, dynamic> json) =>
       _$NewsTagsApiResponseFromJson(json);
   Map<String, dynamic> toJson() => _$NewsTagsApiResponseToJson(this);
-
 }

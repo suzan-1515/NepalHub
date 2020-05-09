@@ -1,0 +1,64 @@
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:samachar_hub/data/dto/news_dto.dart';
+
+class NewsSourceMenuItem extends StatelessWidget {
+  final FeedSource source;
+  final Function onTap;
+
+  const NewsSourceMenuItem(
+      {Key key, @required this.source, @required this.onTap})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      clipBehavior: Clip.hardEdge,
+      shape: RoundedRectangleBorder(
+          side: BorderSide(color: Colors.grey[200]),
+          borderRadius: BorderRadius.circular(8)),
+      child: InkWell(
+        onTap: () => onTap(source),
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Expanded(
+                child: Container(
+                  padding: EdgeInsets.all(8),
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                      color: Colors.grey[100], shape: BoxShape.circle),
+                  child: CachedNetworkImage(
+                    width: 48,
+                    height: 48,
+                    fit: BoxFit.cover,
+                    imageUrl: source.favicon,
+                    placeholder: (context, _) => Icon(FontAwesomeIcons.spinner),
+                    errorWidget: (context, url, error) =>
+                        Icon(FontAwesomeIcons.image),
+                    progressIndicatorBuilder: (context, url, progress) =>
+                        CircularProgressIndicator(
+                      value: progress.progress,
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(
+                height: 5.0,
+              ),
+              Text(
+                source.name,
+                style: Theme.of(context).textTheme.body1,
+              )
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}

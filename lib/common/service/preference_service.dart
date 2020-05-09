@@ -5,7 +5,8 @@ class PreferenceService {
   final String _pitchBlackKey = 'pitchBlack';
   final String _themeSetBySystemKey = 'themeSetBySystem';
   final String _openInAppKey = 'openInApp';
-  final String _favouritesKey = 'favourites';
+  final String _bookmarkedFeedsKey = 'bookmarked_feeds';
+  final String _likedFeedsKey = 'liked_feeds';
   final String _userId = 'userId';
 
   final SharedPreferences _sharedPreferences;
@@ -28,8 +29,12 @@ class PreferenceService {
     _sharedPreferences.setBool(_openInAppKey, openInApp);
   }
 
-  set favourites(List<String> favourites) {
-    _sharedPreferences.setStringList(_favouritesKey, favourites);
+  set bookmarkedFeeds(List<String> favourites) {
+    _sharedPreferences.setStringList(_bookmarkedFeedsKey, favourites);
+  }
+
+  set likedFeeds(List<String> likes) {
+    _sharedPreferences.setStringList(_likedFeedsKey, likes);
   }
 
   set userId(String userId) {
@@ -45,8 +50,10 @@ class PreferenceService {
 
   bool get openInApp => _sharedPreferences.getBool(_openInAppKey) ?? true;
 
-  List<String> get favourites =>
-      _sharedPreferences.getStringList(_favouritesKey) ?? List<String>();
+  List<String> get bookmarkedFeeds =>
+      _sharedPreferences.getStringList(_bookmarkedFeedsKey) ?? List<String>();
+  List<String> get likedFeeds =>
+      _sharedPreferences.getStringList(_bookmarkedFeedsKey) ?? List<String>();
 
   String get userId => _sharedPreferences.getString(_userId) ?? null;
 }

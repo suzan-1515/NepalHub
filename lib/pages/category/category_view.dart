@@ -5,12 +5,15 @@ import 'package:mobx/mobx.dart';
 import 'package:provider/provider.dart';
 import 'package:samachar_hub/common/service/navigation_service.dart';
 import 'package:samachar_hub/data/api/api.dart';
-import 'package:samachar_hub/data/dto/feed_dto.dart';
+import 'package:samachar_hub/data/dto/dto.dart';
 import 'package:samachar_hub/pages/category/categories_page.dart';
 import 'package:samachar_hub/pages/category/categories_store.dart';
+import 'package:samachar_hub/pages/widgets/empty_data_widget.dart';
+import 'package:samachar_hub/pages/widgets/error_data_widget.dart';
 import 'package:samachar_hub/pages/widgets/news_compact_view.dart';
 import 'package:samachar_hub/pages/widgets/news_list_view.dart';
 import 'package:samachar_hub/pages/widgets/news_thumbnail_view.dart';
+import 'package:samachar_hub/pages/widgets/progress_widget.dart';
 
 class NewsCategoryView extends StatelessWidget {
   final NewsCategory category;
@@ -26,22 +29,12 @@ class NewsCategoryView extends StatelessWidget {
           case FutureStatus.pending:
             return Center(
               // Todo: Replace with Shimmer
-              child: CircularProgressIndicator(),
+              child: ProgressView(),
             );
           case FutureStatus.rejected:
             return Center(
-              child: Column(
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text('Oops something went wrong'),
-                  RaisedButton(
-                    child: Text('Retry'),
-                    onPressed: () {
-                      categoriesStore.retry(category);
-                    },
-                  ),
-                ],
+              child: ErrorDataView(
+                onRetry: () => categoriesStore.retry(category),
               ),
             );
           case FutureStatus.fulfilled:
@@ -62,7 +55,7 @@ class NewsCategoryView extends StatelessWidget {
                       Widget articleWidget;
                       switch (viewType) {
                         case MenuItem.LIST_VIEW:
-                          articleWidget = NewsListView(feed:feed);
+                          articleWidget = NewsListView(feed: feed);
                           break;
                         case MenuItem.THUMBNAIL_VIEW:
                           articleWidget = NewsThumbnailView(feed);
@@ -77,14 +70,7 @@ class NewsCategoryView extends StatelessWidget {
                           false) {
                         return Column(
                           children: <Widget>[
-                            Material(
-                              color: Colors.transparent,
-                              child: InkWell(
-                                onTap: () => _navigationService.onFeedClick(
-                                    feed, context),
-                                child: articleWidget,
-                              ),
-                            ),
+                            articleWidget,
                             Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: CircularProgressIndicator(),
@@ -92,14 +78,7 @@ class NewsCategoryView extends StatelessWidget {
                           ],
                         );
                       } else {
-                        return Material(
-                          color: Colors.transparent,
-                          child: InkWell(
-                            onTap: () =>
-                                _navigationService.onFeedClick(feed, context),
-                            child: articleWidget,
-                          ),
-                        );
+                        return articleWidget;
                       }
                     }),
                 onRefresh: () async {
@@ -108,23 +87,13 @@ class NewsCategoryView extends StatelessWidget {
               );
             }
             return Center(
-              child: Column(
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Text('Empty Data!'),
-                  RaisedButton(
-                      child: Text('Retry'),
-                      onPressed: () async {
-                        categoriesStore.retry(category);
-                      }),
-                ],
-              ),
-            );
+                child: EmptyDataView(
+              onRetry: () => categoriesStore.retry(category),
+            ));
           default:
             return Center(
               // Todo: Replace with Shimmer
-              child: CircularProgressIndicator(),
+              child: ProgressView(),
             );
         }
       });

@@ -1,5 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:samachar_hub/data/api/api.dart';
+import 'package:samachar_hub/data/api/response/news_api_response.dart';
 
 class FeedFirestoreResponse extends FeedApiResponse {
   final bool bookmarked;

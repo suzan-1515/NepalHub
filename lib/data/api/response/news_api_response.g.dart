@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'api_response.dart';
+part of 'news_api_response.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
@@ -23,9 +23,9 @@ Map<String, dynamic> _$NewsApiResponseToJson(NewsApiResponse instance) =>
       'feeds': instance.feeds,
     };
 
-FeedSourcesApiResponse _$FeedSourcesApiResponseFromJson(
+NewsSourcesApiResponse _$NewsSourcesApiResponseFromJson(
     Map<String, dynamic> json) {
-  return FeedSourcesApiResponse(
+  return NewsSourcesApiResponse(
     (json['sources'] as List)
         ?.map((e) => e == null
             ? null
@@ -39,8 +39,8 @@ FeedSourcesApiResponse _$FeedSourcesApiResponseFromJson(
   );
 }
 
-Map<String, dynamic> _$FeedSourcesApiResponseToJson(
-        FeedSourcesApiResponse instance) =>
+Map<String, dynamic> _$NewsSourcesApiResponseToJson(
+        NewsSourcesApiResponse instance) =>
     <String, dynamic>{
       'sources': instance.sources,
       'categories': instance.categories,

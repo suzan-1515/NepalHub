@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:mobx/mobx.dart';
 import 'package:samachar_hub/common/manager/managers.dart';
 import 'package:samachar_hub/common/service/services.dart';
-import 'package:samachar_hub/data/dto/feed_dto.dart';
+import 'package:samachar_hub/data/dto/dto.dart';
 
 part 'like_store.g.dart';
 

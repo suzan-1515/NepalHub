@@ -1,9 +1,9 @@
 import 'package:async/async.dart';
 import 'package:mobx/mobx.dart';
 import 'package:samachar_hub/data/api/api.dart';
-import 'package:samachar_hub/data/dto/feed_dto.dart';
+import 'package:samachar_hub/data/dto/dto.dart';
 import 'package:samachar_hub/pages/category/categories_page.dart';
-import 'package:samachar_hub/pages/category/categories_service.dart';
+import 'package:samachar_hub/repository/news_repository.dart';
 import 'package:throttling/throttling.dart';
 
 part 'categories_store.g.dart';
@@ -11,14 +11,14 @@ part 'categories_store.g.dart';
 class CategoriesStore = _CategoriesStore with _$CategoriesStore;
 
 abstract class _CategoriesStore with Store {
-  final CategoriesService _categoriesService;
+  final NewsRepository _newsRepository;
   final Map<NewsCategory, AsyncMemoizer> _asyncMemoizer =
       Map<NewsCategory, AsyncMemoizer>();
   final Map<NewsCategory, bool> isLoadingMore = Map<NewsCategory, bool>();
   final Map<NewsCategory, Throttling> _throttling =
       Map<NewsCategory, Throttling>();
 
-  _CategoriesStore(this._categoriesService);
+  _CategoriesStore(this._newsRepository);
 
   @observable
   ObservableMap<NewsCategory, ObservableFuture> loadFeedItemsFuture =
@@ -81,7 +81,7 @@ abstract class _CategoriesStore with Store {
       List<Feed> cachedNews = newsData[category];
       if (cachedNews == null || cachedNews.isEmpty) {
         List<Feed> moreNews =
-            await _categoriesService.getFeedsByCategory(newsCategory: category);
+            await _newsRepository.getFeedsByCategory(category: category);
         if (moreNews != null) {
           if (moreNews.isNotEmpty) {
             newsData[category] = moreNews;
@@ -90,8 +90,8 @@ abstract class _CategoriesStore with Store {
             hasMoreData[category] = false;
         }
       } else {
-        List<Feed> moreNews = await _categoriesService.getFeedsByCategory(
-            newsCategory: category, lastFeedId: cachedNews.last.id);
+        List<Feed> moreNews = await _newsRepository.getFeedsByCategory(
+            category: category, lastFeedId: cachedNews.last.id);
         if (moreNews != null) {
           if (moreNews.isNotEmpty) {
             cachedNews.addAll(moreNews);
