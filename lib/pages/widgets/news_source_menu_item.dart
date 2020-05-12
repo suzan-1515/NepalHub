@@ -34,11 +34,11 @@ class NewsSourceMenuItem extends StatelessWidget {
                   decoration: BoxDecoration(
                       color: Colors.grey[100], shape: BoxShape.circle),
                   child: CachedNetworkImage(
-                    width: 48,
-                    height: 48,
+                    width: 24,
+                    height: 24,
                     fit: BoxFit.cover,
                     imageUrl: source.favicon,
-                    placeholder: (context, _) => Icon(FontAwesomeIcons.spinner),
+                    placeholder: (context, _) => Icon(FontAwesomeIcons.image),
                     errorWidget: (context, url, error) =>
                         Icon(FontAwesomeIcons.image),
                     progressIndicatorBuilder: (context, url, progress) =>

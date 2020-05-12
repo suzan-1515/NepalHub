@@ -10,7 +10,7 @@ class NewsTagItem extends StatelessWidget {
     return InputChip(
       label: Text(
         title,
-        style: Theme.of(context).textTheme.display4,
+        style: Theme.of(context).textTheme.body1,
       ),
       onPressed:()=> onTap(title),
       labelPadding: const EdgeInsets.all(4.0),

@@ -3,13 +3,14 @@ import 'dart:async';
 import 'package:mobx/mobx.dart';
 import 'package:samachar_hub/common/service/services.dart';
 import 'package:samachar_hub/data/api/api.dart';
-import 'package:samachar_hub/data/dto/dto.dart';
 import 'package:samachar_hub/pages/pages.dart';
 import 'package:samachar_hub/repository/corona_repository.dart';
 import 'package:samachar_hub/repository/forex_repository.dart';
 import 'package:samachar_hub/repository/horoscope_repository.dart';
 import 'package:samachar_hub/repository/news_repository.dart';
 import 'package:samachar_hub/util/news_category.dart';
+
+import 'personalised_item_builder.dart';
 
 part 'personalised_store.g.dart';
 
@@ -31,7 +32,7 @@ abstract class _PersonalisedFeedStore with Store {
   _PersonalisedFeedStore(this._preferenceService, this._newsRepository,
       this._coronaRepository, this._horoscopeRepository, this._forexRepository);
 
-  // List<Feed> latestNewsData = List<Feed>();
+  Map<MixedDataType, dynamic> sectionData = Map<MixedDataType, dynamic>();
 
   List data = List();
 
@@ -59,63 +60,92 @@ abstract class _PersonalisedFeedStore with Store {
     buildData();
   }
 
-  buildData() {
-    //Clear all data
+  buildData() async {
     data.clear();
+    await _buildDateWeatherData();
+    await _buildCoronaData();
+    await _buildTrendingNewsData();
 
-    //build new category menu section
-    data.addAll([
-      SectionHeading(
-          'Discover', 'Get the latest news on your favourite category'),
-      newsCategoryMenus,
-    ]);
+    _buildLatestNewsData();
+    _buildNewsTopicsData();
+    _buildNewsCategoryData();
+    _buildNewsSourceData();
+    // _buildForexData();
+    // _buildHoroscopeData();
+  }
 
-    //TODO: build news tags section
-    _newsRepository.getTags().then((onValue) {
-      data.addAll([
-        SectionHeading('Trending Topics',
-            'Get the latest news on currently trending topics'),
-        onValue
-      ]);
-      _dataStreamController.add(data);
+  @action
+  setView(MenuItem value) {
+    view = value;
+  }
+
+  Future _buildDateWeatherData() {
+    data.add(MixedDataType.DATE_INFO);
+    _dataStreamController.add(data);
+    return Future.value();
+  }
+
+  Future _buildTrendingNewsData() {
+    data.add(MixedDataType.TRENDING_NEWS);
+    _dataStreamController.add(data);
+    return Future.value();
+  }
+
+  Future _buildNewsCategoryData() async {
+    sectionData[MixedDataType.NEWS_CATEGORY] = newsCategoryMenus;
+    return Future.value();
+  }
+
+  Future _buildNewsTopicsData() async {
+    return _newsRepository.getTags().then((onValue) {
+      sectionData[MixedDataType.NEWS_TOPIC] = onValue;
     }).catchError((onError) {
       this.apiError = onError;
     }, test: (e) => e is APIException).catchError((onError) {
       this.error = onError.toString();
     });
+  }
 
-    //TODO: build news sources menu section
-    _newsRepository.getSources().then((onValue) {
-      data.addAll([
-        SectionHeading(
-            'News Sources', 'Explore news from your favourite news sources'),
-        onValue
-      ]);
-      _dataStreamController.add(data);
+  Future _buildNewsSourceData() async {
+    return _newsRepository.getSources().then((onValue) {
+      sectionData[MixedDataType.NEWS_SOURCE] = onValue;
     }).catchError((onError) {
       this.apiError = onError;
     }, test: (e) => e is APIException).catchError(
         (onError) => this.error = onError.toString());
+  }
 
-    //TODO: build trending news section
-
-    //build latest news section
-    _newsRepository.getLatestFeeds().then((onValue) {
-      data.add(
-        SectionHeading('Latest stories for you',
-            'Latest news from various sources and categories'),
-      );
+  Future _buildLatestNewsData() async {
+    return _newsRepository.getLatestFeeds().then((onValue) {
+      sectionData[MixedDataType.LATEST_NEWS] = onValue;
       data.addAll(onValue);
       _dataStreamController.add(data);
     }).catchError((onError) {
       this.apiError = onError;
     }, test: (e) => e is APIException).catchError(
         (onError) => this.error = onError.toString());
-
   }
 
-  @action
-  setView(MenuItem value) {
-    view = value;
+  Future _buildHoroscopeData() async {
+    return _horoscopeRepository.getHoroscope().then((onValue) {
+      sectionData[MixedDataType.HOROSCOPE] = onValue;
+    }).catchError((onError) {
+      this.apiError = onError;
+    }, test: (e) => e is APIException).catchError(
+        (onError) => this.error = onError.toString());
+  }
+
+  Future _buildCoronaData() async {
+    data.add(MixedDataType.CORONA);
+    _dataStreamController.add(data);
+  }
+
+  Future _buildForexData() async {
+    return _forexRepository.getToday().then((onValue) {
+      sectionData[MixedDataType.FOREX] = onValue;
+    }).catchError((onError) {
+      this.apiError = onError;
+    }, test: (e) => e is APIException).catchError(
+        (onError) => this.error = onError.toString());
   }
 }

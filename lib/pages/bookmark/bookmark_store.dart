@@ -77,7 +77,12 @@ abstract class _BookmarkStore with Store {
   Future<bool> addBookmarkedFeed({@required Feed feed}) async {
     return await _bookmarkManager
         .addFeedActivity(feedId: feed.uuid, feedData: feed.toJson())
-        .then((onValue) => true, onError: (e) {
+        .then((onValue) {
+      var bookmarks = _preferenceService.bookmarkedFeeds;
+      bookmarks.add(feed.id);
+      _preferenceService.bookmarkedFeeds = bookmarks;
+      return true;
+    }, onError: (e) {
       error = e.toString();
       return false;
     });
@@ -85,9 +90,13 @@ abstract class _BookmarkStore with Store {
 
   @action
   Future<bool> removeBookmarkedFeed({@required Feed feed}) async {
-    return await _bookmarkManager
-        .removeFeedActivity(feedId: feed.uuid)
-        .then((onValue) => true, onError: (e) {
+    return await _bookmarkManager.removeFeedActivity(feedId: feed.uuid).then(
+        (onValue) {
+      var bookmarks = _preferenceService.bookmarkedFeeds;
+      bookmarks.remove(feed.id);
+      _preferenceService.bookmarkedFeeds = bookmarks;
+      return true;
+    }, onError: (e) {
       error = e.toString();
       return false;
     });

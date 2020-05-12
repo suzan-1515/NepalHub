@@ -75,3 +75,4 @@ class FeedCategory extends FeedCategoryApiResponse {
 class NewsTags extends NewsTagsApiResponse {
   NewsTags(List<String> tags) : super(tags);
 }
+

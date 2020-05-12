@@ -7,7 +7,7 @@ class HoroscopeApiResponse {
   factory HoroscopeApiResponse.fromJson(Map<String, dynamic> json) {
     return HoroscopeApiResponse(
       copyright: json['copyright'],
-      np: json['np']?.map((v) => Np.fromJson(v)),
+      np: (json['np'] as List)?.map((v) => Np.fromJson(v)),
     );
   }
 

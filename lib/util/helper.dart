@@ -1,3 +1,5 @@
+import 'package:timeago/timeago.dart' as timeago;
+
 // In seconds
 const int ONE_DAY = 86400;
 const int ONE_HOUR = 3600;
@@ -23,5 +25,7 @@ String relativeTimeString(DateTime dateTime) {
       return '${hours}h $minutes minutes ago';
   }*/
 
-  return '${dateTime.day}/${dateTime.month}/${dateTime.year} ${dateTime.hour.toString().padLeft(2, '0')}:${dateTime.minute.toString().padLeft(2, '0')}';
+  return timeago.format(dateTime);
+
+  // return '${dateTime.day}/${dateTime.month}/${dateTime.year} ${dateTime.hour.toString().padLeft(2, '0')}:${dateTime.minute.toString().padLeft(2, '0')}';
 }
