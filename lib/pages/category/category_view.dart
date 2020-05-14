@@ -61,7 +61,9 @@ class NewsCategoryView extends StatelessWidget {
                           articleWidget = NewsThumbnailView(feed);
                           break;
                         case MenuItem.COMPACT_VIEW:
-                          articleWidget = NewsCompactView(feed);
+                          articleWidget = AspectRatio(
+                              aspectRatio: 16 / 9,
+                              child: NewsCompactView(feed));
                           break;
                       }
                       if (index == newsData.length - 1 &&

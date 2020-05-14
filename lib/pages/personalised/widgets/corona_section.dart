@@ -9,13 +9,18 @@ class CoronaSection extends StatefulWidget {
 class _CoronaSectionState extends State<CoronaSection> {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 100,
-      padding: const EdgeInsets.all(8),
-      color: Colors.blueGrey,
-      child: Text(
-        'This is a corona section',
-        style: Theme.of(context).textTheme.bodyText1,
+    return Card(
+      color: Theme.of(context).cardColor,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6.0)),
+      margin: const EdgeInsets.all(4),
+      elevation: 2,
+      child: Container(
+        height: 200,
+        padding: const EdgeInsets.all(8),
+        child: Text(
+          'This is a corona section',
+          style: Theme.of(context).textTheme.bodyText1,
+        ),
       ),
     );
   }

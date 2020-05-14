@@ -223,8 +223,7 @@ class _ArticleViewScreenState extends State<ArticleViewScreen> {
                     AspectRatio(
                       aspectRatio: 16 / 9,
                       child: ArticleImageWidget(widget.store.article.image,
-                          tag: widget.store.article.uuid +
-                              widget.store.article.id),
+                          tag: widget.store.article.tag),
                     ),
                     _articleDetails(context),
                   ],

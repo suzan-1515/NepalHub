@@ -78,21 +78,18 @@ class FeedSourceSection extends StatelessWidget {
             ),
           ),
           Spacer(),
-          // Container(
-          //   padding: const EdgeInsets.all(6),
-          //   decoration: BoxDecoration(
-          //       border: Border.all(color: Colors.grey),
-          //       borderRadius: BorderRadius.all(Radius.circular(12))),
-          //   child: Text(
-          //     article.category,
-          //     style: Theme.of(context).textTheme.display3,
-          //   ),
-          // ),
-          IconButton(
-            icon: Icon(
-              Icons.more_vert,
+          Container(
+            padding: const EdgeInsets.all(6),
+            decoration: BoxDecoration(
+                color: Theme.of(context).accentColor.withOpacity(0.1),
+                borderRadius: BorderRadius.all(Radius.circular(12))),
+            child: Text(
+              article.category,
+              style: Theme.of(context)
+                  .textTheme
+                  .body1
+                  .copyWith(color: Theme.of(context).accentColor),
             ),
-            onPressed: () {},
           ),
         ],
       ),
@@ -194,33 +191,11 @@ class _FeedOptionsSectionState extends State<FeedOptionsSection> {
               onPressed: () {},
             ),
             Spacer(),
-            ValueListenableBuilder(
-              valueListenable: widget.article.bookmarked,
-              builder: (context, value, child) {
-                return IconButton(
-                  icon: Icon(
-                    value
-                        ? FontAwesomeIcons.solidBookmark
-                        : FontAwesomeIcons.bookmark,
-                    size: 16,
-                  ),
-                  onPressed: () async {
-                    if (value) {
-                      widget.article.bookmarked.value = false;
-                      bookmarkStore
-                          .removeBookmarkedFeed(feed: widget.article)
-                          .then((onValue) =>
-                              widget.article.bookmarked.value = !onValue);
-                    } else {
-                      widget.article.bookmarked.value = true;
-                      bookmarkStore
-                          .addBookmarkedFeed(feed: widget.article)
-                          .then((onValue) =>
-                              widget.article.bookmarked.value = onValue);
-                    }
-                  },
-                );
-              },
+            IconButton(
+              icon: Icon(
+                Icons.more_vert,
+              ),
+              onPressed: () {},
             ),
           ],
         );

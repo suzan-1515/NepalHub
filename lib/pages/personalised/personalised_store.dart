@@ -3,14 +3,13 @@ import 'dart:async';
 import 'package:mobx/mobx.dart';
 import 'package:samachar_hub/common/service/services.dart';
 import 'package:samachar_hub/data/api/api.dart';
+import 'package:samachar_hub/data/dto/dto.dart';
 import 'package:samachar_hub/pages/pages.dart';
 import 'package:samachar_hub/repository/corona_repository.dart';
 import 'package:samachar_hub/repository/forex_repository.dart';
 import 'package:samachar_hub/repository/horoscope_repository.dart';
 import 'package:samachar_hub/repository/news_repository.dart';
 import 'package:samachar_hub/util/news_category.dart';
-
-import 'personalised_item_builder.dart';
 
 part 'personalised_store.g.dart';
 
@@ -24,17 +23,17 @@ abstract class _PersonalisedFeedStore with Store {
   final ForexRepository _forexRepository;
   final PreferenceService _preferenceService;
 
-  StreamController<List> _dataStreamController =
-      StreamController<List>.broadcast();
+  StreamController<List<Feed>> _dataStreamController =
+      StreamController<List<Feed>>.broadcast();
 
-  Stream<List> get dataStream => _dataStreamController.stream;
+  Stream<List<Feed>> get dataStream => _dataStreamController.stream;
 
   _PersonalisedFeedStore(this._preferenceService, this._newsRepository,
       this._coronaRepository, this._horoscopeRepository, this._forexRepository);
 
   Map<MixedDataType, dynamic> sectionData = Map<MixedDataType, dynamic>();
 
-  List data = List();
+  List<Feed> data = List<Feed>();
 
   @observable
   APIException apiError;
@@ -62,10 +61,6 @@ abstract class _PersonalisedFeedStore with Store {
 
   buildData() async {
     data.clear();
-    await _buildDateWeatherData();
-    await _buildCoronaData();
-    await _buildTrendingNewsData();
-
     _buildLatestNewsData();
     _buildNewsTopicsData();
     _buildNewsCategoryData();
@@ -77,18 +72,6 @@ abstract class _PersonalisedFeedStore with Store {
   @action
   setView(MenuItem value) {
     view = value;
-  }
-
-  Future _buildDateWeatherData() {
-    data.add(MixedDataType.DATE_INFO);
-    _dataStreamController.add(data);
-    return Future.value();
-  }
-
-  Future _buildTrendingNewsData() {
-    data.add(MixedDataType.TRENDING_NEWS);
-    _dataStreamController.add(data);
-    return Future.value();
   }
 
   Future _buildNewsCategoryData() async {
@@ -133,11 +116,6 @@ abstract class _PersonalisedFeedStore with Store {
       this.apiError = onError;
     }, test: (e) => e is APIException).catchError(
         (onError) => this.error = onError.toString());
-  }
-
-  Future _buildCoronaData() async {
-    data.add(MixedDataType.CORONA);
-    _dataStreamController.add(data);
   }
 
   Future _buildForexData() async {

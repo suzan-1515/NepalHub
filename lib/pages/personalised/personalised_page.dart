@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:mobx/mobx.dart';
-import 'package:multi_type_list_view/multi_type_list_view.dart';
+import 'dart:math' as math;
 import 'package:provider/provider.dart';
 import 'package:samachar_hub/common/service/preference_service.dart';
 import 'package:samachar_hub/common/store/trending_news_store.dart';
 import 'package:samachar_hub/data/api/api.dart';
 import 'package:samachar_hub/data/dto/dto.dart';
-import 'package:samachar_hub/pages/personalised/personalised_item_builder.dart';
 import 'package:samachar_hub/pages/personalised/personalised_store.dart';
 import 'package:samachar_hub/pages/personalised/widgets/corona_section.dart';
 import 'package:samachar_hub/pages/personalised/widgets/news_category_menu_section.dart';
@@ -87,32 +87,53 @@ class _PersonalisedPageState extends State<PersonalisedPage>
     ];
   }
 
-  Widget _buildSection(MixedDataType type) {
-    if (type == MixedDataType.DATE_INFO) {
-      return DateWeatherSection();
-    } else if (type == MixedDataType.CORONA) {
-      return CoronaSection();
-    } else if (type == MixedDataType.TRENDING_NEWS) {
-      return ProxyProvider2<PreferenceService, NewsRepository,
-          TrendingNewsStore>(
-        child: TrendingNewsSection(),
-        update: (BuildContext context, PreferenceService preferenceService,
-                NewsRepository newsRepository, TrendingNewsStore previous) =>
-            TrendingNewsStore(preferenceService, newsRepository),
-        dispose: (context, store) => store.dispose(),
+  Widget _buildMixedSection(
+      int index, PersonalisedFeedStore personalisedStore) {
+    if (index == 5) {
+      //topics view
+      if (personalisedStore.sectionData[MixedDataType.NEWS_TOPIC] != null)
+        return NewsTagsSection(
+          item: personalisedStore.sectionData[MixedDataType.NEWS_TOPIC],
+        );
+    }
+    if (index == 10) {
+      //category view
+      if (personalisedStore.sectionData[MixedDataType.NEWS_CATEGORY] != null)
+        return NewsCategoryMenuSection(
+          items: personalisedStore.sectionData[MixedDataType.NEWS_CATEGORY],
+        );
+    }
+    if (index == 15) {
+      //sources view
+      if (personalisedStore.sectionData[MixedDataType.NEWS_SOURCE] != null)
+        return NewsSourceMenuSection(
+          items: personalisedStore.sectionData[MixedDataType.NEWS_SOURCE],
+        );
+    }
+
+    if ((index + 1) % 6 == 0) {
+      return Container(
+        color: Colors.blueGrey,
+        padding: const EdgeInsets.all(8),
+        child: Text(
+          'This is a ad section',
+          style: Theme.of(context).textTheme.headline6,
+        ),
       );
     }
+
     return SizedBox.shrink();
   }
 
-  Widget _buildLatestFeed(int index, Feed feed) {
+  Widget _buildLatestFeed(
+      int index, Feed feed, PersonalisedFeedStore personalisedStore) {
     Widget feedWidget;
     if (index % 3 == 0) {
       feedWidget = NewsThumbnailView(feed);
     } else {
       feedWidget = NewsListView(feed: feed);
     }
-    if (index == 3) {
+    if (index == 0) {
       return Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -131,145 +152,72 @@ class _PersonalisedPageState extends State<PersonalisedPage>
   Widget _buildList() {
     return Consumer<PersonalisedFeedStore>(
         builder: (context, personalisedStore, child) {
-      return StreamBuilder<List>(
-          stream: personalisedStore.dataStream,
-          builder: (context, snapshot) {
-            if (snapshot.hasError) {
-              return Center(
-                child: ErrorDataView(
-                  onRetry: () => personalisedStore.retry(),
+      return CustomScrollView(
+        slivers: <Widget>[
+          SliverList(
+            delegate: SliverChildListDelegate(
+              [
+                DateWeatherSection(),
+                CoronaSection(),
+                ProxyProvider2<PreferenceService, NewsRepository,
+                    TrendingNewsStore>(
+                  child: TrendingNewsSection(),
+                  update: (BuildContext context,
+                          PreferenceService preferenceService,
+                          NewsRepository newsRepository,
+                          TrendingNewsStore previous) =>
+                      TrendingNewsStore(preferenceService, newsRepository),
+                  dispose: (context, store) => store.dispose(),
                 ),
-              );
-            }
-
-            switch (snapshot.connectionState) {
-              case ConnectionState.waiting:
-                return Center(child: ProgressView());
-              default:
-                if (!snapshot.hasData || snapshot.data.isEmpty) {
-                  return Center(
-                    child: EmptyDataView(
-                      onRetry: () => personalisedStore.retry(),
+              ],
+              addAutomaticKeepAlives: true,
+            ),
+          ),
+          StreamBuilder<List<Feed>>(
+              stream: personalisedStore.dataStream,
+              builder: (context, snapshot) {
+                if (snapshot.hasError) {
+                  return SliverToBoxAdapter(
+                    child: Center(
+                      child: ErrorDataView(
+                        onRetry: () => personalisedStore.retry(),
+                      ),
                     ),
                   );
                 }
-                return RefreshIndicator(
-                  child: ListView.separated(
-                    itemCount: snapshot.data.length,
-                    separatorBuilder: (BuildContext context, int index) {
-                      if (index == 8) {
-                        //topics view
-                        if (personalisedStore
-                                .sectionData[MixedDataType.NEWS_TOPIC] !=
-                            null)
-                          return Column(
-                            mainAxisSize: MainAxisSize.min,
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            children: <Widget>[
-                              SectionHeadingView(
-                                title: 'Trending Topics',
-                                subtitle:
-                                    'Get the latest news on currently trending topics',
-                              ),
-                              NewsTagsSection(
-                                item: personalisedStore
-                                    .sectionData[MixedDataType.NEWS_TOPIC],
-                              ),
-                            ],
-                          );
-                      }
-                      if (index == 13) {
-                        //category view
-                        if (personalisedStore
-                                .sectionData[MixedDataType.NEWS_CATEGORY] !=
-                            null)
-                          return Column(
-                            mainAxisSize: MainAxisSize.min,
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            children: <Widget>[
-                              SectionHeadingView(
-                                title: 'Discover',
-                                subtitle:
-                                    'Get the latest news on your favourite category',
-                              ),
-                              NewsCategoryMenuSection(
-                                items: personalisedStore
-                                    .sectionData[MixedDataType.NEWS_CATEGORY],
-                              ),
-                            ],
-                          );
-                      }
-                      if (index == 18) {
-                        //sources view
-                        if (personalisedStore
-                                .sectionData[MixedDataType.NEWS_SOURCE] !=
-                            null)
-                          return Column(
-                            mainAxisSize: MainAxisSize.min,
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            children: <Widget>[
-                              SectionHeadingView(
-                                title: 'News Sources',
-                                subtitle:
-                                    'Explore news from your favourite news sources',
-                              ),
-                              NewsSourceMenuSection(
-                                items: personalisedStore
-                                    .sectionData[MixedDataType.NEWS_SOURCE],
-                              ),
-                            ],
-                          );
-                      }
 
-                      if ((index + 1) % 6 == 0) {
-                        return Container(
-                          color: Colors.blueGrey,
-                          padding: const EdgeInsets.all(8),
-                          child: Text(
-                            'This is a ad section',
-                            style: Theme.of(context).textTheme.headline6,
-                          ),
-                        );
-                      }
-
-                      return SizedBox.shrink();
-                    },
-                    itemBuilder: (BuildContext context, int index) {
-                      if (snapshot.hasError) {
-                        return Center(
-                          child: ErrorDataView(
+                switch (snapshot.connectionState) {
+                  case ConnectionState.waiting:
+                    return SliverToBoxAdapter(
+                      child: Center(child: ProgressView()),
+                    );
+                  default:
+                    if (!snapshot.hasData || snapshot.data.isEmpty) {
+                      return SliverToBoxAdapter(
+                        child: Center(
+                          child: EmptyDataView(
                             onRetry: () => personalisedStore.retry(),
                           ),
-                        );
-                      }
-
-                      switch (snapshot.connectionState) {
-                        case ConnectionState.waiting:
-                          return Center(child: ProgressView());
-                        default:
-                          if (!snapshot.hasData || snapshot.data.isEmpty) {
-                            return Center(
-                              child: EmptyDataView(
-                                onRetry: () => personalisedStore.retry(),
-                              ),
-                            );
+                        ),
+                      );
+                    }
+                    return SliverList(
+                      delegate: SliverChildBuilderDelegate(
+                        (BuildContext context, int index) {
+                          if (index.isOdd) {
+                            return _buildMixedSection(
+                                index ~/ 2, personalisedStore);
                           }
-
-                          var data = snapshot.data[index];
-                          if (data is MixedDataType) {
-                            return _buildSection(data);
-                          } else if (data is Feed) {
-                            return _buildLatestFeed(index, data);
-                          }
-
-                          return SizedBox.shrink();
-                      }
-                    },
-                  ),
-                  onRefresh: () async => await personalisedStore.refresh(),
-                );
-            }
-          });
+                          return _buildLatestFeed(index,
+                              snapshot.data[index ~/ 2], personalisedStore);
+                        },
+                        childCount: math.max(0, snapshot.data.length * 2 - 1),
+                      ),
+                    );
+                }
+              }),
+        ],
+      );
     });
   }
 
@@ -296,4 +244,16 @@ class _PersonalisedPageState extends State<PersonalisedPage>
 
   @override
   bool get wantKeepAlive => true;
+}
+
+enum MixedDataType {
+  DATE_INFO,
+  TRENDING_NEWS,
+  LATEST_NEWS,
+  NEWS_TOPIC,
+  NEWS_CATEGORY,
+  NEWS_SOURCE,
+  FOREX,
+  HOROSCOPE,
+  CORONA
 }
