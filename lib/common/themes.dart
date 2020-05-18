@@ -26,7 +26,7 @@ final lightTheme = ThemeData(
     indicator: UnderlineTabIndicator(borderSide: BorderSide(color: Colors.red, width: 3)),
   ),
   brightness: Brightness.light,
-  primarySwatch: Colors.red,
+  primarySwatch: Colors.grey,
   accentColor: Colors.red,
   dividerColor: Colors.black26,
   scaffoldBackgroundColor: Colors.grey[100],
@@ -34,6 +34,7 @@ final lightTheme = ThemeData(
   cardColor: Colors.white,
   splashColor: Colors.red[200],
   bottomAppBarColor: Colors.white,
+  indicatorColor: Colors.red,
   iconTheme: IconThemeData(
     color: Colors.black
   ),
@@ -56,13 +57,14 @@ final darkTheme = ThemeData(
     indicator: UnderlineTabIndicator(borderSide: BorderSide(color: Colors.red, width: 3)),
   ),
   brightness: Brightness.dark,
-  primarySwatch: Colors.red,
+  primarySwatch: Colors.grey,
   accentColor: Colors.red,
   dividerColor: Colors.white30,
   scaffoldBackgroundColor: Colors.grey[850],
   backgroundColor: Colors.grey[850],
   cardColor: Colors.grey[800],
   splashColor: Colors.red[100],
+  indicatorColor: Colors.red,
   bottomAppBarColor: Colors.grey[700],
   iconTheme: IconThemeData(
     color: Colors.white
@@ -86,7 +88,7 @@ final pitchBlack = ThemeData(
     indicator: UnderlineTabIndicator(borderSide: BorderSide(color: Colors.red, width: 3)),
   ),
   brightness: Brightness.dark,
-  primarySwatch: Colors.red,
+  primarySwatch: Colors.grey,
   accentColor: Colors.red,
   dividerColor: Colors.white30,
   scaffoldBackgroundColor: Colors.black,
@@ -94,6 +96,7 @@ final pitchBlack = ThemeData(
   cardColor: Colors.grey[900],
   splashColor: Colors.red[100],
   bottomAppBarColor: Colors.grey[900],
+  indicatorColor: Colors.red,
   buttonTheme: ButtonThemeData(
     buttonColor: Colors.white30,
     textTheme: ButtonTextTheme.normal,

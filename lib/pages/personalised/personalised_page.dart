@@ -152,71 +152,74 @@ class _PersonalisedPageState extends State<PersonalisedPage>
   Widget _buildList() {
     return Consumer<PersonalisedFeedStore>(
         builder: (context, personalisedStore, child) {
-      return CustomScrollView(
-        slivers: <Widget>[
-          SliverList(
-            delegate: SliverChildListDelegate(
-              [
-                DateWeatherSection(),
-                CoronaSection(),
-                ProxyProvider2<PreferenceService, NewsRepository,
-                    TrendingNewsStore>(
-                  child: TrendingNewsSection(),
-                  update: (BuildContext context,
-                          PreferenceService preferenceService,
-                          NewsRepository newsRepository,
-                          TrendingNewsStore previous) =>
-                      TrendingNewsStore(preferenceService, newsRepository),
-                  dispose: (context, store) => store.dispose(),
-                ),
-              ],
-              addAutomaticKeepAlives: true,
+      return RefreshIndicator(
+              onRefresh: () async { await personalisedStore.refresh(); },
+              child: CustomScrollView(
+          slivers: <Widget>[
+            SliverList(
+              delegate: SliverChildListDelegate(
+                [
+                  DateWeatherSection(),
+                  CoronaSection(),
+                  ProxyProvider2<PreferenceService, NewsRepository,
+                      TrendingNewsStore>(
+                    child: TrendingNewsSection(),
+                    update: (BuildContext context,
+                            PreferenceService preferenceService,
+                            NewsRepository newsRepository,
+                            TrendingNewsStore previous) =>
+                        TrendingNewsStore(preferenceService, newsRepository),
+                    dispose: (context, store) => store.dispose(),
+                  ),
+                ],
+                addAutomaticKeepAlives: true,
+              ),
             ),
-          ),
-          StreamBuilder<List<Feed>>(
-              stream: personalisedStore.dataStream,
-              builder: (context, snapshot) {
-                if (snapshot.hasError) {
-                  return SliverToBoxAdapter(
-                    child: Center(
-                      child: ErrorDataView(
-                        onRetry: () => personalisedStore.retry(),
-                      ),
-                    ),
-                  );
-                }
-
-                switch (snapshot.connectionState) {
-                  case ConnectionState.waiting:
+            StreamBuilder<List<Feed>>(
+                stream: personalisedStore.dataStream,
+                builder: (context, snapshot) {
+                  if (snapshot.hasError) {
                     return SliverToBoxAdapter(
-                      child: Center(child: ProgressView()),
+                      child: Center(
+                        child: ErrorDataView(
+                          onRetry: () => personalisedStore.retry(),
+                        ),
+                      ),
                     );
-                  default:
-                    if (!snapshot.hasData || snapshot.data.isEmpty) {
+                  }
+
+                  switch (snapshot.connectionState) {
+                    case ConnectionState.waiting:
                       return SliverToBoxAdapter(
-                        child: Center(
-                          child: EmptyDataView(
-                            onRetry: () => personalisedStore.retry(),
+                        child: Center(child: ProgressView()),
+                      );
+                    default:
+                      if (!snapshot.hasData || snapshot.data.isEmpty) {
+                        return SliverToBoxAdapter(
+                          child: Center(
+                            child: EmptyDataView(
+                              onRetry: () => personalisedStore.retry(),
+                            ),
                           ),
+                        );
+                      }
+                      return SliverList(
+                        delegate: SliverChildBuilderDelegate(
+                          (BuildContext context, int index) {
+                            if (index.isOdd) {
+                              return _buildMixedSection(
+                                  index ~/ 2, personalisedStore);
+                            }
+                            return _buildLatestFeed(index,
+                                snapshot.data[index ~/ 2], personalisedStore);
+                          },
+                          childCount: math.max(0, snapshot.data.length * 2 - 1),
                         ),
                       );
-                    }
-                    return SliverList(
-                      delegate: SliverChildBuilderDelegate(
-                        (BuildContext context, int index) {
-                          if (index.isOdd) {
-                            return _buildMixedSection(
-                                index ~/ 2, personalisedStore);
-                          }
-                          return _buildLatestFeed(index,
-                              snapshot.data[index ~/ 2], personalisedStore);
-                        },
-                        childCount: math.max(0, snapshot.data.length * 2 - 1),
-                      ),
-                    );
-                }
-              }),
-        ],
+                  }
+                }),
+          ],
+        ),
       );
     });
   }

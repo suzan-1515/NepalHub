@@ -3,8 +3,17 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:mobx/mobx.dart';
 import 'package:provider/provider.dart';
+import 'package:samachar_hub/common/service/services.dart';
+import 'package:samachar_hub/pages/bookmark/bookmark_manager.dart';
+import 'package:samachar_hub/pages/bookmark/bookmark_store.dart';
+import 'package:samachar_hub/pages/category/categories_store.dart';
 import 'package:samachar_hub/pages/home/home_screen_store.dart';
 import 'package:samachar_hub/pages/pages.dart';
+import 'package:samachar_hub/pages/personalised/personalised_store.dart';
+import 'package:samachar_hub/pages/settings/settings_store.dart';
+import 'package:samachar_hub/repository/forex_repository.dart';
+import 'package:samachar_hub/repository/horoscope_repository.dart';
+import 'package:samachar_hub/repository/news_repository.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -44,7 +53,21 @@ class _HomeScreenState extends State<HomeScreen> {
                 controller: _pageController,
                 onPageChanged: (index) => {},
                 children: <Widget>[
-                  PersonalisedPage(),
+                  ProxyProvider4<
+                      PreferenceService,
+                      NewsRepository,
+                      ForexRepository,
+                      HoroscopeRepository,
+                      PersonalisedFeedStore>(
+                    update: (_, preferenceService, _newsRepository,
+                            _forexRepository, _horoscopeRepository, __) =>
+                        PersonalisedFeedStore(
+                            preferenceService,
+                            _newsRepository,
+                            _horoscopeRepository,
+                            _forexRepository),
+                    child: PersonalisedPage(),
+                  ),
                   CategoriesPage(),
                   BookmarkPage(),
                   SettingsPage(),
@@ -57,6 +80,7 @@ class _HomeScreenState extends State<HomeScreen> {
             builder: (_) => BottomNavigationBar(
               showSelectedLabels: false,
               showUnselectedLabels: false,
+              selectedItemColor: Theme.of(context).indicatorColor,
               backgroundColor: Theme.of(context).backgroundColor,
               items: const <BottomNavigationBarItem>[
                 BottomNavigationBarItem(

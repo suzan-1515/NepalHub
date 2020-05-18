@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:mobx/mobx.dart';
 import 'package:provider/provider.dart';
+import 'package:samachar_hub/common/service/navigation_service.dart';
 import 'package:samachar_hub/pages/article/article_store.dart';
 import 'package:samachar_hub/widgets/article_image_widget.dart';
+import 'package:samachar_hub/widgets/webview_widget.dart';
 
 class ArticleViewScreen extends StatefulWidget {
   ArticleViewScreen(this.store);
@@ -178,11 +180,18 @@ class _ArticleViewScreenState extends State<ArticleViewScreen> {
                 Expanded(
                   child: Align(
                     alignment: Alignment.centerRight,
-                    child: OutlineButton.icon(
-                      onPressed: Provider.of<ArticleStore>(context).openLink,
-                      icon: Icon(FontAwesomeIcons.link),
-                      label: Text('Open Link'),
-                    ),
+                    child: Consumer<NavigationService>(builder:
+                        (BuildContext context, NavigationService value,
+                            Widget child) {
+                      return OutlineButton.icon(
+                        onPressed: () {
+                          value.onOpenLink(widget.store.article.title,
+                              widget.store.article.link, context);
+                        },
+                        icon: Icon(FontAwesomeIcons.link),
+                        label: Text('Open Link'),
+                      );
+                    }),
                   ),
                 ),
               ],

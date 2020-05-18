@@ -5,7 +5,6 @@ import 'package:samachar_hub/common/service/services.dart';
 import 'package:samachar_hub/data/api/api.dart';
 import 'package:samachar_hub/data/dto/dto.dart';
 import 'package:samachar_hub/pages/pages.dart';
-import 'package:samachar_hub/repository/corona_repository.dart';
 import 'package:samachar_hub/repository/forex_repository.dart';
 import 'package:samachar_hub/repository/horoscope_repository.dart';
 import 'package:samachar_hub/repository/news_repository.dart';
@@ -18,7 +17,6 @@ class PersonalisedFeedStore = _PersonalisedFeedStore
 
 abstract class _PersonalisedFeedStore with Store {
   final NewsRepository _newsRepository;
-  final CoronaRepository _coronaRepository;
   final HoroscopeRepository _horoscopeRepository;
   final ForexRepository _forexRepository;
   final PreferenceService _preferenceService;
@@ -29,7 +27,7 @@ abstract class _PersonalisedFeedStore with Store {
   Stream<List<Feed>> get dataStream => _dataStreamController.stream;
 
   _PersonalisedFeedStore(this._preferenceService, this._newsRepository,
-      this._coronaRepository, this._horoscopeRepository, this._forexRepository);
+      this._horoscopeRepository, this._forexRepository);
 
   Map<MixedDataType, dynamic> sectionData = Map<MixedDataType, dynamic>();
 
@@ -46,6 +44,7 @@ abstract class _PersonalisedFeedStore with Store {
 
   @action
   void loadInitialData() {
+    print('loading personalised feed data');
     buildData();
   }
 

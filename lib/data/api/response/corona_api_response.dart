@@ -40,11 +40,11 @@ class CoronaWorldwideApiResponse {
       recovered: json['recovered'],
       active: json['active'],
       critical: json['critical'],
-      casesPerOneMillion: json['casesPerOneMillion'],
-      deathsPerOneMillion: json['deathsPerOneMillion'],
+      casesPerOneMillion: json['casesPerOneMillion'].toDouble(),
+      deathsPerOneMillion: json['deathsPerOneMillion'].toDouble(),
       tests: json['tests'],
-      testsPerOneMillion: json['testsPerOneMillion'],
-      affectedCountries: json['affectedCountries'],
+      testsPerOneMillion: json['testsPerOneMillion'].toDouble(),
+      affectedCountries: json['affectedCountries'].toDouble(),
     );
   }
 
@@ -89,10 +89,10 @@ class CoronaCountrySpecificApiResponse {
   final int recovered;
   final int active;
   final int critical;
-  final int casesPerOneMillion;
-  final int deathsPerOneMillion;
+  final double casesPerOneMillion;
+  final double deathsPerOneMillion;
   final int tests;
-  final int testsPerOneMillion;
+  final double testsPerOneMillion;
   final String continent;
 
   CoronaCountrySpecificApiResponse(
@@ -126,10 +126,10 @@ class CoronaCountrySpecificApiResponse {
       recovered: json['recovered'],
       active: json['active'],
       critical: json['critical'],
-      casesPerOneMillion: json['casesPerOneMillion'],
-      deathsPerOneMillion: json['deathsPerOneMillion'],
+      casesPerOneMillion: json['casesPerOneMillion'].toDouble(),
+      deathsPerOneMillion: json['deathsPerOneMillion'].toDouble(),
       tests: json['tests'],
-      testsPerOneMillion: json['testsPerOneMillion'],
+      testsPerOneMillion: json['testsPerOneMillion'].toDouble(),
       continent: json['continent'],
     );
   }

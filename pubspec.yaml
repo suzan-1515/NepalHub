@@ -51,6 +51,7 @@ dependencies:
 
   multi_type_list_view: ^0.1.0
   carousel_slider: ^2.1.0
+  nepali_utils: ^2.2.1
 
 dev_dependencies:
   flutter_test:

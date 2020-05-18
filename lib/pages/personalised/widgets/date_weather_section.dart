@@ -1,14 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:intl/intl.dart';
+import 'package:nepali_utils/nepali_utils.dart';
 
 class DateWeatherSection extends StatefulWidget {
   @override
   _DateWeatherSectionState createState() => _DateWeatherSectionState();
 }
 
-class _DateWeatherSectionState extends State<DateWeatherSection> {
+class _DateWeatherSectionState extends State<DateWeatherSection>
+    with AutomaticKeepAliveClientMixin {
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Row(
@@ -18,13 +22,12 @@ class _DateWeatherSectionState extends State<DateWeatherSection> {
           Expanded(
             child: RichText(
               text: TextSpan(
-                text: '२ जेष्ठ २०७७, शुक्रवार',
-                style: Theme.of(context)
-                    .textTheme
-                    .bodyText1,
+                text: NepaliDateFormat("d MMMM yyyy, EEE")
+                    .format(NepaliDateTime.now()), //'२ जेष्ठ २०७७, शुक्रवार'
+                style: Theme.of(context).textTheme.bodyText1,
                 children: <TextSpan>[
                   TextSpan(
-                      text: '\n15 May 2020',
+                      text: '\n${DateFormat("d MMMM y, EEEE").format(DateTime.now())}', //'\n15 May 2020'
                       style: Theme.of(context).textTheme.bodyText1)
                 ],
               ),
@@ -34,4 +37,7 @@ class _DateWeatherSectionState extends State<DateWeatherSection> {
       ),
     );
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }

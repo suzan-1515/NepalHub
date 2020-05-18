@@ -30,6 +30,7 @@ class CoronaWorldwide {
       @required this.testsPerOneMillion,
       @required this.affectedCountries,
       @required this.lastUpdated});
+
 }
 
 class CoronaCountrySpecific {
@@ -43,10 +44,10 @@ class CoronaCountrySpecific {
   final int recovered;
   final int active;
   final int critical;
-  final int casesPerOneMillion;
-  final int deathsPerOneMillion;
+  final double casesPerOneMillion;
+  final double deathsPerOneMillion;
   final int tests;
-  final int testsPerOneMillion;
+  final double testsPerOneMillion;
   final String continent;
 
   CoronaCountrySpecific(
