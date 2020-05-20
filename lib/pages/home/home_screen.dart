@@ -53,21 +53,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 controller: _pageController,
                 onPageChanged: (index) => {},
                 children: <Widget>[
-                  ProxyProvider4<
-                      PreferenceService,
-                      NewsRepository,
-                      ForexRepository,
-                      HoroscopeRepository,
-                      PersonalisedFeedStore>(
-                    update: (_, preferenceService, _newsRepository,
-                            _forexRepository, _horoscopeRepository, __) =>
-                        PersonalisedFeedStore(
-                            preferenceService,
-                            _newsRepository,
-                            _horoscopeRepository,
-                            _forexRepository),
-                    child: PersonalisedPage(),
-                  ),
+                  PersonalisedPage(),
                   CategoriesPage(),
                   BookmarkPage(),
                   SettingsPage(),

@@ -62,6 +62,12 @@ class User {
       fullName: user.displayName,
       email: user.email,
       avatar: user.photoUrl);
+  
+  factory User.fromJson(Map<String,dynamic> json) => User(
+      uId: json['id'],
+      fullName: json['full_name'],
+      email: json['email'],
+      avatar: json['avatar']);
 
   Map<String, dynamic> toJson() => {
         'id': this.uId,

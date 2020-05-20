@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'article_store.dart';
+part of 'news_detail_store.dart';
 
 // **************************************************************************
 // StoreGenerator
@@ -8,8 +8,8 @@ part of 'article_store.dart';
 
 // ignore_for_file: non_constant_identifier_names, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
 
-mixin _$ArticleStore on _ArticleStore, Store {
-  final _$messageAtom = Atom(name: '_ArticleStore.message');
+mixin _$NewsDetailStore on _NewsDetailStore, Store {
+  final _$messageAtom = Atom(name: '_NewsDetailStore.message');
 
   @override
   String get message {
@@ -26,26 +26,26 @@ mixin _$ArticleStore on _ArticleStore, Store {
     }, _$messageAtom, name: '${_$messageAtom.name}_set');
   }
 
-  final _$_ArticleStoreActionController =
-      ActionController(name: '_ArticleStore');
+  final _$_NewsDetailStoreActionController =
+      ActionController(name: '_NewsDetailStore');
 
   @override
   dynamic share() {
-    final _$actionInfo = _$_ArticleStoreActionController.startAction();
+    final _$actionInfo = _$_NewsDetailStoreActionController.startAction();
     try {
       return super.share();
     } finally {
-      _$_ArticleStoreActionController.endAction(_$actionInfo);
+      _$_NewsDetailStoreActionController.endAction(_$actionInfo);
     }
   }
 
   @override
   dynamic openLink() {
-    final _$actionInfo = _$_ArticleStoreActionController.startAction();
+    final _$actionInfo = _$_NewsDetailStoreActionController.startAction();
     try {
       return super.openLink();
     } finally {
-      _$_ArticleStoreActionController.endAction(_$actionInfo);
+      _$_NewsDetailStoreActionController.endAction(_$actionInfo);
     }
   }
 

@@ -19,6 +19,7 @@ import 'package:samachar_hub/pages/bookmark/bookmark_store.dart';
 import 'package:samachar_hub/pages/category/categories_store.dart';
 import 'package:samachar_hub/pages/home/home_screen_store.dart';
 import 'package:samachar_hub/pages/pages.dart';
+import 'package:samachar_hub/pages/personalised/personalised_store.dart';
 import 'package:samachar_hub/pages/settings/settings_store.dart';
 import 'package:samachar_hub/repository/corona_repository.dart';
 import 'package:samachar_hub/repository/forex_repository.dart';
@@ -115,6 +116,13 @@ class App extends StatelessWidget {
         ProxyProvider<PreferenceService, HomeScreenStore>(
           update: (_, preferenceService, __) =>
               HomeScreenStore(preferenceService),
+        ),
+        ProxyProvider4<PreferenceService, NewsRepository, ForexRepository,
+            HoroscopeRepository, PersonalisedFeedStore>(
+          update: (_, preferenceService, _newsRepository, _forexRepository,
+                  _horoscopeRepository, __) =>
+              PersonalisedFeedStore(preferenceService, _newsRepository,
+                  _horoscopeRepository, _forexRepository),
         ),
         ProxyProvider<NewsRepository, CategoriesStore>(
           update: (_, _newsRepository, __) => CategoriesStore(_newsRepository),

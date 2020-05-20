@@ -2,7 +2,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:share/share.dart';
 
 // Yeah, boilerplate...
-class ArticleService {
+class NewsDetailService {
   shareArticle(String title, String url) {
     Share.share(url, subject: title);
   }

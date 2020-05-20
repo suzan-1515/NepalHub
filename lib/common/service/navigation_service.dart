@@ -3,10 +3,11 @@ import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:samachar_hub/data/dto/dto.dart';
 import 'package:samachar_hub/data/dto/news_category_menu_dto.dart';
-import 'package:samachar_hub/pages/article/article_store.dart';
 import 'package:samachar_hub/pages/category/categories_store.dart';
 import 'package:samachar_hub/pages/home/home_screen_store.dart';
-import 'package:samachar_hub/pages/pages.dart';
+import 'package:samachar_hub/pages/news/news_detail_screen.dart';
+import 'package:samachar_hub/pages/news/news_detail_service.dart';
+import 'package:samachar_hub/pages/news/news_detail_store.dart';
 import 'package:samachar_hub/widgets/webview_widget.dart';
 
 class NavigationService {
@@ -14,10 +15,10 @@ class NavigationService {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => Provider<ArticleStore>(
-          create: (_) => ArticleStore(article),
-          child: Consumer<ArticleStore>(
-            builder: (context, store, _) => ArticleViewScreen(store),
+        builder: (context) => Provider<NewsDetailStore>(
+          create: (_) => NewsDetailStore(article,NewsDetailService()),
+          child: Consumer<NewsDetailStore>(
+            builder: (context, store, _) => NewsDetailScreen(),
           ),
         ),
       ),

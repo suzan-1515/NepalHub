@@ -13,7 +13,7 @@ class CategoriesPage extends StatefulWidget {
 }
 
 class _CategoriesPageState extends State<CategoriesPage>
-    with SingleTickerProviderStateMixin, AutomaticKeepAliveClientMixin {
+    with SingleTickerProviderStateMixin {
   // Reaction disposers
   List<ReactionDisposer> _disposers;
   TabController _tabController;
@@ -156,7 +156,6 @@ class _CategoriesPageState extends State<CategoriesPage>
 
   @override
   Widget build(BuildContext context) {
-    super.build(context);
     return Container(
       color: Theme.of(context).backgroundColor,
       padding: EdgeInsets.symmetric(horizontal: 8),
@@ -248,9 +247,6 @@ class _CategoriesPageState extends State<CategoriesPage>
       ),
     );
   }
-
-  @override
-  bool get wantKeepAlive => true;
 }
 
 enum MenuItem {

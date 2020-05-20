@@ -30,8 +30,7 @@ class PersonalisedPage extends StatefulWidget {
   _PersonalisedPageState createState() => _PersonalisedPageState();
 }
 
-class _PersonalisedPageState extends State<PersonalisedPage>
-    with AutomaticKeepAliveClientMixin {
+class _PersonalisedPageState extends State<PersonalisedPage> {
 // Reaction disposers
   List<ReactionDisposer> _disposers;
 
@@ -40,6 +39,7 @@ class _PersonalisedPageState extends State<PersonalisedPage>
     final store = Provider.of<PersonalisedFeedStore>(context, listen: false);
     _setupObserver(store);
     store.loadInitialData();
+
     super.initState();
   }
 
@@ -153,8 +153,10 @@ class _PersonalisedPageState extends State<PersonalisedPage>
     return Consumer<PersonalisedFeedStore>(
         builder: (context, personalisedStore, child) {
       return RefreshIndicator(
-              onRefresh: () async { await personalisedStore.refresh(); },
-              child: CustomScrollView(
+        onRefresh: () async {
+          await personalisedStore.refresh();
+        },
+        child: CustomScrollView(
           slivers: <Widget>[
             SliverList(
               delegate: SliverChildListDelegate(
@@ -178,8 +180,10 @@ class _PersonalisedPageState extends State<PersonalisedPage>
             StreamBuilder<List<Feed>>(
                 stream: personalisedStore.dataStream,
                 builder: (context, snapshot) {
+
                   if (snapshot.hasError) {
-                    return SliverToBoxAdapter(
+                    return SliverFillRemaining(
+                      hasScrollBody: false,
                       child: Center(
                         child: ErrorDataView(
                           onRetry: () => personalisedStore.retry(),
@@ -190,12 +194,14 @@ class _PersonalisedPageState extends State<PersonalisedPage>
 
                   switch (snapshot.connectionState) {
                     case ConnectionState.waiting:
-                      return SliverToBoxAdapter(
+                      return SliverFillRemaining(
+                        hasScrollBody: false,
                         child: Center(child: ProgressView()),
                       );
                     default:
                       if (!snapshot.hasData || snapshot.data.isEmpty) {
-                        return SliverToBoxAdapter(
+                        return SliverFillRemaining(
+                          hasScrollBody: false,
                           child: Center(
                             child: EmptyDataView(
                               onRetry: () => personalisedStore.retry(),
@@ -226,7 +232,6 @@ class _PersonalisedPageState extends State<PersonalisedPage>
 
   @override
   Widget build(BuildContext context) {
-    super.build(context);
     return Container(
       color: Theme.of(context).backgroundColor,
       padding: EdgeInsets.symmetric(horizontal: 8),
@@ -244,9 +249,6 @@ class _PersonalisedPageState extends State<PersonalisedPage>
       ),
     );
   }
-
-  @override
-  bool get wantKeepAlive => true;
 }
 
 enum MixedDataType {

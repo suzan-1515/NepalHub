@@ -15,8 +15,7 @@ class BookmarkPage extends StatefulWidget {
   _BookmarkPageState createState() => _BookmarkPageState();
 }
 
-class _BookmarkPageState extends State<BookmarkPage>
-    with AutomaticKeepAliveClientMixin {
+class _BookmarkPageState extends State<BookmarkPage>{
   List<ReactionDisposer> _disposers;
 
   @override
@@ -55,7 +54,6 @@ class _BookmarkPageState extends State<BookmarkPage>
 
   @override
   Widget build(BuildContext context) {
-    super.build(context);
     return Container(
       color: Theme.of(context).backgroundColor,
       padding: EdgeInsets.symmetric(horizontal: 8),
@@ -138,7 +136,4 @@ class _BookmarkPageState extends State<BookmarkPage>
       ),
     );
   }
-
-  @override
-  bool get wantKeepAlive => true;
 }

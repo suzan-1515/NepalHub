@@ -1,12 +1,10 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:samachar_hub/common/store/corona_store.dart';
 import 'package:samachar_hub/data/dto/dto.dart';
-import 'package:samachar_hub/pages/widgets/empty_data_widget.dart';
-import 'package:samachar_hub/pages/widgets/error_data_widget.dart';
-import 'package:samachar_hub/pages/widgets/progress_widget.dart';
 
 class CoronaSection extends StatefulWidget {
   const CoronaSection({Key key}) : super(key: key);
@@ -14,132 +12,138 @@ class CoronaSection extends StatefulWidget {
   _CoronaSectionState createState() => _CoronaSectionState();
 }
 
-class _CoronaSectionState extends State<CoronaSection> with AutomaticKeepAliveClientMixin {
-
+class _CoronaSectionState extends State<CoronaSection>
+    with AutomaticKeepAliveClientMixin, TickerProviderStateMixin {
+  AnimationController _controller;
+  Animation<double> _animation;
   @override
   void initState() {
-    Provider.of<CoronaStore>(context,listen: false).loadNepalData();
+    Provider.of<CoronaStore>(context, listen: false).loadNepalData();
+    _controller = AnimationController(
+        duration: const Duration(milliseconds: 500), vsync: this, value: 0.5);
+    _animation =
+        CurvedAnimation(parent: _controller, curve: Curves.easeInOut);
+
     super.initState();
   }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return Card(
-      color: Colors.indigo,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6.0)),
-      margin: const EdgeInsets.all(4),
-      elevation: 2,
-      child: InkWell(
-        onTap: () => {},
-        child: Consumer<CoronaStore>(
-          builder: (BuildContext context, CoronaStore coronaStore,
-              Widget child) {
-            return Container(
-              padding: const EdgeInsets.all(8),
-              child: StreamBuilder<CoronaCountrySpecific>(
-                stream: coronaStore.nepalDataStream,
-                builder: (BuildContext context,
-                    AsyncSnapshot<CoronaCountrySpecific> snapshot) {
-                  if (snapshot.hasError) {
-                    return Center(
-                      child: ErrorDataView(),
-                    );
-                  }
-                  if (snapshot.hasData) {
-                    if (snapshot.data == null) {
-                      return Center(child: EmptyDataView());
-                    }
-                    return Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            CachedNetworkImage(
-                              imageUrl: snapshot.data.countryInfo.flag,
-                              width: 24,
-                              height: 24,
-                              placeholder: (context, url) => Icon(Icons.image),
-                            ),
-                            RichText(
-                              text: TextSpan(
-                                text: snapshot.data.country,
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyText1
-                                    .copyWith(
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.w600),
-                                children: [
-                                  TextSpan(
-                                    text: '\t${snapshot.data.updated}',
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .bodyText2
-                                        .copyWith(color: Colors.white70),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                        SizedBox(
-                          height: 8,
-                        ),
-                        Text(
-                          'Coronavirus\nRealtime Updates',
-                          style: Theme.of(context).textTheme.bodyText1.copyWith(
-                                color: Colors.white,
-                                fontWeight: FontWeight.w700,
-                              ),
-                        ),
-                        SizedBox(
-                          height: 8,
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            _buildCase(
-                                context,
-                                snapshot.data.todayCases,
-                                snapshot.data.cases,
-                                Colors.red[400],
-                                Colors.white,
-                                'Oficially Confirmed'),
-                            _buildCase(
-                                context,
-                                0,
-                                snapshot.data.recovered,
-                                Colors.green[400],
-                                Colors.white,
-                                'Recovered'),
-                            _buildCase(
-                                context,
-                                snapshot.data.todayDeaths,
-                                snapshot.data.deaths,
-                                Colors.white,
-                                Colors.black,
-                                'Deaths'),
-                          ],
-                        ),
-                      ],
-                    );
-                  }
-
-                  return Center(child: ProgressView());
-                },
-              ),
-            );
+    return Consumer<CoronaStore>(
+      builder: (BuildContext context, CoronaStore coronaStore, Widget child) {
+        return StreamBuilder<CoronaCountrySpecific>(
+          stream: coronaStore.nepalDataStream,
+          builder: (BuildContext context,
+              AsyncSnapshot<CoronaCountrySpecific> snapshot) {
+            if (snapshot.hasData) {
+              return _buildStatCard(snapshot, context);
+            }
+            return SizedBox.shrink();
           },
+        );
+      },
+    );
+  }
+
+  Widget _buildStatCard(
+      AsyncSnapshot<CoronaCountrySpecific> snapshot, BuildContext context) {
+    _controller.forward();
+    return ScaleTransition(
+      scale: _animation,
+      child: Card(
+        color: Colors.indigo,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6.0)),
+        margin: const EdgeInsets.all(4),
+        elevation: 2,
+        child: InkWell(
+          onTap: () => {},
+          child: Container(
+            padding: const EdgeInsets.all(8),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                _buildDateTimeRow(snapshot, context),
+                SizedBox(
+                  height: 8,
+                ),
+                Text(
+                  'Coronavirus\nRealtime Updates',
+                  style: Theme.of(context).textTheme.bodyText1.copyWith(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w700,
+                      ),
+                ),
+                SizedBox(
+                  height: 8,
+                ),
+                _buildCasesInfoRow(context, snapshot),
+              ],
+            ),
+          ),
         ),
       ),
     );
   }
 
-  Widget _buildCase(BuildContext context, int todayCases, int cases,
+  Widget _buildCasesInfoRow(
+      BuildContext context, AsyncSnapshot<CoronaCountrySpecific> snapshot) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        _buildCaseItem(context, snapshot.data.todayCases, snapshot.data.cases,
+            Colors.red[400], Colors.white, 'Oficially Confirmed'),
+        _buildCaseItem(context, 0, snapshot.data.recovered, Colors.green[400],
+            Colors.white, 'Recovered'),
+        _buildCaseItem(context, snapshot.data.todayDeaths, snapshot.data.deaths,
+            Colors.white, Colors.black, 'Deaths'),
+      ],
+    );
+  }
+
+  Widget _buildDateTimeRow(
+      AsyncSnapshot<CoronaCountrySpecific> snapshot, BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        CachedNetworkImage(
+          imageUrl: snapshot.data.countryInfo.flag,
+          width: 24,
+          height: 24,
+          placeholder: (context, url) => Icon(FontAwesomeIcons.spinner),
+        ),
+        RichText(
+          text: TextSpan(
+            text: snapshot.data.country,
+            style: Theme.of(context)
+                .textTheme
+                .bodyText1
+                .copyWith(color: Colors.white, fontWeight: FontWeight.w600),
+            children: [
+              TextSpan(
+                text: '\t${snapshot.data.updated}',
+                style: Theme.of(context)
+                    .textTheme
+                    .bodyText2
+                    .copyWith(color: Colors.white70),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildCaseItem(BuildContext context, int todayCases, int cases,
       Color higlightColor, Color textColor, String label) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -168,9 +172,11 @@ class _CoronaSectionState extends State<CoronaSection> with AutomaticKeepAliveCl
           style: Theme.of(context)
               .textTheme
               .headline5
-              .copyWith(color: higlightColor,fontSize: 22),
+              .copyWith(color: higlightColor, fontSize: 22),
         ),
-        SizedBox(height: 4,),
+        SizedBox(
+          height: 4,
+        ),
         Text(
           label,
           style: Theme.of(context).textTheme.caption.copyWith(

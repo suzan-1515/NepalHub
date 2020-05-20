@@ -23,9 +23,11 @@ class AuthenticationManager {
         .loginWithEmail(email: email, password: password)
         .then((auth) {
       if (auth != null) {
-        _currentUser = User.fromFirebaseUser(auth.user);
-        _analyticsService.setUser(userId: auth.user.email);
-        _analyticsService.logLogin();
+        _authenticationService.getUserProfile(uid: auth.user.uid).then((value) {
+          _currentUser = User.fromJson(value.data);
+          _analyticsService.setUser(userId: auth.user.email);
+          _analyticsService.logLogin();
+        });
       }
 
       return auth.user != null;
