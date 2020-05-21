@@ -3,4 +3,4 @@ export 'personalised/personalised_page.dart';
 export 'category/categories_page.dart';
 export 'bookmark/bookmark_page.dart';
 export 'settings/settings_page.dart';
-export 'news/news_detail_screen.dart';
+export 'news/details/news_detail_screen.dart';

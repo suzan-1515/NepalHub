@@ -4,7 +4,7 @@ import 'package:mobx/mobx.dart';
 import 'package:provider/provider.dart';
 import 'package:samachar_hub/common/manager/authentication_manager.dart';
 import 'package:samachar_hub/common/service/navigation_service.dart';
-import 'package:samachar_hub/pages/news/news_detail_store.dart';
+import 'package:samachar_hub/pages/news/details/news_detail_store.dart';
 import 'package:samachar_hub/widgets/article_image_widget.dart';
 import 'package:samachar_hub/widgets/comment_bar_widget.dart';
 

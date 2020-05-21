@@ -5,9 +5,10 @@ import 'package:samachar_hub/data/dto/dto.dart';
 import 'package:samachar_hub/data/dto/news_category_menu_dto.dart';
 import 'package:samachar_hub/pages/category/categories_store.dart';
 import 'package:samachar_hub/pages/home/home_screen_store.dart';
-import 'package:samachar_hub/pages/news/news_detail_screen.dart';
-import 'package:samachar_hub/pages/news/news_detail_service.dart';
-import 'package:samachar_hub/pages/news/news_detail_store.dart';
+import 'package:samachar_hub/pages/news/details/news_details.dart';
+import 'package:samachar_hub/pages/news/sources/news_source_screen.dart';
+import 'package:samachar_hub/pages/news/sources/news_source_store.dart';
+import 'package:samachar_hub/repository/news_repository.dart';
 import 'package:samachar_hub/widgets/webview_widget.dart';
 
 class NavigationService {
@@ -16,7 +17,7 @@ class NavigationService {
       context,
       MaterialPageRoute(
         builder: (context) => Provider<NewsDetailStore>(
-          create: (_) => NewsDetailStore(article,NewsDetailService()),
+          create: (_) => NewsDetailStore(article, NewsDetailService()),
           child: Consumer<NewsDetailStore>(
             builder: (context, store, _) => NewsDetailScreen(),
           ),
@@ -54,7 +55,19 @@ class NavigationService {
     print('Tag selected: $source.name');
   }
 
-  onSourceViewAllTapped() {
-    print('Source view all tapped.');
+  onSourceViewAllTapped({@required BuildContext context}) {
+    print('onSourceViewAllTapped');
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ProxyProvider<NewsRepository, NewsSourceStore>(
+          update: (BuildContext context, NewsRepository value,
+                  NewsSourceStore previous) =>
+              NewsSourceStore(value),
+          dispose: (context, value) => value.dispose(),
+          child: NewsSourceScreen(),
+        ),
+      ),
+    );
   }
 }

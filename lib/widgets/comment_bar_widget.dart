@@ -29,11 +29,6 @@ class CommentBar extends StatefulWidget {
 }
 
 class _CommentBarState extends State<CommentBar> {
-  @override
-  void dispose() {
-    widget.likeNotifier.dispose();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {

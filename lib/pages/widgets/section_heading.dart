@@ -38,7 +38,7 @@ class SectionHeadingView extends StatelessWidget {
                   icon: Icon(
                     FontAwesomeIcons.chevronRight,
                   ),
-                  onPressed: () => onTap)
+                  onPressed: () => onTap())
           ],
         ),
       ),

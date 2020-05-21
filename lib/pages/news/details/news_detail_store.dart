@@ -1,6 +1,6 @@
 import 'package:mobx/mobx.dart';
 import 'package:samachar_hub/data/dto/dto.dart';
-import 'package:samachar_hub/pages/news/news_detail_service.dart';
+import 'package:samachar_hub/pages/news/details/news_detail_service.dart';
 
 part 'news_detail_store.g.dart';
 

@@ -25,7 +25,7 @@ class NewsSourceMenuSection extends StatelessWidget {
           SectionHeadingView(
             title: 'News Sources',
             subtitle: 'Explore news from your favourite news sources',
-            onTap: () {},
+            onTap: () =>navigationService.onSourceViewAllTapped(context: context),
           ),
           LimitedBox(
             maxHeight: 120,
