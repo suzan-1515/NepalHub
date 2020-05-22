@@ -44,7 +44,6 @@ abstract class _PersonalisedFeedStore with Store {
 
   @action
   void loadInitialData() {
-    print('loading personalised feed data');
     buildData();
   }
 

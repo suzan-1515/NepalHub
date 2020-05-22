@@ -49,30 +49,65 @@ class Feed {
   }
 }
 
-class FeedSource extends FeedSourceApiResponse {
+class FeedSource {
+  final int id;
+  final String name;
+  final String code;
+  final String icon;
+  final int priority;
+  final String favicon;
+  final Map<String, dynamic> rawData = Map<String, dynamic>();
+  final ValueNotifier<bool> enabled = ValueNotifier<bool>(true);
+
   FeedSource(
-      {@required int id,
-      @required String name,
-      @required String code,
-      @required String icon,
-      @required int priority,
-      @required String favicon})
-      : super(id, name, code, icon, priority, favicon);
+      {@required this.id,
+      @required this.name,
+      @required this.code,
+      @required this.icon,
+      @required this.priority,
+      @required this.favicon,
+      bool enabled = true}) {
+    this.enabled.value = enabled;
+  }
+
+  Map<String, dynamic> toJson() => <String, dynamic>{
+        'id': this.id,
+        'name': this.name,
+        'code': this.code,
+        'icon': this.icon,
+        'priority': this.priority,
+        'favicon': this.favicon,
+        'enable': this.enabled.value,
+      };
 }
 
-class FeedCategory extends FeedCategoryApiResponse {
+class FeedCategory {
+  final int id;
+  final String name;
+  final String code;
+  final String icon;
+  final int priority;
+  final Map<String, dynamic> rawData = Map<String, dynamic>();
+  final ValueNotifier<bool> enabled = ValueNotifier<bool>(true);
   FeedCategory(
-      {@required int id,
-      @required String name,
-      @required String nameNp,
-      @required String code,
-      @required String icon,
-      @required int priority,
-      @required String enable})
-      : super(id, name, nameNp, code, icon, priority, enable);
+      {@required this.id,
+      @required this.name,
+      @required this.code,
+      @required this.icon,
+      @required this.priority,
+      bool enable = true}) {
+    this.enabled.value = enable;
+  }
+  Map<String, dynamic> toJson() => <String, dynamic>{
+        'id': this.id,
+        'name': this.name,
+        'code': this.code,
+        'icon': this.icon,
+        'priority': this.priority,
+        'enable': this.enabled.value,
+      };
 }
 
 class NewsTags extends NewsTagsApiResponse {
   NewsTags(List<String> tags) : super(tags);
 }
-

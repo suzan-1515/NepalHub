@@ -1,11 +1,10 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:mobx/mobx.dart';
 import 'package:provider/provider.dart';
 import 'package:samachar_hub/data/api/api.dart';
 import 'package:samachar_hub/data/dto/news_dto.dart';
+import 'package:samachar_hub/pages/news/sources/news_source_item.dart';
 import 'package:samachar_hub/pages/news/sources/news_source_store.dart';
 import 'package:samachar_hub/pages/widgets/api_error_dialog.dart';
 import 'package:samachar_hub/pages/widgets/empty_data_widget.dart';
@@ -111,45 +110,13 @@ class _NewsSourceScreenState extends State<NewsSourceScreen> {
                         mainAxisSpacing: 4.0),
                     itemCount: snapshot.data.length,
                     itemBuilder: (BuildContext context, int index) {
-                      return _buildSourceItem(context, snapshot.data[index]);
+                      return NewsSourceItem(context: context, source: snapshot.data[index]);
                     },
                   );
               }
             },
           );
         },
-      ),
-    );
-  }
-
-  Widget _buildSourceItem(BuildContext context, FeedSource source) {
-    return Card(
-      color: Theme.of(context).cardColor,
-      child: InkWell(
-        onTap: () {},
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            CachedNetworkImage(
-              imageUrl: source.icon ?? '',
-              placeholder: (context, url) => Icon(FontAwesomeIcons.spinner),
-              errorWidget: (context, url, error) => Icon(Icons.error),
-            ),
-            Spacer(),
-            Container(
-              alignment: Alignment.center,
-              padding: const EdgeInsets.all(4),
-              child: Text(
-                source.name,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-                style: Theme.of(context).textTheme.bodyText1,
-              ),
-            ),
-          ],
-        ),
       ),
     );
   }

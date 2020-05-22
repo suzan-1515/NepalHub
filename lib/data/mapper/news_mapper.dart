@@ -57,11 +57,9 @@ class NewsMapper {
     return FeedCategory(
       id: response.id,
       name: response.name,
-      nameNp: response.nameNp,
       code: response.code,
       icon: response.icon,
       priority: response.priority,
-      enable: response.enable,
     );
   }
 }
