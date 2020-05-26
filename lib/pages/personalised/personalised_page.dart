@@ -3,6 +3,7 @@ import 'package:flutter/rendering.dart';
 import 'package:mobx/mobx.dart';
 import 'dart:math' as math;
 import 'package:provider/provider.dart';
+import 'package:samachar_hub/common/service/navigation_service.dart';
 import 'package:samachar_hub/common/service/preference_service.dart';
 import 'package:samachar_hub/common/store/trending_news_store.dart';
 import 'package:samachar_hub/data/api/api.dart';
@@ -11,7 +12,7 @@ import 'package:samachar_hub/pages/personalised/personalised_store.dart';
 import 'package:samachar_hub/pages/personalised/widgets/corona_section.dart';
 import 'package:samachar_hub/pages/personalised/widgets/news_category_menu_section.dart';
 import 'package:samachar_hub/pages/personalised/widgets/news_source_menu_section.dart';
-import 'package:samachar_hub/pages/personalised/widgets/news_tags_section.dart';
+import 'package:samachar_hub/pages/personalised/widgets/news_topics_section.dart';
 import 'package:samachar_hub/pages/personalised/widgets/trending_news_section.dart';
 import 'package:samachar_hub/pages/widgets/api_error_dialog.dart';
 import 'package:samachar_hub/pages/widgets/empty_data_widget.dart';
@@ -92,8 +93,15 @@ class _PersonalisedPageState extends State<PersonalisedPage> {
     if (index == 5) {
       //topics view
       if (personalisedStore.sectionData[MixedDataType.NEWS_TOPIC] != null)
-        return NewsTagsSection(
-          item: personalisedStore.sectionData[MixedDataType.NEWS_TOPIC],
+        return Consumer<NavigationService>(
+          builder:
+              (BuildContext context, NavigationService service, Widget child) {
+            return NewsTopicsSection(
+              item: personalisedStore.sectionData[MixedDataType.NEWS_TOPIC],
+              onTap: (topic) =>
+                  service.onNewsTagTapped(title: topic, context: context),
+            );
+          },
         );
     }
     if (index == 10) {
@@ -180,7 +188,6 @@ class _PersonalisedPageState extends State<PersonalisedPage> {
             StreamBuilder<List<Feed>>(
                 stream: personalisedStore.dataStream,
                 builder: (context, snapshot) {
-
                   if (snapshot.hasError) {
                     return SliverFillRemaining(
                       hasScrollBody: false,

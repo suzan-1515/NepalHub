@@ -137,14 +137,15 @@ Map<String, dynamic> _$FeedCategoryApiResponseToJson(
       'enable': instance.enable,
     };
 
-NewsTagsApiResponse _$NewsTagsApiResponseFromJson(Map<String, dynamic> json) {
-  return NewsTagsApiResponse(
+NewsTopicsApiResponse _$NewsTopicsApiResponseFromJson(
+    Map<String, dynamic> json) {
+  return NewsTopicsApiResponse(
     (json['tags'] as List)?.map((e) => e as String)?.toList(),
   );
 }
 
-Map<String, dynamic> _$NewsTagsApiResponseToJson(
-        NewsTagsApiResponse instance) =>
+Map<String, dynamic> _$NewsTopicsApiResponseToJson(
+        NewsTopicsApiResponse instance) =>
     <String, dynamic>{
       'tags': instance.tags,
     };

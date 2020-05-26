@@ -1,15 +1,15 @@
 import 'package:mobx/mobx.dart';
+import 'package:samachar_hub/common/service/share_service.dart';
 import 'package:samachar_hub/data/dto/dto.dart';
-import 'package:samachar_hub/pages/news/details/news_detail_service.dart';
 
 part 'news_detail_store.g.dart';
 
 class NewsDetailStore = _NewsDetailStore with _$NewsDetailStore;
 
 abstract class _NewsDetailStore with Store {
-  _NewsDetailStore(this.feed, this._newsDetailService);
+  final ShareService shareService;
+  _NewsDetailStore(this.feed, this.shareService);
 
-  final NewsDetailService _newsDetailService;
   final Feed feed;
 
   @observable
@@ -17,21 +17,9 @@ abstract class _NewsDetailStore with Store {
 
   @action
   share() {
-    if (null != feed.link)
-      try {
-        _newsDetailService.shareArticle(feed.title, feed.link);
-      } on Exception catch (e) {
-        message = 'Error - ' + e.toString();
-      }
-  }
-
-  @action
-  openLink() {
-    if (null != feed.link)
-      try {
-        _newsDetailService.openLink(feed.link);
-      } on Exception catch (e) {
-        message = 'Error - ' + e.toString();
-      }
+    shareService
+        .share(title: feed.title, data: feed.link)
+        .then((value) => message = 'Shared successfully.')
+        .catchError((onError) => message = onError.toString());
   }
 }

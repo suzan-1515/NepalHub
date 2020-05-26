@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:mobx/mobx.dart';
 import 'package:provider/provider.dart';
-import 'package:samachar_hub/common/manager/authentication_manager.dart';
+import 'package:samachar_hub/common/manager/authentication_controller.dart';
 import 'package:samachar_hub/common/service/navigation_service.dart';
 import 'package:samachar_hub/pages/news/details/news_detail_store.dart';
 import 'package:samachar_hub/widgets/article_image_widget.dart';
@@ -246,9 +246,9 @@ class _NewsDetailScreenState extends State<NewsDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer2<NewsDetailStore, AuthenticationManager>(
+    return Consumer2<NewsDetailStore, AuthenticationController>(
       builder: (BuildContext context, NewsDetailStore store,
-          AuthenticationManager _authenticationManager, Widget child) {
+          AuthenticationController _authenticationManager, Widget child) {
         return Scaffold(
           body: OrientationBuilder(
               builder: (BuildContext context, Orientation orientation) {

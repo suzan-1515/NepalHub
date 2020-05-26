@@ -3,13 +3,13 @@ import 'package:flutter/foundation.dart';
 import 'package:samachar_hub/common/service/services.dart';
 import 'package:samachar_hub/data/api/api.dart';
 
-class AuthenticationManager {
+class AuthenticationController {
   final AuthenticationService _authenticationService;
   final AnalyticsService _analyticsService;
 
   User _currentUser;
 
-  AuthenticationManager(this._authenticationService, this._analyticsService);
+  AuthenticationController(this._authenticationService, this._analyticsService);
 
   User get currentUser => _currentUser;
   DocumentReference get userReference =>
@@ -21,9 +21,9 @@ class AuthenticationManager {
   }) async {
     return await _authenticationService
         .loginWithEmail(email: email, password: password)
-        .then((auth) {
+        .then((auth)async {
       if (auth != null) {
-        _authenticationService.getUserProfile(uid: auth.user.uid).then((value) {
+        await _authenticationService.getUserProfile(uid: auth.user.uid).then((value) {
           _currentUser = User.fromJson(value.data);
           _analyticsService.setUser(userId: auth.user.email);
           _analyticsService.logLogin();

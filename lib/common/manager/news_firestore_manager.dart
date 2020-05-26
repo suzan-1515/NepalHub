@@ -10,7 +10,7 @@ import 'package:samachar_hub/data/mapper/news_mapper.dart';
 import 'managers.dart';
 
 class NewsFirestoreManager {
-  final AuthenticationManager _authenticationManager;
+  final AuthenticationController _authenticationManager;
   final NewsFirestoreService _feedService;
   final AnalyticsService _analyticsService;
 

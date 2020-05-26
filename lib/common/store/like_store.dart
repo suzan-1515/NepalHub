@@ -69,7 +69,12 @@ abstract class _LikeStore with Store {
   Future<bool> addLikedFeed({@required Feed feed}) async {
     return await _likeManager
         .addFeedActivity(feedId: feed.uuid, feedData: feed.toJson())
-        .then((onValue) => true, onError: (e) {
+        .then((onValue) {
+      var likes = _preferenceService.likedFeeds;
+      likes.add(feed.id);
+      _preferenceService.likedFeeds = likes;
+      return true;
+    }, onError: (e) {
       error = e.toString();
       return false;
     });
@@ -77,9 +82,13 @@ abstract class _LikeStore with Store {
 
   @action
   Future<bool> removeLikedFeed({@required Feed feed}) async {
-    return await _likeManager
-        .removeFeedActivity(feedId: feed.uuid)
-        .then((onValue) => true, onError: (e) {
+    return await _likeManager.removeFeedActivity(feedId: feed.uuid).then(
+        (onValue) {
+      var likes = _preferenceService.likedFeeds;
+      likes.remove(feed.id);
+      _preferenceService.likedFeeds = likes;
+      return true;
+    }, onError: (e) {
       error = e.toString();
       return false;
     });

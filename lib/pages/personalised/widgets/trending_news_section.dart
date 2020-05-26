@@ -1,6 +1,7 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:provider/provider.dart';
 import 'package:samachar_hub/common/store/trending_news_store.dart';
 import 'package:samachar_hub/data/dto/dto.dart';
@@ -14,18 +15,10 @@ class TrendingNewsSection extends StatefulWidget {
 }
 
 class _TrendingNewsSectionState extends State<TrendingNewsSection> {
-  final ValueNotifier<int> _currentCorousel = ValueNotifier<int>(0);
-
   @override
   void initState() {
     Provider.of<TrendingNewsStore>(context, listen: false).loadPreviewData();
     super.initState();
-  }
-
-  @override
-  void dispose() {
-    _currentCorousel.dispose();
-    super.dispose();
   }
 
   @override
@@ -50,26 +43,24 @@ class _TrendingNewsSectionState extends State<TrendingNewsSection> {
                     SectionHeadingView(
                       title: 'Trending News',
                       subtitle: 'Current trending stories around you',
-                      onTap: (){
-                        
-                      },
+                      onTap: () {},
                     ),
                     CarouselSlider(
                         items: widgets,
                         options: CarouselOptions(
                             viewportFraction: 1,
-                            initialPage: 0,
+                            initialPage: store.currentNewsCarousel,
                             enableInfiniteScroll: true,
                             reverse: false,
                             autoPlay: true,
+                            autoPlayInterval: Duration(seconds: 10),
                             enlargeCenterPage: false,
                             scrollDirection: Axis.horizontal,
                             onPageChanged: (index, reason) {
-                              _currentCorousel.value = index;
+                              store.currentNewsCarousel = index;
                             })),
-                    ValueListenableBuilder(
-                      valueListenable: _currentCorousel,
-                      builder: (BuildContext context, int value, Widget child) {
+                    Observer(
+                      builder: (BuildContext context) {
                         return Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: List<Widget>.generate(
@@ -82,7 +73,7 @@ class _TrendingNewsSectionState extends State<TrendingNewsSection> {
                                     vertical: 10.0, horizontal: 2.0),
                                 decoration: BoxDecoration(
                                   shape: BoxShape.circle,
-                                  color: value == index
+                                  color: store.currentNewsCarousel == index
                                       ? Color.fromRGBO(0, 0, 0, 0.9)
                                       : Color.fromRGBO(0, 0, 0, 0.4),
                                 ),

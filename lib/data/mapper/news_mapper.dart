@@ -38,8 +38,8 @@ class NewsMapper {
         liked: response.liked);
   }
 
-  static NewsTags fromTagsApi(NewsTagsApiResponse response) {
-    return NewsTags(response.tags);
+  static NewsTopics fromTagsApi(NewsTopicsApiResponse response) {
+    return NewsTopics(response.tags);
   }
 
   static FeedSource fromSourceApi(FeedSourceApiResponse response) {
@@ -50,6 +50,7 @@ class NewsMapper {
       favicon: response.favicon,
       icon: response.icon,
       priority: response.priority,
+      rawData: response,
     );
   }
 
@@ -60,6 +61,7 @@ class NewsMapper {
       code: response.code,
       icon: response.icon,
       priority: response.priority,
+      rawData: response,
     );
   }
 }

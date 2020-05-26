@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class NewsTagItem extends StatelessWidget {
   final String title;
-  final Function onTap;
+  final Function(String) onTap;
 
   const NewsTagItem({Key key, this.title, this.onTap}) : super(key: key);
   @override

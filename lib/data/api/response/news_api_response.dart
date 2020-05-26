@@ -143,12 +143,41 @@ class FeedCategoryApiResponse {
 }
 
 @JsonSerializable()
-class NewsTagsApiResponse {
+class NewsTopicsApiResponse {
   final List<String> tags;
 
-  NewsTagsApiResponse(this.tags);
+  NewsTopicsApiResponse(this.tags);
 
-  factory NewsTagsApiResponse.fromJson(Map<String, dynamic> json) =>
-      _$NewsTagsApiResponseFromJson(json);
-  Map<String, dynamic> toJson() => _$NewsTagsApiResponseToJson(this);
+  factory NewsTopicsApiResponse.fromJson(Map<String, dynamic> json) =>
+      _$NewsTopicsApiResponseFromJson(json);
+  Map<String, dynamic> toJson() => _$NewsTopicsApiResponseToJson(this);
+}
+
+class TopicNewsApiResponse {
+  int total;
+  List<FeedApiResponse> feeds;
+
+  TopicNewsApiResponse({this.feeds});
+
+  TopicNewsApiResponse.fromJson(Map<String, dynamic> json) {
+    if (json['hits'] != null) {
+      total = json['hits']['total'];
+      if (json['hits']['hits'] != null) {
+        feeds = List<FeedApiResponse>();
+        json['hits']['hits'].forEach((v) {
+          var source = v['_source'] as Map<String,dynamic>;
+          feeds.add(FeedApiResponse.fromJson(source));
+        });
+      }
+    }
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['hits']['total'] = this.total;
+    if (this.feeds != null) {
+      data['hits']['hits'] = this.feeds.map((v) => v.toJson()).toList();
+    }
+    return data;
+  }
 }

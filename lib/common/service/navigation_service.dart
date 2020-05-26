@@ -1,23 +1,45 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
+import 'package:samachar_hub/common/manager/managers.dart';
+import 'package:samachar_hub/common/service/analytics_service.dart';
+import 'package:samachar_hub/common/service/share_service.dart';
 import 'package:samachar_hub/data/dto/dto.dart';
 import 'package:samachar_hub/data/dto/news_category_menu_dto.dart';
+import 'package:samachar_hub/pages/authentication/login/login_screen.dart';
 import 'package:samachar_hub/pages/category/categories_store.dart';
+import 'package:samachar_hub/pages/comment/comment_firestore_service.dart';
+import 'package:samachar_hub/pages/comment/comment_repository.dart';
+import 'package:samachar_hub/pages/comment/comment_screen.dart';
+import 'package:samachar_hub/pages/comment/comment_store.dart';
+import 'package:samachar_hub/pages/home/home_screen.dart';
 import 'package:samachar_hub/pages/home/home_screen_store.dart';
 import 'package:samachar_hub/pages/news/details/news_details.dart';
 import 'package:samachar_hub/pages/news/sources/news_source_screen.dart';
 import 'package:samachar_hub/pages/news/sources/news_source_store.dart';
+import 'package:samachar_hub/pages/news/topics/topic_news_screen.dart';
+import 'package:samachar_hub/pages/news/topics/topic_news_store.dart';
 import 'package:samachar_hub/repository/news_repository.dart';
 import 'package:samachar_hub/widgets/webview_widget.dart';
 
 class NavigationService {
+  toHomeScreen(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => HomeScreen(),
+      ),
+    );
+  }
+
   onFeedClick(Feed article, BuildContext context) {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => Provider<NewsDetailStore>(
-          create: (_) => NewsDetailStore(article, NewsDetailService()),
+        builder: (context) => ProxyProvider<ShareService, NewsDetailStore>(
+          update: (BuildContext context, ShareService shareService,
+                  NewsDetailStore previous) =>
+              NewsDetailStore(article, shareService),
           child: Consumer<NewsDetailStore>(
             builder: (context, store, _) => NewsDetailScreen(),
           ),
@@ -47,7 +69,20 @@ class NavigationService {
   }
 
   onNewsTagTapped({@required String title, @required BuildContext context}) {
-    print('Tag selected: $title');
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ProxyProvider<NewsRepository, TopicNewsStore>(
+          update: (BuildContext context, NewsRepository value,
+                  TopicNewsStore previous) =>
+              TopicNewsStore(value),
+          dispose: (context, value) => value.dispose(),
+          child: TopicNewsScreen(
+            topic: title,
+          ),
+        ),
+      ),
+    );
   }
 
   onNewsSourceMenuTapped(
@@ -56,7 +91,6 @@ class NavigationService {
   }
 
   onSourceViewAllTapped({@required BuildContext context}) {
-    print('onSourceViewAllTapped');
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -67,6 +101,44 @@ class NavigationService {
           dispose: (context, value) => value.dispose(),
           child: NewsSourceScreen(),
         ),
+      ),
+    );
+  }
+
+  onViewCommentsTapped(
+      {@required BuildContext context,
+      @required String title,
+      @required String postId}) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ProxyProvider2<AuthenticationController,
+            AnalyticsService, CommentStore>(
+          update: (BuildContext context,
+                  AuthenticationController authenticationManager,
+                  AnalyticsService _analyticsService,
+                  CommentStore previous) =>
+              CommentStore(
+                  commentRepository: CommentRepository(
+                      CommentFirestoreService(),
+                      _analyticsService,
+                      authenticationManager),
+                  authenticationManager: authenticationManager),
+          dispose: (context, value) => value.dispose(),
+          child: CommentScreen(
+            postTitle: title,
+            postId: postId,
+          ),
+        ),
+      ),
+    );
+  }
+
+  loginRedirect(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => LoginScreen(),
       ),
     );
   }

@@ -78,22 +78,23 @@ abstract class _PersonalisedFeedStore with Store {
   }
 
   Future _buildNewsTopicsData() async {
-    return _newsRepository.getTags().then((onValue) {
-      sectionData[MixedDataType.NEWS_TOPIC] = onValue;
-    }).catchError((onError) {
-      this.apiError = onError;
-    }, test: (e) => e is APIException).catchError((onError) {
-      this.error = onError.toString();
-    });
+    return _newsRepository
+        .getTopics()
+        .then((onValue) {
+          sectionData[MixedDataType.NEWS_TOPIC] = onValue;
+        })
+        .catchError((onError) {}, test: (e) => e is APIException)
+        .catchError((onError) {});
   }
 
   Future _buildNewsSourceData() async {
-    return _newsRepository.getSources().then((onValue) {
-      sectionData[MixedDataType.NEWS_SOURCE] = onValue;
-    }).catchError((onError) {
-      this.apiError = onError;
-    }, test: (e) => e is APIException).catchError(
-        (onError) => this.error = onError.toString());
+    return _newsRepository
+        .getSources()
+        .then((onValue) {
+          sectionData[MixedDataType.NEWS_SOURCE] = onValue;
+        })
+        .catchError((onError) {}, test: (e) => e is APIException)
+        .catchError((onError) {});
   }
 
   Future _buildLatestNewsData() async {
@@ -123,5 +124,9 @@ abstract class _PersonalisedFeedStore with Store {
       this.apiError = onError;
     }, test: (e) => e is APIException).catchError(
         (onError) => this.error = onError.toString());
+  }
+
+  dispose(){
+    _dataStreamController.close();
   }
 }

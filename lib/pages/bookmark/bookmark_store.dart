@@ -123,4 +123,8 @@ abstract class _BookmarkStore with Store {
     _bookmarkManager.resetLastFetchedDocument();
     return loadMoreData();
   }
+
+  dispose(){
+    _feedStreamController.close();
+  }
 }

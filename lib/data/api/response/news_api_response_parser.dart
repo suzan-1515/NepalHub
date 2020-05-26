@@ -1,8 +1,8 @@
-
 import 'package:samachar_hub/data/api/response/news_api_response.dart';
 
 class FeedApiParser {
-  static NewsApiResponse parse({Map<String,dynamic> feeds, Map<String,dynamic> sources}) {
+  static NewsApiResponse parse(
+      {Map<String, dynamic> feeds, Map<String, dynamic> sources}) {
     feeds.update(
         'feeds',
         (update) => (feeds['feeds'] as List)
@@ -11,6 +11,22 @@ class FeedApiParser {
               return _parseFeed(feed: feed, sources: sources);
             })?.toList());
     return NewsApiResponse.fromJson(feeds);
+  }
+
+  static NewsApiResponse parseTagNews(
+      {Map<String, dynamic> feeds, Map<String, dynamic> sources}) {
+    Map<String, dynamic> json = Map<String, dynamic>();
+    json['version'] = 1;
+    json['feeds'] = (feeds['hits']['hits'] as List)
+        ?.where((feed) => feed != null)
+        ?.map((feed) {
+      feed.update('_source', (up) {
+        feed['_source']['id'] = feed['_id'];
+        return feed['_source'];
+      });
+      return _parseFeed(feed: feed['_source'], sources: sources);
+    })?.toList();
+    return NewsApiResponse.fromJson(json);
   }
 
   static _mergeSources({feed, sources}) {

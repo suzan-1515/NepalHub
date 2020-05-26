@@ -104,10 +104,24 @@ class AnalyticsService {
     );
   }
 
-  Future logCommentedFeed({String userId, String feedId}) async {
+  Future logCommentPosted({String userId, String postId}) async {
     await _analytics.logEvent(
-      name: 'commented_feed',
-      parameters: {'user_id': userId, 'feed_id': feedId},
+      name: 'comment_posted',
+      parameters: {'user_id': userId, 'post_id': postId},
+    );
+  }
+
+   Future logCommentFetched({String userId, String postId}) async {
+    await _analytics.logEvent(
+      name: 'comment_fetched',
+      parameters: {'user_id': userId, 'post_id': postId},
+    );
+  }
+
+  Future logCommentLiked({String userId, String postId}) async{
+    await _analytics.logEvent(
+      name: 'comment_liked',
+      parameters: {'user_id': userId, 'post_id': postId},
     );
   }
 

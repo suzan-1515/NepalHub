@@ -16,7 +16,8 @@ const String _baseCoronaApiURL = 'corona.lmao.ninja';
 const String _latestNews = '/newsv4/infinite_feeds.php';
 const String _trendingNews = '/newsv4/feeds_top.php';
 const String _categoryNews = '/newsv4/infinite_feeds_category.php';
-const String _trendingTags = '/newsv4/tags.php';
+const String _trendingNewsTopics = '/newsv4/tags.php';
+const String _topicNews = '/newsv4/search.php'; //param: text
 const String _newsSources = '/newsv4/sources.php';
 
 const String _coronaWorldWide = '/v2/all';
@@ -151,14 +152,44 @@ Future<NewsSourcesApiResponse> fetchSources() async {
   }
 }
 
-Future<NewsTagsApiResponse> fetchTags() async {
-  final Uri uri = Uri.https(_baseNewsApiURL, _trendingTags);
+Future<NewsTopicsApiResponse> fetchNewsTopics() async {
+  final Uri uri = Uri.https(_baseNewsApiURL, _trendingNewsTopics);
   final http.Response response = await http.get(uri);
   // If response is not ok
   _checkResponse(response);
   // Deserialize
   try {
-    return NewsTagsApiResponse.fromJson(json.decode(response.body));
+    return NewsTopicsApiResponse.fromJson(json.decode(response.body));
+  } on Exception catch (e) {
+    throw e;
+  }
+}
+
+Future<NewsApiResponse> fetchNewsByTopic({@required String topic}) async {
+  var sourceCall = http.get(Uri.https(_baseNewsApiURL, _newsSources));
+  final Map<String, String> queryParams = _filterNullOrEmptyValuesFromMap({
+    'text': topic,
+  });
+  var tagNewsCall =
+      http.get(Uri.https(_baseNewsApiURL, _topicNews, queryParams));
+  var results = await Future.wait([sourceCall, tagNewsCall], eagerError: true)
+      .catchError((err) {
+    throw err;
+  });
+
+  var sourceResponse = results.first;
+  // If response is not ok
+  _checkResponse(sourceResponse);
+  // Deserialize
+  var newsResponse = results.last;
+  // If response is not ok
+  _checkResponse(newsResponse);
+  // Deserialize
+
+  try {
+    return FeedApiParser.parseTagNews(
+        feeds: json.decode(newsResponse.body),
+        sources: json.decode(sourceResponse.body));
   } on Exception catch (e) {
     throw e;
   }

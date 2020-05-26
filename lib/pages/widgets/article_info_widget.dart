@@ -2,6 +2,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:samachar_hub/common/service/navigation_service.dart';
+import 'package:samachar_hub/common/service/share_service.dart';
 import 'package:samachar_hub/common/store/like_store.dart';
 import 'package:samachar_hub/data/dto/dto.dart';
 import 'package:samachar_hub/pages/bookmark/bookmark_store.dart';
@@ -145,8 +147,9 @@ class FeedOptionsSection extends StatefulWidget {
 class _FeedOptionsSectionState extends State<FeedOptionsSection> {
   @override
   Widget build(BuildContext context) {
-    return Consumer2<BookmarkStore, LikeStore>(
-      builder: (context, bookmarkStore, likeStore, child) {
+    return Consumer4<BookmarkStore, LikeStore, ShareService, NavigationService>(
+      builder: (context, bookmarkStore, likeStore, shareService,
+          navigationService, child) {
         return Row(
           mainAxisSize: MainAxisSize.max,
           mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -181,14 +184,22 @@ class _FeedOptionsSectionState extends State<FeedOptionsSection> {
                 FontAwesomeIcons.comment,
                 size: 16,
               ),
-              onPressed: () {},
+              onPressed: () {
+                navigationService.onViewCommentsTapped(
+                    context: context,
+                    title: widget.article.title,
+                    postId: widget.article.uuid);
+              },
             ),
             IconButton(
               icon: Icon(
                 FontAwesomeIcons.shareAlt,
                 size: 16,
               ),
-              onPressed: () {},
+              onPressed: () {
+                shareService.share(
+                    title: widget.article.title, data: widget.article.link);
+              },
             ),
             Spacer(),
             IconButton(

@@ -24,6 +24,9 @@ abstract class _TrendingNewsStore with Store {
   _TrendingNewsStore(this._preferenceService, this._newsRepository);
 
   @observable
+  int currentNewsCarousel = 0;
+
+  @observable
   APIException apiError;
 
   @observable

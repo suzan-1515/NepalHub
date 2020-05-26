@@ -11,14 +11,18 @@ import 'package:samachar_hub/common/service/horoscope_api_service.dart';
 import 'package:samachar_hub/common/service/navigation_service.dart';
 import 'package:samachar_hub/common/service/news_api_service.dart';
 import 'package:samachar_hub/common/service/services.dart';
+import 'package:samachar_hub/common/service/share_service.dart';
+import 'package:samachar_hub/common/store/auth_store.dart';
 import 'package:samachar_hub/common/store/corona_store.dart';
 import 'package:samachar_hub/common/store/like_store.dart';
+import 'package:samachar_hub/pages/authentication/login/login_screen.dart';
 import 'package:samachar_hub/pages/bookmark/bookmark_activity_service.dart';
 import 'package:samachar_hub/pages/bookmark/bookmark_manager.dart';
 import 'package:samachar_hub/pages/bookmark/bookmark_store.dart';
 import 'package:samachar_hub/pages/category/categories_store.dart';
+import 'package:samachar_hub/pages/comment/comment_repository.dart';
+import 'package:samachar_hub/pages/comment/comment_firestore_service.dart';
 import 'package:samachar_hub/pages/home/home_screen_store.dart';
-import 'package:samachar_hub/pages/pages.dart';
 import 'package:samachar_hub/pages/personalised/personalised_store.dart';
 import 'package:samachar_hub/pages/settings/settings_store.dart';
 import 'package:samachar_hub/repository/corona_repository.dart';
@@ -69,19 +73,22 @@ class App extends StatelessWidget {
         Provider<CloudStorageService>(
           create: (_) => CloudStorageService(),
         ),
+        Provider<ShareService>(
+          create: (_) => ShareService(),
+        ),
 
         //manager
-        ProxyProvider<AnalyticsService, AuthenticationManager>(
-          update: (_, _analyticsService, __) => AuthenticationManager(
+        ProxyProvider<AnalyticsService, AuthenticationController>(
+          update: (_, _analyticsService, __) => AuthenticationController(
               AuthenticationService(FirebaseAuth.instance), _analyticsService),
         ),
-        ProxyProvider2<AnalyticsService, AuthenticationManager,
+        ProxyProvider2<AnalyticsService, AuthenticationController,
             NewsFirestoreManager>(
           update: (_, _analyticsService, _authenticationManager, __) =>
               NewsFirestoreManager(_authenticationManager,
                   NewsFirestoreService(), _analyticsService),
         ),
-        ProxyProvider2<AnalyticsService, AuthenticationManager,
+        ProxyProvider2<AnalyticsService, AuthenticationController,
             BookmarkManager>(
           update: (_, _analyticsService, _authenticationManager, __) =>
               BookmarkManager(
@@ -89,7 +96,7 @@ class App extends StatelessWidget {
                   activityService: BookmarkActivityService(),
                   analyticsService: _analyticsService),
         ),
-        ProxyProvider2<AnalyticsService, AuthenticationManager, LikeManager>(
+        ProxyProvider2<AnalyticsService, AuthenticationController, LikeManager>(
           update: (_, _analyticsService, _authenticationManager, __) =>
               LikeManager(
                   authenticationManager: _authenticationManager,
@@ -113,6 +120,9 @@ class App extends StatelessWidget {
         ),
 
         //store
+        Provider<AuthenticationStore>(
+          create: (_) => AuthenticationStore(),
+        ),
         ProxyProvider<PreferenceService, HomeScreenStore>(
           update: (_, preferenceService, __) =>
               HomeScreenStore(preferenceService),
@@ -148,16 +158,13 @@ class App extends StatelessWidget {
               SettingsStore(preferenceService),
         ),
       ],
-      child: Consumer3<SettingsStore, AuthenticationManager, AnalyticsService>(
-        builder: (context, settingStore, _authenticationManager,
-            _analyticsService, _) {
+      child: Consumer2<SettingsStore, AnalyticsService>(
+        builder: (context, settingStore, _analyticsService, _) {
           return Observer(
             builder: (_) {
-              _authenticationManager.loginWithEmail(
-                  email: 'admin@gmail.com', password: '12345678');
               return MaterialApp(
                 theme: _getTheme(settingStore),
-                home: HomeScreen(),
+                home: LoginScreen(),
                 themeMode: settingStore.themeSetBySystem
                     ? ThemeMode.system
                     : _getThemeMode(settingStore),

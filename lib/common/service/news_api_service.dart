@@ -16,8 +16,12 @@ class NewsApiService {
     return await Api.fetchNewsByCategory(category, lastFeedId: lastFeedId);
   }
 
-  Future<NewsTagsApiResponse> fetchTags() async {
-    return await Api.fetchTags();
+  Future<NewsTopicsApiResponse> fetchTopics() async {
+    return await Api.fetchNewsTopics();
+  }
+
+  Future<NewsApiResponse> fetchNewsByTopic({@required String tag}) async {
+    return await Api.fetchNewsByTopic(topic: tag);
   }
 
   Future<NewsSourcesApiResponse> fetchSources() async {

@@ -56,7 +56,7 @@ class FeedSource {
   final String icon;
   final int priority;
   final String favicon;
-  final Map<String, dynamic> rawData = Map<String, dynamic>();
+  final FeedSourceApiResponse rawData;
   final ValueNotifier<bool> enabled = ValueNotifier<bool>(true);
 
   FeedSource(
@@ -66,6 +66,7 @@ class FeedSource {
       @required this.icon,
       @required this.priority,
       @required this.favicon,
+      @required this.rawData,
       bool enabled = true}) {
     this.enabled.value = enabled;
   }
@@ -87,7 +88,7 @@ class FeedCategory {
   final String code;
   final String icon;
   final int priority;
-  final Map<String, dynamic> rawData = Map<String, dynamic>();
+  final FeedCategoryApiResponse rawData;
   final ValueNotifier<bool> enabled = ValueNotifier<bool>(true);
   FeedCategory(
       {@required this.id,
@@ -95,6 +96,7 @@ class FeedCategory {
       @required this.code,
       @required this.icon,
       @required this.priority,
+      @required this.rawData,
       bool enable = true}) {
     this.enabled.value = enable;
   }
@@ -108,6 +110,6 @@ class FeedCategory {
       };
 }
 
-class NewsTags extends NewsTagsApiResponse {
-  NewsTags(List<String> tags) : super(tags);
+class NewsTopics extends NewsTopicsApiResponse {
+  NewsTopics(List<String> tags) : super(tags);
 }

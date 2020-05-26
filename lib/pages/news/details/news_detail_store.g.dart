@@ -40,16 +40,6 @@ mixin _$NewsDetailStore on _NewsDetailStore, Store {
   }
 
   @override
-  dynamic openLink() {
-    final _$actionInfo = _$_NewsDetailStoreActionController.startAction();
-    try {
-      return super.openLink();
-    } finally {
-      _$_NewsDetailStoreActionController.endAction(_$actionInfo);
-    }
-  }
-
-  @override
   String toString() {
     final string = 'message: ${message.toString()}';
     return '{$string}';

@@ -48,10 +48,15 @@ class NewsRepository {
             })?.toList());
   }
 
-  Future<NewsTags> getTags() async {
+  Future<NewsTopics> getTopics() async {
     return await newsApiService
-        .fetchTags()
+        .fetchTopics()
         .then((onValue) => NewsMapper.fromTagsApi(onValue));
+  }
+
+  Future<List<Feed>> getNewsByTopic({@required String tag}) async {
+    return await newsApiService.fetchNewsByTopic(tag: tag).then((onValue) =>
+        onValue.feeds?.map((f) => NewsMapper.fromFeedApi(f))?.toList());
   }
 
   Future<List<FeedSource>> getSources() async {
