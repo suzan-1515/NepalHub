@@ -12,15 +12,21 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   @override
+  void initState() {
+    Provider.of<AuthenticationStore>(context, listen: false)
+        .loginWithEmail(email: 'admin@gmail.com', password: '12345678')
+        .then((value) {
+      if (value)
+        Provider.of<NavigationService>(context, listen: false)
+            .toHomeScreen(context);
+    });
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Consumer2<AuthenticationStore, NavigationService>(builder:
-        (BuildContext context, AuthenticationStore authStore, navigationService,
-            Widget child) {
-      authStore
-          .loginWithEmail(email: 'admin@gmail.com', password: '12345678')
-          .then((value) {
-        if (value) return navigationService.toHomeScreen(context);
-      });
+        (_, AuthenticationStore authStore, navigationService, Widget child) {
       return Scaffold(
         backgroundColor: Theme.of(context).backgroundColor,
         body: SafeArea(

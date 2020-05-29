@@ -3,14 +3,8 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:mobx/mobx.dart';
 import 'package:provider/provider.dart';
-import 'package:samachar_hub/pages/bookmark/bookmark_firestore_service.dart';
-import 'package:samachar_hub/pages/bookmark/bookmark_repository.dart';
-import 'package:samachar_hub/pages/bookmark/bookmark_store.dart';
 import 'package:samachar_hub/pages/home/home_screen_store.dart';
 import 'package:samachar_hub/pages/pages.dart';
-import 'package:samachar_hub/repository/repositories.dart';
-import 'package:samachar_hub/services/services.dart';
-import 'package:samachar_hub/stores/auth_store.dart';
 
 class HomeScreen extends StatefulWidget {
   @override

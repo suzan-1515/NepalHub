@@ -96,12 +96,12 @@ class _CategoriesPageState extends State<CategoriesPage>
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
             title: Text(
               'API Error - ${apiError.message}',
-              style: Theme.of(context).textTheme.subhead,
+              style: Theme.of(context).textTheme.subtitle1
             ),
             content: SingleChildScrollView(
               child: Text(
                 apiError.message,
-                style: Theme.of(context).textTheme.body1,
+                style: Theme.of(context).textTheme.bodyText2,
               ),
             ),
             actions: <Widget>[

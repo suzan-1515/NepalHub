@@ -23,11 +23,12 @@ import 'package:samachar_hub/widgets/webview_widget.dart';
 
 class NavigationService {
   toHomeScreen(BuildContext context) {
-    Navigator.push(
+    Navigator.pushAndRemoveUntil(
       context,
       MaterialPageRoute(
         builder: (context) => HomeScreen(),
       ),
+      (Route<dynamic> route) => false,
     );
   }
 
