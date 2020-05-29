@@ -10,38 +10,30 @@ A Flutter news app built with Mobx state management framework.
 >Tools • Dart 2.9.0  
 
 ### Home Page
-<img src="https://github.com/suzan-1515/Samachar-Hub/blob/master/screenshots/Screenshot_20200529-220843.jpg" width="150">
-<img src="https://github.com/suzan-1515/Samachar-Hub/blob/master/screenshots/Screenshot_20200529-220900.jpg" width="150">
-<img src="https://github.com/suzan-1515/Samachar-Hub/blob/master/screenshots/Screenshot_20200529-220906.jpg" width="150">
-<img src="https://github.com/suzan-1515/Samachar-Hub/blob/master/screenshots/Screenshot_20200529-220912.jpg" width="150">
-<img src="https://github.com/suzan-1515/Samachar-Hub/blob/master/screenshots/Screenshot_20200529-220917.jpg" width="150">
-<img src="https://github.com/suzan-1515/Samachar-Hub/blob/master/screenshots/Screenshot_20200529-221410.jpg" width="150">
+<img src="https://github.com/suzan-1515/Samachar-Hub/blob/master/screenshots/Screenshot_20200529-220843.jpg" width="180"><img src="https://github.com/suzan-1515/Samachar-Hub/blob/master/screenshots/Screenshot_20200529-220900.jpg" width="180"><img src="https://github.com/suzan-1515/Samachar-Hub/blob/master/screenshots/Screenshot_20200529-220906.jpg" width="180">
+<img src="https://github.com/suzan-1515/Samachar-Hub/blob/master/screenshots/Screenshot_20200529-220912.jpg" width="180"><img src="https://github.com/suzan-1515/Samachar-Hub/blob/master/screenshots/Screenshot_20200529-220917.jpg" width="180"><img src="https://github.com/suzan-1515/Samachar-Hub/blob/master/screenshots/Screenshot_20200529-221410.jpg" width="180">
 
 ### Categories Page
-<img src="https://github.com/suzan-1515/Samachar-Hub/blob/master/screenshots/Screenshot_20200529-221227.jpg" width="150">
-<img src="https://github.com/suzan-1515/Samachar-Hub/blob/master/screenshots/Screenshot_20200529-221242.jpg" width="150">
-<img src="https://github.com/suzan-1515/Samachar-Hub/blob/master/screenshots/Screenshot_20200529-221249.jpg" width="150">
-<img src="https://github.com/suzan-1515/Samachar-Hub/blob/master/screenshots/Screenshot_20200529-221310.jpg" width="150">
-<img src="https://github.com/suzan-1515/Samachar-Hub/blob/master/screenshots/Screenshot_20200529-221417.jpg" width="150">
+<img src="https://github.com/suzan-1515/Samachar-Hub/blob/master/screenshots/Screenshot_20200529-221227.jpg" width="180"><img src="https://github.com/suzan-1515/Samachar-Hub/blob/master/screenshots/Screenshot_20200529-221242.jpg" width="180"><img src="https://github.com/suzan-1515/Samachar-Hub/blob/master/screenshots/Screenshot_20200529-221249.jpg" width="180">
+<img src="https://github.com/suzan-1515/Samachar-Hub/blob/master/screenshots/Screenshot_20200529-221310.jpg" width="180"><img src="https://github.com/suzan-1515/Samachar-Hub/blob/master/screenshots/Screenshot_20200529-221417.jpg" width="180">
 
 ### Bookmark Page
-<img src="https://github.com/suzan-1515/Samachar-Hub/blob/master/screenshots/Screenshot_20200529-221319.jpg" width="150">
+<img src="https://github.com/suzan-1515/Samachar-Hub/blob/master/screenshots/Screenshot_20200529-221319.jpg" width="180">
 
 ### Setting Page
-<img src="https://github.com/suzan-1515/Samachar-Hub/blob/master/screenshots/Screenshot_20200529-221343.jpg" width="150">
+<img src="https://github.com/suzan-1515/Samachar-Hub/blob/master/screenshots/Screenshot_20200529-221343.jpg" width="180">
 
 ### Trending Topics Page
-<img src="https://github.com/suzan-1515/Samachar-Hub/blob/master/screenshots/Screenshot_20200529-221522.jpg" width="150">
+<img src="https://github.com/suzan-1515/Samachar-Hub/blob/master/screenshots/Screenshot_20200529-221522.jpg" width="180">
 
 ### News Source Page
-<img src="https://github.com/suzan-1515/Samachar-Hub/blob/master/screenshots/Screenshot_20200529-221640.jpg" width="150">
+<img src="https://github.com/suzan-1515/Samachar-Hub/blob/master/screenshots/Screenshot_20200529-221640.jpg" width="180">
 
 ### News Detail Page
-<img src="https://github.com/suzan-1515/Samachar-Hub/blob/master/screenshots/Screenshot_20200529-221045.jpg" width="150">
-<img src="https://github.com/suzan-1515/Samachar-Hub/blob/master/screenshots/Screenshot_20200529-221437.jpg" width="150">
+<img src="https://github.com/suzan-1515/Samachar-Hub/blob/master/screenshots/Screenshot_20200529-221045.jpg" width="180"><img src="https://github.com/suzan-1515/Samachar-Hub/blob/master/screenshots/Screenshot_20200529-221437.jpg" width="180">
 
 ### Comment Page
-<img src="https://github.com/suzan-1515/Samachar-Hub/blob/master/screenshots/Screenshot_20200529-221039.jpg" width="150">
+<img src="https://github.com/suzan-1515/Samachar-Hub/blob/master/screenshots/Screenshot_20200529-221039.jpg" width="180">
 
 ## LICENSE
     Copyright 2019 suzan-1515
