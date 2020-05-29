@@ -4,24 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:nepali_utils/nepali_utils.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:samachar_hub/common/manager/managers.dart';
-import 'package:samachar_hub/common/service/corona_api_service.dart';
-import 'package:samachar_hub/common/service/forex_api_service.dart';
-import 'package:samachar_hub/common/service/horoscope_api_service.dart';
-import 'package:samachar_hub/common/service/navigation_service.dart';
-import 'package:samachar_hub/common/service/news_api_service.dart';
-import 'package:samachar_hub/common/service/services.dart';
-import 'package:samachar_hub/common/service/share_service.dart';
-import 'package:samachar_hub/common/store/auth_store.dart';
-import 'package:samachar_hub/common/store/corona_store.dart';
-import 'package:samachar_hub/common/store/like_store.dart';
+import 'package:samachar_hub/data/models/user_model.dart';
 import 'package:samachar_hub/pages/authentication/login/login_screen.dart';
-import 'package:samachar_hub/pages/bookmark/bookmark_activity_service.dart';
-import 'package:samachar_hub/pages/bookmark/bookmark_manager.dart';
-import 'package:samachar_hub/pages/bookmark/bookmark_store.dart';
 import 'package:samachar_hub/pages/category/categories_store.dart';
-import 'package:samachar_hub/pages/comment/comment_repository.dart';
-import 'package:samachar_hub/pages/comment/comment_firestore_service.dart';
 import 'package:samachar_hub/pages/home/home_screen_store.dart';
 import 'package:samachar_hub/pages/personalised/personalised_store.dart';
 import 'package:samachar_hub/pages/settings/settings_store.dart';
@@ -29,8 +14,15 @@ import 'package:samachar_hub/repository/corona_repository.dart';
 import 'package:samachar_hub/repository/forex_repository.dart';
 import 'package:samachar_hub/repository/horoscope_repository.dart';
 import 'package:samachar_hub/repository/news_repository.dart';
+import 'package:samachar_hub/repository/post_meta_repository.dart';
+import 'package:samachar_hub/repository/repositories.dart';
+import 'package:samachar_hub/services/services.dart';
+import 'package:samachar_hub/stores/stores.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'common/themes.dart' as Themes;
+import 'pages/bookmark/bookmark_firestore_service.dart';
+import 'pages/bookmark/bookmark_repository.dart';
+import 'pages/bookmark/bookmark_store.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -73,38 +65,21 @@ class App extends StatelessWidget {
         Provider<CloudStorageService>(
           create: (_) => CloudStorageService(),
         ),
-        Provider<ShareService>(
-          create: (_) => ShareService(),
-        ),
-
-        //manager
-        ProxyProvider<AnalyticsService, AuthenticationController>(
-          update: (_, _analyticsService, __) => AuthenticationController(
-              AuthenticationService(FirebaseAuth.instance), _analyticsService),
-        ),
-        ProxyProvider2<AnalyticsService, AuthenticationController,
-            NewsFirestoreManager>(
-          update: (_, _analyticsService, _authenticationManager, __) =>
-              NewsFirestoreManager(_authenticationManager,
-                  NewsFirestoreService(), _analyticsService),
-        ),
-        ProxyProvider2<AnalyticsService, AuthenticationController,
-            BookmarkManager>(
-          update: (_, _analyticsService, _authenticationManager, __) =>
-              BookmarkManager(
-                  authenticationManager: _authenticationManager,
-                  activityService: BookmarkActivityService(),
-                  analyticsService: _analyticsService),
-        ),
-        ProxyProvider2<AnalyticsService, AuthenticationController, LikeManager>(
-          update: (_, _analyticsService, _authenticationManager, __) =>
-              LikeManager(
-                  authenticationManager: _authenticationManager,
-                  activityService: LikeActivityService(),
-                  analyticsService: _analyticsService),
+        ProxyProvider<AnalyticsService, ShareService>(
+          update: (_, _analyticsService, __) => ShareService(_analyticsService),
         ),
 
         //repository
+        ProxyProvider<AnalyticsService, AuthenticationRepository>(
+          update: (_, _analyticsService, __) => AuthenticationRepository(
+              AuthenticationService(FirebaseAuth.instance), _analyticsService),
+        ),
+        ProxyProvider2<AnalyticsService, PreferenceService, PostMetaRepository>(
+          update: (_, _analyticsService, _preferenceService, __) =>
+              PostMetaRepository(PostMetaFirestoreService(), _analyticsService,
+                  _preferenceService),
+        ),
+
         ProxyProvider<PreferenceService, NewsRepository>(
           update: (_, _preferenceService, __) =>
               NewsRepository(NewsApiService(), _preferenceService),
@@ -118,39 +93,41 @@ class App extends StatelessWidget {
         Provider<HoroscopeRepository>(
           create: (_) => HoroscopeRepository(HoroscopeApiService()),
         ),
+        ProxyProvider3<AnalyticsService, PreferenceService, PostMetaRepository,
+            BookmarkRepository>(
+          update: (_, _analyticsService, _preferenceService,
+                  _postMetaRepository, __) =>
+              BookmarkRepository(BookmarkFirestoreService(),
+                  _postMetaRepository, _analyticsService, _preferenceService),
+        ),
 
         //store
-        Provider<AuthenticationStore>(
-          create: (_) => AuthenticationStore(),
+        ProxyProvider<AuthenticationRepository, AuthenticationStore>(
+          update: (_, _authenticationRepository, __) =>
+              AuthenticationStore(_authenticationRepository),
         ),
         ProxyProvider<PreferenceService, HomeScreenStore>(
           update: (_, preferenceService, __) =>
               HomeScreenStore(preferenceService),
         ),
-        ProxyProvider4<PreferenceService, NewsRepository, ForexRepository,
-            HoroscopeRepository, PersonalisedFeedStore>(
-          update: (_, preferenceService, _newsRepository, _forexRepository,
-                  _horoscopeRepository, __) =>
-              PersonalisedFeedStore(preferenceService, _newsRepository,
-                  _horoscopeRepository, _forexRepository),
+        ProxyProvider3<NewsRepository, ForexRepository, HoroscopeRepository,
+            PersonalisedFeedStore>(
+          update: (_, _newsRepository, _forexRepository, _horoscopeRepository,
+                  __) =>
+              PersonalisedFeedStore(
+                  _newsRepository, _horoscopeRepository, _forexRepository),
         ),
         ProxyProvider<NewsRepository, CategoriesStore>(
           update: (_, _newsRepository, __) => CategoriesStore(_newsRepository),
           dispose: (context, categoriesStore) => categoriesStore.dispose(),
         ),
-        ProxyProvider2<PreferenceService, BookmarkManager, BookmarkStore>(
-          update: (_, preferenceService, _favouriteManager, __) =>
-              BookmarkStore(preferenceService, _favouriteManager),
+        ProxyProvider2<BookmarkRepository, AuthenticationStore, BookmarkStore>(
+          update: (_, _bookmarkRepository, _authenticationStore, __) =>
+              BookmarkStore(_bookmarkRepository, _authenticationStore.user),
         ),
 
-        ProxyProvider2<PreferenceService, LikeManager, LikeStore>(
-          update: (_, preferenceService, _likeManager, __) =>
-              LikeStore(preferenceService, _likeManager),
-        ),
-
-        ProxyProvider2<PreferenceService, CoronaRepository, CoronaStore>(
-          update: (_, preferenceService, _coronaRepository, __) =>
-              CoronaStore(preferenceService, _coronaRepository),
+        ProxyProvider<CoronaRepository, CoronaStore>(
+          update: (_, _coronaRepository, __) => CoronaStore(_coronaRepository),
           dispose: (context, value) => value.dispose(),
         ),
         ProxyProvider<PreferenceService, SettingsStore>(

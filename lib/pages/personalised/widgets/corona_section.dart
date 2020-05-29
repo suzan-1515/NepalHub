@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
-import 'package:samachar_hub/common/store/corona_store.dart';
-import 'package:samachar_hub/data/dto/dto.dart';
+import 'package:samachar_hub/data/models/models.dart';
+import 'package:samachar_hub/stores/stores.dart';
 
 class CoronaSection extends StatefulWidget {
   const CoronaSection({Key key}) : super(key: key);
@@ -20,9 +20,8 @@ class _CoronaSectionState extends State<CoronaSection>
   void initState() {
     Provider.of<CoronaStore>(context, listen: false).loadNepalData();
     _controller = AnimationController(
-        duration: const Duration(milliseconds: 500), vsync: this, value: 0.5);
-    _animation =
-        CurvedAnimation(parent: _controller, curve: Curves.easeInOut);
+        duration: const Duration(milliseconds: 500), vsync: this, value: 0.7);
+    _animation = CurvedAnimation(parent: _controller, curve: Curves.easeInOut);
 
     super.initState();
   }
@@ -38,10 +37,10 @@ class _CoronaSectionState extends State<CoronaSection>
     super.build(context);
     return Consumer<CoronaStore>(
       builder: (BuildContext context, CoronaStore coronaStore, Widget child) {
-        return StreamBuilder<CoronaCountrySpecific>(
+        return StreamBuilder<CoronaCountrySpecificModel>(
           stream: coronaStore.nepalDataStream,
           builder: (BuildContext context,
-              AsyncSnapshot<CoronaCountrySpecific> snapshot) {
+              AsyncSnapshot<CoronaCountrySpecificModel> snapshot) {
             if (snapshot.hasData) {
               return _buildStatCard(snapshot, context);
             }
@@ -53,7 +52,7 @@ class _CoronaSectionState extends State<CoronaSection>
   }
 
   Widget _buildStatCard(
-      AsyncSnapshot<CoronaCountrySpecific> snapshot, BuildContext context) {
+      AsyncSnapshot<CoronaCountrySpecificModel> snapshot, BuildContext context) {
     _controller.forward();
     return ScaleTransition(
       scale: _animation,
@@ -76,7 +75,7 @@ class _CoronaSectionState extends State<CoronaSection>
                 ),
                 Text(
                   'Coronavirus\nRealtime Updates',
-                  style: Theme.of(context).textTheme.bodyText1.copyWith(
+                  style: Theme.of(context).textTheme.subtitle1.copyWith(
                         color: Colors.white,
                         fontWeight: FontWeight.w700,
                       ),
@@ -94,23 +93,23 @@ class _CoronaSectionState extends State<CoronaSection>
   }
 
   Widget _buildCasesInfoRow(
-      BuildContext context, AsyncSnapshot<CoronaCountrySpecific> snapshot) {
+      BuildContext context, AsyncSnapshot<CoronaCountrySpecificModel> snapshot) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         _buildCaseItem(context, snapshot.data.todayCases, snapshot.data.cases,
-            Colors.red[400], Colors.white, 'Oficially Confirmed'),
+            Colors.white, Colors.black, 'Oficially Confirmed'),
         _buildCaseItem(context, 0, snapshot.data.recovered, Colors.green[400],
             Colors.white, 'Recovered'),
         _buildCaseItem(context, snapshot.data.todayDeaths, snapshot.data.deaths,
-            Colors.white, Colors.black, 'Deaths'),
+            Colors.red[300], Colors.white, 'Deaths'),
       ],
     );
   }
 
   Widget _buildDateTimeRow(
-      AsyncSnapshot<CoronaCountrySpecific> snapshot, BuildContext context) {
+      AsyncSnapshot<CoronaCountrySpecificModel> snapshot, BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -171,8 +170,8 @@ class _CoronaSectionState extends State<CoronaSection>
           '$cases',
           style: Theme.of(context)
               .textTheme
-              .headline5
-              .copyWith(color: higlightColor, fontSize: 22),
+              .headline6
+              .copyWith(color: higlightColor,fontWeight: FontWeight.w700),
         ),
         SizedBox(
           height: 4,

@@ -2,11 +2,10 @@ import 'dart:async';
 
 import 'package:flutter/widgets.dart';
 import 'package:mobx/mobx.dart';
-import 'package:samachar_hub/common/manager/managers.dart';
 import 'package:samachar_hub/data/api/api.dart';
 import 'package:samachar_hub/data/models/comment_model.dart';
+import 'package:samachar_hub/data/models/user_model.dart';
 import 'package:samachar_hub/pages/comment/comment_repository.dart';
-import 'package:uuid/uuid.dart';
 
 part 'comment_store.g.dart';
 
@@ -14,12 +13,11 @@ class CommentStore = _CommentStore with _$CommentStore;
 
 abstract class _CommentStore with Store {
   final CommentRepository _commentRepository;
-  final AuthenticationController _authenticationManager;
+  final UserModel _user;
   _CommentStore(
-      {@required CommentRepository commentRepository,
-      @required AuthenticationController authenticationManager})
+      {@required CommentRepository commentRepository, @required UserModel user})
       : this._commentRepository = commentRepository,
-        this._authenticationManager = authenticationManager;
+        this._user = user;
 
   StreamController<List<CommentModel>> _dataStreamController =
       StreamController<List<CommentModel>>.broadcast();
@@ -35,12 +33,6 @@ abstract class _CommentStore with Store {
 
   @observable
   String postTitle = '';
-
-  @observable
-  int likesCount = 0;
-
-  @observable
-  int commentsCount = 0;
 
   @observable
   APIException apiError;
@@ -59,16 +51,6 @@ abstract class _CommentStore with Store {
   }
 
   @action
-  setLikesCount(int count) {
-    this.likesCount = count;
-  }
-
-  @action
-  setCommentsCount(int count) {
-    this.commentsCount = count;
-  }
-
-  @action
   void retry() {
     _loadFirstPageData();
   }
@@ -79,17 +61,9 @@ abstract class _CommentStore with Store {
   }
 
   @action
-  Future<CommentModel> submitComment({@required String comment}) {
+  Future<void> submitComment({@required String comment}) {
     return _commentRepository
-        .postComment(
-      postId: postId,
-      commentModel: CommentModel(
-          Uuid().v4(),
-          _authenticationManager.currentUser,
-          comment,
-          0,
-          DateTime.now().toString()),
-    )
+        .postComment(postId: postId, user: _user, comment: comment)
         .catchError((onError) {
       this.error = 'Error posting comment. Try again later..';
     });
@@ -108,24 +82,21 @@ abstract class _CommentStore with Store {
 
   @action
   Future loadMoreData({@required CommentModel after}) async {
+    if (isLoadingMore) return;
     isLoadingMore = true;
     return await _commentRepository
         .getComments(postId: postId, after: after?.timestamp)
         .then((value) {
       isLoadingMore = false;
-      if (value == null) {
+      if (value == null || value.isEmpty) {
         hasMoreData = false;
         _dataStreamController.add(data);
         return;
       }
-      setLikesCount(value.likesCount);
-      setCommentsCount(value.totalCount);
-      if (value.comments != null && value.comments.isNotEmpty) {
-        data.addAll(value.comments);
-        hasMoreData = value.comments.length == CommentRepository.DATA_LIMIT;
-      } else {
-        hasMoreData = false;
-      }
+
+      data.addAll(value);
+      hasMoreData = value.length == CommentRepository.DATA_LIMIT;
+
       _dataStreamController.add(data);
     }).catchError((onError) {
       this.apiError = onError;

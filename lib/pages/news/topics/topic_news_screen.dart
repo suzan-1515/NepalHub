@@ -4,7 +4,7 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:mobx/mobx.dart';
 import 'package:provider/provider.dart';
 import 'package:samachar_hub/data/api/api.dart';
-import 'package:samachar_hub/data/dto/news_dto.dart';
+import 'package:samachar_hub/data/models/models.dart';
 import 'package:samachar_hub/pages/news/topics/topic_news_store.dart';
 import 'package:samachar_hub/pages/widgets/api_error_dialog.dart';
 import 'package:samachar_hub/pages/widgets/empty_data_widget.dart';
@@ -82,9 +82,9 @@ class _TopicNewsScreenState extends State<TopicNewsScreen> {
   }
 
   Widget _buildTopicsSection(BuildContext context, TopicNewsStore store) {
-    return StreamBuilder<NewsTopics>(
+    return StreamBuilder<NewsTopicModel>(
       stream: store.topicsDataStream,
-      builder: (BuildContext context, AsyncSnapshot<NewsTopics> snapshot) {
+      builder: (BuildContext context, AsyncSnapshot<NewsTopicModel> snapshot) {
         if (snapshot.hasData) {
           return Container(
             color: Theme.of(context).cardColor,
@@ -109,9 +109,9 @@ class _TopicNewsScreenState extends State<TopicNewsScreen> {
   }
 
   Widget _buildTopicNewsSection(BuildContext context, TopicNewsStore store) {
-    return StreamBuilder<List<Feed>>(
+    return StreamBuilder<List<NewsFeedModel>>(
       stream: store.newsDataStream,
-      builder: (BuildContext context, AsyncSnapshot<List<Feed>> snapshot) {
+      builder: (BuildContext context, AsyncSnapshot<List<NewsFeedModel>> snapshot) {
         if (snapshot.hasError) {
           return SliverFillRemaining(
             hasScrollBody: false,

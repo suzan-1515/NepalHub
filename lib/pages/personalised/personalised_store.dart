@@ -1,9 +1,8 @@
 import 'dart:async';
 
 import 'package:mobx/mobx.dart';
-import 'package:samachar_hub/common/service/services.dart';
 import 'package:samachar_hub/data/api/api.dart';
-import 'package:samachar_hub/data/dto/dto.dart';
+import 'package:samachar_hub/data/models/models.dart';
 import 'package:samachar_hub/pages/pages.dart';
 import 'package:samachar_hub/repository/forex_repository.dart';
 import 'package:samachar_hub/repository/horoscope_repository.dart';
@@ -19,19 +18,18 @@ abstract class _PersonalisedFeedStore with Store {
   final NewsRepository _newsRepository;
   final HoroscopeRepository _horoscopeRepository;
   final ForexRepository _forexRepository;
-  final PreferenceService _preferenceService;
 
-  StreamController<List<Feed>> _dataStreamController =
-      StreamController<List<Feed>>.broadcast();
+  StreamController<List<NewsFeedModel>> _dataStreamController =
+      StreamController<List<NewsFeedModel>>.broadcast();
 
-  Stream<List<Feed>> get dataStream => _dataStreamController.stream;
+  Stream<List<NewsFeedModel>> get dataStream => _dataStreamController.stream;
 
-  _PersonalisedFeedStore(this._preferenceService, this._newsRepository,
+  _PersonalisedFeedStore(this._newsRepository,
       this._horoscopeRepository, this._forexRepository);
 
   Map<MixedDataType, dynamic> sectionData = Map<MixedDataType, dynamic>();
 
-  List<Feed> data = List<Feed>();
+  List<NewsFeedModel> data = List<NewsFeedModel>();
 
   @observable
   APIException apiError;

@@ -3,11 +3,8 @@ import 'package:flutter/rendering.dart';
 import 'package:mobx/mobx.dart';
 import 'dart:math' as math;
 import 'package:provider/provider.dart';
-import 'package:samachar_hub/common/service/navigation_service.dart';
-import 'package:samachar_hub/common/service/preference_service.dart';
-import 'package:samachar_hub/common/store/trending_news_store.dart';
 import 'package:samachar_hub/data/api/api.dart';
-import 'package:samachar_hub/data/dto/dto.dart';
+import 'package:samachar_hub/data/models/models.dart';
 import 'package:samachar_hub/pages/personalised/personalised_store.dart';
 import 'package:samachar_hub/pages/personalised/widgets/corona_section.dart';
 import 'package:samachar_hub/pages/personalised/widgets/news_category_menu_section.dart';
@@ -23,6 +20,8 @@ import 'package:samachar_hub/pages/widgets/page_heading_widget.dart';
 import 'package:samachar_hub/pages/widgets/progress_widget.dart';
 import 'package:samachar_hub/pages/widgets/section_heading.dart';
 import 'package:samachar_hub/repository/news_repository.dart';
+import 'package:samachar_hub/services/services.dart';
+import 'package:samachar_hub/stores/stores.dart';
 
 import 'widgets/date_weather_section.dart';
 
@@ -134,7 +133,7 @@ class _PersonalisedPageState extends State<PersonalisedPage> {
   }
 
   Widget _buildLatestFeed(
-      int index, Feed feed, PersonalisedFeedStore personalisedStore) {
+      int index, NewsFeedModel feed, PersonalisedFeedStore personalisedStore) {
     Widget feedWidget;
     if (index % 3 == 0) {
       feedWidget = NewsThumbnailView(feed);
@@ -171,21 +170,19 @@ class _PersonalisedPageState extends State<PersonalisedPage> {
                 [
                   DateWeatherSection(),
                   CoronaSection(),
-                  ProxyProvider2<PreferenceService, NewsRepository,
-                      TrendingNewsStore>(
+                  ProxyProvider<NewsRepository, TrendingNewsStore>(
                     child: TrendingNewsSection(),
                     update: (BuildContext context,
-                            PreferenceService preferenceService,
                             NewsRepository newsRepository,
                             TrendingNewsStore previous) =>
-                        TrendingNewsStore(preferenceService, newsRepository),
+                        TrendingNewsStore(newsRepository),
                     dispose: (context, store) => store.dispose(),
                   ),
                 ],
                 addAutomaticKeepAlives: true,
               ),
             ),
-            StreamBuilder<List<Feed>>(
+            StreamBuilder<List<NewsFeedModel>>(
                 stream: personalisedStore.dataStream,
                 builder: (context, snapshot) {
                   if (snapshot.hasError) {

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:samachar_hub/data/dto/dto.dart';
+import 'package:samachar_hub/data/models/models.dart';
 import 'package:samachar_hub/pages/widgets/news_tag_item.dart';
 import 'package:samachar_hub/pages/widgets/section_heading.dart';
 
 class NewsTopicsSection extends StatelessWidget {
-  final NewsTopics item;
+  final NewsTopicModel item;
   final Function(String) onTap;
   const NewsTopicsSection({
     Key key,

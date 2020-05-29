@@ -1,5 +1,6 @@
 
-import 'package:samachar_hub/common/service/services.dart';
+
+import 'package:samachar_hub/services/services.dart';
 
 class HomeScreenService {
   final PreferenceService preferenceService;

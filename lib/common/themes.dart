@@ -1,23 +1,8 @@
 import 'package:flutter/material.dart';
 
-//Todo: Use proper text theme sizes
-final TextTheme _textTheme = TextTheme(
-  headline: TextStyle(fontWeight: FontWeight.w900, fontSize: 28),
-  title: TextStyle(fontWeight: FontWeight.w500, fontSize: 16),
-  subtitle: TextStyle(fontWeight: FontWeight.w500, fontSize: 12),
-  subhead: TextStyle(fontWeight: FontWeight.w700, fontSize: 20),
-  button: TextStyle(fontWeight: FontWeight.w900, fontSize: 14),
-  body1: TextStyle(fontWeight: FontWeight.w500, fontSize: 14),
-  body2: TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
-  display1: TextStyle(fontSize: 11, fontWeight: FontWeight.w500),
-  display2: TextStyle(fontSize: 12.5, fontWeight: FontWeight.w700),
-  display3: TextStyle(fontSize: 11.5, fontWeight: FontWeight.w700),
-  display4: TextStyle(fontSize: 11, fontWeight: FontWeight.w600),
-);
-
 final lightTheme = ThemeData(
   fontFamily: 'Raleway',
-  textTheme: _textTheme,
+  // textTheme: _textTheme,
   tabBarTheme: TabBarTheme(
     labelStyle: TextStyle(fontFamily: 'Raleway', fontWeight: FontWeight.w700, fontSize: 16),
     labelColor: Colors.black,
@@ -43,14 +28,14 @@ final lightTheme = ThemeData(
     textTheme: ButtonTextTheme.normal,
   ),
   snackBarTheme: SnackBarThemeData(
-    backgroundColor: Colors.white,
-    contentTextStyle: TextStyle(color: Colors.black87),
+    backgroundColor: Colors.black,
+    contentTextStyle: TextStyle(color: Colors.white),
   ),
 );
 
 final darkTheme = ThemeData(
   fontFamily: 'Raleway',
-  textTheme: _textTheme,
+  // textTheme: _textTheme,
   tabBarTheme: TabBarTheme(
     labelStyle: TextStyle(fontFamily: 'Raleway', fontWeight: FontWeight.w700, fontSize: 16),
     unselectedLabelStyle: TextStyle(fontFamily: 'Raleway', fontWeight: FontWeight.w700, fontSize: 16),
@@ -81,7 +66,7 @@ final darkTheme = ThemeData(
 
 final pitchBlack = ThemeData(
   fontFamily: 'Raleway',
-  textTheme: _textTheme,
+  // textTheme: _textTheme,
   tabBarTheme: TabBarTheme(
     labelStyle: TextStyle(fontFamily: 'Raleway', fontWeight: FontWeight.w700, fontSize: 16),
     unselectedLabelStyle: TextStyle(fontFamily: 'Raleway', fontWeight: FontWeight.w700, fontSize: 16),

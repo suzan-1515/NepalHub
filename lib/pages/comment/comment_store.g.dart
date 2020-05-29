@@ -43,40 +43,6 @@ mixin _$CommentStore on _CommentStore, Store {
     }, _$postTitleAtom, name: '${_$postTitleAtom.name}_set');
   }
 
-  final _$likesCountAtom = Atom(name: '_CommentStore.likesCount');
-
-  @override
-  int get likesCount {
-    _$likesCountAtom.context.enforceReadPolicy(_$likesCountAtom);
-    _$likesCountAtom.reportObserved();
-    return super.likesCount;
-  }
-
-  @override
-  set likesCount(int value) {
-    _$likesCountAtom.context.conditionallyRunInAction(() {
-      super.likesCount = value;
-      _$likesCountAtom.reportChanged();
-    }, _$likesCountAtom, name: '${_$likesCountAtom.name}_set');
-  }
-
-  final _$commentsCountAtom = Atom(name: '_CommentStore.commentsCount');
-
-  @override
-  int get commentsCount {
-    _$commentsCountAtom.context.enforceReadPolicy(_$commentsCountAtom);
-    _$commentsCountAtom.reportObserved();
-    return super.commentsCount;
-  }
-
-  @override
-  set commentsCount(int value) {
-    _$commentsCountAtom.context.conditionallyRunInAction(() {
-      super.commentsCount = value;
-      _$commentsCountAtom.reportChanged();
-    }, _$commentsCountAtom, name: '${_$commentsCountAtom.name}_set');
-  }
-
   final _$apiErrorAtom = Atom(name: '_CommentStore.apiError');
 
   @override
@@ -158,26 +124,6 @@ mixin _$CommentStore on _CommentStore, Store {
   }
 
   @override
-  dynamic setLikesCount(int count) {
-    final _$actionInfo = _$_CommentStoreActionController.startAction();
-    try {
-      return super.setLikesCount(count);
-    } finally {
-      _$_CommentStoreActionController.endAction(_$actionInfo);
-    }
-  }
-
-  @override
-  dynamic setCommentsCount(int count) {
-    final _$actionInfo = _$_CommentStoreActionController.startAction();
-    try {
-      return super.setCommentsCount(count);
-    } finally {
-      _$_CommentStoreActionController.endAction(_$actionInfo);
-    }
-  }
-
-  @override
   void retry() {
     final _$actionInfo = _$_CommentStoreActionController.startAction();
     try {
@@ -188,7 +134,7 @@ mixin _$CommentStore on _CommentStore, Store {
   }
 
   @override
-  Future<CommentModel> submitComment({@required String comment}) {
+  Future<void> submitComment({@required String comment}) {
     final _$actionInfo = _$_CommentStoreActionController.startAction();
     try {
       return super.submitComment(comment: comment);
@@ -210,7 +156,7 @@ mixin _$CommentStore on _CommentStore, Store {
   @override
   String toString() {
     final string =
-        'postId: ${postId.toString()},postTitle: ${postTitle.toString()},likesCount: ${likesCount.toString()},commentsCount: ${commentsCount.toString()},apiError: ${apiError.toString()},error: ${error.toString()}';
+        'postId: ${postId.toString()},postTitle: ${postTitle.toString()},apiError: ${apiError.toString()},error: ${error.toString()}';
     return '{$string}';
   }
 }

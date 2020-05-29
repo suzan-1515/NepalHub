@@ -5,6 +5,7 @@ import 'package:samachar_hub/data/api/api.dart';
 import 'package:samachar_hub/data/api/response/corona_api_response.dart';
 import 'package:samachar_hub/data/api/response/forex_api_response.dart';
 import 'package:samachar_hub/data/api/response/horoscope_api_response.dart';
+import 'package:samachar_hub/data/mappers/mappers.dart';
 
 // Base URL
 const String _baseNewsApiURL = 'timesofnepal.com.np';
@@ -68,7 +69,7 @@ Future<NewsApiResponse> fetchLatestNews() async {
   // Deserialize
 
   try {
-    return FeedApiParser.parse(
+    return NewsApiParser.parse(
         feeds: json.decode(newsResponse.body),
         sources: json.decode(sourceResponse.body));
   } on Exception catch (e) {
@@ -99,7 +100,7 @@ Future<NewsApiResponse> fetchTrendingNews({String limit}) async {
   // Deserialize
 
   try {
-    return FeedApiParser.parse(
+    return NewsApiParser.parse(
         feeds: json.decode(newsResponse.body),
         sources: json.decode(sourceResponse.body));
   } on Exception catch (e) {
@@ -131,7 +132,7 @@ Future<NewsApiResponse> fetchNewsByCategory(NewsCategory category,
   // Deserialize
 
   try {
-    return FeedApiParser.parse(
+    return NewsApiParser.parse(
         feeds: json.decode(newsResponse.body),
         sources: json.decode(sourceResponse.body));
   } on Exception catch (e) {
@@ -187,7 +188,7 @@ Future<NewsApiResponse> fetchNewsByTopic({@required String topic}) async {
   // Deserialize
 
   try {
-    return FeedApiParser.parseTagNews(
+    return NewsApiParser.parseTagNews(
         feeds: json.decode(newsResponse.body),
         sources: json.decode(sourceResponse.body));
   } on Exception catch (e) {

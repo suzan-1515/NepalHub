@@ -5,8 +5,6 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:incrementally_loading_listview/incrementally_loading_listview.dart';
 import 'package:mobx/mobx.dart';
 import 'package:provider/provider.dart';
-import 'package:samachar_hub/common/service/navigation_service.dart';
-import 'package:samachar_hub/common/store/auth_store.dart';
 import 'package:samachar_hub/data/api/api.dart';
 import 'package:samachar_hub/data/models/comment_model.dart';
 import 'package:samachar_hub/pages/comment/comment_store.dart';
@@ -15,6 +13,8 @@ import 'package:samachar_hub/pages/widgets/empty_data_widget.dart';
 import 'package:samachar_hub/pages/widgets/error_data_widget.dart';
 import 'package:samachar_hub/pages/widgets/page_heading_widget.dart';
 import 'package:samachar_hub/pages/widgets/progress_widget.dart';
+import 'package:samachar_hub/services/services.dart';
+import 'package:samachar_hub/stores/stores.dart';
 
 class CommentScreen extends StatefulWidget {
   final String postTitle;
@@ -40,6 +40,7 @@ class _CommentScreenState extends State<CommentScreen> {
     store.setPostId(widget.postId);
     store.setPostTitle(widget.postTitle);
     store.loadData();
+    Provider.of<PostMetaStore>(context, listen: false).loadPostMeta();
 
     super.initState();
   }
@@ -114,34 +115,39 @@ class _CommentScreenState extends State<CommentScreen> {
     return Container(
       margin: const EdgeInsets.all(8),
       padding: const EdgeInsets.all(8),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: <Widget>[
-          Observer(
-            builder: (BuildContext context) {
-              return Text(
-                '${store.commentsCount} Comments',
-                style: Theme.of(context).textTheme.bodyText2,
-              );
-            },
-          ),
-          SizedBox(
-            width: 8,
-          ),
-          Observer(
-            builder: (BuildContext context) {
-              return Text(
-                '${store.likesCount} Likes',
-                style: Theme.of(context).textTheme.bodyText2,
-              );
-            },
-          ),
-        ],
+      child: Consumer<PostMetaStore>(
+        builder: (BuildContext context, PostMetaStore metaStore, Widget child) {
+          return Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: <Widget>[
+              Observer(
+                builder: (BuildContext context) {
+                  return Text(
+                    '${metaStore.postMeta?.commentCount ?? 0} Comments',
+                    style: Theme.of(context).textTheme.bodyText2,
+                  );
+                },
+              ),
+              SizedBox(
+                width: 8,
+              ),
+              Observer(
+                builder: (BuildContext context) {
+                  return Text(
+                    '${metaStore.postMeta?.likeCount ?? 0} Likes',
+                    style: Theme.of(context).textTheme.bodyText2,
+                  );
+                },
+              ),
+            ],
+          );
+        },
       ),
     );
   }
 
-  Widget _buildCommentItem(BuildContext context, CommentModel data) {
+  Widget _buildCommentItem(
+      BuildContext context, CommentModel data, CommentStore store) {
     return Material(
       child: ListTile(
         leading: CircleAvatar(
@@ -201,10 +207,8 @@ class _CommentScreenState extends State<CommentScreen> {
                 loadMoreOffsetFromBottom: 2,
                 hasMore: () => store.hasMoreData,
                 itemBuilder: (BuildContext context, int index) {
-                  Widget itemWidget = _buildCommentItem(
-                    context,
-                    snapshot.data[index],
-                  );
+                  Widget itemWidget =
+                      _buildCommentItem(context, snapshot.data[index], store);
                   if (index == snapshot.data.length - 1 &&
                       store.hasMoreData &&
                       !store.isLoadingMore) {
@@ -259,49 +263,56 @@ class _CommentScreenState extends State<CommentScreen> {
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
           child: Observer(
             builder: (BuildContext context) {
-              return Row(
-                children: <Widget>[
-                  CircleAvatar(
-                    backgroundColor: Theme.of(context).cardColor,
-                    backgroundImage: authStore.isLoggedIn
-                        ? NetworkImage(authStore.user.avatar)
-                        : AssetImage('assets/images/user.png'),
-                  ),
-                  SizedBox(
-                    width: 8,
-                  ),
-                  Expanded(
-                      child: Container(
-                    child: TextField(
-                      onSubmitted: (value) {
-                        _submitComment(context, store, authStore,
-                            navigationService, value);
+              return Material(
+                color: Colors.transparent,
+                child: Row(
+                  children: <Widget>[
+                    CircleAvatar(
+                      backgroundColor: Theme.of(context).cardColor,
+                      backgroundImage: authStore.isLoggedIn
+                          ? NetworkImage(authStore.user.avatar)
+                          : AssetImage('assets/images/user.png'),
+                    ),
+                    SizedBox(
+                      width: 8,
+                    ),
+                    Expanded(
+                        child: Container(
+                      child: TextField(
+                        onSubmitted: (value) {
+                          _submitComment(context, store, authStore,
+                              navigationService, value);
+                          _textEditingController.clear();
+                          FocusScope.of(context).unfocus();
+                        },
+                        controller: _textEditingController,
+                        decoration: InputDecoration(
+                            border: InputBorder.none,
+                            hintText: 'Write a comment'),
+                        style: Theme.of(context).textTheme.bodyText2,
+                      ),
+                    )),
+                    SizedBox(
+                      width: 8,
+                    ),
+                    IconButton(
+                      icon: Icon(
+                        FontAwesomeIcons.paperPlane,
+                        color: Colors.lightBlue,
+                      ),
+                      onPressed: () {
+                        _submitComment(
+                            context,
+                            store,
+                            authStore,
+                            navigationService,
+                            _textEditingController.value.text);
                         _textEditingController.clear();
                         FocusScope.of(context).unfocus();
                       },
-                      controller: _textEditingController,
-                      decoration: InputDecoration(
-                          border: InputBorder.none,
-                          hintText: 'Write a comment'),
-                      style: Theme.of(context).textTheme.bodyText2,
-                    ),
-                  )),
-                  SizedBox(
-                    width: 8,
-                  ),
-                  IconButton(
-                    icon: Icon(
-                      FontAwesomeIcons.paperPlane,
-                      color: Colors.lightBlue,
-                    ),
-                    onPressed: () {
-                      _submitComment(context, store, authStore,
-                          navigationService, _textEditingController.value.text);
-                      _textEditingController.clear();
-                      FocusScope.of(context).unfocus();
-                    },
-                  )
-                ],
+                    )
+                  ],
+                ),
               );
             },
           ),

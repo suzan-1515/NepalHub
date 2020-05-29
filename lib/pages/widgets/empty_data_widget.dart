@@ -10,7 +10,7 @@ class EmptyDataView extends StatelessWidget {
       mainAxisSize: MainAxisSize.max,
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
-        Text('Empty Data!'),
+        Text('Empty Data!',style: Theme.of(context).textTheme.bodyText2,),
         RaisedButton(
             child: Text('Retry'),
             onPressed: () async {

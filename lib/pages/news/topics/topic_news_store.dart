@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:mobx/mobx.dart';
 import 'package:samachar_hub/data/api/api.dart';
-import 'package:samachar_hub/data/dto/dto.dart';
+import 'package:samachar_hub/data/models/models.dart';
 import 'package:samachar_hub/repository/news_repository.dart';
 
 part 'topic_news_store.g.dart';
@@ -14,16 +14,16 @@ abstract class _TopicNewsStore with Store {
 
   _TopicNewsStore(this._newsRepository);
 
-  StreamController<List<Feed>> _newsDataStreamController =
-      StreamController<List<Feed>>.broadcast();
-  Stream<List<Feed>> get newsDataStream => _newsDataStreamController.stream;
+  StreamController<List<NewsFeedModel>> _newsDataStreamController =
+      StreamController<List<NewsFeedModel>>.broadcast();
+  Stream<List<NewsFeedModel>> get newsDataStream => _newsDataStreamController.stream;
 
-  StreamController<NewsTopics> _topicsDataStreamController =
-      StreamController<NewsTopics>.broadcast();
-  Stream<NewsTopics> get topicsDataStream => _topicsDataStreamController.stream;
+  StreamController<NewsTopicModel> _topicsDataStreamController =
+      StreamController<NewsTopicModel>.broadcast();
+  Stream<NewsTopicModel> get topicsDataStream => _topicsDataStreamController.stream;
 
-  List<Feed> topicNewsdata = List<Feed>();
-  NewsTopics topicData;
+  List<NewsFeedModel> topicNewsdata = List<NewsFeedModel>();
+  NewsTopicModel topicData;
 
   @observable
   String selectedTopic;

@@ -3,7 +3,7 @@ import 'package:flutter/widgets.dart';
 import 'package:mobx/mobx.dart';
 import 'package:provider/provider.dart';
 import 'package:samachar_hub/data/api/api.dart';
-import 'package:samachar_hub/data/dto/news_dto.dart';
+import 'package:samachar_hub/data/models/models.dart';
 import 'package:samachar_hub/pages/news/sources/news_source_item.dart';
 import 'package:samachar_hub/pages/news/sources/news_source_store.dart';
 import 'package:samachar_hub/pages/widgets/api_error_dialog.dart';
@@ -79,10 +79,10 @@ class _NewsSourceScreenState extends State<NewsSourceScreen> {
       margin: const EdgeInsets.symmetric(horizontal: 8),
       child: Consumer<NewsSourceStore>(
         builder: (context, sourceStore, child) {
-          return StreamBuilder<List<FeedSource>>(
+          return StreamBuilder<List<NewsSourceModel>>(
             stream: sourceStore.dataStream,
             builder: (BuildContext context,
-                AsyncSnapshot<List<FeedSource>> snapshot) {
+                AsyncSnapshot<List<NewsSourceModel>> snapshot) {
               if (snapshot.hasError) {
                 return Center(
                   child: ErrorDataView(

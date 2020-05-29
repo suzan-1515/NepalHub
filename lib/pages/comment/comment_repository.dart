@@ -1,82 +1,99 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/widgets.dart';
-import 'package:samachar_hub/common/manager/managers.dart';
-import 'package:samachar_hub/common/service/services.dart';
-import 'package:samachar_hub/data/api/response/comments_firestore_response.dart';
-import 'package:samachar_hub/data/mapper/comments_mapper.dart';
+import 'package:samachar_hub/data/mappers/mappers.dart';
 import 'package:samachar_hub/data/models/comment_model.dart';
+import 'package:samachar_hub/data/models/user_model.dart';
 import 'package:samachar_hub/pages/comment/comment_firestore_service.dart';
+import 'package:samachar_hub/repository/post_meta_repository.dart';
+import 'package:samachar_hub/services/services.dart';
+import 'package:uuid/uuid.dart';
 
 class CommentRepository {
   final CommentFirestoreService _commentService;
   final AnalyticsService _analyticsService;
-  final AuthenticationController _authenticationController;
+  final PostMetaRepository _postMetaRepository;
 
   static const int DATA_LIMIT = 20;
 
-  CommentRepository(CommentFirestoreService commentService,
-      this._analyticsService, this._authenticationController)
-      : this._commentService = commentService;
+  CommentRepository(
+      this._commentService, this._postMetaRepository, this._analyticsService);
 
-  Future<CommentModel> postComment(
-      {@required String postId, @required CommentModel commentModel}) {
-    var meta = {
-      'id': postId,
-      'comments_count': FieldValue.increment(1),
+  Future<void> postComment(
+      {@required String postId,
+      @required UserModel user,
+      @required String comment}) {
+    var metaData = {
+      'comment_count': FieldValue.increment(1),
     };
-    var data = commentModel.toJson();
+    var activityId =
+        _postMetaRepository.generateActivityId(postId, user.uId, 'comment');
+    var metaActivityData = {
+      'id': activityId,
+      'meta_name': 'comment',
+      'post_id': postId,
+      'user': user.toJson(),
+      'timestamp': FieldValue.serverTimestamp(),
+    };
+
+    var commentId = Uuid().v4();
+
+    var data = {
+      'id': commentId,
+      'post_id': postId,
+      'user': user.toJson(),
+      'comment': comment,
+      'like_count': 0,
+      'timestamp': DateTime.now().toString(),
+    };
     return _commentService
         .saveComment(
-            postId: postId,
-            commentId: commentModel.id,
-            commentMetaData: meta,
-            commentData: data)
+            commentId: commentId,
+            metaActivityData: metaActivityData,
+            metaData: metaData,
+            commentData: data,
+            metaActivityDocumentRef: _postMetaRepository
+                .metaActivityCollectionReference(postId)
+                .document(activityId),
+            metaDocumentRef:
+                _postMetaRepository.metaCollectionReference.document(postId))
         .then((value) {
-      _analyticsService.logCommentPosted(
-          userId: _authenticationController.currentUser.uId, postId: postId);
-      return commentModel;
+      _analyticsService.logCommentPosted(postId: postId);
     });
   }
 
   Future<void> postCommentLike(
       {@required String postId, @required String commentId}) async {
+    var data = {'like_count': FieldValue.increment(1)};
     return _commentService
-        .updateCommentLikes(postId: postId, commentId: commentId)
+        .addCommentLike(commentId: commentId, likeData: data)
         .then((value) {
-      _analyticsService.logCommentLiked(
-          userId: _authenticationController.currentUser.uId, postId: postId);
+      _analyticsService.logCommentLiked(postId: postId, commentId: commentId);
     });
   }
 
-  Future<CommentsModel> getComments({@required String postId, String after}) {
+  Future<void> postCommentUnlike(
+      {@required String postId, @required String commentId}) async {
+    var data = {'like_count': FieldValue.increment(-1)};
     return _commentService
-        .fetchCommentsMeta(postId: postId)
-        .then((value) async {
-      if (value.exists) {
-        final CommentsFirestoreResponse commentsResponse =
-            CommentsFirestoreResponse.fromJson(value.data);
-        return await _commentService
-            .fetchComments(postId: postId, limit: DATA_LIMIT, after: after)
-            .then((onValue) {
-          if (onValue != null &&
-              onValue.documents != null &&
-              onValue.documents.isNotEmpty) {
-            return CommentsMapper.fromCommentsFirestore(
-                commentsResponse,
-                onValue.documents
-                    .where((snapshot) => snapshot != null && snapshot.exists)
-                    .map((snapshot) =>
-                        CommentFirestoreResponse.fromJson(snapshot.data))
-                    .toList());
-          }
+        .removeCommentLike(commentId: commentId, likeData: data)
+        .then((value) {
+      _analyticsService.logCommentLikeRemoved(postId: postId);
+    });
+  }
 
-          return CommentsMapper.fromCommentsFirestore(commentsResponse, null);
-        });
+  Future<List<CommentModel>> getComments(
+      {@required String postId, String after}) {
+    return _commentService
+        .fetchComments(postId: postId, limit: DATA_LIMIT, after: after)
+        .then((value) {
+      if (value != null && value.isNotEmpty) {
+        return value
+            .map((response) => CommentsMapper.fromCommentFirestore(response))
+            .toList();
       }
-      return null;
+      return List<CommentModel>();
     }).then((value) {
-      _analyticsService.logCommentFetched(
-          userId: _authenticationController.currentUser.uId, postId: postId);
+      _analyticsService.logCommentFetched(postId: postId);
       return value;
     });
   }

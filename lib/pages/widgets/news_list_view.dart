@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:samachar_hub/common/service/navigation_service.dart';
-import 'package:samachar_hub/data/dto/dto.dart';
+import 'package:samachar_hub/data/models/models.dart';
 import 'package:samachar_hub/pages/widgets/article_info_widget.dart';
+import 'package:samachar_hub/services/services.dart';
 import 'package:samachar_hub/widgets/article_image_widget.dart';
 
 class NewsListView extends StatelessWidget {
   NewsListView({@required this.feed});
 
-  final Feed feed;
+  final NewsFeedModel feed;
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +24,7 @@ class NewsListView extends StatelessWidget {
           return Material(
             color: Colors.transparent,
             child: InkWell(
-              onTap: () => navigationService.onFeedClick(feed, context),
+              onTap: () => navigationService.toFeedDetail(feed, context),
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Column(

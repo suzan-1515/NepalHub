@@ -1,10 +1,10 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:samachar_hub/data/dto/news_dto.dart';
+import 'package:samachar_hub/data/models/models.dart';
 
 class NewsSourceMenuItem extends StatelessWidget {
-  final FeedSource source;
+  final NewsSourceModel source;
   final Function onTap;
 
   const NewsSourceMenuItem(
@@ -53,7 +53,7 @@ class NewsSourceMenuItem extends StatelessWidget {
               ),
               Text(
                 source.name,
-                style: Theme.of(context).textTheme.body1,
+                style: Theme.of(context).textTheme.bodyText2,
               )
             ],
           ),

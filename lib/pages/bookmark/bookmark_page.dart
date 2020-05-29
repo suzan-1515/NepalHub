@@ -2,20 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:incrementally_loading_listview/incrementally_loading_listview.dart';
 import 'package:mobx/mobx.dart';
 import 'package:provider/provider.dart';
-import 'package:samachar_hub/common/service/navigation_service.dart';
-import 'package:samachar_hub/data/dto/dto.dart';
+import 'package:samachar_hub/data/models/models.dart';
 import 'package:samachar_hub/pages/bookmark/bookmark_list_item.dart';
 import 'package:samachar_hub/pages/bookmark/bookmark_store.dart';
+import 'package:samachar_hub/pages/widgets/empty_data_widget.dart';
 import 'package:samachar_hub/pages/widgets/error_data_widget.dart';
 import 'package:samachar_hub/pages/widgets/page_heading_widget.dart';
 import 'package:samachar_hub/pages/widgets/progress_widget.dart';
+import 'package:samachar_hub/services/services.dart';
 
 class BookmarkPage extends StatefulWidget {
   @override
   _BookmarkPageState createState() => _BookmarkPageState();
 }
 
-class _BookmarkPageState extends State<BookmarkPage>{
+class _BookmarkPageState extends State<BookmarkPage> {
   List<ReactionDisposer> _disposers;
 
   @override
@@ -67,7 +68,7 @@ class _BookmarkPageState extends State<BookmarkPage>{
           Expanded(
             child: Consumer2<BookmarkStore, NavigationService>(
                 builder: (context, _bookmarkStore, _navigationService, child) {
-              return StreamBuilder<List<Feed>>(
+              return StreamBuilder<List<NewsFeedModel>>(
                   stream: _bookmarkStore.feedStream,
                   builder: (context, snapshot) {
                     if (snapshot.hasError) {
@@ -76,59 +77,58 @@ class _BookmarkPageState extends State<BookmarkPage>{
                         onRetry: () => _bookmarkStore.retry(),
                       ));
                     }
-                    switch (snapshot.connectionState) {
-                      case ConnectionState.waiting:
+                    if (snapshot.hasData) {
+                      if (snapshot.data.isEmpty) {
                         return Center(
-                          // Todo: Replace with Shimmer
-                          child: ProgressView(),
+                          child: EmptyDataView(onRetry: ()=>_bookmarkStore.retry(),),
                         );
-                      default:
-                        if (snapshot.hasData && snapshot.data.isNotEmpty) {
-                          final List<Feed> newsData = snapshot.data;
-                          return IncrementallyLoadingListView(
-                              hasMore: () => _bookmarkStore.hasMoreData,
-                              itemCount: () => newsData.length,
-                              loadMore: () async {
-                                await _bookmarkStore.loadMoreData();
-                              },
-                              loadMoreOffsetFromBottom: 2,
-                              itemBuilder: (BuildContext context, int index) {
-                                final article = newsData[index];
-                                if (index == newsData.length - 1 &&
-                                    _bookmarkStore.hasMoreData &&
-                                    !_bookmarkStore.isLoadingMore) {
-                                  return Column(
-                                    children: <Widget>[
-                                      Material(
-                                        color: Colors.transparent,
-                                        child: InkWell(
-                                          onTap: () => _navigationService
-                                              .onFeedClick(article, context),
-                                          child: BookmarkListItem(article),
-                                        ),
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: CircularProgressIndicator(),
-                                      ),
-                                    ],
-                                  );
-                                } else {
-                                  return Material(
+                      }
+                      return IncrementallyLoadingListView(
+                          hasMore: () => _bookmarkStore.hasMoreData,
+                          itemCount: () => snapshot.data.length,
+                          loadMore: () async {
+                            await _bookmarkStore.loadMoreData(
+                                after:
+                                    snapshot.data.last?.rawData['timestamp']);
+                          },
+                          loadMoreOffsetFromBottom: 2,
+                          itemBuilder: (BuildContext context, int index) {
+                            final article = snapshot.data[index];
+                            if (index == snapshot.data.length - 1 &&
+                                _bookmarkStore.hasMoreData &&
+                                !_bookmarkStore.isLoadingMore) {
+                              return Column(
+                                children: <Widget>[
+                                  Material(
                                     color: Colors.transparent,
                                     child: InkWell(
                                       onTap: () => _navigationService
-                                          .onFeedClick(article, context),
+                                          .toFeedDetail(article, context),
                                       child: BookmarkListItem(article),
                                     ),
-                                  );
-                                }
-                              });
-                        }
-                        return Center(
-                          child: Text('Empty Data!'),
-                        );
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: CircularProgressIndicator(),
+                                  ),
+                                ],
+                              );
+                            } else {
+                              return Material(
+                                color: Colors.transparent,
+                                child: InkWell(
+                                  onTap: () => _navigationService.toFeedDetail(
+                                      article, context),
+                                  child: BookmarkListItem(article),
+                                ),
+                              );
+                            }
+                          });
                     }
+                    return Center(
+                      // Todo: Replace with Shimmer
+                      child: ProgressView(),
+                    );
                   });
             }),
           ),

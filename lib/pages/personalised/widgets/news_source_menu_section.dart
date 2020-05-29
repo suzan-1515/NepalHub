@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
-import 'package:samachar_hub/common/service/navigation_service.dart';
-import 'package:samachar_hub/data/dto/dto.dart';
+import 'package:samachar_hub/data/models/models.dart';
 import 'package:samachar_hub/pages/home/home_screen_store.dart';
 import 'package:samachar_hub/pages/widgets/news_source_menu_item.dart';
 import 'package:samachar_hub/pages/widgets/section_heading.dart';
+import 'package:samachar_hub/services/services.dart';
 
 class NewsSourceMenuSection extends StatelessWidget {
-  final List<FeedSource> items;
+  final List<NewsSourceModel> items;
   const NewsSourceMenuSection({
     Key key,
     this.items,

@@ -24,11 +24,11 @@ class _DateWeatherSectionState extends State<DateWeatherSection>
               text: TextSpan(
                 text: NepaliDateFormat("d MMMM yyyy, EEE")
                     .format(NepaliDateTime.now()), //'२ जेष्ठ २०७७, शुक्रवार'
-                style: Theme.of(context).textTheme.bodyText1,
+                style: Theme.of(context).textTheme.subtitle1,
                 children: <TextSpan>[
                   TextSpan(
                       text: '\n${DateFormat("d MMMM y, EEEE").format(DateTime.now())}', //'\n15 May 2020'
-                      style: Theme.of(context).textTheme.bodyText1)
+                      style: Theme.of(context).textTheme.bodyText2)
                 ],
               ),
             ),

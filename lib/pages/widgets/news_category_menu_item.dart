@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:samachar_hub/data/dto/news_category_menu_dto.dart';
+import 'package:samachar_hub/data/models/models.dart';
 
 class NewsCategoryMenuItem extends StatelessWidget {
-  final NewsCategoryMenu category;
+  final NewsCategoryMenuModel category;
   final Function onTap;
 
   const NewsCategoryMenuItem(
@@ -42,7 +42,7 @@ class NewsCategoryMenuItem extends StatelessWidget {
               ),
               Text(
                 category.title,
-                style: Theme.of(context).textTheme.body1,
+                style: Theme.of(context).textTheme.bodyText2,
               )
             ],
           ),

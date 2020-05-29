@@ -3,11 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:provider/provider.dart';
-import 'package:samachar_hub/common/store/trending_news_store.dart';
-import 'package:samachar_hub/data/dto/dto.dart';
+import 'package:samachar_hub/data/models/models.dart';
 import 'package:samachar_hub/pages/widgets/empty_data_widget.dart';
 import 'package:samachar_hub/pages/widgets/news_compact_view.dart';
 import 'package:samachar_hub/pages/widgets/section_heading.dart';
+import 'package:samachar_hub/stores/stores.dart';
 
 class TrendingNewsSection extends StatefulWidget {
   @override
@@ -25,7 +25,7 @@ class _TrendingNewsSectionState extends State<TrendingNewsSection> {
   Widget build(BuildContext context) {
     return Consumer<TrendingNewsStore>(
       builder: (BuildContext context, TrendingNewsStore store, Widget child) {
-        return StreamBuilder<List<Feed>>(
+        return StreamBuilder<List<NewsFeedModel>>(
             stream: store.dataStream,
             builder: (context, snapshot) {
               if (snapshot.hasData) {

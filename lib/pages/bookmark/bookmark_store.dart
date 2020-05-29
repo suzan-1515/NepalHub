@@ -2,33 +2,32 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:mobx/mobx.dart';
-import 'package:samachar_hub/common/service/services.dart';
-import 'package:samachar_hub/data/dto/dto.dart';
-import 'package:samachar_hub/pages/bookmark/bookmark_manager.dart';
+import 'package:samachar_hub/data/models/models.dart';
+import 'package:samachar_hub/pages/bookmark/bookmark_repository.dart';
 
 part 'bookmark_store.g.dart';
 
 class BookmarkStore = _BookmarkStore with _$BookmarkStore;
 
 abstract class _BookmarkStore with Store {
-  final PreferenceService _preferenceService;
-  final BookmarkManager _bookmarkManager;
+  final BookmarkRepository _bookmarkRepository;
+  final UserModel userModel;
 
   _BookmarkStore(
-    this._preferenceService,
-    this._bookmarkManager,
+    this._bookmarkRepository,
+    this.userModel,
   );
 
-  List<Feed> _feedData = List<Feed>();
+  List<NewsFeedModel> _feedData = List<NewsFeedModel>();
 
   static const int DATA_LIMIT = 20;
 
   bool _hasMoreData = false;
   bool _isLoadingMore = false;
-  StreamController<List<Feed>> _feedStreamController =
-      StreamController<List<Feed>>.broadcast();
+  StreamController<List<NewsFeedModel>> _feedStreamController =
+      StreamController<List<NewsFeedModel>>.broadcast();
 
-  Stream<List<Feed>> get feedStream => _feedStreamController.stream;
+  Stream<List<NewsFeedModel>> get feedStream => _feedStreamController.stream;
 
   @observable
   String error;
@@ -38,74 +37,65 @@ abstract class _BookmarkStore with Store {
 
   @action
   Future<void> loadInitialData() async {
-    _bookmarkManager
-        .fetchFeedActivitiesAsStream()
+    _bookmarkRepository
+        .getBookmarksAsStream(userId: userModel.uId)
         .where((data) => data != null)
         .listen((onData) {
       _feedData.clear();
       _feedData.addAll(onData);
       _feedStreamController.add(_feedData);
       _hasMoreData = onData.length == DATA_LIMIT;
-    }, onError: (e) => _feedStreamController.addError(e));
+    }, onError: (e) {
+      print(e.toString());
+      _feedStreamController.addError(e);
+    });
   }
 
   @action
-  Future<void> loadMoreData({resetPage = false}) async {
+  Future<void> loadMoreData({String after}) async {
     if (_isLoadingMore) return;
     if (!_hasMoreData) return;
     _isLoadingMore = true;
-    await _bookmarkManager.fetchFeedActivity().then((feeds) {
+    await _bookmarkRepository
+        .getBookmarks(userId: userModel.uId, after: after)
+        .then((feeds) {
       if (feeds != null && feeds.isNotEmpty) {
         _feedData.addAll(feeds);
         _hasMoreData = feeds.length == DATA_LIMIT;
       } else
-        _hasMoreData = true;
+        _hasMoreData = false;
 
       _isLoadingMore = false;
-    }).catchError((onError) => error = onError.toString());
+    }).catchError((onError) {
+      error = onError.toString();
+      _isLoadingMore = false;
+    });
   }
 
   @action
-  Future<bool> toggleBookmark({@required Feed feed}) async {
-    if (await isBookmarkedFeed(feed: feed))
-      return removeBookmarkedFeed(feed: feed);
-    else
-      return addBookmarkedFeed(feed: feed);
-  }
-
-  @action
-  Future<bool> addBookmarkedFeed({@required Feed feed}) async {
-    return await _bookmarkManager
-        .addFeedActivity(feedId: feed.uuid, feedData: feed.toJson())
-        .then((onValue) {
-      var bookmarks = _preferenceService.bookmarkedFeeds;
-      bookmarks.add(feed.id);
-      _preferenceService.bookmarkedFeeds = bookmarks;
-      return true;
-    }, onError: (e) {
+  Future<bool> addBookmarkedFeed({@required NewsFeedModel feed}) async {
+    return await _bookmarkRepository
+        .postBookmark(postId: feed.uuid, user: userModel, bookmarkFeed: feed)
+        .then((onValue) => true, onError: (e) {
       error = e.toString();
       return false;
     });
   }
 
   @action
-  Future<bool> removeBookmarkedFeed({@required Feed feed}) async {
-    return await _bookmarkManager.removeFeedActivity(feedId: feed.uuid).then(
-        (onValue) {
-      var bookmarks = _preferenceService.bookmarkedFeeds;
-      bookmarks.remove(feed.id);
-      _preferenceService.bookmarkedFeeds = bookmarks;
-      return true;
-    }, onError: (e) {
+  Future<bool> removeBookmarkedFeed({@required NewsFeedModel feed}) async {
+    return await _bookmarkRepository
+        .removeBookmark(postId: feed.uuid, userId: userModel.uId)
+        .then((onValue) => true, onError: (e) {
       error = e.toString();
       return false;
     });
   }
 
   @action
-  Future<bool> isBookmarkedFeed({@required Feed feed}) async {
-    return await _bookmarkManager
-        .doesActivityExist(feedId: feed.uuid)
+  Future<bool> isBookmarkedFeed({@required NewsFeedModel feed}) async {
+    return await _bookmarkRepository
+        .doesBookmarkExist(postId: feed.uuid, userId: userModel.uId)
         .then((onValue) => onValue, onError: (e) {
       error = e.toString();
       return false;
@@ -114,17 +104,15 @@ abstract class _BookmarkStore with Store {
 
   @action
   void retry() {
-    _bookmarkManager.resetLastFetchedDocument();
     loadMoreData();
   }
 
   @action
   Future<void> refresh() async {
-    _bookmarkManager.resetLastFetchedDocument();
     return loadMoreData();
   }
 
-  dispose(){
+  dispose() {
     _feedStreamController.close();
   }
 }

@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
-import 'package:samachar_hub/common/manager/managers.dart';
-import 'package:samachar_hub/common/service/navigation_service.dart';
-import 'package:samachar_hub/common/store/auth_store.dart';
 import 'package:samachar_hub/pages/widgets/progress_widget.dart';
+import 'package:samachar_hub/services/services.dart';
+import 'package:samachar_hub/stores/stores.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -14,14 +13,12 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
-    return Consumer3<AuthenticationController, AuthenticationStore,
-            NavigationService>(
-        builder: (BuildContext context, AuthenticationController authController,
-            AuthenticationStore authStore, navigationService, Widget child) {
-      authController
+    return Consumer2<AuthenticationStore, NavigationService>(builder:
+        (BuildContext context, AuthenticationStore authStore, navigationService,
+            Widget child) {
+      authStore
           .loginWithEmail(email: 'admin@gmail.com', password: '12345678')
           .then((value) {
-        authStore.setUser(authController.currentUser);
         if (value) return navigationService.toHomeScreen(context);
       });
       return Scaffold(

@@ -2,16 +2,15 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
-import 'package:samachar_hub/common/service/navigation_service.dart';
-import 'package:samachar_hub/common/service/share_service.dart';
-import 'package:samachar_hub/common/store/like_store.dart';
-import 'package:samachar_hub/data/dto/dto.dart';
-import 'package:samachar_hub/pages/bookmark/bookmark_store.dart';
+import 'package:samachar_hub/data/models/models.dart';
+import 'package:samachar_hub/repository/post_meta_repository.dart';
+import 'package:samachar_hub/services/services.dart';
+import 'package:samachar_hub/stores/stores.dart';
 
 class DefaultFeedInfoWidget extends StatelessWidget {
   DefaultFeedInfoWidget(this.feed);
 
-  final Feed feed;
+  final NewsFeedModel feed;
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +32,7 @@ class DefaultFeedInfoWidget extends StatelessWidget {
 }
 
 class FeedSourceSection extends StatelessWidget {
-  final Feed article;
+  final NewsFeedModel article;
 
   const FeedSourceSection(this.article);
 
@@ -68,14 +67,11 @@ class FeedSourceSection extends StatelessWidget {
           RichText(
             text: TextSpan(
               text: article.source,
-              style: Theme.of(context)
-                  .textTheme
-                  .body1
-                  .copyWith(fontWeight: FontWeight.w600),
+              style: Theme.of(context).textTheme.subtitle2,
               children: <TextSpan>[
                 TextSpan(
                     text: '\n${article.publishedAt}',
-                    style: Theme.of(context).textTheme.display4)
+                    style: Theme.of(context).textTheme.caption)
               ],
             ),
           ),
@@ -83,14 +79,11 @@ class FeedSourceSection extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(6),
             decoration: BoxDecoration(
-                color: Theme.of(context).accentColor.withOpacity(0.1),
+                color: Theme.of(context).highlightColor,
                 borderRadius: BorderRadius.all(Radius.circular(12))),
             child: Text(
               article.category,
-              style: Theme.of(context)
-                  .textTheme
-                  .body1
-                  .copyWith(color: Theme.of(context).accentColor),
+              style: Theme.of(context).textTheme.caption,
             ),
           ),
         ],
@@ -100,7 +93,7 @@ class FeedSourceSection extends StatelessWidget {
 }
 
 class FeedTitleDescriptionSection extends StatelessWidget {
-  final Feed article;
+  final NewsFeedModel article;
 
   const FeedTitleDescriptionSection(this.article);
   @override
@@ -115,20 +108,17 @@ class FeedTitleDescriptionSection extends StatelessWidget {
           overflow: TextOverflow.ellipsis,
           style: Theme.of(context)
               .textTheme
-              .title
-              .copyWith(fontWeight: FontWeight.w700),
+              .subtitle1
+              .copyWith(fontWeight: FontWeight.w600),
         ),
         SizedBox(
           height: 8,
         ),
-        Opacity(
-          opacity: 0.9,
-          child: Text(
-            article.description ?? '',
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-            style: Theme.of(context).textTheme.body1,
-          ),
+        Text(
+          article.description ?? '',
+          maxLines: 2,
+          overflow: TextOverflow.ellipsis,
+          style: Theme.of(context).textTheme.bodyText2,
         ),
       ],
     );
@@ -136,7 +126,7 @@ class FeedTitleDescriptionSection extends StatelessWidget {
 }
 
 class FeedOptionsSection extends StatefulWidget {
-  final Feed article;
+  final NewsFeedModel article;
 
   FeedOptionsSection({Key key, this.article}) : super(key: key);
 
@@ -147,68 +137,88 @@ class FeedOptionsSection extends StatefulWidget {
 class _FeedOptionsSectionState extends State<FeedOptionsSection> {
   @override
   Widget build(BuildContext context) {
-    return Consumer4<BookmarkStore, LikeStore, ShareService, NavigationService>(
-      builder: (context, bookmarkStore, likeStore, shareService,
+    return Consumer4<PostMetaRepository, AuthenticationStore, ShareService,
+        NavigationService>(
+      builder: (context, postMetaStore, authenticationStore, shareService,
           navigationService, child) {
-        return Row(
-          mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            ValueListenableBuilder(
-              valueListenable: widget.article.liked,
-              builder: (context, value, child) {
-                return IconButton(
-                  icon: Icon(
-                    value
-                        ? FontAwesomeIcons.solidThumbsUp
-                        : FontAwesomeIcons.thumbsUp,
-                    size: 16,
-                  ),
-                  onPressed: () async {
-                    if (value) {
-                      widget.article.liked.value = false;
-                      likeStore.removeLikedFeed(feed: widget.article).then(
-                          (onValue) => widget.article.liked.value = !onValue);
-                    } else {
-                      widget.article.liked.value = true;
-                      likeStore.addLikedFeed(feed: widget.article).then(
-                          (onValue) => widget.article.liked.value = onValue);
-                    }
-                  },
-                );
-              },
-            ),
-            IconButton(
-              icon: Icon(
-                FontAwesomeIcons.comment,
-                size: 16,
+        return Opacity(
+          opacity: 0.6,
+          child: Row(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              ValueListenableBuilder(
+                valueListenable: widget.article.liked,
+                builder: (context, value, child) {
+                  return IconButton(
+                    icon: Icon(
+                      value
+                          ? FontAwesomeIcons.solidThumbsUp
+                          : FontAwesomeIcons.thumbsUp,
+                      size: 16,
+                    ),
+                    onPressed: () async {
+                      if (!authenticationStore.isLoggedIn)
+                        return navigationService.loginRedirect(context);
+                      if (value) {
+                        widget.article.liked.value = false;
+                        postMetaStore
+                            .removeLike(
+                                postId: widget.article.uuid,
+                                userId: authenticationStore.user.uId)
+                            .then(
+                                (onValue) => widget.article.liked.value = false)
+                            .catchError(
+                                (onError) => widget.article.liked.value = true);
+                      } else {
+                        widget.article.liked.value = true;
+                        postMetaStore
+                            .postLike(
+                                postId: widget.article.uuid,
+                                userId: authenticationStore.user.uId)
+                            .then(
+                                (onValue) => widget.article.liked.value = true)
+                            .catchError(
+                                (onError) => widget.article.liked.value = false);
+                      }
+                    },
+                  );
+                },
               ),
-              onPressed: () {
-                navigationService.onViewCommentsTapped(
-                    context: context,
-                    title: widget.article.title,
-                    postId: widget.article.uuid);
-              },
-            ),
-            IconButton(
-              icon: Icon(
-                FontAwesomeIcons.shareAlt,
-                size: 16,
+              IconButton(
+                icon: Icon(
+                  FontAwesomeIcons.comment,
+                  size: 16,
+                ),
+                onPressed: () {
+                  navigationService.onViewCommentsTapped(
+                      context: context,
+                      title: widget.article.title,
+                      postId: widget.article.uuid);
+                },
               ),
-              onPressed: () {
-                shareService.share(
-                    title: widget.article.title, data: widget.article.link);
-              },
-            ),
-            Spacer(),
-            IconButton(
-              icon: Icon(
-                Icons.more_vert,
+              IconButton(
+                icon: Icon(
+                  FontAwesomeIcons.shareAlt,
+                  size: 16,
+                ),
+                onPressed: () {
+                  shareService.share(
+                      postId: widget.article.uuid,
+                      title: widget.article.title,
+                      data: widget.article.link);
+                },
               ),
-              onPressed: () {},
-            ),
-          ],
+              Spacer(),
+              IconButton(
+                icon: Icon(
+                  Icons.more_vert,
+                ),
+                onPressed: () {},
+              ),
+            ],
+          ),
         );
       },
     );

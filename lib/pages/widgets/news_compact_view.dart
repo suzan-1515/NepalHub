@@ -2,14 +2,14 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
-import 'package:samachar_hub/common/service/navigation_service.dart';
-import 'package:samachar_hub/data/dto/dto.dart';
+import 'package:samachar_hub/data/models/models.dart';
+import 'package:samachar_hub/services/services.dart';
 import 'package:samachar_hub/widgets/article_image_widget.dart';
 
 class NewsCompactView extends StatelessWidget {
   NewsCompactView(this.feed);
 
-  final Feed feed;
+  final NewsFeedModel feed;
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +23,7 @@ class NewsCompactView extends StatelessWidget {
       child: Consumer<NavigationService>(
         builder: (context, navigationService, child) {
           return InkWell(
-            onTap: () => navigationService.onFeedClick(feed, context),
+            onTap: () => navigationService.toFeedDetail(feed, context),
             child: ClipRRect(
               borderRadius: BorderRadius.all(Radius.circular(6.0)),
               child: Stack(
@@ -41,6 +41,7 @@ class NewsCompactView extends StatelessWidget {
                         gradient: LinearGradient(
                           colors: [
                             Color.fromARGB(200, 0, 0, 0),
+                            Color.fromARGB(100, 0, 0, 0),
                             Color.fromARGB(0, 0, 0, 0)
                           ],
                           begin: Alignment.bottomCenter,
@@ -82,16 +83,15 @@ class NewsCompactView extends StatelessWidget {
                                   text: feed.source,
                                   style: Theme.of(context)
                                       .textTheme
-                                      .body1
+                                      .subtitle2
                                       .copyWith(
-                                          fontWeight: FontWeight.w600,
                                           color: Colors.white),
                                   children: <TextSpan>[
                                     TextSpan(
                                         text: '\n${feed.publishedAt}',
                                         style: Theme.of(context)
                                             .textTheme
-                                            .display4
+                                            .caption
                                             .copyWith(color: Colors.white))
                                   ],
                                 ),
@@ -109,7 +109,7 @@ class NewsCompactView extends StatelessWidget {
                                   feed.category,
                                   style: Theme.of(context)
                                       .textTheme
-                                      .body1
+                                      .caption
                                       .copyWith(color: Colors.white),
                                 ),
                               ),
@@ -122,8 +122,8 @@ class NewsCompactView extends StatelessWidget {
                             feed.title,
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,
-                            style: Theme.of(context).textTheme.title.copyWith(
-                                fontWeight: FontWeight.w600,
+                            style: Theme.of(context).textTheme.subtitle1.copyWith(
+                              fontWeight: FontWeight.w600,
                                 color: Colors.white),
                           ),
                         ],

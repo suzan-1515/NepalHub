@@ -1,7 +1,7 @@
 import 'package:async/async.dart';
 import 'package:mobx/mobx.dart';
 import 'package:samachar_hub/data/api/api.dart';
-import 'package:samachar_hub/data/dto/dto.dart';
+import 'package:samachar_hub/data/models/models.dart';
 import 'package:samachar_hub/pages/category/categories_page.dart';
 import 'package:samachar_hub/repository/news_repository.dart';
 import 'package:throttling/throttling.dart';
@@ -24,7 +24,7 @@ abstract class _CategoriesStore with Store {
   ObservableMap<NewsCategory, ObservableFuture> loadFeedItemsFuture =
       ObservableMap<NewsCategory, ObservableFuture>();
 
-  Map<NewsCategory, List<Feed>> newsData = Map<NewsCategory, List<Feed>>();
+  Map<NewsCategory, List<NewsFeedModel>> newsData = Map<NewsCategory, List<NewsFeedModel>>();
 
   Map<NewsCategory, bool> hasMoreData = Map<NewsCategory, bool>();
 
@@ -78,9 +78,9 @@ abstract class _CategoriesStore with Store {
       if (isLoadingMore[category] ?? false) return;
       isLoadingMore[category] = true;
 
-      List<Feed> cachedNews = newsData[category];
+      List<NewsFeedModel> cachedNews = newsData[category];
       if (cachedNews == null || cachedNews.isEmpty) {
-        List<Feed> moreNews =
+        List<NewsFeedModel> moreNews =
             await _newsRepository.getFeedsByCategory(category: category);
         if (moreNews != null) {
           if (moreNews.isNotEmpty) {
@@ -90,7 +90,7 @@ abstract class _CategoriesStore with Store {
             hasMoreData[category] = false;
         }
       } else {
-        List<Feed> moreNews = await _newsRepository.getFeedsByCategory(
+        List<NewsFeedModel> moreNews = await _newsRepository.getFeedsByCategory(
             category: category, lastFeedId: cachedNews.last.id);
         if (moreNews != null) {
           if (moreNews.isNotEmpty) {

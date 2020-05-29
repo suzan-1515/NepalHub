@@ -3,9 +3,8 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:incrementally_loading_listview/incrementally_loading_listview.dart';
 import 'package:mobx/mobx.dart';
 import 'package:provider/provider.dart';
-import 'package:samachar_hub/common/service/navigation_service.dart';
 import 'package:samachar_hub/data/api/api.dart';
-import 'package:samachar_hub/data/dto/dto.dart';
+import 'package:samachar_hub/data/models/models.dart';
 import 'package:samachar_hub/pages/category/categories_page.dart';
 import 'package:samachar_hub/pages/category/categories_store.dart';
 import 'package:samachar_hub/pages/widgets/empty_data_widget.dart';
@@ -14,6 +13,7 @@ import 'package:samachar_hub/pages/widgets/news_compact_view.dart';
 import 'package:samachar_hub/pages/widgets/news_list_view.dart';
 import 'package:samachar_hub/pages/widgets/news_thumbnail_view.dart';
 import 'package:samachar_hub/pages/widgets/progress_widget.dart';
+import 'package:samachar_hub/services/services.dart';
 
 class NewsCategoryView extends StatelessWidget {
   final NewsCategory category;
@@ -38,7 +38,7 @@ class NewsCategoryView extends StatelessWidget {
               ),
             );
           case FutureStatus.fulfilled:
-            final List<Feed> newsData = categoriesStore.newsData[category];
+            final List<NewsFeedModel> newsData = categoriesStore.newsData[category];
             if (null != newsData && newsData.isNotEmpty) {
               final MenuItem viewType = categoriesStore.view;
               return RefreshIndicator(

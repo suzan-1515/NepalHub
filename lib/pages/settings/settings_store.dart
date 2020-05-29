@@ -1,5 +1,5 @@
 import 'package:mobx/mobx.dart';
-import 'package:samachar_hub/common/service/services.dart';
+import 'package:samachar_hub/services/services.dart';
 
 part 'settings_store.g.dart';
 

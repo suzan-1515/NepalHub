@@ -16,6 +16,7 @@ class SectionHeadingView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
+      color: Colors.transparent,
       child: Padding(
         padding: const EdgeInsets.only(left: 8, right: 8, top: 16, bottom: 16),
         child: Row(
@@ -23,18 +24,19 @@ class SectionHeadingView extends StatelessWidget {
             RichText(
               text: TextSpan(
                 text: title,
-                style: Theme.of(context).textTheme.subhead,
+                style: Theme.of(context).textTheme.subtitle1.copyWith(fontWeight: FontWeight.w600),
                 children: <TextSpan>[
                   TextSpan(text: '\n'),
                   TextSpan(
                       text: subtitle,
-                      style: Theme.of(context).textTheme.subtitle)
+                      style: Theme.of(context).textTheme.bodyText2)
                 ],
               ),
             ),
             Spacer(),
             if (onTap != null)
               IconButton(
+                iconSize: 20,
                   icon: Icon(
                     FontAwesomeIcons.chevronRight,
                   ),

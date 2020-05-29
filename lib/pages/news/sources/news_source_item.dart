@@ -2,7 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:samachar_hub/data/dto/dto.dart';
+import 'package:samachar_hub/data/models/models.dart';
 
 class NewsSourceItem extends StatelessWidget {
   NewsSourceItem({
@@ -12,7 +12,7 @@ class NewsSourceItem extends StatelessWidget {
   }) : super(key: key);
 
   final BuildContext context;
-  final FeedSource source;
+  final NewsSourceModel source;
 
   @override
   Widget build(BuildContext context) {

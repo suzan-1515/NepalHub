@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:mobx/mobx.dart';
 import 'package:samachar_hub/data/api/api.dart';
-import 'package:samachar_hub/data/dto/dto.dart';
+import 'package:samachar_hub/data/models/models.dart';
 import 'package:samachar_hub/repository/news_repository.dart';
 
 part 'news_source_store.g.dart';
@@ -14,11 +14,11 @@ abstract class _NewsSourceStore with Store {
 
   _NewsSourceStore(this._newsRepository);
 
-  StreamController<List<FeedSource>> _dataStreamController =
-      StreamController<List<FeedSource>>.broadcast();
+  StreamController<List<NewsSourceModel>> _dataStreamController =
+      StreamController<List<NewsSourceModel>>.broadcast();
 
-  Stream<List<FeedSource>> get dataStream => _dataStreamController.stream;
-  List<FeedSource> data = List<FeedSource>();
+  Stream<List<NewsSourceModel>> get dataStream => _dataStreamController.stream;
+  List<NewsSourceModel> data = List<NewsSourceModel>();
 
   @observable
   APIException apiError;

@@ -64,7 +64,7 @@ class _CategoriesPageState extends State<CategoriesPage>
           (_tabs[_tabController.index].key as ValueKey<NewsCategory>).value);
     });
     store.loadInitialFeeds(
-          (_tabs[_tabController.index].key as ValueKey<NewsCategory>).value);
+        (_tabs[_tabController.index].key as ValueKey<NewsCategory>).value);
     super.initState();
   }
 
@@ -131,7 +131,7 @@ class _CategoriesPageState extends State<CategoriesPage>
       }),
       // Listens tab change
       autorun((_) {
-         _tabController.index = store.activeTabIndex;
+        _tabController.index = store.activeTabIndex;
       })
     ];
   }
@@ -167,17 +167,18 @@ class _CategoriesPageState extends State<CategoriesPage>
             children: <Widget>[
               Padding(
                 padding: const EdgeInsets.only(
-                    top: 24, bottom: 8, left: 16, right: 8),
+                    top: 16, bottom: 8, left: 16, right: 8),
                 child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Expanded(
-                      child: Text('Categories',
-                          style: Theme.of(context).textTheme.headline),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(8),
-                      child: Opacity(
-                          opacity: 0.65, child: Icon(FontAwesomeIcons.search)),
+                      child: Text(
+                        'Categories',
+                        style: Theme.of(context)
+                            .textTheme
+                            .headline5
+                            .copyWith(fontWeight: FontWeight.w800),
+                      ),
                     ),
                     Opacity(
                       opacity: 0.65,

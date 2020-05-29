@@ -6,6 +6,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:mobx/mobx.dart';
 import 'package:provider/provider.dart';
 import 'package:samachar_hub/pages/settings/settings_store.dart';
+import 'package:samachar_hub/pages/widgets/page_heading_widget.dart';
 
 class SettingsPage extends StatefulWidget {
   @override
@@ -59,11 +60,7 @@ class _SettingsPageState extends State<SettingsPage>
         mainAxisSize: MainAxisSize.max,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 24),
-            child:
-                Text('Settings', style: Theme.of(context).textTheme.headline),
-          ),
+          PageHeading(title:'Settings'),
           Expanded(
             child: Consumer<SettingsStore>(
               builder: (BuildContext context, SettingsStore settingsStore,
@@ -93,7 +90,7 @@ class _SettingsPageState extends State<SettingsPage>
                                   padding: const EdgeInsets.only(left: 8),
                                   child: Text(
                                     'Customization',
-                                    style: Theme.of(context).textTheme.subhead,
+                                    style: Theme.of(context).textTheme.subtitle1,
                                   ),
                                 ),
                               ],
@@ -119,7 +116,7 @@ class _SettingsPageState extends State<SettingsPage>
                                             'Use dark theme',
                                             style: Theme.of(context)
                                                 .textTheme
-                                                .title,
+                                                .bodyText1,
                                           ),
                                           Switch(
                                             value: settingsStore.useDarkMode,
@@ -153,17 +150,14 @@ class _SettingsPageState extends State<SettingsPage>
                                                   'Use pitch black theme',
                                                   style: Theme.of(context)
                                                       .textTheme
-                                                      .title,
+                                                      .bodyText1,
                                                 ),
                                               ),
-                                              Opacity(
-                                                opacity: 0.5,
-                                                child: Text(
-                                                  'Only applies when dark mode is on',
-                                                  style: Theme.of(context)
-                                                      .textTheme
-                                                      .subtitle,
-                                                ),
+                                              Text(
+                                                'Only applies when dark mode is on',
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .caption,
                                               ),
                                             ],
                                           ),
@@ -206,20 +200,14 @@ class _SettingsPageState extends State<SettingsPage>
                                                       'Theme set by system',
                                                       style: Theme.of(context)
                                                           .textTheme
-                                                          .title,
+                                                          .bodyText1,
                                                     ),
                                                   ),
-                                                  Opacity(
-                                                    opacity: settingsStore
-                                                            .useDarkMode
-                                                        ? 1.0
-                                                        : 0.5,
-                                                    child: Text(
-                                                      'Requires minimum OS version ${Platform.isAndroid ? 'Android 10' : 'IOS 13'}',
-                                                      style: Theme.of(context)
-                                                          .textTheme
-                                                          .subtitle,
-                                                    ),
+                                                  Text(
+                                                    'Requires minimum OS version ${Platform.isAndroid ? 'Android 10' : 'IOS 13'}',
+                                                    style: Theme.of(context)
+                                                        .textTheme
+                                                        .caption,
                                                   ),
                                                 ],
                                               ),
