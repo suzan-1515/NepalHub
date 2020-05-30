@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class EmptyDataView extends StatelessWidget {
   final Function onRetry;
@@ -10,12 +11,11 @@ class EmptyDataView extends StatelessWidget {
       mainAxisSize: MainAxisSize.max,
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
-        Text('Empty Data!',style: Theme.of(context).textTheme.bodyText2,),
-        RaisedButton(
-            child: Text('Retry'),
-            onPressed: () async {
-              onRetry();
-            }),
+        Icon(FontAwesomeIcons.handMiddleFinger,size: 64,),
+        Text(
+          'Empty Data!',
+          style: Theme.of(context).textTheme.bodyText2,
+        ),
       ],
     );
   }

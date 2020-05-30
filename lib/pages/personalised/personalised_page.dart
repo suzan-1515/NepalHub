@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:mobx/mobx.dart';
-import 'dart:math' as math;
 import 'package:provider/provider.dart';
 import 'package:samachar_hub/data/api/api.dart';
 import 'package:samachar_hub/data/models/models.dart';
@@ -19,9 +18,7 @@ import 'package:samachar_hub/pages/widgets/news_thumbnail_view.dart';
 import 'package:samachar_hub/pages/widgets/page_heading_widget.dart';
 import 'package:samachar_hub/pages/widgets/progress_widget.dart';
 import 'package:samachar_hub/pages/widgets/section_heading.dart';
-import 'package:samachar_hub/repository/news_repository.dart';
 import 'package:samachar_hub/services/services.dart';
-import 'package:samachar_hub/stores/stores.dart';
 
 import 'widgets/date_weather_section.dart';
 
@@ -163,73 +160,69 @@ class _PersonalisedPageState extends State<PersonalisedPage> {
         onRefresh: () async {
           await personalisedStore.refresh();
         },
-        child: CustomScrollView(
-          slivers: <Widget>[
-            SliverList(
-              delegate: SliverChildListDelegate(
-                [
-                  DateWeatherSection(),
-                  CoronaSection(),
-                  ProxyProvider<NewsRepository, TrendingNewsStore>(
-                    child: TrendingNewsSection(),
-                    update: (BuildContext context,
-                            NewsRepository newsRepository,
-                            TrendingNewsStore previous) =>
-                        TrendingNewsStore(newsRepository),
-                    dispose: (context, store) => store.dispose(),
+        child: StreamBuilder<List>(
+            stream: personalisedStore.dataStream,
+            builder: (context, snapshot) {
+              if (snapshot.hasError) {
+                return Center(
+                  child: ErrorDataView(
+                    onRetry: () => personalisedStore.retry(),
                   ),
-                ],
-                addAutomaticKeepAlives: true,
-              ),
-            ),
-            StreamBuilder<List<NewsFeedModel>>(
-                stream: personalisedStore.dataStream,
-                builder: (context, snapshot) {
-                  if (snapshot.hasError) {
-                    return SliverFillRemaining(
-                      hasScrollBody: false,
-                      child: Center(
-                        child: ErrorDataView(
-                          onRetry: () => personalisedStore.retry(),
-                        ),
-                      ),
-                    );
-                  }
+                );
+              }
+              if (snapshot.hasData) {
+                if (snapshot.data.isEmpty) {
+                  return Center(
+                    child: EmptyDataView(
+                      onRetry: () => personalisedStore.retry(),
+                    ),
+                  );
+                }
 
-                  switch (snapshot.connectionState) {
-                    case ConnectionState.waiting:
-                      return SliverFillRemaining(
-                        hasScrollBody: false,
-                        child: Center(child: ProgressView()),
-                      );
-                    default:
-                      if (!snapshot.hasData || snapshot.data.isEmpty) {
-                        return SliverFillRemaining(
-                          hasScrollBody: false,
-                          child: Center(
-                            child: EmptyDataView(
-                              onRetry: () => personalisedStore.retry(),
-                            ),
-                          ),
-                        );
-                      }
-                      return SliverList(
-                        delegate: SliverChildBuilderDelegate(
-                          (BuildContext context, int index) {
-                            if (index.isOdd) {
-                              return _buildMixedSection(
-                                  index ~/ 2, personalisedStore);
-                            }
-                            return _buildLatestFeed(index,
-                                snapshot.data[index ~/ 2], personalisedStore);
-                          },
-                          childCount: math.max(0, snapshot.data.length * 2 - 1),
+                return NestedScrollView(
+                  headerSliverBuilder: (_, bool innerBoxIsScrolled) {
+                    var widgets = <Widget>[];
+                    widgets
+                        .add(SliverToBoxAdapter(child: DateWeatherSection()));
+                    if (personalisedStore.sectionData[MixedDataType.CORONA] !=
+                        null) {
+                      widgets.add(SliverToBoxAdapter(
+                        child: CoronaSection(
+                            data: personalisedStore
+                                .sectionData[MixedDataType.CORONA]),
+                      ));
+                    }
+                    if (personalisedStore
+                            .sectionData[MixedDataType.TRENDING_NEWS] !=
+                        null) {
+                      widgets.add(SliverToBoxAdapter(
+                        child: TrendingNewsSection(
+                          feeds: personalisedStore
+                              .sectionData[MixedDataType.TRENDING_NEWS],
                         ),
-                      );
-                  }
-                }),
-          ],
-        ),
+                      ));
+                    }
+                    return widgets;
+                  },
+                  body: ListView.separated(
+                    itemCount: personalisedStore
+                            .sectionData[MixedDataType.LATEST_NEWS]?.length ??
+                        0,
+                    itemBuilder: (_, int index) {
+                      return _buildLatestFeed(
+                          index,
+                          personalisedStore
+                              .sectionData[MixedDataType.LATEST_NEWS][index],
+                          personalisedStore);
+                    },
+                    separatorBuilder: (_, int index) {
+                      return _buildMixedSection(index, personalisedStore);
+                    },
+                  ),
+                );
+              }
+              return Center(child: ProgressView());
+            }),
       );
     });
   }

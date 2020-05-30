@@ -8,6 +8,8 @@ class NewsRepository {
   final NewsApiService newsApiService;
   final PreferenceService preferenceService;
 
+  static const int DATA_LIMIT = 20;
+
   NewsRepository(this.newsApiService, this.preferenceService);
 
   Future<List<NewsFeedModel>> getLatestFeeds() async {

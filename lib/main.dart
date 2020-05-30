@@ -109,12 +109,12 @@ class App extends StatelessWidget {
           update: (_, preferenceService, __) =>
               HomeScreenStore(preferenceService),
         ),
-        ProxyProvider3<NewsRepository, ForexRepository, HoroscopeRepository,
-            PersonalisedFeedStore>(
+        ProxyProvider4<NewsRepository, ForexRepository, HoroscopeRepository,
+            CoronaRepository, PersonalisedFeedStore>(
           update: (_, _newsRepository, _forexRepository, _horoscopeRepository,
-                  __) =>
-              PersonalisedFeedStore(
-                  _newsRepository, _horoscopeRepository, _forexRepository),
+                  _coronaRepository, __) =>
+              PersonalisedFeedStore(_newsRepository, _horoscopeRepository,
+                  _forexRepository, _coronaRepository),
         ),
         ProxyProvider<NewsRepository, CategoriesStore>(
           update: (_, _newsRepository, __) => CategoriesStore(_newsRepository),

@@ -9,26 +9,6 @@ part of 'trending_news_store.dart';
 // ignore_for_file: non_constant_identifier_names, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
 
 mixin _$TrendingNewsStore on _TrendingNewsStore, Store {
-  final _$currentNewsCarouselAtom =
-      Atom(name: '_TrendingNewsStore.currentNewsCarousel');
-
-  @override
-  int get currentNewsCarousel {
-    _$currentNewsCarouselAtom.context
-        .enforceReadPolicy(_$currentNewsCarouselAtom);
-    _$currentNewsCarouselAtom.reportObserved();
-    return super.currentNewsCarousel;
-  }
-
-  @override
-  set currentNewsCarousel(int value) {
-    _$currentNewsCarouselAtom.context.conditionallyRunInAction(() {
-      super.currentNewsCarousel = value;
-      _$currentNewsCarouselAtom.reportChanged();
-    }, _$currentNewsCarouselAtom,
-        name: '${_$currentNewsCarouselAtom.name}_set');
-  }
-
   final _$apiErrorAtom = Atom(name: '_TrendingNewsStore.apiError');
 
   @override
@@ -74,20 +54,30 @@ mixin _$TrendingNewsStore on _TrendingNewsStore, Store {
       ActionController(name: '_TrendingNewsStore');
 
   @override
-  dynamic loadPreviewData() {
+  void retry() {
     final _$actionInfo = _$_TrendingNewsStoreActionController.startAction();
     try {
-      return super.loadPreviewData();
+      return super.retry();
     } finally {
       _$_TrendingNewsStoreActionController.endAction(_$actionInfo);
     }
   }
 
   @override
-  dynamic loadFullData() {
+  dynamic loadData() {
     final _$actionInfo = _$_TrendingNewsStoreActionController.startAction();
     try {
-      return super.loadFullData();
+      return super.loadData();
+    } finally {
+      _$_TrendingNewsStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  Future<dynamic> _loadFirstPageData() {
+    final _$actionInfo = _$_TrendingNewsStoreActionController.startAction();
+    try {
+      return super._loadFirstPageData();
     } finally {
       _$_TrendingNewsStoreActionController.endAction(_$actionInfo);
     }
@@ -96,7 +86,7 @@ mixin _$TrendingNewsStore on _TrendingNewsStore, Store {
   @override
   String toString() {
     final string =
-        'currentNewsCarousel: ${currentNewsCarousel.toString()},apiError: ${apiError.toString()},error: ${error.toString()}';
+        'apiError: ${apiError.toString()},error: ${error.toString()}';
     return '{$string}';
   }
 }

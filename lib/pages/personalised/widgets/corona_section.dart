@@ -2,12 +2,11 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:provider/provider.dart';
 import 'package:samachar_hub/data/models/models.dart';
-import 'package:samachar_hub/stores/stores.dart';
 
 class CoronaSection extends StatefulWidget {
-  const CoronaSection({Key key}) : super(key: key);
+  final CoronaCountrySpecificModel data;
+  const CoronaSection({Key key, this.data}) : super(key: key);
   @override
   _CoronaSectionState createState() => _CoronaSectionState();
 }
@@ -18,11 +17,10 @@ class _CoronaSectionState extends State<CoronaSection>
   Animation<double> _animation;
   @override
   void initState() {
-    Provider.of<CoronaStore>(context, listen: false).loadNepalData();
     _controller = AnimationController(
         duration: const Duration(milliseconds: 500), vsync: this, value: 0.7);
     _animation = CurvedAnimation(parent: _controller, curve: Curves.easeInOut);
-
+    _controller.forward();
     super.initState();
   }
 
@@ -35,25 +33,6 @@ class _CoronaSectionState extends State<CoronaSection>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return Consumer<CoronaStore>(
-      builder: (BuildContext context, CoronaStore coronaStore, Widget child) {
-        return StreamBuilder<CoronaCountrySpecificModel>(
-          stream: coronaStore.nepalDataStream,
-          builder: (BuildContext context,
-              AsyncSnapshot<CoronaCountrySpecificModel> snapshot) {
-            if (snapshot.hasData) {
-              return _buildStatCard(snapshot, context);
-            }
-            return SizedBox.shrink();
-          },
-        );
-      },
-    );
-  }
-
-  Widget _buildStatCard(
-      AsyncSnapshot<CoronaCountrySpecificModel> snapshot, BuildContext context) {
-    _controller.forward();
     return ScaleTransition(
       scale: _animation,
       child: Card(
@@ -69,7 +48,7 @@ class _CoronaSectionState extends State<CoronaSection>
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                _buildDateTimeRow(snapshot, context),
+                _buildDateTimeRow(context),
                 SizedBox(
                   height: 8,
                 ),
@@ -83,7 +62,7 @@ class _CoronaSectionState extends State<CoronaSection>
                 SizedBox(
                   height: 8,
                 ),
-                _buildCasesInfoRow(context, snapshot),
+                _buildCasesInfoRow(context),
               ],
             ),
           ),
@@ -92,44 +71,42 @@ class _CoronaSectionState extends State<CoronaSection>
     );
   }
 
-  Widget _buildCasesInfoRow(
-      BuildContext context, AsyncSnapshot<CoronaCountrySpecificModel> snapshot) {
+  Widget _buildCasesInfoRow(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        _buildCaseItem(context, snapshot.data.todayCases, snapshot.data.cases,
+        _buildCaseItem(context, widget.data.todayCases, widget.data.cases,
             Colors.white, Colors.black, 'Oficially Confirmed'),
-        _buildCaseItem(context, 0, snapshot.data.recovered, Colors.green[400],
+        _buildCaseItem(context, 0, widget.data.recovered, Colors.green[400],
             Colors.white, 'Recovered'),
-        _buildCaseItem(context, snapshot.data.todayDeaths, snapshot.data.deaths,
+        _buildCaseItem(context, widget.data.todayDeaths, widget.data.deaths,
             Colors.red[300], Colors.white, 'Deaths'),
       ],
     );
   }
 
-  Widget _buildDateTimeRow(
-      AsyncSnapshot<CoronaCountrySpecificModel> snapshot, BuildContext context) {
+  Widget _buildDateTimeRow(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         CachedNetworkImage(
-          imageUrl: snapshot.data.countryInfo.flag,
+          imageUrl: widget.data.countryInfo.flag,
           width: 24,
           height: 24,
           placeholder: (context, url) => Icon(FontAwesomeIcons.spinner),
         ),
         RichText(
           text: TextSpan(
-            text: snapshot.data.country,
+            text: widget.data.country,
             style: Theme.of(context)
                 .textTheme
                 .bodyText1
                 .copyWith(color: Colors.white, fontWeight: FontWeight.w600),
             children: [
               TextSpan(
-                text: '\t${snapshot.data.updated}',
+                text: '\t${widget.data.updated}',
                 style: Theme.of(context)
                     .textTheme
                     .bodyText2
@@ -171,7 +148,7 @@ class _CoronaSectionState extends State<CoronaSection>
           style: Theme.of(context)
               .textTheme
               .headline6
-              .copyWith(color: higlightColor,fontWeight: FontWeight.w700),
+              .copyWith(color: higlightColor, fontWeight: FontWeight.w700),
         ),
         SizedBox(
           height: 4,

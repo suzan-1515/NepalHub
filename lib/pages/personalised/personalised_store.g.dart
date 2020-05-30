@@ -67,6 +67,13 @@ mixin _$PersonalisedFeedStore on _PersonalisedFeedStore, Store {
     return _$refreshAsyncAction.run(() => super.refresh());
   }
 
+  final _$_buildDataAsyncAction = AsyncAction('_buildData');
+
+  @override
+  Future<dynamic> _buildData() {
+    return _$_buildDataAsyncAction.run(() => super._buildData());
+  }
+
   final _$_PersonalisedFeedStoreActionController =
       ActionController(name: '_PersonalisedFeedStore');
 

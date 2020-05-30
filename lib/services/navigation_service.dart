@@ -15,6 +15,8 @@ import 'package:samachar_hub/pages/news/sources/news_source_screen.dart';
 import 'package:samachar_hub/pages/news/sources/news_source_store.dart';
 import 'package:samachar_hub/pages/news/topics/topic_news_screen.dart';
 import 'package:samachar_hub/pages/news/topics/topic_news_store.dart';
+import 'package:samachar_hub/pages/news/trending/trending_news_screen.dart';
+import 'package:samachar_hub/pages/news/trending/trending_news_store.dart';
 import 'package:samachar_hub/repository/news_repository.dart';
 import 'package:samachar_hub/repository/post_meta_repository.dart';
 import 'package:samachar_hub/services/services.dart';
@@ -29,6 +31,20 @@ class NavigationService {
         builder: (context) => HomeScreen(),
       ),
       (Route<dynamic> route) => false,
+    );
+  }
+
+  toTrendingNews(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ProxyProvider<NewsRepository, TrendingNewsStore>(
+          update: (_, NewsRepository value, TrendingNewsStore previous) =>
+              TrendingNewsStore(value),
+          dispose: (context, value) => value.dispose(),
+          child: TrendingNewsScreen(),
+        ),
+      ),
     );
   }
 

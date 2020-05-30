@@ -1,9 +1,10 @@
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:mobx/mobx.dart';
 import 'package:samachar_hub/data/api/api.dart';
-import 'package:samachar_hub/data/models/models.dart';
 import 'package:samachar_hub/pages/pages.dart';
+import 'package:samachar_hub/repository/corona_repository.dart';
 import 'package:samachar_hub/repository/forex_repository.dart';
 import 'package:samachar_hub/repository/horoscope_repository.dart';
 import 'package:samachar_hub/repository/news_repository.dart';
@@ -18,18 +19,19 @@ abstract class _PersonalisedFeedStore with Store {
   final NewsRepository _newsRepository;
   final HoroscopeRepository _horoscopeRepository;
   final ForexRepository _forexRepository;
+  final CoronaRepository _coronaRepository;
 
-  StreamController<List<NewsFeedModel>> _dataStreamController =
-      StreamController<List<NewsFeedModel>>.broadcast();
+  StreamController<List> _dataStreamController =
+      StreamController<List>.broadcast();
 
-  Stream<List<NewsFeedModel>> get dataStream => _dataStreamController.stream;
+  Stream<List> get dataStream => _dataStreamController.stream;
 
-  _PersonalisedFeedStore(this._newsRepository,
-      this._horoscopeRepository, this._forexRepository);
+  _PersonalisedFeedStore(this._newsRepository, this._horoscopeRepository,
+      this._forexRepository, this._coronaRepository);
 
   Map<MixedDataType, dynamic> sectionData = Map<MixedDataType, dynamic>();
 
-  List<NewsFeedModel> data = List<NewsFeedModel>();
+  List data = List();
 
   @observable
   APIException apiError;
@@ -42,22 +44,25 @@ abstract class _PersonalisedFeedStore with Store {
 
   @action
   void loadInitialData() {
-    buildData();
+    _buildData();
   }
 
   @action
   Future<void> refresh() async {
-    return buildData();
+    return _buildData();
   }
 
   @action
   void retry() {
-    buildData();
+    _buildData();
   }
 
-  buildData() async {
+  @action
+  Future _buildData() async {
     data.clear();
     _buildLatestNewsData();
+    _loadTrendingNewsData();
+    _loadCoronaData();
     _buildNewsTopicsData();
     _buildNewsCategoryData();
     _buildNewsSourceData();
@@ -95,13 +100,36 @@ abstract class _PersonalisedFeedStore with Store {
         .catchError((onError) {});
   }
 
+  Future<void> _loadTrendingNewsData({String limit = '5'}) {
+    return _newsRepository.getTrendingFeeds(limit: limit).then((onValue) {
+      if (onValue != null && onValue.isNotEmpty) {
+        sectionData[MixedDataType.TRENDING_NEWS] = onValue;
+        _dataStreamController.add([MixedDataType.TRENDING_NEWS]);
+      }
+    }).catchError((onError) {
+      log('Trending news section data error', stackTrace: onError);
+    }, test: (e) => e is APIException).catchError(
+        (onError) => this.error = onError.toString());
+  }
+
   Future _buildLatestNewsData() async {
     return _newsRepository.getLatestFeeds().then((onValue) {
       sectionData[MixedDataType.LATEST_NEWS] = onValue;
-      data.addAll(onValue);
-      _dataStreamController.add(data);
+      _dataStreamController.add([MixedDataType.LATEST_NEWS]);
     }).catchError((onError) {
       this.apiError = onError;
+    }, test: (e) => e is APIException).catchError(
+        (onError) => this.error = onError.toString());
+  }
+
+  Future _loadCoronaData() async {
+    return _coronaRepository.getByCountry().then((onValue) {
+      if (onValue != null) {
+        sectionData[MixedDataType.CORONA] = onValue;
+        _dataStreamController.add([MixedDataType.CORONA]);
+      }
+    }).catchError((onError) {
+      log('Corona section data error', stackTrace: onError);
     }, test: (e) => e is APIException).catchError(
         (onError) => this.error = onError.toString());
   }
@@ -124,7 +152,7 @@ abstract class _PersonalisedFeedStore with Store {
         (onError) => this.error = onError.toString());
   }
 
-  dispose(){
+  dispose() {
     _dataStreamController.close();
   }
 }
