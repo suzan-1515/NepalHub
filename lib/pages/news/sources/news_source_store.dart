@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:mobx/mobx.dart';
 import 'package:samachar_hub/data/api/api.dart';
 import 'package:samachar_hub/data/models/models.dart';
-import 'package:samachar_hub/repository/news_repository.dart';
+import 'package:samachar_hub/pages/news/news_repository.dart';
 
 part 'news_source_store.g.dart';
 

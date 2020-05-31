@@ -8,6 +8,7 @@ import 'package:provider/provider.dart';
 import 'package:samachar_hub/data/api/api.dart';
 import 'package:samachar_hub/data/models/comment_model.dart';
 import 'package:samachar_hub/pages/comment/comment_store.dart';
+import 'package:samachar_hub/pages/comment/widgets/comment_item.dart';
 import 'package:samachar_hub/pages/widgets/api_error_dialog.dart';
 import 'package:samachar_hub/pages/widgets/empty_data_widget.dart';
 import 'package:samachar_hub/pages/widgets/error_data_widget.dart';
@@ -39,7 +40,7 @@ class _CommentScreenState extends State<CommentScreen> {
     _setupObserver(store);
     store.setPostId(widget.postId);
     store.setPostTitle(widget.postTitle);
-    store.loadData();
+    store.loadInitialData();
     Provider.of<PostMetaStore>(context, listen: false).loadPostMeta();
 
     super.initState();
@@ -99,7 +100,7 @@ class _CommentScreenState extends State<CommentScreen> {
         borderRadius: BorderRadius.all(Radius.circular(6)),
       ),
       child: Observer(
-        builder: (BuildContext context) {
+        builder: (_) {
           return Text(
             store.postTitle,
             maxLines: 3,
@@ -116,7 +117,7 @@ class _CommentScreenState extends State<CommentScreen> {
       margin: const EdgeInsets.all(8),
       padding: const EdgeInsets.all(8),
       child: Consumer<PostMetaStore>(
-        builder: (BuildContext context, PostMetaStore metaStore, Widget child) {
+        builder: (_, PostMetaStore metaStore, Widget child) {
           return Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
@@ -132,7 +133,7 @@ class _CommentScreenState extends State<CommentScreen> {
                 width: 8,
               ),
               Observer(
-                builder: (BuildContext context) {
+                builder: (_) {
                   return Text(
                     '${metaStore.postMeta?.likeCount ?? 0} Likes',
                     style: Theme.of(context).textTheme.bodyText2,
@@ -146,44 +147,10 @@ class _CommentScreenState extends State<CommentScreen> {
     );
   }
 
-  Widget _buildCommentItem(
-      BuildContext context, CommentModel data, CommentStore store) {
-    return Material(
-      child: ListTile(
-        leading: CircleAvatar(
-          backgroundColor: Theme.of(context).backgroundColor,
-          backgroundImage: NetworkImage(data.user.avatar),
-        ),
-        title: RichText(
-          text: TextSpan(
-              text: '${data.user.fullName}',
-              style: Theme.of(context).textTheme.bodyText1,
-              children: <TextSpan>[
-                TextSpan(
-                    text: '\n${data.updatedAt}',
-                    style: Theme.of(context).textTheme.caption)
-              ]),
-        ),
-        subtitle: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8.0),
-          child: Text(
-            data.comment,
-            style: Theme.of(context).textTheme.bodyText2,
-          ),
-        ),
-        trailing: IconButton(
-          icon: Icon(FontAwesomeIcons.thumbsUp),
-          onPressed: () {},
-        ),
-      ),
-    );
-  }
-
   Widget _buildCommentList(BuildContext context, CommentStore store) {
     return StreamBuilder<List<CommentModel>>(
         stream: store.dataStream,
-        builder:
-            (BuildContext context, AsyncSnapshot<List<CommentModel>> snapshot) {
+        builder: (_, AsyncSnapshot<List<CommentModel>> snapshot) {
           if (snapshot.hasError) {
             return Center(
               child: ErrorDataView(
@@ -206,9 +173,11 @@ class _CommentScreenState extends State<CommentScreen> {
               child: IncrementallyLoadingListView(
                 loadMoreOffsetFromBottom: 2,
                 hasMore: () => store.hasMoreData,
-                itemBuilder: (BuildContext context, int index) {
-                  Widget itemWidget =
-                      _buildCommentItem(context, snapshot.data[index], store);
+                itemBuilder: (_, int index) {
+                  Widget itemWidget = CommentItem(
+                      context: context,
+                      data: snapshot.data[index],
+                      store: store);
                   if (index == snapshot.data.length - 1 &&
                       store.hasMoreData &&
                       !store.isLoadingMore) {
@@ -256,7 +225,7 @@ class _CommentScreenState extends State<CommentScreen> {
 
   Widget _buildCommentInputBar(BuildContext context, CommentStore store) {
     return Consumer2<AuthenticationStore, NavigationService>(
-      builder: (BuildContext context, AuthenticationStore authStore,
+      builder: (_, AuthenticationStore authStore,
           NavigationService navigationService, Widget child) {
         return Container(
           color: Theme.of(context).backgroundColor,
@@ -281,7 +250,7 @@ class _CommentScreenState extends State<CommentScreen> {
                       child: TextField(
                         onSubmitted: (value) {
                           _submitComment(context, store, authStore,
-                              navigationService, value);
+                              navigationService, value.trim());
                           _textEditingController.clear();
                           FocusScope.of(context).unfocus();
                         },
@@ -306,7 +275,7 @@ class _CommentScreenState extends State<CommentScreen> {
                             store,
                             authStore,
                             navigationService,
-                            _textEditingController.value.text);
+                            _textEditingController.value.text.trim());
                         _textEditingController.clear();
                         FocusScope.of(context).unfocus();
                       },
@@ -346,7 +315,7 @@ class _CommentScreenState extends State<CommentScreen> {
           color: Theme.of(context).backgroundColor,
           padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
           child: Consumer<CommentStore>(
-            builder: (context, store, child) {
+            builder: (_, store, child) {
               return Column(
                 mainAxisSize: MainAxisSize.max,
                 crossAxisAlignment: CrossAxisAlignment.stretch,

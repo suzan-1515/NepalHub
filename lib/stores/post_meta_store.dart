@@ -74,7 +74,7 @@ abstract class _PostMetaStore with Store {
   }
 
   _loadPostMetaAsStream() {
-    return _postMetaRepository.getMetaAsStream(postId: postId).listen((value) {
+    _postMetaRepository.getMetaAsStream(postId: postId).listen((value) {
       if (value != null) {
         this.postMeta = value;
       }

@@ -9,21 +9,21 @@ part of 'news_detail_store.dart';
 // ignore_for_file: non_constant_identifier_names, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
 
 mixin _$NewsDetailStore on _NewsDetailStore, Store {
-  final _$feedAtom = Atom(name: '_NewsDetailStore.feed');
+  final _$bookmarkStatusAtom = Atom(name: '_NewsDetailStore.bookmarkStatus');
 
   @override
-  NewsFeedModel get feed {
-    _$feedAtom.context.enforceReadPolicy(_$feedAtom);
-    _$feedAtom.reportObserved();
-    return super.feed;
+  bool get bookmarkStatus {
+    _$bookmarkStatusAtom.context.enforceReadPolicy(_$bookmarkStatusAtom);
+    _$bookmarkStatusAtom.reportObserved();
+    return super.bookmarkStatus;
   }
 
   @override
-  set feed(NewsFeedModel value) {
-    _$feedAtom.context.conditionallyRunInAction(() {
-      super.feed = value;
-      _$feedAtom.reportChanged();
-    }, _$feedAtom, name: '${_$feedAtom.name}_set');
+  set bookmarkStatus(bool value) {
+    _$bookmarkStatusAtom.context.conditionallyRunInAction(() {
+      super.bookmarkStatus = value;
+      _$bookmarkStatusAtom.reportChanged();
+    }, _$bookmarkStatusAtom, name: '${_$bookmarkStatusAtom.name}_set');
   }
 
   final _$messageAtom = Atom(name: '_NewsDetailStore.message');
@@ -47,10 +47,30 @@ mixin _$NewsDetailStore on _NewsDetailStore, Store {
       ActionController(name: '_NewsDetailStore');
 
   @override
-  dynamic setFeed(NewsFeedModel feed) {
+  dynamic isBookmarked() {
     final _$actionInfo = _$_NewsDetailStoreActionController.startAction();
     try {
-      return super.setFeed(feed);
+      return super.isBookmarked();
+    } finally {
+      _$_NewsDetailStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  dynamic bookmarkFeed() {
+    final _$actionInfo = _$_NewsDetailStoreActionController.startAction();
+    try {
+      return super.bookmarkFeed();
+    } finally {
+      _$_NewsDetailStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  dynamic removeBookmarkedFeed() {
+    final _$actionInfo = _$_NewsDetailStoreActionController.startAction();
+    try {
+      return super.removeBookmarkedFeed();
     } finally {
       _$_NewsDetailStoreActionController.endAction(_$actionInfo);
     }
@@ -58,7 +78,8 @@ mixin _$NewsDetailStore on _NewsDetailStore, Store {
 
   @override
   String toString() {
-    final string = 'feed: ${feed.toString()},message: ${message.toString()}';
+    final string =
+        'bookmarkStatus: ${bookmarkStatus.toString()},message: ${message.toString()}';
     return '{$string}';
   }
 }

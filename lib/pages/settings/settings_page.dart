@@ -45,9 +45,10 @@ class _SettingsPageState extends State<SettingsPage>
   }
 
   _showMessage(String message) {
-    Scaffold.of(context).showSnackBar(
-      SnackBar(content: Text(message)),
-    );
+    if (message != null)
+      Scaffold.of(context).showSnackBar(
+        SnackBar(content: Text(message)),
+      );
   }
 
   @override
@@ -60,7 +61,7 @@ class _SettingsPageState extends State<SettingsPage>
         mainAxisSize: MainAxisSize.max,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
-          PageHeading(title:'Settings'),
+          PageHeading(title: 'Settings'),
           Expanded(
             child: Consumer<SettingsStore>(
               builder: (BuildContext context, SettingsStore settingsStore,
@@ -90,7 +91,8 @@ class _SettingsPageState extends State<SettingsPage>
                                   padding: const EdgeInsets.only(left: 8),
                                   child: Text(
                                     'Customization',
-                                    style: Theme.of(context).textTheme.subtitle1,
+                                    style:
+                                        Theme.of(context).textTheme.subtitle1,
                                   ),
                                 ),
                               ],

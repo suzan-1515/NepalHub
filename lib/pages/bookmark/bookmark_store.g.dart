@@ -76,6 +76,16 @@ mixin _$BookmarkStore on _BookmarkStore, Store {
       ActionController(name: '_BookmarkStore');
 
   @override
+  Future<dynamic> _loadFirstPageData() {
+    final _$actionInfo = _$_BookmarkStoreActionController.startAction();
+    try {
+      return super._loadFirstPageData();
+    } finally {
+      _$_BookmarkStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   void retry() {
     final _$actionInfo = _$_BookmarkStoreActionController.startAction();
     try {

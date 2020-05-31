@@ -3,11 +3,11 @@ import 'dart:developer';
 
 import 'package:mobx/mobx.dart';
 import 'package:samachar_hub/data/api/api.dart';
+import 'package:samachar_hub/pages/corona/corona_repository.dart';
+import 'package:samachar_hub/pages/forex/forex_repository.dart';
+import 'package:samachar_hub/pages/horoscope/horoscope_repository.dart';
+import 'package:samachar_hub/pages/news/news_repository.dart';
 import 'package:samachar_hub/pages/pages.dart';
-import 'package:samachar_hub/repository/corona_repository.dart';
-import 'package:samachar_hub/repository/forex_repository.dart';
-import 'package:samachar_hub/repository/horoscope_repository.dart';
-import 'package:samachar_hub/repository/news_repository.dart';
 import 'package:samachar_hub/util/news_category.dart';
 
 part 'personalised_store.g.dart';

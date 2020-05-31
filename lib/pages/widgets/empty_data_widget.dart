@@ -11,7 +11,12 @@ class EmptyDataView extends StatelessWidget {
       mainAxisSize: MainAxisSize.max,
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
-        Icon(FontAwesomeIcons.handMiddleFinger,size: 64,),
+        Icon(
+          FontAwesomeIcons.boxOpen,
+          size: 48,
+          color: Theme.of(context).hintColor,
+        ),
+        SizedBox(height: 8),
         Text(
           'Empty Data!',
           style: Theme.of(context).textTheme.bodyText2,

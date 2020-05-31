@@ -67,7 +67,7 @@ class _BookmarkPageState extends State<BookmarkPage> {
           ),
           Expanded(
             child: Consumer2<BookmarkStore, NavigationService>(
-                builder: (context, _bookmarkStore, _navigationService, child) {
+                builder: (_, _bookmarkStore, _navigationService, child) {
               return StreamBuilder<List<NewsFeedModel>>(
                   stream: _bookmarkStore.feedStream,
                   builder: (context, snapshot) {

@@ -75,6 +75,21 @@ class CommentFirestoreService {
         .then((onValue) => onValue.exists);
   }
 
+  Stream<List<CommentFirestoreResponse>> fetchCommentsAsStream(
+      {@required String postId, @required int limit}) {
+    var pageQuery = _commentCollectionReference
+        .orderBy('timestamp', descending: true)
+        .where('post_id', isEqualTo: postId)
+        .limit(limit);
+
+    return pageQuery.snapshots().map((value) {
+      return value.documents
+          .where((snapshot) => snapshot != null && snapshot.exists)
+          .map((snapshot) => CommentFirestoreResponse.fromJson(snapshot.data))
+          .toList();
+    });
+  }
+
   Future<List<CommentFirestoreResponse>> fetchComments(
       {@required String postId, @required int limit, String after}) {
     var pageQuery = _commentCollectionReference

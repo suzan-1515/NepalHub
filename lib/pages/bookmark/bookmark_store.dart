@@ -66,10 +66,17 @@ abstract class _BookmarkStore with Store {
         _hasMoreData = false;
 
       _isLoadingMore = false;
+      _feedStreamController.add(_feedData);
     }).catchError((onError) {
       error = onError.toString();
       _isLoadingMore = false;
     });
+  }
+
+  @action
+  Future _loadFirstPageData() {
+    this._feedData.clear();
+    return loadMoreData(after: null);
   }
 
   @action
@@ -104,12 +111,12 @@ abstract class _BookmarkStore with Store {
 
   @action
   void retry() {
-    loadMoreData();
+    _loadFirstPageData();
   }
 
   @action
   Future<void> refresh() async {
-    return loadMoreData();
+    return _loadFirstPageData();
   }
 
   dispose() {

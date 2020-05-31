@@ -84,12 +84,11 @@ mixin _$CommentStore on _CommentStore, Store {
     return _$refreshAsyncAction.run(() => super.refresh());
   }
 
-  final _$_loadFirstPageDataAsyncAction = AsyncAction('_loadFirstPageData');
+  final _$loadInitialDataAsyncAction = AsyncAction('loadInitialData');
 
   @override
-  Future<dynamic> _loadFirstPageData() {
-    return _$_loadFirstPageDataAsyncAction
-        .run(() => super._loadFirstPageData());
+  Future<void> loadInitialData() {
+    return _$loadInitialDataAsyncAction.run(() => super.loadInitialData());
   }
 
   final _$loadMoreDataAsyncAction = AsyncAction('loadMoreData');
@@ -144,10 +143,30 @@ mixin _$CommentStore on _CommentStore, Store {
   }
 
   @override
-  dynamic loadData() {
+  Future<bool> likeComment({@required CommentModel comment}) {
     final _$actionInfo = _$_CommentStoreActionController.startAction();
     try {
-      return super.loadData();
+      return super.likeComment(comment: comment);
+    } finally {
+      _$_CommentStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  Future<bool> unlikeComment({@required CommentModel comment}) {
+    final _$actionInfo = _$_CommentStoreActionController.startAction();
+    try {
+      return super.unlikeComment(comment: comment);
+    } finally {
+      _$_CommentStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  Future<dynamic> _loadFirstPageData() {
+    final _$actionInfo = _$_CommentStoreActionController.startAction();
+    try {
+      return super._loadFirstPageData();
     } finally {
       _$_CommentStoreActionController.endAction(_$actionInfo);
     }

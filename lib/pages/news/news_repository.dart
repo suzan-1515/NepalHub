@@ -2,6 +2,7 @@ import 'package:flutter/widgets.dart';
 import 'package:samachar_hub/data/api/api_provider.dart' as Api;
 import 'package:samachar_hub/data/mappers/mappers.dart';
 import 'package:samachar_hub/data/models/models.dart';
+import 'package:samachar_hub/pages/news/news_api_service.dart';
 import 'package:samachar_hub/services/services.dart';
 
 class NewsRepository {

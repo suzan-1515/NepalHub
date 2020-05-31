@@ -3,7 +3,7 @@ import 'package:mobx/mobx.dart';
 import 'package:samachar_hub/data/api/api.dart';
 import 'package:samachar_hub/data/models/models.dart';
 import 'package:samachar_hub/pages/category/categories_page.dart';
-import 'package:samachar_hub/repository/news_repository.dart';
+import 'package:samachar_hub/pages/news/news_repository.dart';
 import 'package:throttling/throttling.dart';
 
 part 'categories_store.g.dart';

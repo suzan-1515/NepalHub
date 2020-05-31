@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:flutter/widgets.dart';
 import 'package:mobx/mobx.dart';
@@ -25,8 +26,10 @@ abstract class _CommentStore with Store {
   Stream<List<CommentModel>> get dataStream => _dataStreamController.stream;
 
   List<CommentModel> data = List<CommentModel>();
-  bool hasMoreData = false;
-  bool isLoadingMore = false;
+  bool _hasMoreData = false;
+  bool _isLoadingMore = false;
+  bool get hasMoreData => _hasMoreData;
+  bool get isLoadingMore => _isLoadingMore;
 
   @observable
   String postId = '';
@@ -70,41 +73,79 @@ abstract class _CommentStore with Store {
   }
 
   @action
-  loadData() {
-    _loadFirstPageData();
+  Future<bool> likeComment({@required CommentModel comment}) {
+    return _commentRepository
+        .postCommentLike(postId: postId, commentId: comment.id)
+        .then((value) {
+      comment.likesCount++;
+      comment.isLiked = true;
+      return true;
+    }).catchError((onError) {
+      this.error = 'Unable to like comment.';
+      return false;
+    });
   }
 
   @action
-  Future _loadFirstPageData() async {
-    data.clear();
-    await loadMoreData(after: null);
+  Future<bool> unlikeComment({@required CommentModel comment}) {
+    return _commentRepository
+        .postCommentUnlike(postId: postId, commentId: comment.id)
+        .then((value) {
+      comment.likesCount--;
+      comment.isLiked = false;
+      return true;
+    }).catchError((onError) {
+      this.error = 'Unable to unlike comment.';
+      return false;
+    });
+  }
+
+  @action
+  Future _loadFirstPageData() {
+    this.data.clear();
+    return loadMoreData(after: null);
+  }
+
+  @action
+  Future<void> loadInitialData() async {
+    _commentRepository
+        .getCommentsAsStream(postId: postId, userId: _user.uId)
+        .where((data) => data != null)
+        .listen((onData) {
+      data.clear();
+      data.addAll(onData);
+      _dataStreamController.add(data);
+      _hasMoreData = onData.length == CommentRepository.DATA_LIMIT;
+    }, onError: (e) {
+      log(e.toString());
+      this.error = e.toString();
+      _dataStreamController.addError(e);
+    });
   }
 
   @action
   Future loadMoreData({@required CommentModel after}) async {
-    if (isLoadingMore) return;
-    isLoadingMore = true;
+    if (isLoadingMore || !hasMoreData) return;
+    _isLoadingMore = true;
     return await _commentRepository
-        .getComments(postId: postId, after: after?.timestamp)
+        .getComments(postId: postId, userId: _user.uId, after: after?.timestamp)
         .then((value) {
-      isLoadingMore = false;
-      if (value == null || value.isEmpty) {
-        hasMoreData = false;
-        _dataStreamController.add(data);
-        return;
+      _isLoadingMore = false;
+      if (value != null && value.isNotEmpty) {
+        data.addAll(value);
+        _hasMoreData = value.length == CommentRepository.DATA_LIMIT;
+      } else {
+        _hasMoreData = false;
       }
-
-      data.addAll(value);
-      hasMoreData = value.length == CommentRepository.DATA_LIMIT;
 
       _dataStreamController.add(data);
     }).catchError((onError) {
       this.apiError = onError;
-      isLoadingMore = false;
+      _isLoadingMore = false;
       _dataStreamController.addError(error);
     }, test: (e) => e is APIException).catchError((onError) {
       this.error = onError.toString();
-      isLoadingMore = false;
+      _isLoadingMore = false;
       _dataStreamController.addError(error);
     });
   }

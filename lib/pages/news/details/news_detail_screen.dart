@@ -5,7 +5,6 @@ import 'package:mobx/mobx.dart';
 import 'package:provider/provider.dart';
 import 'package:samachar_hub/data/api/api.dart';
 import 'package:samachar_hub/data/models/models.dart';
-import 'package:samachar_hub/pages/bookmark/bookmark_store.dart';
 import 'package:samachar_hub/pages/news/details/news_detail_store.dart';
 import 'package:samachar_hub/pages/widgets/api_error_dialog.dart';
 import 'package:samachar_hub/services/services.dart';
@@ -29,7 +28,7 @@ class _NewsDetailScreenState extends State<NewsDetailScreen> {
     final store = Provider.of<NewsDetailStore>(context, listen: false);
     final metaStore = Provider.of<PostMetaStore>(context, listen: false);
     _setupObserver(store);
-    store.setFeed(widget.feed);
+    store.isBookmarked();
     metaStore.loadPostMeta();
     metaStore.postView();
 
@@ -83,7 +82,7 @@ class _NewsDetailScreenState extends State<NewsDetailScreen> {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 24),
       child: Consumer<NewsDetailStore>(
-        builder: (BuildContext context, NewsDetailStore store, Widget child) {
+        builder: (_, NewsDetailStore store, Widget child) {
           return Column(
             mainAxisSize: MainAxisSize.max,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -155,8 +154,8 @@ class _NewsDetailScreenState extends State<NewsDetailScreen> {
           Expanded(
             child: Align(
               alignment: Alignment.centerRight,
-              child: Consumer<NavigationService>(builder: (BuildContext context,
-                  NavigationService value, Widget child) {
+              child: Consumer<NavigationService>(
+                  builder: (_, NavigationService value, Widget child) {
                 return OutlineButton.icon(
                   onPressed: () {
                     value.onOpenLink(
@@ -213,7 +212,7 @@ class _NewsDetailScreenState extends State<NewsDetailScreen> {
 
   Builder _buildSourceRow(NewsDetailStore store) {
     return Builder(
-      builder: (BuildContext context) {
+      builder: (_) {
         final String faviconUrl = store.feed.sourceFavicon;
         return Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -243,48 +242,35 @@ class _NewsDetailScreenState extends State<NewsDetailScreen> {
               ),
               margin: EdgeInsets.only(left: 8),
               padding: EdgeInsets.symmetric(horizontal: 16),
-              child: Consumer<BookmarkStore>(
-                builder: (BuildContext context, BookmarkStore bookmarkStore,
-                    Widget child) {
-                  return Column(
-                    children: <Widget>[
-                      ValueListenableBuilder<bool>(
-                        builder:
-                            (BuildContext context, bool value, Widget child) {
-                          return IconButton(
-                            icon: Icon(
-                              value
-                                  ? FontAwesomeIcons.solidHeart
-                                  : FontAwesomeIcons.heart,
-                              size: 36,
-                              color: Theme.of(context).accentColor,
-                            ),
-                            onPressed: () {
-                              if (value) {
-                                store.feed.bookmarked.value = false;
-                                bookmarkStore
-                                    .removeBookmarkedFeed(feed: store.feed)
-                                    .then((value) =>
-                                        store.feed.bookmarked.value = !value);
-                              } else {
-                                store.feed.bookmarked.value = true;
-                                bookmarkStore
-                                    .addBookmarkedFeed(feed: store.feed)
-                                    .then((value) =>
-                                        store.feed.bookmarked.value = value);
-                              }
-                            },
-                          );
+              child: Column(
+                children: <Widget>[
+                  Observer(
+                    builder: (_) {
+                      return IconButton(
+                        icon: Icon(
+                          store.bookmarkStatus
+                              ? FontAwesomeIcons.solidHeart
+                              : FontAwesomeIcons.heart,
+                          size: 36,
+                          color: Theme.of(context).accentColor,
+                        ),
+                        onPressed: () {
+                          if (store.bookmarkStatus) {
+                            store.feed.bookmarked.value = false;
+                            store.removeBookmarkedFeed();
+                          } else {
+                            store.feed.bookmarked.value = true;
+                            store.bookmarkFeed();
+                          }
                         },
-                        valueListenable: store.feed.bookmarked,
-                      ),
-                      Padding(
-                        padding: EdgeInsets.only(top: 4),
-                        child: Text('Bookmark', textAlign: TextAlign.center),
-                      )
-                    ],
-                  );
-                },
+                      );
+                    },
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(top: 4),
+                    child: Text('Bookmark', textAlign: TextAlign.center),
+                  )
+                ],
               ),
             ),
           ],
@@ -296,11 +282,10 @@ class _NewsDetailScreenState extends State<NewsDetailScreen> {
   @override
   Widget build(BuildContext context) {
     return Consumer2<NewsDetailStore, AuthenticationStore>(
-      builder: (BuildContext context, NewsDetailStore store,
+      builder: (_, NewsDetailStore store,
           AuthenticationStore _authenticationStore, Widget child) {
         return Scaffold(
-          body: OrientationBuilder(
-              builder: (BuildContext context, Orientation orientation) {
+          body: OrientationBuilder(builder: (_, Orientation orientation) {
             switch (orientation) {
               case Orientation.landscape:
                 return SafeArea(
@@ -345,11 +330,8 @@ class _NewsDetailScreenState extends State<NewsDetailScreen> {
           }),
           bottomNavigationBar: BottomAppBar(
             child: Consumer3<NavigationService, ShareService, PostMetaStore>(
-              builder: (BuildContext context,
-                  NavigationService navigationService,
-                  shareService,
-                  metaStore,
-                  Widget child) {
+              builder: (_, NavigationService navigationService, shareService,
+                  metaStore, Widget child) {
                 return Observer(
                   builder: (_) {
                     return CommentBar(

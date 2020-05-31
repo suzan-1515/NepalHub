@@ -4,7 +4,7 @@ import 'package:flutter/widgets.dart';
 import 'package:mobx/mobx.dart';
 import 'package:samachar_hub/data/api/api.dart';
 import 'package:samachar_hub/data/models/models.dart';
-import 'package:samachar_hub/repository/repositories.dart';
+import 'package:samachar_hub/pages/news/news_repository.dart';
 
 part 'trending_news_store.g.dart';
 

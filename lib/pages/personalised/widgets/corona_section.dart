@@ -2,7 +2,9 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:provider/provider.dart';
 import 'package:samachar_hub/data/models/models.dart';
+import 'package:samachar_hub/services/navigation_service.dart';
 
 class CoronaSection extends StatefulWidget {
   final CoronaCountrySpecificModel data;
@@ -41,7 +43,9 @@ class _CoronaSectionState extends State<CoronaSection>
         margin: const EdgeInsets.all(4),
         elevation: 2,
         child: InkWell(
-          onTap: () => {},
+          onTap: () {
+            Provider.of<NavigationService>(context,listen: false).toCoronaScreen(context);
+          },
           child: Container(
             padding: const EdgeInsets.all(8),
             child: Column(

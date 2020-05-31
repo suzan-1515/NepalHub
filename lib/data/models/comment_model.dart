@@ -5,12 +5,13 @@ class CommentModel {
   final String postId;
   final UserModel user;
   final String comment;
-  final int likesCount;
+  int likesCount;
   final String timestamp;
   final String updatedAt;
+  bool isLiked;
 
   CommentModel(this.id, this.postId, this.user, this.comment, this.likesCount,
-      this.timestamp,
+      this.timestamp, this.isLiked,
       {this.updatedAt});
 
   toJson() => <String, dynamic>{

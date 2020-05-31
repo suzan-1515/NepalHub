@@ -20,7 +20,7 @@ class NewsListView extends StatelessWidget {
         borderRadius: BorderRadius.circular(6),
       ),
       child: Consumer<NavigationService>(
-        builder: (context, navigationService, child) {
+        builder: (_, navigationService, child) {
           return Material(
             color: Colors.transparent,
             child: InkWell(

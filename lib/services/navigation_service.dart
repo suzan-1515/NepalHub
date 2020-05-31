@@ -3,21 +3,25 @@ import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:samachar_hub/data/models/models.dart';
 import 'package:samachar_hub/pages/authentication/login/login_screen.dart';
+import 'package:samachar_hub/pages/bookmark/bookmark_repository.dart';
 import 'package:samachar_hub/pages/category/categories_store.dart';
 import 'package:samachar_hub/pages/comment/comment_firestore_service.dart';
 import 'package:samachar_hub/pages/comment/comment_repository.dart';
 import 'package:samachar_hub/pages/comment/comment_screen.dart';
 import 'package:samachar_hub/pages/comment/comment_store.dart';
+import 'package:samachar_hub/pages/corona/corona_repository.dart';
+import 'package:samachar_hub/pages/corona/corona_screen.dart';
+import 'package:samachar_hub/pages/corona/corona_store.dart';
 import 'package:samachar_hub/pages/home/home_screen.dart';
 import 'package:samachar_hub/pages/home/home_screen_store.dart';
 import 'package:samachar_hub/pages/news/details/news_details.dart';
+import 'package:samachar_hub/pages/news/news_repository.dart';
 import 'package:samachar_hub/pages/news/sources/news_source_screen.dart';
 import 'package:samachar_hub/pages/news/sources/news_source_store.dart';
 import 'package:samachar_hub/pages/news/topics/topic_news_screen.dart';
 import 'package:samachar_hub/pages/news/topics/topic_news_store.dart';
 import 'package:samachar_hub/pages/news/trending/trending_news_screen.dart';
 import 'package:samachar_hub/pages/news/trending/trending_news_store.dart';
-import 'package:samachar_hub/repository/news_repository.dart';
 import 'package:samachar_hub/repository/post_meta_repository.dart';
 import 'package:samachar_hub/services/services.dart';
 import 'package:samachar_hub/stores/stores.dart';
@@ -48,6 +52,23 @@ class NavigationService {
     );
   }
 
+  toCoronaScreen(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ProxyProvider<CoronaRepository, CoronaStore>(
+          update: (_, CoronaRepository value, CoronaStore previous) =>
+              CoronaStore(value),
+          dispose: (context, value) => value.dispose(),
+          child: CoronaScreen(),
+        ),
+      ),
+    );
+  }
+
+  toForexScreen(BuildContext context) {}
+  toHoroscopeScreen(BuildContext context) {}
+
   toFeedDetail(NewsFeedModel article, BuildContext context) {
     Navigator.push(
       context,
@@ -63,12 +84,15 @@ class NavigationService {
                   PostMetaStore(
                       metaRepository, authenticationStore.user, article.uuid),
             ),
-            ProxyProvider2<ShareService, AuthenticationStore, NewsDetailStore>(
+            ProxyProvider3<ShareService, AuthenticationStore,
+                BookmarkRepository, NewsDetailStore>(
               update: (BuildContext context,
                       ShareService shareService,
                       AuthenticationStore authenticationStore,
+                      BookmarkRepository bookmarkRepository,
                       NewsDetailStore previous) =>
-                  NewsDetailStore(shareService, authenticationStore.user),
+                  NewsDetailStore(shareService, authenticationStore.user,
+                      bookmarkRepository, article),
               dispose: (context, value) => value.dispose(),
             ),
           ],
