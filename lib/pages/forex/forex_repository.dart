@@ -1,25 +1,32 @@
 import 'package:flutter/widgets.dart';
-import 'package:samachar_hub/data/api/api_provider.dart' as Api;
 import 'package:samachar_hub/data/mappers/mappers.dart';
 import 'package:samachar_hub/data/models/models.dart';
 import 'package:samachar_hub/pages/forex/forex_api_service.dart';
+import 'package:samachar_hub/services/analytics_service.dart';
 
 class ForexRepository {
-  final ForexApiService forexApiService;
+  final ForexApiService _forexApiService;
+  final AnalyticsService _analyticsService;
 
-  ForexRepository(this.forexApiService);
+  ForexRepository(this._forexApiService, this._analyticsService);
 
-  Future<ForexModel> getToday() async {
-    return await Api.fetchTodayForex()
-        .then((onValue) => ForexMapper.fromApi(onValue));
+  Future<List<ForexModel>> getToday() async {
+    return _forexApiService
+        .fetchTodayForex()
+        .then((onValue) => onValue.map((e) => ForexMapper.fromApi(e)).toList());
   }
 
-  Future<ForexModel> getByCountry(
+  Future<List<ForexModel>> getByCountry(
       {@required String currencyCode,
       @required String fromDate,
       @required String toDate}) async {
-    return await Api.fetchForexByCountry(
+    return _forexApiService
+        .fetchForexByCountry(
             currencyCode: currencyCode, fromDate: fromDate, toDate: toDate)
-        .then((onValue) => ForexMapper.fromApi(onValue));
+        .then((onValue) => onValue.map((e) => ForexMapper.fromApi(e)).toList())
+        .then((value) {
+      _analyticsService.logForexFetched(currency: currencyCode);
+      return value;
+    });
   }
 }

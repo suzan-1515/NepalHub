@@ -237,20 +237,21 @@ Future<HoroscopeApiResponse> fetchHoroscope() async {
   }
 }
 
-Future<ForexApiResponse> fetchTodayForex() async {
+Future<List<ForexApiResponse>> fetchTodayForex() async {
   final Uri uri = Uri.https(_baseForexApiURL, _forexToday);
   final http.Response response = await http.get(uri);
   // If response is not ok
   _checkResponse(response);
   // Deserialize
   try {
-    return ForexApiResponse.fromJson(json.decode(response.body));
+    final List data = json.decode(response.body);
+    return data.map((e) => ForexApiResponse.fromJson(e)).toList();
   } on Exception catch (e) {
     throw e;
   }
 }
 
-Future<ForexApiResponse> fetchForexByCountry(
+Future<List<ForexApiResponse>> fetchForexByCountry(
     {@required String currencyCode,
     @required String fromDate,
     @required String toDate}) async {
@@ -265,7 +266,8 @@ Future<ForexApiResponse> fetchForexByCountry(
   _checkResponse(response);
   // Deserialize
   try {
-    return ForexApiResponse.fromJson(json.decode(response.body));
+    final List data = json.decode(response.body);
+    return data.map((e) => ForexApiResponse.fromJson(e)).toList();
   } on Exception catch (e) {
     throw e;
   }

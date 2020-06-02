@@ -88,10 +88,17 @@ class AnalyticsService {
     );
   }
 
-   Future logCommentLikeRemoved({String postId, String commentId}) async {
+  Future logCommentLikeRemoved({String postId, String commentId}) async {
     await _analytics.logEvent(
       name: 'comment_unlike',
       parameters: {'post_id': postId, 'comment_id': commentId},
+    );
+  }
+
+  Future logForexFetched({String currency}) async {
+    await _analytics.logEvent(
+      name: 'forex_fetched',
+      parameters: {'currency_code': currency},
     );
   }
 

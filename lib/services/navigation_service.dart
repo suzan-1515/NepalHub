@@ -12,6 +12,9 @@ import 'package:samachar_hub/pages/comment/comment_store.dart';
 import 'package:samachar_hub/pages/corona/corona_repository.dart';
 import 'package:samachar_hub/pages/corona/corona_screen.dart';
 import 'package:samachar_hub/pages/corona/corona_store.dart';
+import 'package:samachar_hub/pages/forex/forex_repository.dart';
+import 'package:samachar_hub/pages/forex/forex_screen.dart';
+import 'package:samachar_hub/pages/forex/forex_store.dart';
 import 'package:samachar_hub/pages/home/home_screen.dart';
 import 'package:samachar_hub/pages/home/home_screen_store.dart';
 import 'package:samachar_hub/pages/news/details/news_details.dart';
@@ -66,8 +69,22 @@ class NavigationService {
     );
   }
 
-  toForexScreen(BuildContext context) {}
+  toForexScreen(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ProxyProvider<ForexRepository, ForexStore>(
+          update: (_, ForexRepository value, ForexStore previous) =>
+              ForexStore(value),
+          dispose: (context, value) => value.dispose(),
+          child: ForexScreen(),
+        ),
+      ),
+    );
+  }
+
   toHoroscopeScreen(BuildContext context) {}
+  toGoldSilverScreen(BuildContext context) {}
 
   toFeedDetail(NewsFeedModel article, BuildContext context) {
     Navigator.push(

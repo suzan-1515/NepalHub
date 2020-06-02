@@ -80,7 +80,7 @@ class _BookmarkPageState extends State<BookmarkPage> {
                     if (snapshot.hasData) {
                       if (snapshot.data.isEmpty) {
                         return Center(
-                          child: EmptyDataView(onRetry: ()=>_bookmarkStore.retry(),),
+                          child: EmptyDataView(),
                         );
                       }
                       return IncrementallyLoadingListView(

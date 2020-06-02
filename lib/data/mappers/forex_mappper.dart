@@ -5,15 +5,16 @@ class ForexMapper {
   static ForexModel fromApi(ForexApiResponse response) {
     return ForexModel(
         id: response.id,
-        date: response.date,
-        type: response.type,
+        date: response.formattedDate(response.date),
+        type: typeValues.reverse[response.type],
         code: response.code,
         currency: response.currency,
         unit: response.unit,
         buying: response.buying,
         selling: response.selling,
-        source: response.source,
+        source: sourceValues.reverse[response.source],
         sourceUrl: response.sourceUrl,
-        addedDate: response.addedDate);
+        addedDate: response.formattedDate(response.addedDate),
+        rawData: response.rawData);
   }
 }

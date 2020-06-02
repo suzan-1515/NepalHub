@@ -96,9 +96,7 @@ class _NewsSourceScreenState extends State<NewsSourceScreen> {
                 default:
                   if (!snapshot.hasData || snapshot.data.isEmpty) {
                     return Center(
-                      child: EmptyDataView(
-                        onRetry: () => sourceStore.retry(),
-                      ),
+                      child: EmptyDataView(),
                     );
                   }
 
@@ -110,7 +108,8 @@ class _NewsSourceScreenState extends State<NewsSourceScreen> {
                         mainAxisSpacing: 4.0),
                     itemCount: snapshot.data.length,
                     itemBuilder: (BuildContext context, int index) {
-                      return NewsSourceItem(context: context, source: snapshot.data[index]);
+                      return NewsSourceItem(
+                          context: context, source: snapshot.data[index]);
                     },
                   );
               }

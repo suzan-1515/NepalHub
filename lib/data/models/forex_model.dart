@@ -1,17 +1,19 @@
 import 'package:flutter/widgets.dart';
 
 class ForexModel {
+  final Map<String,dynamic> rawData;
   final int id;
   final String date;
   final String type;
   final String code;
   final String currency;
   final int unit;
-  final int buying;
+  final double buying;
   final double selling;
   final String source;
   final String sourceUrl;
   final String addedDate;
+  bool isDefault = false;
 
   ForexModel(
       {@required this.id,
@@ -24,5 +26,7 @@ class ForexModel {
       @required this.selling,
       @required this.source,
       @required this.sourceUrl,
-      @required this.addedDate});
+      @required this.addedDate,
+      @required this.rawData,
+      this.isDefault});
 }

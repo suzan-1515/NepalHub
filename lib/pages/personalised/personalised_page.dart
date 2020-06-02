@@ -9,6 +9,7 @@ import 'package:samachar_hub/pages/personalised/widgets/corona_section.dart';
 import 'package:samachar_hub/pages/personalised/widgets/news_category_menu_section.dart';
 import 'package:samachar_hub/pages/personalised/widgets/news_source_menu_section.dart';
 import 'package:samachar_hub/pages/personalised/widgets/news_topics_section.dart';
+import 'package:samachar_hub/pages/personalised/widgets/other_menu_section.dart';
 import 'package:samachar_hub/pages/personalised/widgets/trending_news_section.dart';
 import 'package:samachar_hub/pages/widgets/api_error_dialog.dart';
 import 'package:samachar_hub/pages/widgets/empty_data_widget.dart';
@@ -114,6 +115,13 @@ class _PersonalisedPageState extends State<PersonalisedPage> {
           items: personalisedStore.sectionData[MixedDataType.NEWS_SOURCE],
         );
     }
+    if (index == 20) {
+      //sources view
+      if (personalisedStore.sectionData[MixedDataType.FOREX] != null)
+        return OtherMenuSection(
+          forexData: personalisedStore.sectionData[MixedDataType.FOREX],
+        );
+    }
 
     if ((index + 1) % 6 == 0) {
       return Container(
@@ -173,9 +181,7 @@ class _PersonalisedPageState extends State<PersonalisedPage> {
               if (snapshot.hasData) {
                 if (snapshot.data.isEmpty) {
                   return Center(
-                    child: EmptyDataView(
-                      onRetry: () => personalisedStore.retry(),
-                    ),
+                    child: EmptyDataView(),
                   );
                 }
 

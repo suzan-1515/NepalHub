@@ -91,8 +91,9 @@ class App extends StatelessWidget {
         Provider<CoronaRepository>(
           create: (_) => CoronaRepository(CoronaApiService()),
         ),
-        Provider<ForexRepository>(
-          create: (_) => ForexRepository(ForexApiService()),
+        ProxyProvider<AnalyticsService, ForexRepository>(
+          update: (_, analyticsService, __) =>
+              ForexRepository(ForexApiService(), analyticsService),
         ),
         Provider<HoroscopeRepository>(
           create: (_) => HoroscopeRepository(HoroscopeApiService()),

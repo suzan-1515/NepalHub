@@ -2,9 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class EmptyDataView extends StatelessWidget {
-  final Function onRetry;
-
-  const EmptyDataView({Key key, this.onRetry}) : super(key: key);
+  const EmptyDataView({Key key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Column(

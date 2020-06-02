@@ -3,15 +3,15 @@ import 'package:samachar_hub/data/api/api_provider.dart' as Api;
 import 'package:samachar_hub/data/api/response/forex_api_response.dart';
 
 class ForexApiService {
-  Future<ForexApiResponse> fetchTodayForex() async {
-    return await Api.fetchTodayForex();
+  Future<List<ForexApiResponse>> fetchTodayForex() async {
+    return Api.fetchTodayForex();
   }
 
-  Future<ForexApiResponse> fetchForexByCountry(
+  Future<List<ForexApiResponse>> fetchForexByCountry(
       {@required String currencyCode,
       @required String fromDate,
       @required String toDate}) async {
-    return await Api.fetchForexByCountry(
+    return Api.fetchForexByCountry(
         currencyCode: currencyCode, fromDate: fromDate, toDate: toDate);
   }
 }

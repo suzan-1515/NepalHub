@@ -161,9 +161,7 @@ class _CommentScreenState extends State<CommentScreen> {
           if (snapshot.hasData) {
             if (snapshot.data.isEmpty) {
               return Center(
-                child: EmptyDataView(
-                  onRetry: () => store.retry(),
-                ),
+                child: EmptyDataView(),
               );
             }
             return RefreshIndicator(

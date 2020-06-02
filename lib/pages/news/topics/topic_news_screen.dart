@@ -111,7 +111,8 @@ class _TopicNewsScreenState extends State<TopicNewsScreen> {
   Widget _buildTopicNewsSection(BuildContext context, TopicNewsStore store) {
     return StreamBuilder<List<NewsFeedModel>>(
       stream: store.newsDataStream,
-      builder: (BuildContext context, AsyncSnapshot<List<NewsFeedModel>> snapshot) {
+      builder:
+          (BuildContext context, AsyncSnapshot<List<NewsFeedModel>> snapshot) {
         if (snapshot.hasError) {
           return SliverFillRemaining(
             hasScrollBody: false,
@@ -127,9 +128,7 @@ class _TopicNewsScreenState extends State<TopicNewsScreen> {
             return SliverFillRemaining(
               hasScrollBody: false,
               child: Center(
-                child: EmptyDataView(
-                  onRetry: () => store.retryTopicNews(),
-                ),
+                child: EmptyDataView(),
               ),
             );
           }

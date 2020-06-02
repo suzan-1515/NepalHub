@@ -3,6 +3,7 @@ import 'dart:developer';
 
 import 'package:mobx/mobx.dart';
 import 'package:samachar_hub/data/api/api.dart';
+import 'package:samachar_hub/data/models/horoscope_type.dart';
 import 'package:samachar_hub/pages/corona/corona_repository.dart';
 import 'package:samachar_hub/pages/forex/forex_repository.dart';
 import 'package:samachar_hub/pages/horoscope/horoscope_repository.dart';
@@ -66,7 +67,7 @@ abstract class _PersonalisedFeedStore with Store {
     _buildNewsTopicsData();
     _buildNewsCategoryData();
     _buildNewsSourceData();
-    // _buildForexData();
+    _buildForexData();
     // _buildHoroscopeData();
   }
 
@@ -136,20 +137,28 @@ abstract class _PersonalisedFeedStore with Store {
 
   Future _buildHoroscopeData() async {
     return _horoscopeRepository.getHoroscope().then((onValue) {
-      sectionData[MixedDataType.HOROSCOPE] = onValue;
+      if (onValue != null) {
+        sectionData[MixedDataType.HOROSCOPE] = onValue[HoroscopeType.DAILY];
+      }
     }).catchError((onError) {
-      this.apiError = onError;
+      log('Horoscope data error', stackTrace: onError);
     }, test: (e) => e is APIException).catchError(
-        (onError) => this.error = onError.toString());
+        (onError) => log('Horoscope data error', stackTrace: onError));
   }
 
   Future _buildForexData() async {
     return _forexRepository.getToday().then((onValue) {
-      sectionData[MixedDataType.FOREX] = onValue;
+      if (onValue != null && onValue.isNotEmpty) {
+        var defaultForex = onValue.firstWhere(
+          (element) => element.code == 'USD',
+          orElse: () => null,
+        );
+        sectionData[MixedDataType.FOREX] = defaultForex;
+      }
     }).catchError((onError) {
-      this.apiError = onError;
+      log('Forex data error', stackTrace: onError);
     }, test: (e) => e is APIException).catchError(
-        (onError) => this.error = onError.toString());
+        (onError) => log('Forex data error', stackTrace: onError));
   }
 
   dispose() {

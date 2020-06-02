@@ -38,7 +38,8 @@ class NewsCategoryView extends StatelessWidget {
               ),
             );
           case FutureStatus.fulfilled:
-            final List<NewsFeedModel> newsData = categoriesStore.newsData[category];
+            final List<NewsFeedModel> newsData =
+                categoriesStore.newsData[category];
             if (null != newsData && newsData.isNotEmpty) {
               final MenuItem viewType = categoriesStore.view;
               return RefreshIndicator(
@@ -88,10 +89,7 @@ class NewsCategoryView extends StatelessWidget {
                 },
               );
             }
-            return Center(
-                child: EmptyDataView(
-              onRetry: () => categoriesStore.retry(category),
-            ));
+            return Center(child: EmptyDataView());
           default:
             return Center(
               // Todo: Replace with Shimmer
