@@ -73,9 +73,11 @@ class NavigationService {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => ProxyProvider<ForexRepository, ForexStore>(
-          update: (_, ForexRepository value, ForexStore previous) =>
-              ForexStore(value),
+        builder: (context) =>
+            ProxyProvider2<ForexRepository, PreferenceService, ForexStore>(
+          update: (_, ForexRepository value,
+                  PreferenceService _preferenceService, ForexStore previous) =>
+              ForexStore(value, _preferenceService),
           dispose: (context, value) => value.dispose(),
           child: ForexScreen(),
         ),

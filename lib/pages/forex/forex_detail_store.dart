@@ -14,8 +14,8 @@ abstract class _ForexDetailStore with Store {
   final ForexModel _forexModel;
 
   _ForexDetailStore(this._forexRepository, this._forexModel) {
-    this.fromDate = _forexModel.addedDate;
-    this.toDate = _forexModel.addedDate;
+    this.fromDate = _forexModel.rawData['added_date'];
+    this.toDate = _forexModel.rawData['added_date'];
   }
 
   StreamController<List<ForexModel>> _dataStreamController =

@@ -9,6 +9,26 @@ part of 'forex_store.dart';
 // ignore_for_file: non_constant_identifier_names, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
 
 mixin _$ForexStore on _ForexStore, Store {
+  final _$defaultForexTimelineAtom =
+      Atom(name: '_ForexStore.defaultForexTimeline');
+
+  @override
+  ObservableList<ForexModel> get defaultForexTimeline {
+    _$defaultForexTimelineAtom.context
+        .enforceReadPolicy(_$defaultForexTimelineAtom);
+    _$defaultForexTimelineAtom.reportObserved();
+    return super.defaultForexTimeline;
+  }
+
+  @override
+  set defaultForexTimeline(ObservableList<ForexModel> value) {
+    _$defaultForexTimelineAtom.context.conditionallyRunInAction(() {
+      super.defaultForexTimeline = value;
+      _$defaultForexTimelineAtom.reportChanged();
+    }, _$defaultForexTimelineAtom,
+        name: '${_$defaultForexTimelineAtom.name}_set');
+  }
+
   final _$apiErrorAtom = Atom(name: '_ForexStore.apiError');
 
   @override
@@ -43,18 +63,20 @@ mixin _$ForexStore on _ForexStore, Store {
     }, _$errorAtom, name: '${_$errorAtom.name}_set');
   }
 
-  final _$refreshAsyncAction = AsyncAction('refresh');
-
-  @override
-  Future<void> refresh() {
-    return _$refreshAsyncAction.run(() => super.refresh());
-  }
-
   final _$_loadTodayDataAsyncAction = AsyncAction('_loadTodayData');
 
   @override
   Future<dynamic> _loadTodayData() {
     return _$_loadTodayDataAsyncAction.run(() => super._loadTodayData());
+  }
+
+  final _$_loadDefaultCurrencyTimelineDataAsyncAction =
+      AsyncAction('_loadDefaultCurrencyTimelineData');
+
+  @override
+  Future<dynamic> _loadDefaultCurrencyTimelineData() {
+    return _$_loadDefaultCurrencyTimelineDataAsyncAction
+        .run(() => super._loadDefaultCurrencyTimelineData());
   }
 
   final _$_ForexStoreActionController = ActionController(name: '_ForexStore');
@@ -82,7 +104,7 @@ mixin _$ForexStore on _ForexStore, Store {
   @override
   String toString() {
     final string =
-        'apiError: ${apiError.toString()},error: ${error.toString()}';
+        'defaultForexTimeline: ${defaultForexTimeline.toString()},apiError: ${apiError.toString()},error: ${error.toString()}';
     return '{$string}';
   }
 }

@@ -58,7 +58,7 @@ class OtherMenuSection extends StatelessWidget {
                                   .copyWith(color: Colors.white)),
                           TextSpan(text: '\n'),
                           TextSpan(
-                              text: '${forexData.addedDate}',
+                              text: '${forexData.formattedDate(forexData.addedDate)}',
                               style: Theme.of(context)
                                   .textTheme
                                   .caption

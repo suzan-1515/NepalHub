@@ -1,10 +1,12 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mobx/mobx.dart';
 import 'package:provider/provider.dart';
 import 'package:samachar_hub/data/api/api.dart';
 import 'package:samachar_hub/data/models/forex_model.dart';
+import 'package:samachar_hub/pages/forex/forex_graph.dart';
 import 'package:samachar_hub/pages/forex/forex_store.dart';
 import 'package:samachar_hub/pages/widgets/api_error_dialog.dart';
 import 'package:samachar_hub/pages/widgets/empty_data_widget.dart';
@@ -76,12 +78,16 @@ class _ForexScreenState extends State<ForexScreen> {
   Widget _buildForexItem(
       BuildContext context, ForexModel data, ForexStore store) {
     return Material(
-          child: ListTile(
-        onTap: (){},
+      child: ListTile(
+        onTap: () {},
         leading: SvgPicture.network(
           'https://www.ashesh.com.np/forex/flag/${data.code}.svg',
           placeholderBuilder: (_) {
-            return Container(width:32,height:32,color: Theme.of(context).cardColor,);
+            return Container(
+              width: 32,
+              height: 32,
+              color: Theme.of(context).cardColor,
+            );
           },
           width: 32,
           height: 32,
@@ -99,10 +105,10 @@ class _ForexScreenState extends State<ForexScreen> {
               data.unit.toString(),
               style: Theme.of(context).textTheme.bodyText2,
             ),
-            SizedBox(width:8),
+            SizedBox(width: 8),
             Text(data.buying.toString(),
                 style: Theme.of(context).textTheme.bodyText2),
-                SizedBox(width:8),
+            SizedBox(width: 8),
             Text(data.selling.toString(),
                 style: Theme.of(context).textTheme.bodyText2),
           ],
@@ -142,7 +148,17 @@ class _ForexScreenState extends State<ForexScreen> {
   }
 
   Widget _buildDefaultCurrencyStat(BuildContext context, ForexStore store) {
-    return Container(height: 150, child: Placeholder());
+    return Observer(
+      builder: (_) {
+        if (store.defaultForexTimeline != null &&
+            store.defaultForexTimeline.isNotEmpty) {
+          return ForexGraph(
+            timeline: store.defaultForexTimeline,
+          );
+        }
+        return SizedBox.shrink();
+      },
+    );
   }
 
   Widget _buildCurrencyConverter(BuildContext context, ForexStore store) {

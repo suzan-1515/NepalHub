@@ -31,9 +31,6 @@ class ForexApiResponse {
   final DateTime addedDate;
   final Map<String, dynamic> rawData;
 
-  String formattedDate(DateTime date) =>
-      DateFormat('dd MMMM, yyyy').format(date);
-
   ForexApiResponse copyWith({
     int id,
     DateTime date,

@@ -11,9 +11,9 @@ class ForexRepository {
   ForexRepository(this._forexApiService, this._analyticsService);
 
   Future<List<ForexModel>> getToday() async {
-    return _forexApiService
-        .fetchTodayForex()
-        .then((onValue) => onValue.map((e) => ForexMapper.fromApi(e)).toList());
+    return _forexApiService.fetchTodayForex().then((onValue) {
+      return onValue.map((e) => ForexMapper.fromApi(e)).toList();
+    });
   }
 
   Future<List<ForexModel>> getByCountry(
@@ -23,8 +23,9 @@ class ForexRepository {
     return _forexApiService
         .fetchForexByCountry(
             currencyCode: currencyCode, fromDate: fromDate, toDate: toDate)
-        .then((onValue) => onValue.map((e) => ForexMapper.fromApi(e)).toList())
-        .then((value) {
+        .then((onValue) {
+      return onValue.map((e) => ForexMapper.fromApi(e)).toList();
+    }).then((value) {
       _analyticsService.logForexFetched(currency: currencyCode);
       return value;
     });

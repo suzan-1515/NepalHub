@@ -1,9 +1,11 @@
 import 'dart:async';
 
+import 'package:intl/intl.dart';
 import 'package:mobx/mobx.dart';
 import 'package:samachar_hub/data/api/api.dart';
 import 'package:samachar_hub/data/models/forex_model.dart';
 import 'package:samachar_hub/pages/forex/forex_repository.dart';
+import 'package:samachar_hub/services/preference_service.dart';
 
 part 'forex_store.g.dart';
 
@@ -11,8 +13,9 @@ class ForexStore = _ForexStore with _$ForexStore;
 
 abstract class _ForexStore with Store {
   final ForexRepository _forexRepository;
+  final PreferenceService _preferenceService;
 
-  _ForexStore(this._forexRepository);
+  _ForexStore(this._forexRepository, this._preferenceService);
 
   StreamController<List<ForexModel>> _dataStreamController =
       StreamController<List<ForexModel>>.broadcast();
@@ -23,24 +26,24 @@ abstract class _ForexStore with Store {
   bool _isLoading = false;
 
   @observable
+  ObservableList<ForexModel> defaultForexTimeline =
+      ObservableList<ForexModel>();
+
+  @observable
   APIException apiError;
 
   @observable
   String error;
 
   @action
-  Future<void> refresh() async {
-    return _loadTodayData();
-  }
-
-  @action
   void retry() {
-    _loadTodayData();
+    loadData();
   }
 
   @action
   loadData() {
     _loadTodayData();
+    _loadDefaultCurrencyTimelineData();
   }
 
   @action
@@ -62,7 +65,31 @@ abstract class _ForexStore with Store {
     }).whenComplete(() => _isLoading = false);
   }
 
-  dispose(){
+  @action
+  Future _loadDefaultCurrencyTimelineData() async {
+    final DateFormat df = DateFormat('yyyy-MM-dd');
+    final toDate = df.format(DateTime.now());
+    final fromDate = df.format(DateTime.now().subtract(Duration(days: 30)));
+    final defaultCurrency = _preferenceService.defaultForexCurrency;
+    return _forexRepository
+        .getByCountry(
+      currencyCode: defaultCurrency,
+      fromDate: fromDate,
+      toDate: toDate,
+    )
+        .then((value) {
+      if (value != null) {
+        defaultForexTimeline.clear();
+        defaultForexTimeline.addAll(value);
+      }
+    }).catchError((onError) {
+      this.apiError = onError;
+    }, test: (e) => e is APIException).catchError((onError) {
+      this.error = 'Unable to load data';
+    });
+  }
+
+  dispose() {
     _dataStreamController.close();
   }
 }

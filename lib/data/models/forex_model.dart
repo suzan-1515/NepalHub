@@ -1,9 +1,10 @@
 import 'package:flutter/widgets.dart';
+import 'package:intl/intl.dart';
 
 class ForexModel {
-  final Map<String,dynamic> rawData;
+  final Map<String, dynamic> rawData;
   final int id;
-  final String date;
+  final DateTime date;
   final String type;
   final String code;
   final String currency;
@@ -12,7 +13,7 @@ class ForexModel {
   final double selling;
   final String source;
   final String sourceUrl;
-  final String addedDate;
+  final DateTime addedDate;
   bool isDefault = false;
 
   ForexModel(
@@ -29,4 +30,7 @@ class ForexModel {
       @required this.addedDate,
       @required this.rawData,
       this.isDefault});
+
+  String formattedDate(DateTime date) =>
+      DateFormat('dd MMMM, yyyy').format(date);
 }
