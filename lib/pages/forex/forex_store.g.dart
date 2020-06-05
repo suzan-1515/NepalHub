@@ -9,6 +9,13 @@ part of 'forex_store.dart';
 // ignore_for_file: non_constant_identifier_names, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
 
 mixin _$ForexStore on _ForexStore, Store {
+  Computed<ForexModel> _$defaultForexComputed;
+
+  @override
+  ForexModel get defaultForex => (_$defaultForexComputed ??=
+          Computed<ForexModel>(() => super.defaultForex))
+      .value;
+
   final _$defaultForexTimelineAtom =
       Atom(name: '_ForexStore.defaultForexTimeline');
 
@@ -104,7 +111,7 @@ mixin _$ForexStore on _ForexStore, Store {
   @override
   String toString() {
     final string =
-        'defaultForexTimeline: ${defaultForexTimeline.toString()},apiError: ${apiError.toString()},error: ${error.toString()}';
+        'defaultForexTimeline: ${defaultForexTimeline.toString()},apiError: ${apiError.toString()},error: ${error.toString()},defaultForex: ${defaultForex.toString()}';
     return '{$string}';
   }
 }

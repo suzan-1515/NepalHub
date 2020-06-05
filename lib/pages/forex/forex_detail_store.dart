@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:intl/intl.dart';
 import 'package:mobx/mobx.dart';
 import 'package:samachar_hub/data/api/api.dart';
 import 'package:samachar_hub/data/models/forex_model.dart';
@@ -13,32 +14,23 @@ abstract class _ForexDetailStore with Store {
   final ForexRepository _forexRepository;
   final ForexModel _forexModel;
 
-  _ForexDetailStore(this._forexRepository, this._forexModel) {
-    this.fromDate = _forexModel.rawData['added_date'];
-    this.toDate = _forexModel.rawData['added_date'];
-  }
+  _ForexDetailStore(this._forexRepository, this._forexModel);
 
   StreamController<List<ForexModel>> _dataStreamController =
       StreamController<List<ForexModel>>.broadcast();
 
   Stream<List<ForexModel>> get dataStream => _dataStreamController.stream;
 
+  ForexModel get forex => _forexModel;
+
   List<ForexModel> _data = List<ForexModel>();
   bool _isLoading = false;
-
-  String fromDate;
-  String toDate;
 
   @observable
   APIException apiError;
 
   @observable
   String error;
-
-  @action
-  setFromDate(String fromDate) => this.fromDate = fromDate;
-  @action
-  setToDate(String toDate) => this.toDate = toDate;
 
   @action
   Future<void> refresh() async {
@@ -58,9 +50,13 @@ abstract class _ForexDetailStore with Store {
   @action
   Future _loadCurrencyData() async {
     if (_isLoading) return;
-    _forexRepository
+    _isLoading = true;
+    final DateFormat df = DateFormat('yyyy-MM-dd');
+    final toDate = df.format(DateTime.now());
+    final fromDate = df.format(DateTime.now().subtract(Duration(days: 30)));
+    return _forexRepository
         .getByCountry(
-            currencyCode: _forexModel.currency,
+            currencyCode: _forexModel.code,
             fromDate: fromDate,
             toDate: toDate)
         .then((value) {

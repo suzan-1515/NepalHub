@@ -29,6 +29,10 @@ abstract class _ForexStore with Store {
   ObservableList<ForexModel> defaultForexTimeline =
       ObservableList<ForexModel>();
 
+  @computed
+  ForexModel get defaultForex => _data.firstWhere(
+      (element) => element.code == _preferenceService.defaultForexCurrency);
+
   @observable
   APIException apiError;
 

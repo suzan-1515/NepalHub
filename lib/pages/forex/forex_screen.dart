@@ -1,4 +1,3 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -6,6 +5,7 @@ import 'package:mobx/mobx.dart';
 import 'package:provider/provider.dart';
 import 'package:samachar_hub/data/api/api.dart';
 import 'package:samachar_hub/data/models/forex_model.dart';
+import 'package:samachar_hub/pages/forex/forex_converter.dart';
 import 'package:samachar_hub/pages/forex/forex_graph.dart';
 import 'package:samachar_hub/pages/forex/forex_store.dart';
 import 'package:samachar_hub/pages/widgets/api_error_dialog.dart';
@@ -13,6 +13,7 @@ import 'package:samachar_hub/pages/widgets/empty_data_widget.dart';
 import 'package:samachar_hub/pages/widgets/error_data_widget.dart';
 import 'package:samachar_hub/pages/widgets/page_heading_widget.dart';
 import 'package:samachar_hub/pages/widgets/progress_widget.dart';
+import 'package:samachar_hub/services/navigation_service.dart';
 
 class ForexScreen extends StatefulWidget {
   @override
@@ -75,74 +76,156 @@ class _ForexScreenState extends State<ForexScreen> {
     ];
   }
 
-  Widget _buildForexItem(
-      BuildContext context, ForexModel data, ForexStore store) {
+  Widget _buildForexItem(BuildContext context, ForexModel data,
+      ForexStore store, NavigationService navigationService) {
     return Material(
-      child: ListTile(
-        onTap: () {},
-        leading: SvgPicture.network(
-          'https://www.ashesh.com.np/forex/flag/${data.code}.svg',
-          placeholderBuilder: (_) {
-            return Container(
-              width: 32,
-              height: 32,
-              color: Theme.of(context).cardColor,
-            );
-          },
-          width: 32,
-          height: 32,
-        ),
-        title: Text(
-          '${data.currency} (${data.code})',
-          style: Theme.of(context).textTheme.bodyText1,
-        ),
-        trailing: Row(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.center,
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: () {
+          navigationService.toForexDetailScreen(context, data);
+        },
+        child: Row(
           mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
-            Text(
-              data.unit.toString(),
-              style: Theme.of(context).textTheme.bodyText2,
+            Expanded(
+              flex: 1,
+              child: SvgPicture.network(
+                'https://www.ashesh.com.np/forex/flag/${data.code}.svg',
+                placeholderBuilder: (_) {
+                  return Container(
+                    width: 32,
+                    height: 32,
+                    color: Theme.of(context).cardColor,
+                  );
+                },
+                width: 32,
+                height: 32,
+              ),
+            ),
+            SizedBox(
+              width: 8,
+            ),
+            Expanded(
+              flex: 3,
+              child: Text(
+                '${data.currency} (${data.code})',
+                style: Theme.of(context).textTheme.bodyText1,
+              ),
             ),
             SizedBox(width: 8),
-            Text(data.buying.toString(),
-                style: Theme.of(context).textTheme.bodyText2),
+            Expanded(
+              flex: 1,
+              child: Text(
+                data.unit.toString(),
+                style: Theme.of(context).textTheme.bodyText2,
+              ),
+            ),
             SizedBox(width: 8),
-            Text(data.selling.toString(),
-                style: Theme.of(context).textTheme.bodyText2),
+            Expanded(
+              flex: 1,
+              child: Text(data.buying.toString(),
+                  style: Theme.of(context).textTheme.bodyText2),
+            ),
+            SizedBox(width: 8),
+            Expanded(
+              flex: 1,
+              child: Text(data.selling.toString(),
+                  style: Theme.of(context).textTheme.bodyText2),
+            ),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildList(BuildContext context, ForexStore store) {
-    return StreamBuilder<List<ForexModel>>(
-      stream: store.dataStream,
-      builder: (_, AsyncSnapshot<List<ForexModel>> snapshot) {
-        if (snapshot.hasError) {
-          return Center(
-            child: ErrorDataView(
-              onRetry: () => store.retry(),
+  Widget _buildHeader(context) {
+    return Padding(
+      padding: const EdgeInsets.only(left: 4.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: <Widget>[
+          Expanded(
+            flex: 4,
+            child: Text(
+              'Foreign Exchange',
+              style: Theme.of(context).textTheme.subtitle1,
             ),
-          );
-        }
-        if (snapshot.hasData) {
-          if (snapshot.data.isEmpty) {
-            return Center(
-              child: EmptyDataView(),
-            );
-          }
-          return ListView.separated(
-            itemCount: snapshot.data.length,
-            separatorBuilder: (_, index) => Divider(),
-            itemBuilder: (_, index) =>
-                _buildForexItem(context, snapshot.data[index], store),
-          );
-        } else {
-          return Center(child: ProgressView());
-        }
+          ),
+          SizedBox(width: 8),
+          Expanded(
+            flex: 1,
+            child: Text(
+              'Unit',
+              style: Theme.of(context).textTheme.subtitle1,
+            ),
+          ),
+          SizedBox(width: 8),
+          Expanded(
+            flex: 1,
+            child: Text('Buy', style: Theme.of(context).textTheme.subtitle1),
+          ),
+          SizedBox(width: 8),
+          Expanded(
+            flex: 1,
+            child: Text('Sell', style: Theme.of(context).textTheme.subtitle1),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildList(BuildContext context, ForexStore store) {
+    return Consumer<NavigationService>(
+      builder: (_, NavigationService navigationService, __) {
+        return Padding(
+          padding: const EdgeInsets.only(top: 8.0),
+          child: StreamBuilder<List<ForexModel>>(
+            stream: store.dataStream,
+            builder: (_, AsyncSnapshot<List<ForexModel>> snapshot) {
+              if (snapshot.hasError) {
+                return Center(
+                  child: ErrorDataView(
+                    onRetry: () => store.retry(),
+                  ),
+                );
+              }
+              if (snapshot.hasData) {
+                if (snapshot.data.isEmpty) {
+                  return Center(
+                    child: EmptyDataView(),
+                  );
+                }
+                return ListView.separated(
+                    itemCount: snapshot.data.length + 1,
+                    separatorBuilder: (_, index) {
+                      return Observer(
+                        builder: (_) {
+                          ForexModel defaultForex = store.defaultForex;
+                          if (index == 1) {
+                            if (defaultForex != null) {
+                              return ForexConverter(
+                                  items: snapshot.data,
+                                  defaultForex: defaultForex,
+                                  store: store);
+                            }
+                          }
+                          return Divider();
+                        },
+                      );
+                    },
+                    itemBuilder: (_, index) {
+                      if (index == 0) return _buildHeader(context);
+                      return _buildForexItem(context, snapshot.data[index - 1],
+                          store, navigationService);
+                    });
+              } else {
+                return Center(child: ProgressView());
+              }
+            },
+          ),
+        );
       },
     );
   }
@@ -161,15 +244,10 @@ class _ForexScreenState extends State<ForexScreen> {
     );
   }
 
-  Widget _buildCurrencyConverter(BuildContext context, ForexStore store) {
-    return Container(height: 100, child: Placeholder());
-  }
-
   Widget _buildContent(BuildContext context, ForexStore store) {
     return NestedScrollView(
       headerSliverBuilder: (_, __) => [
         SliverToBoxAdapter(child: _buildDefaultCurrencyStat(context, store)),
-        SliverToBoxAdapter(child: _buildCurrencyConverter(context, store)),
       ],
       body: _buildList(context, store),
     );

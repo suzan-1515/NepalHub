@@ -12,8 +12,10 @@ import 'package:samachar_hub/pages/comment/comment_store.dart';
 import 'package:samachar_hub/pages/corona/corona_repository.dart';
 import 'package:samachar_hub/pages/corona/corona_screen.dart';
 import 'package:samachar_hub/pages/corona/corona_store.dart';
+import 'package:samachar_hub/pages/forex/forex_detail_store.dart';
 import 'package:samachar_hub/pages/forex/forex_repository.dart';
 import 'package:samachar_hub/pages/forex/forex_screen.dart';
+import 'package:samachar_hub/pages/forex/forex_screen_detail.dart';
 import 'package:samachar_hub/pages/forex/forex_store.dart';
 import 'package:samachar_hub/pages/home/home_screen.dart';
 import 'package:samachar_hub/pages/home/home_screen_store.dart';
@@ -80,6 +82,20 @@ class NavigationService {
               ForexStore(value, _preferenceService),
           dispose: (context, value) => value.dispose(),
           child: ForexScreen(),
+        ),
+      ),
+    );
+  }
+
+  toForexDetailScreen(BuildContext context, ForexModel data) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ProxyProvider<ForexRepository, ForexDetailStore>(
+          update: (_, ForexRepository value, ForexDetailStore previous) =>
+              ForexDetailStore(value, data),
+          dispose: (context, value) => value.dispose(),
+          child: ForexDetailScreen(),
         ),
       ),
     );

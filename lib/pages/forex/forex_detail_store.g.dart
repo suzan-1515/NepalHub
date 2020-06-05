@@ -61,26 +61,6 @@ mixin _$ForexDetailStore on _ForexDetailStore, Store {
       ActionController(name: '_ForexDetailStore');
 
   @override
-  dynamic setFromDate(String fromDate) {
-    final _$actionInfo = _$_ForexDetailStoreActionController.startAction();
-    try {
-      return super.setFromDate(fromDate);
-    } finally {
-      _$_ForexDetailStoreActionController.endAction(_$actionInfo);
-    }
-  }
-
-  @override
-  dynamic setToDate(String toDate) {
-    final _$actionInfo = _$_ForexDetailStoreActionController.startAction();
-    try {
-      return super.setToDate(toDate);
-    } finally {
-      _$_ForexDetailStoreActionController.endAction(_$actionInfo);
-    }
-  }
-
-  @override
   void retry() {
     final _$actionInfo = _$_ForexDetailStoreActionController.startAction();
     try {
