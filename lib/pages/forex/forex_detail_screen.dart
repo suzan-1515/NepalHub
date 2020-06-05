@@ -1,15 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:mobx/mobx.dart';
 import 'package:provider/provider.dart';
 import 'package:samachar_hub/data/api/api.dart';
 import 'package:samachar_hub/data/models/forex_model.dart';
 import 'package:samachar_hub/pages/forex/forex_detail_store.dart';
-import 'package:samachar_hub/pages/forex/forex_graph.dart';
 import 'package:samachar_hub/pages/widgets/api_error_dialog.dart';
 import 'package:samachar_hub/pages/widgets/empty_data_widget.dart';
 import 'package:samachar_hub/pages/widgets/error_data_widget.dart';
 import 'package:samachar_hub/pages/widgets/page_heading_widget.dart';
 import 'package:samachar_hub/pages/widgets/progress_widget.dart';
+import 'package:samachar_hub/services/services.dart';
+import 'package:samachar_hub/stores/stores.dart';
+import 'package:samachar_hub/widgets/comment_bar_widget.dart';
+
+import 'widgets/forex_graph.dart';
 
 class ForexDetailScreen extends StatefulWidget {
   @override
@@ -22,8 +27,11 @@ class _ForexDetailScreenState extends State<ForexDetailScreen> {
   @override
   void initState() {
     final store = Provider.of<ForexDetailStore>(context, listen: false);
+    final metaStore = Provider.of<PostMetaStore>(context, listen: false);
     _setupObserver(store);
     store.loadData();
+    metaStore.loadPostMeta();
+    metaStore.postView();
 
     super.initState();
   }
@@ -114,12 +122,12 @@ class _ForexDetailScreenState extends State<ForexDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Theme.of(context).backgroundColor,
-      body: SafeArea(
-        child: Consumer<ForexDetailStore>(
-          builder: (_, ForexDetailStore store, __) {
-            return Container(
+    return Consumer<ForexDetailStore>(
+      builder: (_, ForexDetailStore store, __) {
+        return Scaffold(
+          backgroundColor: Theme.of(context).backgroundColor,
+          body: SafeArea(
+            child: Container(
               padding: EdgeInsets.symmetric(horizontal: 4, vertical: 8),
               color: Theme.of(context).backgroundColor,
               child: Column(
@@ -147,10 +155,54 @@ class _ForexDetailScreenState extends State<ForexDetailScreen> {
                   ),
                 ],
               ),
-            );
-          },
-        ),
-      ),
+            ),
+          ),
+          bottomNavigationBar: BottomAppBar(
+            child: Consumer4<AuthenticationStore, NavigationService,
+                ShareService, PostMetaStore>(
+              builder: (_, authenticationStore, navigationService, shareService,
+                  metaStore, __) {
+                return Observer(
+                  builder: (_) {
+                    return CommentBar(
+                      userProfileImageUrl: authenticationStore.user.avatar,
+                      commentsCount:
+                          metaStore.postMeta?.commentCount?.toString() ?? '0',
+                      likesCount:
+                          metaStore.postMeta?.likeCount?.toString() ?? '0',
+                      isLiked: false, //TODO: user like check
+                      onCommentTap: () {
+                        navigationService.onViewCommentsTapped(
+                            context: context, title: 'Forex', postId: 'forex');
+                      },
+                      onLikeTap: (value) {
+                        if (value) {
+                          metaStore.removeLike().then((value) {
+                            // store.feed.liked.value = !value;
+                          });
+                        } else {
+                          metaStore.postLike().then((value) {
+                            // store.feed.liked.value = value;
+                          });
+                        }
+                      },
+                      onShareTap: () {
+                        if (store.forex != null)
+                          shareService.share(
+                              postId: store.forex.code,
+                              title: store.forex.currency,
+                              data:
+                                  'Currency:${store.forex.currency}\nBuy: ${store.forex.buying}\nSell: ${store.forex.selling}\nLast updated: ${store.forex.addedDate}');
+                        metaStore.postShare();
+                      },
+                    );
+                  },
+                );
+              },
+            ),
+          ),
+        );
+      },
     );
   }
 }

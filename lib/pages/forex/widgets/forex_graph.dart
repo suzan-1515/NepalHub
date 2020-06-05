@@ -6,7 +6,7 @@ import 'package:intl/intl.dart';
 
 import 'package:fl_chart/fl_chart.dart';
 import 'package:samachar_hub/data/models/models.dart';
-import 'package:samachar_hub/pages/forex/label.dart';
+import 'package:samachar_hub/pages/forex/widgets/label.dart';
 
 class ForexGraph extends StatefulWidget {
   final List<ForexModel> timeline;

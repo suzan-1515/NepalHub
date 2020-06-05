@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:samachar_hub/data/models/models.dart';
-import 'package:samachar_hub/pages/forex/forex_converter_item.dart';
 import 'package:samachar_hub/pages/forex/forex_store.dart';
+import 'package:samachar_hub/pages/forex/widgets/forex_converter_item.dart';
 
 class ForexConverter extends StatefulWidget {
   const ForexConverter({

@@ -13,7 +13,9 @@ import 'package:samachar_hub/pages/widgets/news_compact_view.dart';
 import 'package:samachar_hub/pages/widgets/news_list_view.dart';
 import 'package:samachar_hub/pages/widgets/news_thumbnail_view.dart';
 import 'package:samachar_hub/pages/widgets/progress_widget.dart';
+import 'package:samachar_hub/repository/repositories.dart';
 import 'package:samachar_hub/services/services.dart';
+import 'package:samachar_hub/stores/stores.dart';
 
 class NewsCategoryView extends StatelessWidget {
   final NewsCategory category;
@@ -22,8 +24,10 @@ class NewsCategoryView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer2<CategoriesStore, NavigationService>(
-        builder: (context, categoriesStore, _navigationService, child) {
+    return Consumer5<CategoriesStore, PostMetaRepository, ShareService,
+            NavigationService, AuthenticationStore>(
+        builder: (context, categoriesStore, postMetaRepository, shareService,
+            navigationService, authenticationStore, child) {
       return Observer(builder: (_) {
         switch (categoriesStore.loadFeedItemsFuture[category]?.status) {
           case FutureStatus.pending:
@@ -56,15 +60,30 @@ class NewsCategoryView extends StatelessWidget {
                       Widget articleWidget;
                       switch (viewType) {
                         case MenuItem.LIST_VIEW:
-                          articleWidget = NewsListView(feed: feed);
+                          articleWidget = NewsListView(
+                            feed: feed,
+                            postMetaRepository: postMetaRepository,
+                            shareService: shareService,
+                            navigationService: navigationService,
+                            authenticationStore: authenticationStore,
+                          );
                           break;
                         case MenuItem.THUMBNAIL_VIEW:
-                          articleWidget = NewsThumbnailView(feed);
+                          articleWidget = NewsThumbnailView(
+                            feed: feed,
+                            postMetaRepository: postMetaRepository,
+                            shareService: shareService,
+                            navigationService: navigationService,
+                            authenticationStore: authenticationStore,
+                          );
                           break;
                         case MenuItem.COMPACT_VIEW:
                           articleWidget = AspectRatio(
                               aspectRatio: 16 / 9,
-                              child: NewsCompactView(feed));
+                              child: NewsCompactView(
+                                feed: feed,
+                                navigationService: navigationService,
+                              ));
                           break;
                       }
                       if (index == newsData.length - 1 &&

@@ -5,8 +5,6 @@ import 'package:mobx/mobx.dart';
 import 'package:provider/provider.dart';
 import 'package:samachar_hub/data/api/api.dart';
 import 'package:samachar_hub/data/models/forex_model.dart';
-import 'package:samachar_hub/pages/forex/forex_converter.dart';
-import 'package:samachar_hub/pages/forex/forex_graph.dart';
 import 'package:samachar_hub/pages/forex/forex_store.dart';
 import 'package:samachar_hub/pages/widgets/api_error_dialog.dart';
 import 'package:samachar_hub/pages/widgets/empty_data_widget.dart';
@@ -14,6 +12,9 @@ import 'package:samachar_hub/pages/widgets/error_data_widget.dart';
 import 'package:samachar_hub/pages/widgets/page_heading_widget.dart';
 import 'package:samachar_hub/pages/widgets/progress_widget.dart';
 import 'package:samachar_hub/services/navigation_service.dart';
+
+import 'widgets/forex_converter.dart';
+import 'widgets/forex_graph.dart';
 
 class ForexScreen extends StatefulWidget {
   @override

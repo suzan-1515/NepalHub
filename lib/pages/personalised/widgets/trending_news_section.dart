@@ -32,7 +32,8 @@ class _TrendingNewsSectionState extends State<TrendingNewsSection>
       builder: (_, NavigationService navigationService, Widget child) {
         List<Widget> widgets = List<Widget>.generate(
           widget.feeds.length,
-          (index) => NewsCompactView(widget.feeds[index]),
+          (index) => NewsCompactView(
+              feed: widget.feeds[index], navigationService: navigationService),
         );
 
         return Column(

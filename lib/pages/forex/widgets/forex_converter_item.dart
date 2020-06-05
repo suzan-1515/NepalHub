@@ -26,7 +26,7 @@ class ForexConverterItem extends StatelessWidget {
         Expanded(
           flex: 1,
           child: SvgPicture.network(
-            'https://www.ashesh.com.np/forex/flag/${currencyCode}.svg',
+            'https://www.ashesh.com.np/forex/flag/$currencyCode.svg',
             placeholderBuilder: (_) {
               return Container(
                 width: 24,

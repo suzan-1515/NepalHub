@@ -13,6 +13,9 @@ import 'package:samachar_hub/pages/widgets/news_list_view.dart';
 import 'package:samachar_hub/pages/widgets/news_tag_item.dart';
 import 'package:samachar_hub/pages/widgets/page_heading_widget.dart';
 import 'package:samachar_hub/pages/widgets/progress_widget.dart';
+import 'package:samachar_hub/repository/repositories.dart';
+import 'package:samachar_hub/services/services.dart';
+import 'package:samachar_hub/stores/stores.dart';
 
 class TopicNewsScreen extends StatefulWidget {
   final String topic;
@@ -109,41 +112,51 @@ class _TopicNewsScreenState extends State<TopicNewsScreen> {
   }
 
   Widget _buildTopicNewsSection(BuildContext context, TopicNewsStore store) {
-    return StreamBuilder<List<NewsFeedModel>>(
-      stream: store.newsDataStream,
-      builder:
-          (BuildContext context, AsyncSnapshot<List<NewsFeedModel>> snapshot) {
-        if (snapshot.hasError) {
-          return SliverFillRemaining(
-            hasScrollBody: false,
-            child: Center(
-              child: ErrorDataView(
-                onRetry: () => store.retryTopicNews(),
-              ),
-            ),
-          );
-        }
-        if (snapshot.hasData) {
-          if (snapshot.data.isEmpty) {
-            return SliverFillRemaining(
-              hasScrollBody: false,
-              child: Center(
-                child: EmptyDataView(),
-              ),
-            );
-          }
-          return SliverList(
-            delegate:
-                SliverChildBuilderDelegate((BuildContext context, int index) {
-              return NewsListView(
-                feed: snapshot.data[index],
+    return Consumer4<PostMetaRepository, ShareService, NavigationService,
+        AuthenticationStore>(
+      builder: (_, postMetaRepository, shareService, navigationService,
+          authenticationStore, __) {
+        return StreamBuilder<List<NewsFeedModel>>(
+          stream: store.newsDataStream,
+          builder: (BuildContext context,
+              AsyncSnapshot<List<NewsFeedModel>> snapshot) {
+            if (snapshot.hasError) {
+              return SliverFillRemaining(
+                hasScrollBody: false,
+                child: Center(
+                  child: ErrorDataView(
+                    onRetry: () => store.retryTopicNews(),
+                  ),
+                ),
               );
-            }, childCount: snapshot.data.length),
-          );
-        } else {
-          return SliverFillRemaining(
-              hasScrollBody: false, child: Center(child: ProgressView()));
-        }
+            }
+            if (snapshot.hasData) {
+              if (snapshot.data.isEmpty) {
+                return SliverFillRemaining(
+                  hasScrollBody: false,
+                  child: Center(
+                    child: EmptyDataView(),
+                  ),
+                );
+              }
+              return SliverList(
+                delegate: SliverChildBuilderDelegate(
+                    (BuildContext context, int index) {
+                  return NewsListView(
+                    feed: snapshot.data[index],
+                    postMetaRepository: postMetaRepository,
+                    shareService: shareService,
+                    navigationService: navigationService,
+                    authenticationStore: authenticationStore,
+                  );
+                }, childCount: snapshot.data.length),
+              );
+            } else {
+              return SliverFillRemaining(
+                  hasScrollBody: false, child: Center(child: ProgressView()));
+            }
+          },
+        );
       },
     );
   }

@@ -11,9 +11,11 @@ import 'package:samachar_hub/pages/widgets/error_data_widget.dart';
 import 'package:samachar_hub/pages/widgets/news_list_view.dart';
 import 'package:samachar_hub/pages/widgets/page_heading_widget.dart';
 import 'package:samachar_hub/pages/widgets/progress_widget.dart';
+import 'package:samachar_hub/repository/repositories.dart';
+import 'package:samachar_hub/services/services.dart';
+import 'package:samachar_hub/stores/stores.dart';
 
 class TrendingNewsScreen extends StatefulWidget {
-
   const TrendingNewsScreen({Key key}) : super(key: key);
   @override
   _TrendingNewsScreenState createState() => _TrendingNewsScreenState();
@@ -79,8 +81,10 @@ class _TrendingNewsScreenState extends State<TrendingNewsScreen> {
   Widget _buildList() {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 4),
-      child: Consumer<TrendingNewsStore>(
-        builder: (context, store, child) {
+      child: Consumer5<TrendingNewsStore, PostMetaRepository, ShareService,
+          NavigationService, AuthenticationStore>(
+        builder: (context, store, postMetaRepository, shareService,
+            navigationService, authenticationStore, child) {
           return RefreshIndicator(
             onRefresh: () async {
               await store.refresh();
@@ -107,6 +111,10 @@ class _TrendingNewsScreenState extends State<TrendingNewsScreen> {
                     itemBuilder: (_, int index) {
                       return NewsListView(
                         feed: snapshot.data[index],
+                        postMetaRepository: postMetaRepository,
+                        shareService: shareService,
+                        navigationService: navigationService,
+                        authenticationStore: authenticationStore,
                       );
                     },
                   );

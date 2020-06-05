@@ -19,7 +19,9 @@ import 'package:samachar_hub/pages/widgets/news_thumbnail_view.dart';
 import 'package:samachar_hub/pages/widgets/page_heading_widget.dart';
 import 'package:samachar_hub/pages/widgets/progress_widget.dart';
 import 'package:samachar_hub/pages/widgets/section_heading.dart';
+import 'package:samachar_hub/repository/post_meta_repository.dart';
 import 'package:samachar_hub/services/services.dart';
+import 'package:samachar_hub/stores/stores.dart';
 
 import 'widgets/date_weather_section.dart';
 
@@ -138,12 +140,30 @@ class _PersonalisedPageState extends State<PersonalisedPage> {
   }
 
   Widget _buildLatestFeed(
-      int index, NewsFeedModel feed, PersonalisedFeedStore personalisedStore) {
+      int index,
+      NewsFeedModel feed,
+      PersonalisedFeedStore personalisedStore,
+      postMetaRepository,
+      shareService,
+      navigationService,
+      authenticationStore) {
     Widget feedWidget;
     if (index % 3 == 0) {
-      feedWidget = NewsThumbnailView(feed);
+      feedWidget = NewsThumbnailView(
+        feed: feed,
+        authenticationStore: authenticationStore,
+        navigationService: navigationService,
+        postMetaRepository: postMetaRepository,
+        shareService: shareService,
+      );
     } else {
-      feedWidget = NewsListView(feed: feed);
+      feedWidget = NewsListView(
+        feed: feed,
+        authenticationStore: authenticationStore,
+        navigationService: navigationService,
+        postMetaRepository: postMetaRepository,
+        shareService: shareService,
+      );
     }
     if (index == 0) {
       return Column(
@@ -162,8 +182,10 @@ class _PersonalisedPageState extends State<PersonalisedPage> {
   }
 
   Widget _buildList() {
-    return Consumer<PersonalisedFeedStore>(
-        builder: (context, personalisedStore, child) {
+    return Consumer5<PersonalisedFeedStore, PostMetaRepository, ShareService,
+            NavigationService, AuthenticationStore>(
+        builder: (context, personalisedStore, postMetaRepository, shareService,
+            navigationService, authenticationStore, child) {
       return RefreshIndicator(
         onRefresh: () async {
           await personalisedStore.refresh();
@@ -219,7 +241,11 @@ class _PersonalisedPageState extends State<PersonalisedPage> {
                           index,
                           personalisedStore
                               .sectionData[MixedDataType.LATEST_NEWS][index],
-                          personalisedStore);
+                          personalisedStore,
+                          postMetaRepository,
+                          shareService,
+                          navigationService,
+                          authenticationStore);
                     },
                     separatorBuilder: (_, int index) {
                       return _buildMixedSection(index, personalisedStore);

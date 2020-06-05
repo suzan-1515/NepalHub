@@ -15,7 +15,7 @@ import 'package:samachar_hub/pages/corona/corona_store.dart';
 import 'package:samachar_hub/pages/forex/forex_detail_store.dart';
 import 'package:samachar_hub/pages/forex/forex_repository.dart';
 import 'package:samachar_hub/pages/forex/forex_screen.dart';
-import 'package:samachar_hub/pages/forex/forex_screen_detail.dart';
+import 'package:samachar_hub/pages/forex/forex_detail_screen.dart';
 import 'package:samachar_hub/pages/forex/forex_store.dart';
 import 'package:samachar_hub/pages/home/home_screen.dart';
 import 'package:samachar_hub/pages/home/home_screen_store.dart';
@@ -91,10 +91,23 @@ class NavigationService {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => ProxyProvider<ForexRepository, ForexDetailStore>(
-          update: (_, ForexRepository value, ForexDetailStore previous) =>
-              ForexDetailStore(value, data),
-          dispose: (context, value) => value.dispose(),
+        builder: (context) => MultiProvider(
+          providers: [
+            ProxyProvider2<PostMetaRepository, AuthenticationStore,
+                PostMetaStore>(
+              update: (_,
+                      PostMetaRepository metaRepository,
+                      AuthenticationStore authenticationStore,
+                      PostMetaStore previous) =>
+                  PostMetaStore(
+                      metaRepository, authenticationStore.user, 'forex'),
+            ),
+            ProxyProvider<ForexRepository, ForexDetailStore>(
+              update: (_, ForexRepository value, ForexDetailStore previous) =>
+                  ForexDetailStore(value, data),
+              dispose: (context, value) => value.dispose(),
+            ),
+          ],
           child: ForexDetailScreen(),
         ),
       ),
