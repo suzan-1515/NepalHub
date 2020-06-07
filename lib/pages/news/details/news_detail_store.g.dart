@@ -47,16 +47,6 @@ mixin _$NewsDetailStore on _NewsDetailStore, Store {
       ActionController(name: '_NewsDetailStore');
 
   @override
-  dynamic isBookmarked() {
-    final _$actionInfo = _$_NewsDetailStoreActionController.startAction();
-    try {
-      return super.isBookmarked();
-    } finally {
-      _$_NewsDetailStoreActionController.endAction(_$actionInfo);
-    }
-  }
-
-  @override
   dynamic bookmarkFeed() {
     final _$actionInfo = _$_NewsDetailStoreActionController.startAction();
     try {

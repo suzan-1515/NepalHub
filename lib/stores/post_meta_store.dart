@@ -74,7 +74,9 @@ abstract class _PostMetaStore with Store {
   }
 
   _loadPostMetaAsStream() {
-    _postMetaRepository.getMetaAsStream(postId: postId).listen((value) {
+    _postMetaRepository
+        .getMetaAsStream(postId: postId, userId: _user.uId)
+        .listen((value) {
       if (value != null) {
         this.postMeta = value;
       }
@@ -82,4 +84,5 @@ abstract class _PostMetaStore with Store {
       debugPrint('Error loading meta: ' + onError.toString());
     });
   }
+
 }

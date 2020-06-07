@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:samachar_hub/data/mappers/post_meta_mapper.dart';
 import 'package:samachar_hub/data/models/post_meta_model.dart';
 import 'package:samachar_hub/services/services.dart';
 
@@ -32,7 +33,7 @@ class PostMetaRepository {
       'meta_name': 'like',
       'post_id': postId,
       'user_id': userId,
-      'timestamp': FieldValue.serverTimestamp(),
+      'timestamp': DateTime.now().toIso8601String(),
     };
     return _postMetaService
         .addMeta(
@@ -62,30 +63,6 @@ class PostMetaRepository {
     });
   }
 
-  Future<void> postComment(
-      {@required String postId, @required String userId}) async {
-    var metaData = {
-      'comment_count': FieldValue.increment(1),
-    };
-    var activityId = generateActivityId(postId, userId, 'comment');
-    var metaActivityData = {
-      'id': activityId,
-      'meta_name': 'comment',
-      'post_id': postId,
-      'user_id': userId,
-      'timestamp': FieldValue.serverTimestamp(),
-    };
-    return _postMetaService
-        .addMeta(
-            postId: postId,
-            metaData: metaData,
-            activityId: activityId,
-            activityData: metaActivityData)
-        .then((onValue) {
-      return _analyticsService.logPostMeta(postId: postId, metaName: 'comment');
-    });
-  }
-
   Future<void> postView({@required postId, @required String userId}) async {
     var metaData = {
       'view_count': FieldValue.increment(1),
@@ -96,7 +73,7 @@ class PostMetaRepository {
       'meta_name': 'view',
       'post_id': postId,
       'user_id': userId,
-      'timestamp': FieldValue.serverTimestamp(),
+      'timestamp': DateTime.now().toIso8601String(),
     };
     return _postMetaService
         .addMeta(
@@ -119,7 +96,7 @@ class PostMetaRepository {
       'meta_name': 'share',
       'post_id': postId,
       'user_id': userId,
-      'timestamp': FieldValue.serverTimestamp(),
+      'timestamp': DateTime.now().toIso8601String(),
     };
     return _postMetaService
         .addMeta(
@@ -132,23 +109,33 @@ class PostMetaRepository {
     });
   }
 
-  Future<PostMetaModel> getMeta({@required String postId}) async {
-    return _postMetaService.fetchMeta(postId: postId).then((onValue) {
-      if (onValue.exists) {
-        onValue.data['post_id'] = onValue.documentID;
-        return PostMetaModel.fromJson(onValue.data);
+  Future<PostMetaModel> getMeta(
+      {@required String postId, @required String userId}) async {
+    return _postMetaService.fetchMeta(postId: postId).then((onValue) async {
+      if (onValue != null) {
+        return await _postMetaService
+            .fetchMetaActivities(postId: postId, userId: userId)
+            .then((value) =>
+                PostMetaMapper.fromPostMetaFirestore(onValue, value));
       }
       return null;
     });
   }
 
-  Stream<PostMetaModel> getMetaAsStream({@required String postId}) {
-    return _postMetaService.fetchMetaAsStream(postId: postId).map((onValue) {
-      if (onValue.exists) {
-        onValue.data['post_id'] = onValue.documentID;
-        return PostMetaModel.fromJson(onValue.data);
+  Stream<PostMetaModel> getMetaAsStream(
+      {@required String postId, @required String userId}) {
+    return _postMetaService
+        .fetchMetaAsStream(postId: postId)
+        .transform(StreamTransformer.fromHandlers(handleData: (data, sink) {
+      if (data != null) {
+        _postMetaService
+            .fetchMetaActivities(postId: postId, userId: userId)
+            .then((value) => PostMetaMapper.fromPostMetaFirestore(data, value))
+            .then((value) {
+          sink.add(value);
+        });
       }
       return null;
-    });
+    }));
   }
 }

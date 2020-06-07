@@ -31,8 +31,8 @@ class CommentRepository {
       'id': activityId,
       'meta_name': 'comment',
       'post_id': postId,
-      'user': user.toJson(),
-      'timestamp': FieldValue.serverTimestamp(),
+      'user_id': user.uId,
+      'timestamp': DateTime.now().toIso8601String(),
     };
 
     var commentId = Uuid().v4();

@@ -176,6 +176,8 @@ class FeedOptionsSection extends StatelessWidget {
                   postId: article.uuid,
                   title: article.title,
                   data: article.link);
+              postMetaRepository.postShare(
+                  postId: article.uuid, userId: authenticationStore.user.uId);
             },
           ),
           Spacer(),

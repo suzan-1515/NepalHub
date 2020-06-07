@@ -170,7 +170,7 @@ class _ForexDetailScreenState extends State<ForexDetailScreen> {
                           metaStore.postMeta?.commentCount?.toString() ?? '0',
                       likesCount:
                           metaStore.postMeta?.likeCount?.toString() ?? '0',
-                      isLiked: false, //TODO: user like check
+                      isLiked: metaStore.postMeta?.isUserLiked ?? false,
                       onCommentTap: () {
                         navigationService.onViewCommentsTapped(
                             context: context, title: 'Forex', postId: 'forex');

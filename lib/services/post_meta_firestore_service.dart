@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:samachar_hub/data/api/response/post_meta_firestore_response.dart';
 
 class PostMetaFirestoreService {
   final CollectionReference _metaCollectionReference =
@@ -16,13 +17,21 @@ class PostMetaFirestoreService {
       @required Map<String, dynamic> metaData,
       @required String activityId,
       @required Map<String, dynamic> activityData}) async {
-    var batch = Firestore.instance.batch();
-    batch.setData(metaActivityCollectionReference(postId).document(activityId),
-        activityData,
-        merge: true);
-    batch.setData(_metaCollectionReference.document(postId), metaData,
-        merge: true);
-    return batch.commit();
+    return metaActivityCollectionReference(postId)
+        .document(activityId)
+        .get()
+        .then((value) {
+      if (!value.exists) {
+        var batch = Firestore.instance.batch();
+        batch.setData(
+            metaActivityCollectionReference(postId).document(activityId),
+            activityData,
+            merge: true);
+        batch.setData(_metaCollectionReference.document(postId), metaData,
+            merge: true);
+        batch.commit();
+      }
+    });
   }
 
   Future<void> removeMeta({
@@ -30,18 +39,50 @@ class PostMetaFirestoreService {
     @required Map<String, dynamic> metaData,
     @required String activityId,
   }) async {
-    var batch = Firestore.instance.batch();
-    batch.delete(metaActivityCollectionReference(postId).document(activityId));
-    batch.setData(_metaCollectionReference.document(postId), metaData,
-        merge: true);
-    return batch.commit();
+    return metaActivityCollectionReference(postId)
+        .document(activityId)
+        .get()
+        .then((value) {
+      if (value.exists) {
+        var batch = Firestore.instance.batch();
+        batch.delete(
+            metaActivityCollectionReference(postId).document(activityId));
+        batch.updateData(_metaCollectionReference.document(postId), metaData);
+        batch.commit();
+      }
+    });
   }
 
-  Future<DocumentSnapshot> fetchMeta({@required String postId}) {
-    return _metaCollectionReference.document(postId).get();
+  Future<List<PostMetaActivityFirestoreResponse>> fetchMetaActivities(
+      {@required String postId, @required String userId}) {
+    return metaActivityCollectionReference(postId)
+        .where('user_id', isEqualTo: userId)
+        .getDocuments()
+        .then((value) {
+      return value.documents
+          .where((e) => e.exists)
+          .map((e) => PostMetaActivityFirestoreResponse.fromJson(e.data))
+          .toList();
+    });
   }
 
-  Stream<DocumentSnapshot> fetchMetaAsStream({@required String postId}) {
-    return _metaCollectionReference.document(postId).snapshots();
+  Future<PostMetaFirestoreResponse> fetchMeta({@required String postId}) {
+    return _metaCollectionReference.document(postId).get().then((value) {
+      if (!value.exists) return null;
+      value.data['post_id'] = value.documentID;
+      return PostMetaFirestoreResponse.fromJson(value.data);
+    });
+  }
+
+  Stream<PostMetaFirestoreResponse> fetchMetaAsStream(
+      {@required String postId}) {
+    return _metaCollectionReference
+        .document(postId)
+        .snapshots()
+        .where((event) => event.exists)
+        .map((event) {
+      event.data['post_id'] = event.documentID;
+      return PostMetaFirestoreResponse.fromJson(event.data);
+    });
   }
 }

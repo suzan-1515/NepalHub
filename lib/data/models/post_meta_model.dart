@@ -6,21 +6,25 @@ class PostMetaModel {
   final int shareCount;
   final int viewCount;
   final String postId;
+  bool isUserLiked;
+  bool isUserShared;
+  bool isUserViewed;
+  bool isUserCommented;
+  bool isUserBookmarked;
+  List<PostMetaActivityModel> activities = List<PostMetaActivityModel>();
 
   PostMetaModel(
       {@required this.likeCount,
       @required this.commentCount,
       @required this.shareCount,
       @required this.viewCount,
-      @required this.postId});
-
-  factory PostMetaModel.fromJson(Map<String, dynamic> json) => PostMetaModel(
-        likeCount: json['like_count'],
-        commentCount: json['comment_count'],
-        viewCount: json['view_count'],
-        shareCount: json['share_count'],
-        postId: json['post_id'],
-      );
+      @required this.postId,
+      @required this.isUserLiked,
+      @required this.isUserShared,
+      @required this.isUserViewed,
+      @required this.isUserCommented,
+      @required this.isUserBookmarked,
+      @required this.activities});
 
   toJson() => <String, dynamic>{
         'like_count': this.likeCount,

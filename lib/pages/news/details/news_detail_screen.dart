@@ -28,7 +28,6 @@ class _NewsDetailScreenState extends State<NewsDetailScreen> {
     final store = Provider.of<NewsDetailStore>(context, listen: false);
     final metaStore = Provider.of<PostMetaStore>(context, listen: false);
     _setupObserver(store);
-    store.isBookmarked();
     metaStore.loadPostMeta();
     metaStore.postView();
 
@@ -78,43 +77,42 @@ class _NewsDetailScreenState extends State<NewsDetailScreen> {
       );
   }
 
-  Widget _articleDetails(BuildContext context) {
+  Widget _articleDetails(
+      BuildContext context, NewsDetailStore store, PostMetaStore metaStore) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 24),
-      child: Consumer<NewsDetailStore>(
-        builder: (_, NewsDetailStore store, Widget child) {
-          return Column(
-            mainAxisSize: MainAxisSize.max,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              SizedBox(
-                height: 16,
-              ),
-              Text(
-                store.feed.title,
-                style: Theme.of(context).textTheme.headline5.copyWith(
-                    fontWeight: FontWeight.w600), //Todo: Use proper style
-              ),
-              SizedBox(
-                height: 16,
-              ),
-              _buildSourceRow(store),
-              SizedBox(
-                height: 16,
-              ),
-              _buildAuthorRow(store, context),
-              SizedBox(
-                height: 16,
-              ),
-              Text(
-                store.feed.description ?? 'No article content available.',
-                style: Theme.of(context).textTheme.bodyText2,
-              ),
-              _buildAdRow(),
-              _buildReadMoreRow(context, store),
-            ],
-          );
-        },
+      child: Column(
+        mainAxisSize: MainAxisSize.max,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          SizedBox(
+            height: 16,
+          ),
+          Text(
+            store.feed.title,
+            style: Theme.of(context)
+                .textTheme
+                .headline5
+                .copyWith(fontWeight: FontWeight.w600), //Todo: Use proper style
+          ),
+          SizedBox(
+            height: 16,
+          ),
+          _buildSourceRow(store, metaStore),
+          SizedBox(
+            height: 16,
+          ),
+          _buildAuthorRow(store, context),
+          SizedBox(
+            height: 16,
+          ),
+          Text(
+            store.feed.description ?? 'No article content available.',
+            style: Theme.of(context).textTheme.bodyText2,
+          ),
+          _buildAdRow(),
+          _buildReadMoreRow(context, store),
+        ],
       ),
     );
   }
@@ -210,7 +208,7 @@ class _NewsDetailScreenState extends State<NewsDetailScreen> {
     );
   }
 
-  Builder _buildSourceRow(NewsDetailStore store) {
+  Builder _buildSourceRow(NewsDetailStore store, PostMetaStore metaStore) {
     return Builder(
       builder: (_) {
         final String faviconUrl = store.feed.sourceFavicon;
@@ -248,18 +246,16 @@ class _NewsDetailScreenState extends State<NewsDetailScreen> {
                     builder: (_) {
                       return IconButton(
                         icon: Icon(
-                          store.bookmarkStatus
+                          (metaStore.postMeta?.isUserBookmarked ?? false)
                               ? FontAwesomeIcons.solidHeart
                               : FontAwesomeIcons.heart,
                           size: 36,
                           color: Theme.of(context).accentColor,
                         ),
                         onPressed: () {
-                          if (store.bookmarkStatus) {
-                            store.feed.bookmarked.value = false;
+                          if ((metaStore.postMeta?.isUserBookmarked ?? false)) {
                             store.removeBookmarkedFeed();
                           } else {
-                            store.feed.bookmarked.value = true;
                             store.bookmarkFeed();
                           }
                         },
@@ -281,9 +277,9 @@ class _NewsDetailScreenState extends State<NewsDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer2<NewsDetailStore, AuthenticationStore>(
+    return Consumer3<NewsDetailStore, AuthenticationStore, PostMetaStore>(
       builder: (_, NewsDetailStore store,
-          AuthenticationStore _authenticationStore, Widget child) {
+          AuthenticationStore _authenticationStore, metaStore, Widget child) {
         return Scaffold(
           body: OrientationBuilder(builder: (_, Orientation orientation) {
             switch (orientation) {
@@ -297,7 +293,7 @@ class _NewsDetailScreenState extends State<NewsDetailScreen> {
                               tag: store.feed.tag)),
                       Expanded(
                         child: SingleChildScrollView(
-                            child: _articleDetails(context)),
+                            child: _articleDetails(context, store, metaStore)),
                       ),
                     ],
                   ),
@@ -321,7 +317,7 @@ class _NewsDetailScreenState extends State<NewsDetailScreen> {
                     ),
                     SliverFillRemaining(
                       hasScrollBody: false,
-                      child: _articleDetails(context),
+                      child: _articleDetails(context, store, metaStore),
                     ),
                   ],
                 );
@@ -329,9 +325,9 @@ class _NewsDetailScreenState extends State<NewsDetailScreen> {
             }
           }),
           bottomNavigationBar: BottomAppBar(
-            child: Consumer3<NavigationService, ShareService, PostMetaStore>(
+            child: Consumer2<NavigationService, ShareService>(
               builder: (_, NavigationService navigationService, shareService,
-                  metaStore, Widget child) {
+                  Widget child) {
                 return Observer(
                   builder: (_) {
                     return CommentBar(
@@ -340,7 +336,7 @@ class _NewsDetailScreenState extends State<NewsDetailScreen> {
                           metaStore.postMeta?.commentCount?.toString() ?? '0',
                       likesCount:
                           metaStore.postMeta?.likeCount?.toString() ?? '0',
-                      isLiked: store.feed.liked.value,
+                      isLiked: metaStore.postMeta?.isUserLiked ?? false,
                       onCommentTap: () {
                         navigationService.onViewCommentsTapped(
                             context: context,

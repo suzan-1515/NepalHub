@@ -23,15 +23,6 @@ abstract class _NewsDetailStore with Store {
   String message;
 
   @action
-  isBookmarked() {
-    _bookmarkRepository
-        .doesBookmarkExist(postId: feed.uuid, userId: user.uId)
-        .then((value) {
-      bookmarkStatus = value;
-    }).catchError((onError) => bookmarkStatus = false);
-  }
-
-  @action
   bookmarkFeed() {
     _bookmarkRepository
         .postBookmark(postId: feed.uuid, user: user, bookmarkFeed: feed)

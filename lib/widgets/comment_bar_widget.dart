@@ -7,13 +7,13 @@ import 'package:samachar_hub/widgets/icon_badge_widget.dart';
 class CommentBar extends StatefulWidget {
   final String userProfileImageUrl;
 
-  final bool isLiked;
+  bool isLiked;
   final Function(bool) onLikeTap;
   final VoidCallback onCommentTap;
   final VoidCallback onShareTap;
   final String commentsCount;
   final String likesCount;
-  const CommentBar({
+  CommentBar({
     Key key,
     this.userProfileImageUrl,
     @required this.isLiked,
@@ -29,20 +29,6 @@ class CommentBar extends StatefulWidget {
 }
 
 class _CommentBarState extends State<CommentBar> {
-  final ValueNotifier<bool> likeNotifier = ValueNotifier<bool>(false);
-
-  @override
-  void initState() {
-    super.initState();
-    likeNotifier.value = widget.isLiked;
-  }
-
-  @override
-  void dispose() {
-    likeNotifier.dispose();
-    super.dispose();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -88,19 +74,17 @@ class _CommentBarState extends State<CommentBar> {
             iconData: FontAwesomeIcons.comment,
             badgeText: widget.commentsCount,
             onTap: () => widget.onCommentTap()),
-        ValueListenableBuilder<bool>(
-            valueListenable: likeNotifier,
-            builder: (BuildContext context, bool value, Widget child) {
-              return IconBadge(
-                  context: context,
-                  iconData: value
-                      ? FontAwesomeIcons.solidThumbsUp
-                      : FontAwesomeIcons.thumbsUp,
-                  badgeText: widget.likesCount,
-                  onTap: () {
-                    likeNotifier.value = !value;
-                    widget.onLikeTap(value);
-                  });
+        IconBadge(
+            context: context,
+            iconData: widget.isLiked
+                ? FontAwesomeIcons.solidThumbsUp
+                : FontAwesomeIcons.thumbsUp,
+            badgeText: widget.likesCount,
+            onTap: () {
+              widget.onLikeTap(widget.isLiked);
+              setState(() {
+                widget.isLiked = !widget.isLiked;
+              });
             }),
         IconButton(
           icon: Icon(
