@@ -3,34 +3,35 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:mobx/mobx.dart';
 import 'package:provider/provider.dart';
-import 'package:samachar_hub/data/api/api.dart';
-import 'package:samachar_hub/data/models/forex_model.dart';
-import 'package:samachar_hub/pages/forex/forex_detail_store.dart';
-import 'package:samachar_hub/pages/widgets/api_error_dialog.dart';
-import 'package:samachar_hub/pages/widgets/empty_data_widget.dart';
-import 'package:samachar_hub/pages/widgets/error_data_widget.dart';
+import 'package:samachar_hub/pages/horoscope/horoscope_detail_store.dart';
 import 'package:samachar_hub/pages/widgets/page_heading_widget.dart';
-import 'package:samachar_hub/pages/widgets/progress_widget.dart';
 import 'package:samachar_hub/services/services.dart';
 import 'package:samachar_hub/stores/stores.dart';
 import 'package:samachar_hub/widgets/comment_bar_widget.dart';
 
-import 'widgets/forex_graph.dart';
+class HoroscopeDetailScreen extends StatefulWidget {
+  final String sign;
+  final String signIcon;
+  final String zodiac;
 
-class ForexDetailScreen extends StatefulWidget {
+  const HoroscopeDetailScreen(
+      {Key key,
+      @required this.sign,
+      @required this.signIcon,
+      @required this.zodiac})
+      : super(key: key);
   @override
-  _ForexDetailScreenState createState() => _ForexDetailScreenState();
+  _HoroscopeDetailScreenState createState() => _HoroscopeDetailScreenState();
 }
 
-class _ForexDetailScreenState extends State<ForexDetailScreen> {
+class _HoroscopeDetailScreenState extends State<HoroscopeDetailScreen> {
   List<ReactionDisposer> _disposers;
 
   @override
   void initState() {
-    final store = Provider.of<ForexDetailStore>(context, listen: false);
+    final store = Provider.of<HoroscopeDetailStore>(context, listen: false);
     final metaStore = Provider.of<PostMetaStore>(context, listen: false);
     _setupObserver(store);
-    store.loadData();
     metaStore.loadPostMeta();
     metaStore.postView();
 
@@ -55,76 +56,77 @@ class _ForexDetailScreenState extends State<ForexDetailScreen> {
         );
   }
 
-  _showErrorDialog(APIException apiError) {
-    if (null != apiError)
-      showDialog<void>(
-        context: context,
-        barrierDismissible: false, // user must tap button!
-        builder: (BuildContext context) {
-          return ApiErrorDialog(
-            apiError: apiError,
-          );
-        },
-      );
-  }
-
   _setupObserver(store) {
     _disposers = [
       // Listens for error message
       autorun((_) {
-        final String message = store.error;
+        final String message = store.message;
         _showMessage(message);
       }),
-      // Listens for API error
-      autorun((_) {
-        final APIException error = store.apiError;
-        _showErrorDialog(error);
-      })
     ];
   }
 
-  Widget _buildContent(BuildContext context, ForexDetailStore store) {
+  Widget _buildContent(BuildContext context, HoroscopeDetailStore store) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
-      child: StreamBuilder<List<ForexModel>>(
-        stream: store.dataStream,
-        builder: (_, AsyncSnapshot<List<ForexModel>> snapshot) {
-          if (snapshot.hasError) {
-            return Center(
-              child: ErrorDataView(
-                onRetry: () => store.retry(),
-              ),
-            );
-          }
-          if (snapshot.hasData) {
-            if (snapshot.data.isEmpty) {
-              return Center(
-                child: EmptyDataView(),
-              );
-            }
-            return ForexGraph(timeline: snapshot.data);
-          } else {
-            return Center(child: ProgressView());
-          }
-        },
+      child: Row(
+        mainAxisSize: MainAxisSize.max,
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Hero(
+            tag: widget.sign,
+            child: CircleAvatar(
+              backgroundColor: Theme.of(context).canvasColor,
+              backgroundImage: NetworkImage(widget.signIcon),
+            ),
+          ),
+          SizedBox(width: 8),
+          Expanded(
+            child: RichText(
+              text: TextSpan(
+                  text: widget.sign,
+                  style: Theme.of(context)
+                      .textTheme
+                      .subtitle1
+                      .copyWith(fontWeight: FontWeight.w700),
+                  children: [
+                    TextSpan(
+                        text: '\n${store.horoscopeModel.todate}',
+                        style: Theme.of(context)
+                            .textTheme
+                            .bodyText2
+                            .copyWith(fontStyle: FontStyle.italic)),
+                    TextSpan(
+                        text: '\n\n${widget.zodiac}',
+                        style: Theme.of(context).textTheme.subtitle1),
+                  ]),
+            ),
+          ),
+        ],
       ),
     );
   }
 
-  Widget _buildTodayStat(BuildContext context, ForexDetailStore store) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Text(
-        'Buy: ${store.forex.buying} Sell: ${store.forex.selling}',
-        style: Theme.of(context).textTheme.bodyText1,
+  Widget _buildAdView(context, store) {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+      height: 60,
+      color: Colors.amber,
+      child: Row(
+        children: <Widget>[
+          Expanded(
+            child: Center(child: Text('Ad section')),
+          ),
+        ],
       ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    return Consumer3<ForexDetailStore, ShareService, PostMetaStore>(
-      builder: (_, ForexDetailStore store, ShareService shareService,
+    return Consumer3<HoroscopeDetailStore, ShareService, PostMetaStore>(
+      builder: (_, HoroscopeDetailStore store, ShareService shareService,
           PostMetaStore metaStore, __) {
         return Scaffold(
           backgroundColor: Theme.of(context).backgroundColor,
@@ -142,18 +144,18 @@ class _ForexDetailScreenState extends State<ForexDetailScreen> {
                         onPressed: () => Navigator.of(context).pop(),
                       ),
                       PageHeading(
-                        title: store.forex.currency,
+                        title: 'Horoscope',
                       ),
                       Spacer(),
                       IconButton(
                         icon: Icon(FontAwesomeIcons.shareAlt),
                         onPressed: () {
-                          if (store.forex != null)
+                          if (store.horoscopeModel != null)
                             shareService.share(
-                                postId: store.forex.code,
-                                title: store.forex.currency,
+                                postId: widget.sign,
+                                title: widget.sign,
                                 data:
-                                    'Currency:${store.forex.currency}\nBuy: ${store.forex.buying}\nSell: ${store.forex.selling}\nLast updated: ${store.forex.addedDate}');
+                                    '${widget.sign}\n${widget.zodiac}\nLast Updated: ${store.horoscopeModel.todate}');
                           metaStore.postShare();
                         },
                       ),
@@ -163,8 +165,9 @@ class _ForexDetailScreenState extends State<ForexDetailScreen> {
                     child: SingleChildScrollView(
                         child: Column(
                       children: <Widget>[
-                        _buildTodayStat(context, store),
                         _buildContent(context, store),
+                        SizedBox(height: 16),
+                        _buildAdView(context, store),
                       ],
                     )),
                   ),
@@ -186,7 +189,9 @@ class _ForexDetailScreenState extends State<ForexDetailScreen> {
                       isLiked: metaStore.postMeta?.isUserLiked ?? false,
                       onCommentTap: () {
                         navigationService.onViewCommentsTapped(
-                            context: context, title: 'Forex', postId: 'forex');
+                            context: context,
+                            title: 'Horoscope',
+                            postId: 'horoscope');
                       },
                       onLikeTap: (value) {
                         if (value) {
@@ -200,12 +205,12 @@ class _ForexDetailScreenState extends State<ForexDetailScreen> {
                         }
                       },
                       onShareTap: () {
-                        if (store.forex != null)
+                        if (store.horoscopeModel != null)
                           shareService.share(
-                              postId: store.forex.code,
-                              title: store.forex.currency,
+                              postId: widget.sign,
+                              title: widget.sign,
                               data:
-                                  'Currency:${store.forex.currency}\nBuy: ${store.forex.buying}\nSell: ${store.forex.selling}\nLast updated: ${store.forex.addedDate}');
+                                  '${widget.sign}${widget.zodiac}\nLast Updated: ${store.horoscopeModel.todate}');
                         metaStore.postShare();
                       },
                     );

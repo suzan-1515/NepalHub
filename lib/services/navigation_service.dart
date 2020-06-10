@@ -19,6 +19,11 @@ import 'package:samachar_hub/pages/forex/forex_detail_screen.dart';
 import 'package:samachar_hub/pages/forex/forex_store.dart';
 import 'package:samachar_hub/pages/home/home_screen.dart';
 import 'package:samachar_hub/pages/home/home_screen_store.dart';
+import 'package:samachar_hub/pages/horoscope/horoscope_detail_screen.dart';
+import 'package:samachar_hub/pages/horoscope/horoscope_detail_store.dart';
+import 'package:samachar_hub/pages/horoscope/horoscope_repository.dart';
+import 'package:samachar_hub/pages/horoscope/horoscope_screen.dart';
+import 'package:samachar_hub/pages/horoscope/horoscope_store.dart';
 import 'package:samachar_hub/pages/news/details/news_details.dart';
 import 'package:samachar_hub/pages/news/news_repository.dart';
 import 'package:samachar_hub/pages/news/sources/news_source_screen.dart';
@@ -114,7 +119,52 @@ class NavigationService {
     );
   }
 
-  toHoroscopeScreen(BuildContext context) {}
+  toHoroscopeScreen(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ProxyProvider2<HoroscopeRepository,
+            PreferenceService, HoroscopeStore>(
+          update: (_,
+                  HoroscopeRepository value,
+                  PreferenceService _preferenceService,
+                  HoroscopeStore previous) =>
+              HoroscopeStore(value, _preferenceService),
+          dispose: (context, value) => value.dispose(),
+          child: HoroscopeScreen(),
+        ),
+      ),
+    );
+  }
+
+  toHoroscopeDetail(BuildContext context, String sign, String signIcon,
+      String zodiac, HoroscopeModel data) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => MultiProvider(
+          providers: [
+            ProxyProvider2<PostMetaRepository, AuthenticationStore,
+                PostMetaStore>(
+              update: (_,
+                      PostMetaRepository metaRepository,
+                      AuthenticationStore authenticationStore,
+                      PostMetaStore previous) =>
+                  PostMetaStore(
+                      metaRepository, authenticationStore.user, 'horoscope'),
+            ),
+            Provider<HoroscopeDetailStore>(
+              create: (_) => HoroscopeDetailStore(data),
+              dispose: (context, value) => value.dispose(),
+            ),
+          ],
+          child: HoroscopeDetailScreen(
+              sign: sign, signIcon: signIcon, zodiac: zodiac),
+        ),
+      ),
+    );
+  }
+
   toGoldSilverScreen(BuildContext context) {}
 
   toFeedDetail(NewsFeedModel article, BuildContext context) {

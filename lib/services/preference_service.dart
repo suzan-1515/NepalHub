@@ -9,6 +9,7 @@ class PreferenceService {
   final String _likedFeedsKey = 'liked_feeds';
   final String _userId = 'userId';
   final String _defaultForexCurrencyKey = 'default_forex_currency';
+  final String _defaultZodiacKey = 'default_zodiac';
 
   final SharedPreferences _sharedPreferences;
 
@@ -46,6 +47,10 @@ class PreferenceService {
     _sharedPreferences.setString(_defaultForexCurrencyKey, currencyCode);
   }
 
+  set defaultZodiac(int zodiac) {
+    _sharedPreferences.setInt(_defaultZodiacKey, zodiac);
+  }
+
   bool get themeSetBySystem =>
       _sharedPreferences.getBool(_themeSetBySystemKey) ?? false;
 
@@ -64,4 +69,6 @@ class PreferenceService {
 
   String get defaultForexCurrency =>
       _sharedPreferences.getString(_defaultForexCurrencyKey) ?? 'USD';
+
+  int get defaultZodiac => _sharedPreferences.getInt(_defaultZodiacKey) ?? 0;
 }

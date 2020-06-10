@@ -276,6 +276,11 @@ class _ForexScreenState extends State<ForexScreen> {
                       PageHeading(
                         title: 'Forex',
                       ),
+                      Spacer(),
+                      IconButton(
+                        icon: Icon(Icons.settings),
+                        onPressed: () {},
+                      ),
                     ],
                   ),
                   Expanded(

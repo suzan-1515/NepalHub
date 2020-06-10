@@ -114,7 +114,7 @@ abstract class _CommentStore with Store {
         .listen((onData) {
       data.clear();
       data.addAll(onData);
-      _dataStreamController.add(data);
+      _dataStreamController.sink.add(data);
       _hasMoreData = onData.length == CommentRepository.DATA_LIMIT;
     }, onError: (e) {
       log(e.toString());

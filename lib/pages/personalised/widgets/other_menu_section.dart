@@ -21,7 +21,7 @@ class OtherMenuSection extends StatelessWidget {
       color: Colors.blue,
       child: Material(
         color: Colors.transparent,
-              child: InkWell(
+        child: InkWell(
           onTap: () {
             navigationService.toForexScreen(context);
           },
@@ -44,10 +44,8 @@ class OtherMenuSection extends StatelessWidget {
                   child: RichText(
                     text: TextSpan(
                         text: 'Forex',
-                        style: Theme.of(context)
-                            .textTheme
-                            .subtitle1
-                            .copyWith(color: Colors.white,fontWeight: FontWeight.w600),
+                        style: Theme.of(context).textTheme.subtitle1.copyWith(
+                            color: Colors.white, fontWeight: FontWeight.w600),
                         children: <TextSpan>[
                           TextSpan(
                               text:
@@ -58,7 +56,8 @@ class OtherMenuSection extends StatelessWidget {
                                   .copyWith(color: Colors.white)),
                           TextSpan(text: '\n'),
                           TextSpan(
-                              text: '${forexData.formattedDate(forexData.addedDate)}',
+                              text:
+                                  '${forexData.formattedDate(forexData.addedDate)}',
                               style: Theme.of(context)
                                   .textTheme
                                   .caption
@@ -84,9 +83,9 @@ class OtherMenuSection extends StatelessWidget {
       color: Colors.deepOrange[600],
       child: Material(
         color: Colors.transparent,
-              child: InkWell(
+        child: InkWell(
           onTap: () {
-            navigationService.toGoldSilverScreen(context);
+            navigationService.toHoroscopeScreen(context);
           },
           child: Padding(
             padding: const EdgeInsets.all(8),
@@ -106,15 +105,12 @@ class OtherMenuSection extends StatelessWidget {
                 Expanded(
                   child: RichText(
                     text: TextSpan(
-                        text: 'NRs.77,000',
-                        style: Theme.of(context)
-                            .textTheme
-                            .subtitle1
-                            .copyWith(color: Colors.white,fontWeight: FontWeight.w600),
+                        text: 'Horoscope',
+                        style: Theme.of(context).textTheme.subtitle1.copyWith(
+                            color: Colors.white, fontWeight: FontWeight.w600),
                         children: <TextSpan>[
                           TextSpan(
-                              text:
-                                  '\nHallmark Gold(Tola)',
+                              text: '\nAries',
                               style: Theme.of(context)
                                   .textTheme
                                   .subtitle2
@@ -144,7 +140,7 @@ class OtherMenuSection extends StatelessWidget {
       return GridView.count(
         primary: false,
         shrinkWrap: true,
-        childAspectRatio: 4/2,
+        childAspectRatio: 4 / 2,
         mainAxisSpacing: 4,
         crossAxisSpacing: 4,
         scrollDirection: Axis.vertical,

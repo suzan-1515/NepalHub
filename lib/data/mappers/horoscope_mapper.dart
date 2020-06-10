@@ -20,6 +20,6 @@ class HoroscopeMapper {
         capricorn: response.capricorn,
         aquarius: response.aquarius,
         pisces: response.pisces,
-        todate: response.todate);
+        todate: response.formattedDate);
   }
 }

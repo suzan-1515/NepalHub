@@ -102,6 +102,12 @@ class AnalyticsService {
     );
   }
 
+  Future logHoroscopeFetched() async {
+    await _analytics.logEvent(
+      name: 'horoscope_fetched',
+    );
+  }
+
   Future logShare({String postId}) async {
     await _analytics.logShare(
       contentType: 'feed',
