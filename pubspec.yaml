@@ -33,7 +33,6 @@ dependencies:
   google_fonts: ^0.3.10
   url_launcher: ^5.4.2
   share: ^0.6.3+6
-  incrementally_loading_listview: ^0.3.0
   cached_network_image: ^2.1.0+1
   throttling: ^0.8.0
   uuid: 2.0.4
@@ -54,6 +53,9 @@ dependencies:
   flutter_svg: ^0.17.4
   fl_chart: ^0.10.0
 
+  corona_module:
+    path: ./corona_module
+  
 dev_dependencies:
   flutter_test:
     sdk: flutter

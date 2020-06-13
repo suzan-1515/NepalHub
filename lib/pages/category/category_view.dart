@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:incrementally_loading_listview/incrementally_loading_listview.dart';
 import 'package:mobx/mobx.dart';
 import 'package:provider/provider.dart';
 import 'package:samachar_hub/data/api/api.dart';
@@ -16,6 +15,7 @@ import 'package:samachar_hub/pages/widgets/progress_widget.dart';
 import 'package:samachar_hub/repository/repositories.dart';
 import 'package:samachar_hub/services/services.dart';
 import 'package:samachar_hub/stores/stores.dart';
+import 'package:samachar_hub/widgets/incrementally_loading_listview.dart';
 
 class NewsCategoryView extends StatelessWidget {
   final NewsCategory category;

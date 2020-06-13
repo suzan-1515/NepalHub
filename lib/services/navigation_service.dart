@@ -1,3 +1,4 @@
+import 'package:corona_module/corona.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
@@ -63,15 +64,21 @@ class NavigationService {
   }
 
   toCoronaScreen(BuildContext context) {
+    // Navigator.push(
+    //   context,
+    //   MaterialPageRoute(
+    //     builder: (context) => ProxyProvider<CoronaRepository, CoronaStore>(
+    //       update: (_, CoronaRepository value, CoronaStore previous) =>
+    //           CoronaStore(value),
+    //       dispose: (context, value) => value.dispose(),
+    //       child: CoronaScreen(),
+    //     ),
+    //   ),
+    // );
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => ProxyProvider<CoronaRepository, CoronaStore>(
-          update: (_, CoronaRepository value, CoronaStore previous) =>
-              CoronaStore(value),
-          dispose: (context, value) => value.dispose(),
-          child: CoronaScreen(),
-        ),
+        builder: (context) => CoronaApp(),
       ),
     );
   }
