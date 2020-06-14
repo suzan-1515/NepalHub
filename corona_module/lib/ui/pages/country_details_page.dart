@@ -23,6 +23,7 @@ class CountryDetailsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppColors.background,
       appBar: AppBar(
         elevation: 8.0,
         backgroundColor: AppColors.dark,

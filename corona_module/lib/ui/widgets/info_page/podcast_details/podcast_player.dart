@@ -65,7 +65,6 @@ class PodcastPlayer extends StatelessWidget {
             fit: BoxFit.cover,
             width: 50.0,
             height: 50.0,
-            package: "corona_module",
           ),
         ),
       ),

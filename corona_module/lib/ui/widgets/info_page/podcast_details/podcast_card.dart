@@ -86,7 +86,6 @@ class PodcastCard extends StatelessWidget {
             fit: BoxFit.cover,
             width: 44.0,
             height: 44.0,
-            package: "corona_module",
           ),
         ),
       ),

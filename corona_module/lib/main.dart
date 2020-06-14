@@ -29,6 +29,7 @@ class CoronaApp extends StatelessWidget {
       ],
       // child: NavPage(),
       child: Theme(
+        isMaterialAppTheme: true,
         data: ThemeData(
           scaffoldBackgroundColor: AppColors.background,
           iconTheme: IconThemeData(color: AppColors.primary),
