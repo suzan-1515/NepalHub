@@ -49,8 +49,27 @@ class AuthenticationRepository {
     });
   }
 
-  Future<bool> isUserLoggedIn() async {
-    return await _authenticationService.isLoggedIn();
+  Future<UserModel> signInWithGoogle() async {
+    return _authenticationService.signInWithGoogle().then((value) {
+      if (value != null) {
+        _analyticsService.logLogin();
+      }
+      return UserModel.fromFirebaseUser(value.user);
+    });
+  }
+
+  Future<UserModel> signInAnonymously() async {
+    return _authenticationService
+        .signInAnonymously()
+        .then((value) => UserModel.fromFirebaseUser(value.user));
+  }
+
+  Future<UserModel> getCurrentUser() async {
+    return await _authenticationService.getCurrentUser().then((value) {
+      if (value != null && !value.isAnonymous)
+        return UserModel.fromFirebaseUser(value);
+      return null;
+    });
   }
 
   Future<void> logout() async {

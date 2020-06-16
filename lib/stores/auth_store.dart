@@ -12,29 +12,60 @@ abstract class _AuthenticationStore with Store {
   _AuthenticationStore(this._authenticationRepository);
 
   @observable
-  UserModel user = UserModel.anonymous();
+  UserModel user;
 
   @observable
   bool isLoggedIn = false;
 
+  @observable
+  bool isLoading = false;
+
+  @observable
+  String error;
+
   @action
-  setLoggedIn(bool value) {
-    this.isLoggedIn = value;
+  Future signInWithGoogle() async {
+    if (isLoading) return false;
+    isLoading = true;
+    return _authenticationRepository.signInWithGoogle().then((value) {
+      if (value != null) {
+        user = value;
+      }
+      isLoggedIn = value != null;
+    }).catchError((onError) {
+      this.error = 'Error signing in.';
+      isLoggedIn = false;
+    }).whenComplete(() {
+      isLoading = false;
+    });
   }
 
   @action
-  Future<bool> loginWithEmail({@required String email, @required String password}) async{
-    return _authenticationRepository
-        .loginWithEmail(email: email, password: password)
-        .then((value) {
+  Future signInAnonymously() async {
+    if (isLoading) return false;
+    isLoading = true;
+    return _authenticationRepository.signInAnonymously().then((value) {
       if (value != null) {
-        this.user = value;
+        user = value;
       }
       isLoggedIn = value != null;
-      return isLoggedIn;
+    }).catchError((onError) {
+      this.error = 'Error signing in.';
+      isLoggedIn = false;
+    }).whenComplete(() {
+      isLoading = false;
+    });
+  }
+
+  @action
+  Future silentSignIn() async {
+    return _authenticationRepository.getCurrentUser().then((value) {
+      if (value != null) {
+        user = value;
+      }
+      isLoggedIn = value != null;
     }).catchError((onError) {
       isLoggedIn = false;
-      return false;
     });
   }
 }

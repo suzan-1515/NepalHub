@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:nepali_utils/nepali_utils.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -72,11 +73,12 @@ class App extends StatelessWidget {
         ProxyProvider<AnalyticsService, ShareService>(
           update: (_, _analyticsService, __) => ShareService(_analyticsService),
         ),
-
+        
         //repository
         ProxyProvider<AnalyticsService, AuthenticationRepository>(
           update: (_, _analyticsService, __) => AuthenticationRepository(
-              AuthenticationService(FirebaseAuth.instance), _analyticsService),
+              AuthenticationService(FirebaseAuth.instance, GoogleSignIn()),
+              _analyticsService),
         ),
         ProxyProvider2<AnalyticsService, PreferenceService, PostMetaRepository>(
           update: (_, _analyticsService, _preferenceService, __) =>

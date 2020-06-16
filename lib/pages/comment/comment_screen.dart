@@ -229,14 +229,17 @@ class _CommentScreenState extends State<CommentScreen> {
           color: Theme.of(context).backgroundColor,
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
           child: Observer(
-            builder: (BuildContext context) {
+            builder: (_) {
+              final hasAvatar = authStore.isLoggedIn
+                  ? (authStore.user.avatar?.isNotEmpty ?? false)
+                  : false;
               return Material(
                 color: Colors.transparent,
                 child: Row(
                   children: <Widget>[
                     CircleAvatar(
                       backgroundColor: Theme.of(context).cardColor,
-                      backgroundImage: authStore.isLoggedIn
+                      backgroundImage: hasAvatar
                           ? NetworkImage(authStore.user.avatar)
                           : AssetImage('assets/images/user.png'),
                     ),

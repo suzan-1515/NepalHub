@@ -53,6 +53,8 @@ dependencies:
   flutter_svg: ^0.17.4
   fl_chart: ^0.10.0
 
+  flutter_signin_button: ^1.0.0
+
   corona_module:
     path: ./corona_module
   

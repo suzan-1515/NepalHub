@@ -43,32 +43,65 @@ mixin _$AuthenticationStore on _AuthenticationStore, Store {
     }, _$isLoggedInAtom, name: '${_$isLoggedInAtom.name}_set');
   }
 
-  final _$loginWithEmailAsyncAction = AsyncAction('loginWithEmail');
+  final _$isLoadingAtom = Atom(name: '_AuthenticationStore.isLoading');
 
   @override
-  Future<bool> loginWithEmail(
-      {@required String email, @required String password}) {
-    return _$loginWithEmailAsyncAction
-        .run(() => super.loginWithEmail(email: email, password: password));
+  bool get isLoading {
+    _$isLoadingAtom.context.enforceReadPolicy(_$isLoadingAtom);
+    _$isLoadingAtom.reportObserved();
+    return super.isLoading;
   }
 
-  final _$_AuthenticationStoreActionController =
-      ActionController(name: '_AuthenticationStore');
+  @override
+  set isLoading(bool value) {
+    _$isLoadingAtom.context.conditionallyRunInAction(() {
+      super.isLoading = value;
+      _$isLoadingAtom.reportChanged();
+    }, _$isLoadingAtom, name: '${_$isLoadingAtom.name}_set');
+  }
+
+  final _$errorAtom = Atom(name: '_AuthenticationStore.error');
 
   @override
-  dynamic setLoggedIn(bool value) {
-    final _$actionInfo = _$_AuthenticationStoreActionController.startAction();
-    try {
-      return super.setLoggedIn(value);
-    } finally {
-      _$_AuthenticationStoreActionController.endAction(_$actionInfo);
-    }
+  String get error {
+    _$errorAtom.context.enforceReadPolicy(_$errorAtom);
+    _$errorAtom.reportObserved();
+    return super.error;
+  }
+
+  @override
+  set error(String value) {
+    _$errorAtom.context.conditionallyRunInAction(() {
+      super.error = value;
+      _$errorAtom.reportChanged();
+    }, _$errorAtom, name: '${_$errorAtom.name}_set');
+  }
+
+  final _$signInWithGoogleAsyncAction = AsyncAction('signInWithGoogle');
+
+  @override
+  Future<dynamic> signInWithGoogle() {
+    return _$signInWithGoogleAsyncAction.run(() => super.signInWithGoogle());
+  }
+
+  final _$signInAnonymouslyAsyncAction = AsyncAction('signInAnonymously');
+
+  @override
+  Future<dynamic> signInAnonymously() {
+    return _$signInAnonymouslyAsyncAction.run(() => super.signInAnonymously());
+  }
+
+  final _$silentSignInAsyncAction = AsyncAction('silentSignIn');
+
+  @override
+  Future<dynamic> silentSignIn() {
+    return _$silentSignInAsyncAction.run(() => super.silentSignIn());
   }
 
   @override
   String toString() {
     final string =
-        'user: ${user.toString()},isLoggedIn: ${isLoggedIn.toString()}';
+        'user: ${user.toString()},isLoggedIn: ${isLoggedIn.toString()},isLoading: ${isLoading.toString()},error: ${error.toString()}';
     return '{$string}';
   }
 }

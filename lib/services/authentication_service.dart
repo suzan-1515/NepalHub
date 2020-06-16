@@ -1,13 +1,15 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 class AuthenticationService {
   final FirebaseAuth _firebaseAuth;
+  final GoogleSignIn _googleSignIn;
   final CollectionReference _usersCollectionReference =
       Firestore.instance.collection('users');
 
-  AuthenticationService(this._firebaseAuth);
+  AuthenticationService(this._firebaseAuth, this._googleSignIn);
 
   Future<AuthResult> loginWithEmail({
     @required String email,
@@ -43,12 +45,55 @@ class AuthenticationService {
     });
   }
 
+  Future<AuthResult> signInAnonymously() async {
+    return (await _firebaseAuth.signInAnonymously());
+  }
+
+  Future<AuthResult> signInWithGoogle() async {
+    final GoogleSignInAccount googleUser = await _googleSignIn.signIn();
+    final GoogleSignInAuthentication googleAuth =
+        await googleUser.authentication;
+
+    final AuthCredential credential = GoogleAuthProvider.getCredential(
+      accessToken: googleAuth.accessToken,
+      idToken: googleAuth.idToken,
+    );
+
+    return (await _firebaseAuth.signInWithCredential(credential));
+  }
+
+  // Future<AuthResult> _signInWithFacebook() async {
+  //   final GoogleSignInAccount googleUser = await _googleSignIn.signIn();
+  //   final GoogleSignInAuthentication googleAuth =
+  //       await googleUser.authentication;
+
+  //   final AuthCredential credential = GoogleAuthProvider.getCredential(
+  //     accessToken: googleAuth.accessToken,
+  //     idToken: googleAuth.idToken,
+  //   );
+
+  //   return (await _firebaseAuth.signInWithCredential(credential));
+  // }
+
+  // Future<AuthResult> _signInWithTwitter() async {
+  //   final GoogleSignInAccount googleUser = await _googleSignIn.signIn();
+  //   final GoogleSignInAuthentication googleAuth =
+  //       await googleUser.authentication;
+
+  //   final AuthCredential credential = GoogleAuthProvider.getCredential(
+  //     accessToken: googleAuth.accessToken,
+  //     idToken: googleAuth.idToken,
+  //   );
+
+  //   return (await _firebaseAuth.signInWithCredential(credential));
+  // }
+
   Future<DocumentSnapshot> getUserProfile({@required String uid}) async {
     return await _usersCollectionReference.document(uid).get();
   }
 
-  Future<bool> isLoggedIn() async {
-    return (await _firebaseAuth.currentUser()) != null;
+  Future<FirebaseUser> getCurrentUser() async {
+    return await _firebaseAuth.currentUser();
   }
 
   Future<void> logout() async {
