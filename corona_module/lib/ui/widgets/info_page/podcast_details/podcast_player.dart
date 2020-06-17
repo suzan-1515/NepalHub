@@ -40,6 +40,7 @@ class PodcastPlayer extends StatelessWidget {
               _buildStopIcon(context),
             ],
           ),
+          const SizedBox(height: 16.0),
         ],
       ),
     );
@@ -61,10 +62,11 @@ class PodcastPlayer extends StatelessWidget {
         errorBuilder: (_, __, ___) => Padding(
           padding: const EdgeInsets.all(50.0),
           child: Image.asset(
-            'assets/icon/icon.png',
+            'lib/assets/icon/icon.png',
             fit: BoxFit.cover,
             width: 50.0,
             height: 50.0,
+            package: 'corona_module',
           ),
         ),
       ),

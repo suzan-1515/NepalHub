@@ -24,35 +24,37 @@ class _NewsPageState extends State<NewsPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0.0,
-        centerTitle: true,
-        title: Text(
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisSize: MainAxisSize.max,
+      children: <Widget>[
+        Text(
           'NEWS',
           maxLines: 3,
           style: AppTextStyles.extraLargeLight.copyWith(
             fontSize: 32.0,
           ),
         ),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.only(top: 40.0, bottom: 80.0),
-        child: BlocBuilder<NewsBloc, NewsState>(
-          builder: (context, state) {
-            if (state is InitialNewsState) {
-              return const EmptyIcon();
-            } else if (state is LoadedNewsState) {
-              return _buildNewsList(state);
-            } else if (state is ErrorNewsState) {
-              return ErrorIcon(message: state.message);
-            } else {
-              return const BusyIndicator();
-            }
-          },
+        Expanded(
+          child: Padding(
+            padding: const EdgeInsets.only(top: 40.0, bottom: 80.0),
+            child: BlocBuilder<NewsBloc, NewsState>(
+              builder: (context, state) {
+                if (state is InitialNewsState) {
+                  return const EmptyIcon();
+                } else if (state is LoadedNewsState) {
+                  return _buildNewsList(state);
+                } else if (state is ErrorNewsState) {
+                  return ErrorIcon(message: state.message);
+                } else {
+                  return const BusyIndicator();
+                }
+              },
+            ),
+          ),
         ),
-      ),
+      ],
     );
   }
 

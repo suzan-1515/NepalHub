@@ -44,6 +44,7 @@ class CoronaApp extends StatelessWidget {
           fontFamily: 'Sen',
         ),
         child: NavPage(),
+        
       ),
       // child: MaterialApp(
       //   debugShowCheckedModeBanner: false,

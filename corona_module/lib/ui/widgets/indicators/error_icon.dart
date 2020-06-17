@@ -14,7 +14,7 @@ class ErrorIcon extends StatelessWidget {
   Widget build(BuildContext context) {
     return IconIndicator(
       label: message,
-      imageUrl: 'assets/images/error.png',
+      imageUrl: 'lib/assets/images/error.png',
     );
   }
 }

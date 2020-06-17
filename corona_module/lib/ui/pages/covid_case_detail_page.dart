@@ -137,8 +137,9 @@ class CovidCaseDetailPage extends StatelessWidget {
                 builder: (context) => ScaleAnimator(
                   duration: 1200,
                   child: Image.asset(
-                    'assets/images/marker.png',
+                    'lib/assets/images/marker.png',
                     color: color,
+            package: 'corona_module',
                   ),
                 ),
               ),

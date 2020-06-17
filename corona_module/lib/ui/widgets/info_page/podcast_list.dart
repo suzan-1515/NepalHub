@@ -60,7 +60,6 @@ class _PodcastListState extends State<PodcastList> {
       slideDirection: SlideDirection.UP,
       margin: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 72.0),
       borderRadius: BorderRadius.circular(12.0),
-      maxHeight: MediaQuery.of(context).size.height * 0.6,
       minHeight: _minPanelHeight,
       onPanelSlide: (value) => setState(() => _panelPos = value),
       body: _buildList(podcasts),
@@ -74,7 +73,7 @@ class _PodcastListState extends State<PodcastList> {
 
   ListView _buildList(List<Podcast> podcasts) {
     return ListView.builder(
-      padding: EdgeInsets.only(top: 16.0, bottom: _minPanelHeight + 72.0),
+      padding: EdgeInsets.only(top: 16.0, bottom: 250.0),
       itemCount: podcasts.length,
       itemBuilder: (_, index) {
         final podcast = podcasts[index];

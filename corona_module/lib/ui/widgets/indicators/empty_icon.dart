@@ -10,7 +10,7 @@ class EmptyIcon extends StatelessWidget {
   Widget build(BuildContext context) {
     return IconIndicator(
       label: 'Nothing here...',
-      imageUrl: 'assets/images/empty.png',
+      imageUrl: 'lib/assets/images/empty.png',
     );
   }
 }

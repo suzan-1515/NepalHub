@@ -63,6 +63,10 @@ class _NavPageState extends State<NavPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0.0,
+      ),
       extendBody: true,
       bottomNavigationBar: Container(
         padding: const EdgeInsets.all(4.0),
@@ -97,12 +101,6 @@ class _NavPageState extends State<NavPage> {
           _buildNewsPage(),
           _buildInfopage(),
         ],
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.of(context).pop();
-        },
-        child: Icon(LineAwesomeIcons.backward),
       ),
     );
   }

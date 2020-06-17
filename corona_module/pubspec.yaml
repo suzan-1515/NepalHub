@@ -57,21 +57,21 @@ flutter:
   # the material Icons class.
   uses-material-design: true
 
-  # assets:
-  #   - assets/images/
-  #   - assets/icon/icon.png
+  assets:
+    - lib/assets/images/
+    - lib/assets/icon/icon.png
 
   fonts:
     - family: Sen
       fonts:
-        - asset: assets/fonts/Sen-Bold.ttf
+        - asset: lib/assets/fonts/Sen-Bold.ttf
           weight: 700
-        - asset: assets/fonts/Sen-Regular.ttf
+        - asset: lib/assets/fonts/Sen-Regular.ttf
           weight: 500
 
     - family: Sura
       fonts:
-        - asset: assets/fonts/Sura-Bold.ttf
+        - asset: lib/assets/fonts/Sura-Bold.ttf
           weight: 700
-        - asset: assets/fonts/Sura-Regular.ttf
+        - asset: lib/assets/fonts/Sura-Regular.ttf
           weight: 500

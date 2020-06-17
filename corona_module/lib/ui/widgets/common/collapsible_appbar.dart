@@ -19,6 +19,7 @@ class CollapsibleAppBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SliverAppBar(
+      automaticallyImplyLeading: false,
       backgroundColor: AppColors.background,
       pinned: true,
       centerTitle: true,
@@ -38,6 +39,7 @@ class CollapsibleAppBar extends StatelessWidget {
             imageUrl,
             color: AppColors.dark,
             alignment: Alignment.centerRight,
+            package: 'corona_module',
           ),
         ),
       ),

@@ -10,7 +10,7 @@ class FinishedIcon extends StatelessWidget {
   Widget build(BuildContext context) {
     return IconIndicator(
       label: "That's it for now.",
-      imageUrl: 'assets/images/finished.png',
+      imageUrl: 'lib/assets/images/finished.png',
     );
   }
 }

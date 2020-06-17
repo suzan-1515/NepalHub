@@ -6,7 +6,7 @@ import 'styles.dart';
 class AppTextStyles {
   static const TextStyle _baseSansSerif = TextStyle(
     color: AppColors.background,
-    fontFamily: 'Sen',
+    fontFamily: 'packages/corona_module/Sen',
   );
 
   // Dark Sans Serif
@@ -62,7 +62,7 @@ class AppTextStyles {
   // Serif
   static const TextStyle _baseSerif = TextStyle(
     color: AppColors.background,
-    fontFamily: 'Sura',
+    fontFamily: 'packages/corona_module/Sura',
   );
 
   // Dark Serif

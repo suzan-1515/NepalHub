@@ -25,6 +25,7 @@ class IconIndicator extends StatelessWidget {
               imageUrl,
               color: AppColors.dark,
               width: MediaQuery.of(context).size.width * 0.3,
+              package: 'corona_module',
             ),
             const SizedBox(height: 20.0),
             Text(
