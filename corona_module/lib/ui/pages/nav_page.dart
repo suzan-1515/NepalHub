@@ -66,6 +66,11 @@ class _NavPageState extends State<NavPage> {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0.0,
+        title: Text(
+          'Corona Virus Update',
+          style: AppTextStyles.mediumLight
+        ),
+        centerTitle: true,
       ),
       extendBody: true,
       bottomNavigationBar: Container(

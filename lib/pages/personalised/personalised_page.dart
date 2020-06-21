@@ -186,53 +186,52 @@ class _PersonalisedPageState extends State<PersonalisedPage> {
             NavigationService, AuthenticationStore>(
         builder: (context, personalisedStore, postMetaRepository, shareService,
             navigationService, authenticationStore, child) {
-      return RefreshIndicator(
-        onRefresh: () async {
-          await personalisedStore.refresh();
-        },
-        child: StreamBuilder<List>(
-            stream: personalisedStore.dataStream,
-            builder: (context, snapshot) {
-              if (snapshot.hasError) {
+      return StreamBuilder<List>(
+          stream: personalisedStore.dataStream,
+          builder: (context, snapshot) {
+            if (snapshot.hasError) {
+              return Center(
+                child: ErrorDataView(
+                  onRetry: () => personalisedStore.retry(),
+                ),
+              );
+            }
+            if (snapshot.hasData) {
+              if (snapshot.data.isEmpty) {
                 return Center(
-                  child: ErrorDataView(
-                    onRetry: () => personalisedStore.retry(),
-                  ),
+                  child: EmptyDataView(),
                 );
               }
-              if (snapshot.hasData) {
-                if (snapshot.data.isEmpty) {
-                  return Center(
-                    child: EmptyDataView(),
-                  );
-                }
 
-                return NestedScrollView(
-                  headerSliverBuilder: (_, bool innerBoxIsScrolled) {
-                    var widgets = <Widget>[];
-                    widgets
-                        .add(SliverToBoxAdapter(child: DateWeatherSection()));
-                    if (personalisedStore.sectionData[MixedDataType.CORONA] !=
-                        null) {
-                      widgets.add(SliverToBoxAdapter(
-                        child: CoronaSection(
-                            data: personalisedStore
-                                .sectionData[MixedDataType.CORONA]),
-                      ));
-                    }
-                    if (personalisedStore
-                            .sectionData[MixedDataType.TRENDING_NEWS] !=
-                        null) {
-                      widgets.add(SliverToBoxAdapter(
-                        child: TrendingNewsSection(
-                          feeds: personalisedStore
-                              .sectionData[MixedDataType.TRENDING_NEWS],
-                        ),
-                      ));
-                    }
-                    return widgets;
+              return NestedScrollView(
+                headerSliverBuilder: (_, bool innerBoxIsScrolled) {
+                  var widgets = <Widget>[];
+                  widgets.add(SliverToBoxAdapter(child: DateWeatherSection()));
+                  if (personalisedStore.sectionData[MixedDataType.CORONA] !=
+                      null) {
+                    widgets.add(SliverToBoxAdapter(
+                      child: CoronaSection(
+                          data: personalisedStore
+                              .sectionData[MixedDataType.CORONA]),
+                    ));
+                  }
+                  if (personalisedStore
+                          .sectionData[MixedDataType.TRENDING_NEWS] !=
+                      null) {
+                    widgets.add(SliverToBoxAdapter(
+                      child: TrendingNewsSection(
+                        feeds: personalisedStore
+                            .sectionData[MixedDataType.TRENDING_NEWS],
+                      ),
+                    ));
+                  }
+                  return widgets;
+                },
+                body: RefreshIndicator(
+                  onRefresh: () async {
+                    await personalisedStore.refresh();
                   },
-                  body: ListView.separated(
+                  child: ListView.separated(
                     itemCount: personalisedStore
                             .sectionData[MixedDataType.LATEST_NEWS]?.length ??
                         0,
@@ -251,11 +250,11 @@ class _PersonalisedPageState extends State<PersonalisedPage> {
                       return _buildMixedSection(index, personalisedStore);
                     },
                   ),
-                );
-              }
-              return Center(child: ProgressView());
-            }),
-      );
+                ),
+              );
+            }
+            return Center(child: ProgressView());
+          });
     });
   }
 

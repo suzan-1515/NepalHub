@@ -31,7 +31,7 @@ import 'pages/corona/corona_store.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  FlutterError.onError = Crashlytics.instance.recordFlutterError;
+  // FlutterError.onError = Crashlytics.instance.recordFlutterError;
   final SharedPreferences sp = await SharedPreferences.getInstance();
   NepaliUtils(Language.nepali);
   runApp(App(sp));
