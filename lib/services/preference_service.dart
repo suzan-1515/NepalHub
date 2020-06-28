@@ -10,10 +10,18 @@ class PreferenceService {
   final String _userId = 'userId';
   final String _defaultForexCurrencyKey = 'default_forex_currency';
   final String _defaultZodiacKey = 'default_zodiac';
+  final String _followedNewsSourcesKey = 'followed_news_sources';
+  final String _followedNewsCategoriesKey = 'followed_news_categories';
+  final String _followedNewsTopicsKey = 'followed_news_topics';
+  final String _firstTimeOpenKey = 'first_open';
 
   final SharedPreferences _sharedPreferences;
 
   const PreferenceService(this._sharedPreferences);
+
+  set isFirstOpen(bool value) {
+    _sharedPreferences.setBool(_firstTimeOpenKey, value);
+  }
 
   set useDarkMode(bool value) {
     _sharedPreferences.setBool(_useDarkModeKey, value);
@@ -51,8 +59,22 @@ class PreferenceService {
     _sharedPreferences.setInt(_defaultZodiacKey, zodiac);
   }
 
+  set followedNewsSources(List<String> sources) {
+    _sharedPreferences.setStringList(_followedNewsSourcesKey, sources);
+  }
+
+  set followedNewsCategories(List<String> categories) {
+    _sharedPreferences.setStringList(_followedNewsCategoriesKey, categories);
+  }
+
+  set followedNewsTopics(List<String> topics) {
+    _sharedPreferences.setStringList(_followedNewsTopicsKey, topics);
+  }
+
   bool get themeSetBySystem =>
       _sharedPreferences.getBool(_themeSetBySystemKey) ?? false;
+
+  bool get isFirstOpen => _sharedPreferences.getBool(_firstTimeOpenKey) ?? true;
 
   bool get useDarkMode => _sharedPreferences.getBool(_useDarkModeKey) ?? false;
 
@@ -71,4 +93,16 @@ class PreferenceService {
       _sharedPreferences.getString(_defaultForexCurrencyKey) ?? 'USD';
 
   int get defaultZodiac => _sharedPreferences.getInt(_defaultZodiacKey) ?? 0;
+
+  List<String> get followedNewsSources =>
+      _sharedPreferences.getStringList(_followedNewsSourcesKey) ??
+      List<String>();
+
+  List<String> get followedNewsCategories =>
+      _sharedPreferences.getStringList(_followedNewsCategoriesKey) ??
+      List<String>();
+
+  List<String> get followedNewsTopics =>
+      _sharedPreferences.getStringList(_followedNewsTopicsKey) ??
+      List<String>();
 }

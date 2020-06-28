@@ -165,7 +165,7 @@ class TopicNewsApiResponse {
       if (json['hits']['hits'] != null) {
         feeds = List<FeedApiResponse>();
         json['hits']['hits'].forEach((v) {
-          var source = v['_source'] as Map<String,dynamic>;
+          var source = v['_source'] as Map<String, dynamic>;
           feeds.add(FeedApiResponse.fromJson(source));
         });
       }

@@ -5,14 +5,14 @@ import 'package:samachar_hub/data/api/api.dart';
 import 'package:samachar_hub/data/models/models.dart';
 import 'package:samachar_hub/pages/news/news_repository.dart';
 
-part 'topic_news_store.g.dart';
+part 'news_topic_store.g.dart';
 
-class TopicNewsStore = _TopicNewsStore with _$TopicNewsStore;
+class NewsTopicStore = _NewsTopicStore with _$NewsTopicStore;
 
-abstract class _TopicNewsStore with Store {
+abstract class _NewsTopicStore with Store {
   final NewsRepository _newsRepository;
 
-  _TopicNewsStore(this._newsRepository);
+  _NewsTopicStore(this._newsRepository);
 
   StreamController<List<NewsFeedModel>> _newsDataStreamController =
       StreamController<List<NewsFeedModel>>.broadcast();

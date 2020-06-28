@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'topic_news_store.dart';
+part of 'news_topic_store.dart';
 
 // **************************************************************************
 // StoreGenerator
@@ -8,8 +8,8 @@ part of 'topic_news_store.dart';
 
 // ignore_for_file: non_constant_identifier_names, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
 
-mixin _$TopicNewsStore on _TopicNewsStore, Store {
-  final _$selectedTopicAtom = Atom(name: '_TopicNewsStore.selectedTopic');
+mixin _$NewsTopicStore on _NewsTopicStore, Store {
+  final _$selectedTopicAtom = Atom(name: '_NewsTopicStore.selectedTopic');
 
   @override
   String get selectedTopic {
@@ -26,7 +26,7 @@ mixin _$TopicNewsStore on _TopicNewsStore, Store {
     }, _$selectedTopicAtom, name: '${_$selectedTopicAtom.name}_set');
   }
 
-  final _$apiErrorAtom = Atom(name: '_TopicNewsStore.apiError');
+  final _$apiErrorAtom = Atom(name: '_NewsTopicStore.apiError');
 
   @override
   APIException get apiError {
@@ -43,7 +43,7 @@ mixin _$TopicNewsStore on _TopicNewsStore, Store {
     }, _$apiErrorAtom, name: '${_$apiErrorAtom.name}_set');
   }
 
-  final _$errorAtom = Atom(name: '_TopicNewsStore.error');
+  final _$errorAtom = Atom(name: '_NewsTopicStore.error');
 
   @override
   String get error {
@@ -60,56 +60,56 @@ mixin _$TopicNewsStore on _TopicNewsStore, Store {
     }, _$errorAtom, name: '${_$errorAtom.name}_set');
   }
 
-  final _$_TopicNewsStoreActionController =
-      ActionController(name: '_TopicNewsStore');
+  final _$_NewsTopicStoreActionController =
+      ActionController(name: '_NewsTopicStore');
 
   @override
   dynamic setSelectedTopic(String topic) {
-    final _$actionInfo = _$_TopicNewsStoreActionController.startAction();
+    final _$actionInfo = _$_NewsTopicStoreActionController.startAction();
     try {
       return super.setSelectedTopic(topic);
     } finally {
-      _$_TopicNewsStoreActionController.endAction(_$actionInfo);
+      _$_NewsTopicStoreActionController.endAction(_$actionInfo);
     }
   }
 
   @override
   void loadTopics() {
-    final _$actionInfo = _$_TopicNewsStoreActionController.startAction();
+    final _$actionInfo = _$_NewsTopicStoreActionController.startAction();
     try {
       return super.loadTopics();
     } finally {
-      _$_TopicNewsStoreActionController.endAction(_$actionInfo);
+      _$_NewsTopicStoreActionController.endAction(_$actionInfo);
     }
   }
 
   @override
   void loadTopicNews() {
-    final _$actionInfo = _$_TopicNewsStoreActionController.startAction();
+    final _$actionInfo = _$_NewsTopicStoreActionController.startAction();
     try {
       return super.loadTopicNews();
     } finally {
-      _$_TopicNewsStoreActionController.endAction(_$actionInfo);
+      _$_NewsTopicStoreActionController.endAction(_$actionInfo);
     }
   }
 
   @override
   void retryTopics() {
-    final _$actionInfo = _$_TopicNewsStoreActionController.startAction();
+    final _$actionInfo = _$_NewsTopicStoreActionController.startAction();
     try {
       return super.retryTopics();
     } finally {
-      _$_TopicNewsStoreActionController.endAction(_$actionInfo);
+      _$_NewsTopicStoreActionController.endAction(_$actionInfo);
     }
   }
 
   @override
   void retryTopicNews() {
-    final _$actionInfo = _$_TopicNewsStoreActionController.startAction();
+    final _$actionInfo = _$_NewsTopicStoreActionController.startAction();
     try {
       return super.retryTopicNews();
     } finally {
-      _$_TopicNewsStoreActionController.endAction(_$actionInfo);
+      _$_NewsTopicStoreActionController.endAction(_$actionInfo);
     }
   }
 

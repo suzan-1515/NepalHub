@@ -10,9 +10,6 @@ import 'package:samachar_hub/pages/comment/comment_firestore_service.dart';
 import 'package:samachar_hub/pages/comment/comment_repository.dart';
 import 'package:samachar_hub/pages/comment/comment_screen.dart';
 import 'package:samachar_hub/pages/comment/comment_store.dart';
-import 'package:samachar_hub/pages/corona/corona_repository.dart';
-import 'package:samachar_hub/pages/corona/corona_screen.dart';
-import 'package:samachar_hub/pages/corona/corona_store.dart';
 import 'package:samachar_hub/pages/forex/forex_detail_store.dart';
 import 'package:samachar_hub/pages/forex/forex_repository.dart';
 import 'package:samachar_hub/pages/forex/forex_screen.dart';
@@ -29,8 +26,8 @@ import 'package:samachar_hub/pages/news/details/news_details.dart';
 import 'package:samachar_hub/pages/news/news_repository.dart';
 import 'package:samachar_hub/pages/news/sources/news_source_screen.dart';
 import 'package:samachar_hub/pages/news/sources/news_source_store.dart';
-import 'package:samachar_hub/pages/news/topics/topic_news_screen.dart';
-import 'package:samachar_hub/pages/news/topics/topic_news_store.dart';
+import 'package:samachar_hub/pages/news/topics/news_topic_screen.dart';
+import 'package:samachar_hub/pages/news/topics/news_topic_store.dart';
 import 'package:samachar_hub/pages/news/trending/trending_news_screen.dart';
 import 'package:samachar_hub/pages/news/trending/trending_news_store.dart';
 import 'package:samachar_hub/repository/post_meta_repository.dart';
@@ -207,6 +204,17 @@ class NavigationService {
     );
   }
 
+  toNewsSourceFeedScreen(BuildContext context, NewsSourceModel sourceModel) {
+    debugPrint('to news source feeds screen');
+  }
+
+  toNewsCategoryScreen(
+      BuildContext context, NewsCategoryModel newsCategoryModel) {
+    Provider.of<HomeScreenStore>(context, listen: false).setPage(1);
+    Provider.of<CategoriesStore>(context, listen: false)
+        .setActiveTab(newsCategoryModel.index);
+  }
+
   onOpenLink(String title, String url, BuildContext context) {
     print('open link: $title');
     Navigator.push(
@@ -228,16 +236,16 @@ class NavigationService {
         .setActiveTab(category.index);
   }
 
-  onNewsTagTapped({@required String title, @required BuildContext context}) {
+  toNewsTopicScreen({@required String title, @required BuildContext context}) {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => ProxyProvider<NewsRepository, TopicNewsStore>(
+        builder: (context) => ProxyProvider<NewsRepository, NewsTopicStore>(
           update: (BuildContext context, NewsRepository value,
-                  TopicNewsStore previous) =>
-              TopicNewsStore(value),
+                  NewsTopicStore previous) =>
+              NewsTopicStore(value),
           dispose: (context, value) => value.dispose(),
-          child: TopicNewsScreen(
+          child: NewsTopicScreen(
             topic: title,
           ),
         ),

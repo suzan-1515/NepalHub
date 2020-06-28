@@ -98,7 +98,7 @@ class _PersonalisedPageState extends State<PersonalisedPage> {
             return NewsTopicsSection(
               item: personalisedStore.sectionData[MixedDataType.NEWS_TOPIC],
               onTap: (topic) =>
-                  service.onNewsTagTapped(title: topic, context: context),
+                  service.toNewsTopicScreen(title: topic, context: context),
             );
           },
         );

@@ -41,7 +41,8 @@ class NewsMapper {
     return NewsTopicModel(response.tags);
   }
 
-  static NewsSourceModel fromSourceApi(FeedSourceApiResponse response) {
+  static NewsSourceModel fromSourceApi(
+      FeedSourceApiResponse response) {
     return NewsSourceModel(
       id: response.id,
       name: response.name,
@@ -53,7 +54,8 @@ class NewsMapper {
     );
   }
 
-  static NewsCategoryModel fromCategoryApi(FeedCategoryApiResponse response) {
+  static NewsCategoryModel fromCategoryApi(
+      FeedCategoryApiResponse response) {
     return NewsCategoryModel(
       id: response.id,
       name: response.name,

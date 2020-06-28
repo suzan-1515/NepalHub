@@ -108,6 +108,50 @@ class AnalyticsService {
     );
   }
 
+  Future logNewsSourceFollowed(
+      {String sourceCode, List<String> sourceCodes}) async {
+    await _analytics.logEvent(
+      name: 'news_source_followed',
+      parameters: {'source_code': sourceCode, 'source_codes': sourceCodes},
+    );
+  }
+
+  Future logNewsSourceUnFollowed({String sourceCode}) async {
+    await _analytics.logEvent(
+      name: 'news_source_unfollowed',
+      parameters: {'source_code': sourceCode},
+    );
+  }
+
+  Future logNewsCategoryFollowed(
+      {String sourceCode, List<String> sourceCodes}) async {
+    await _analytics.logEvent(
+      name: 'news_category_followed',
+      parameters: {'category_code': sourceCode, 'category_codes': sourceCodes},
+    );
+  }
+
+  Future logNewsCategoryUnFollowed({String categoryCode}) async {
+    await _analytics.logEvent(
+      name: 'news_category_unfollowed',
+      parameters: {'category_code': categoryCode},
+    );
+  }
+
+  Future logNewsTopicFollowed({String topic}) async {
+    await _analytics.logEvent(
+      name: 'news_topic_followed',
+      parameters: {'topic': topic},
+    );
+  }
+
+  Future logNewsTopicUnFollowed({String topic}) async {
+    await _analytics.logEvent(
+      name: 'news_topic_unfollowed',
+      parameters: {'topic': topic},
+    );
+  }
+
   Future logShare({String postId}) async {
     await _analytics.logShare(
       contentType: 'feed',

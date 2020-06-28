@@ -5,7 +5,7 @@ import 'package:mobx/mobx.dart';
 import 'package:provider/provider.dart';
 import 'package:samachar_hub/data/api/api.dart';
 import 'package:samachar_hub/data/models/models.dart';
-import 'package:samachar_hub/pages/news/topics/topic_news_store.dart';
+import 'package:samachar_hub/pages/news/topics/news_topic_store.dart';
 import 'package:samachar_hub/pages/widgets/api_error_dialog.dart';
 import 'package:samachar_hub/pages/widgets/empty_data_widget.dart';
 import 'package:samachar_hub/pages/widgets/error_data_widget.dart';
@@ -17,21 +17,21 @@ import 'package:samachar_hub/repository/repositories.dart';
 import 'package:samachar_hub/services/services.dart';
 import 'package:samachar_hub/stores/stores.dart';
 
-class TopicNewsScreen extends StatefulWidget {
+class NewsTopicScreen extends StatefulWidget {
   final String topic;
 
-  const TopicNewsScreen({Key key, this.topic}) : super(key: key);
+  const NewsTopicScreen({Key key, this.topic}) : super(key: key);
   @override
-  _TopicNewsScreenState createState() => _TopicNewsScreenState();
+  _NewsTopicScreenState createState() => _NewsTopicScreenState();
 }
 
-class _TopicNewsScreenState extends State<TopicNewsScreen> {
+class _NewsTopicScreenState extends State<NewsTopicScreen> {
   // Reaction disposers
   List<ReactionDisposer> _disposers;
 
   @override
   void initState() {
-    final store = Provider.of<TopicNewsStore>(context, listen: false);
+    final store = Provider.of<NewsTopicStore>(context, listen: false);
     _setupObserver(store);
     store.selectedTopic = widget.topic;
     store.loadTopics();
@@ -84,7 +84,7 @@ class _TopicNewsScreenState extends State<TopicNewsScreen> {
     ];
   }
 
-  Widget _buildTopicsSection(BuildContext context, TopicNewsStore store) {
+  Widget _buildTopicsSection(BuildContext context, NewsTopicStore store) {
     return StreamBuilder<NewsTopicModel>(
       stream: store.topicsDataStream,
       builder: (BuildContext context, AsyncSnapshot<NewsTopicModel> snapshot) {
@@ -111,7 +111,7 @@ class _TopicNewsScreenState extends State<TopicNewsScreen> {
     );
   }
 
-  Widget _buildTopicNewsSection(BuildContext context, TopicNewsStore store) {
+  Widget _buildTopicNewsSection(BuildContext context, NewsTopicStore store) {
     return Consumer4<PostMetaRepository, ShareService, NavigationService,
         AuthenticationStore>(
       builder: (_, postMetaRepository, shareService, navigationService,
@@ -164,7 +164,7 @@ class _TopicNewsScreenState extends State<TopicNewsScreen> {
   Widget _buildList() {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 4),
-      child: Consumer<TopicNewsStore>(
+      child: Consumer<NewsTopicStore>(
         builder: (context, store, child) {
           return CustomScrollView(
             slivers: <Widget>[
@@ -185,7 +185,7 @@ class _TopicNewsScreenState extends State<TopicNewsScreen> {
     );
   }
 
-  Widget _buildSearchbar(BuildContext context, TopicNewsStore store) {
+  Widget _buildSearchbar(BuildContext context, NewsTopicStore store) {
     return Observer(
       builder: (BuildContext context) {
         return RichText(

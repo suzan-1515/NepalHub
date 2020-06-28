@@ -54,11 +54,15 @@ class _HomeScreenState extends State<HomeScreen> {
                   PersonalisedPage(),
                   CategoriesPage(),
                   MultiProvider(providers: [
-                    ProxyProvider2<AnalyticsService, PreferenceService,
-                        FavouritesRepository>(
-                      update: (_, _analyticsService, _preferenceService, __) =>
-                          FavouritesRepository(FavouritesFirestoreService(),
-                              _analyticsService, _preferenceService),
+                    ProxyProvider3<AnalyticsService, PreferenceService,
+                        NewsRepository, FavouritesRepository>(
+                      update: (_, _analyticsService, _preferenceService,
+                              _newsRepository, __) =>
+                          FavouritesRepository(
+                              FavouritesFirestoreService(),
+                              _analyticsService,
+                              _preferenceService,
+                              _newsRepository),
                     ),
                     ProxyProvider<FavouritesRepository, FavouritesStore>(
                       update: (_, _favouritesRepository, __) =>

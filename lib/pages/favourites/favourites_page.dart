@@ -1,19 +1,16 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:mobx/mobx.dart';
 import 'package:provider/provider.dart';
 import 'package:samachar_hub/data/models/models.dart';
-import 'package:samachar_hub/pages/bookmark/bookmark_list_item.dart';
-import 'package:samachar_hub/pages/bookmark/bookmark_store.dart';
 import 'package:samachar_hub/pages/favourites/favourites_store.dart';
-import 'package:samachar_hub/pages/news/sources/news_source_store.dart';
 import 'package:samachar_hub/pages/widgets/empty_data_widget.dart';
 import 'package:samachar_hub/pages/widgets/error_data_widget.dart';
+import 'package:samachar_hub/pages/widgets/news_tag_item.dart';
 import 'package:samachar_hub/pages/widgets/page_heading_widget.dart';
 import 'package:samachar_hub/pages/widgets/progress_widget.dart';
 import 'package:samachar_hub/services/services.dart';
-import 'package:samachar_hub/widgets/incrementally_loading_listview.dart';
+import 'package:samachar_hub/widgets/mini_card_list_item.dart';
 
 class FavouritesPage extends StatefulWidget {
   @override
@@ -25,9 +22,11 @@ class _FavouritesPageState extends State<FavouritesPage> {
 
   @override
   void initState() {
-    var store = Provider.of<NewsSourceStore>(context, listen: false);
+    var store = Provider.of<FavouritesStore>(context, listen: false);
     _setupObserver(store);
-    store.loadInitialData();
+    store.loadFollowedNewsSourceData();
+    store.loadFollowedNewsCategoryData();
+    store.loadFollowedNewsTopicData();
     super.initState();
   }
 
@@ -62,7 +61,10 @@ class _FavouritesPageState extends State<FavouritesPage> {
   Widget _buildViewAndManageButton({Function onTap}) {
     return FlatButton(
       onPressed: onTap,
-      child: Text('View all and Manage'),
+      child: Text(
+        'View all and Manage',
+        style: Theme.of(context).textTheme.button.copyWith(color: Colors.blue),
+      ),
     );
   }
 
@@ -71,7 +73,7 @@ class _FavouritesPageState extends State<FavouritesPage> {
       title,
       style: Theme.of(context)
           .textTheme
-          .headline6
+          .subtitle1
           .copyWith(fontWeight: FontWeight.w600),
     );
   }
@@ -112,90 +114,50 @@ class _FavouritesPageState extends State<FavouritesPage> {
     );
   }
 
-  Widget _buildNewsSourceItem(
-      NewsSourceModel sourceModel, NewsSourceStore _sourceStore) {
-    return Card(
-      elevation: 1,
-      color: Theme.of(context).cardColor,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: InkWell(
-        onTap: () {},
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            Expanded(
-              child: CachedNetworkImage(
-                imageUrl: sourceModel.icon,
-                errorWidget: (context, url, error) => Opacity(
-                    opacity: 0.7,
-                    child: Icon(FontAwesomeIcons.exclamationCircle)),
-                progressIndicatorBuilder: (context, url, progress) =>
-                    Center(child: CircularProgressIndicator()),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                sourceModel.name,
-                style: Theme.of(context).textTheme.subtitle2.copyWith(
-                    color: Theme.of(context)
-                        .textTheme
-                        .bodyText2
-                        .color
-                        .withOpacity(.6)),
-                maxLines: 2,
-                textAlign: TextAlign.center,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
   Widget _buildNewsSourcesList(FavouritesStore favouritesStore) {
-    return Consumer<NewsSourceStore>(
-      builder: (_, _sourceStore, child) {
-        return StreamBuilder<List<NewsSourceModel>>(
-          stream: _sourceStore.dataStream,
-          builder: (context, snapshot) {
-            if (snapshot.hasError) {
-              return Center(
-                child: ErrorDataView(
-                  onRetry: () {
-                    _sourceStore.retry();
-                  },
-                ),
-              );
-            }
-            if (snapshot.hasData) {
-              if (snapshot.data.isEmpty) {
-                return Center(child: EmptyDataView());
-              }
+    return StreamBuilder<List<NewsSourceModel>>(
+      stream: favouritesStore.newsSourceFeedStream,
+      builder: (context, snapshot) {
+        if (snapshot.hasError) {
+          return Center(
+            child: ErrorDataView(
+              onRetry: () {
+                favouritesStore.retryNewsSources();
+              },
+            ),
+          );
+        }
+        if (snapshot.hasData) {
+          if (snapshot.data.isEmpty) {
+            return Center(child: EmptyDataView());
+          }
 
-              return LimitedBox(
-                maxHeight: 100,
-                child: ListView.builder(
-                  primary: false,
-                  itemExtent: 120,
-                  scrollDirection: Axis.horizontal,
-                  itemCount: snapshot.data.length + 1,
-                  itemBuilder: (context, index) {
-                    if (index == 0) {
-                      return _buildAddItem(onTap: () {});
-                    }
-                    return _buildNewsSourceItem(
-                        snapshot.data[index-1], _sourceStore);
-                  },
-                ),
-              );
-            }
-            return Center(child: ProgressView());
-          },
-        );
+          return LimitedBox(
+            maxHeight: 100,
+            child: ListView.builder(
+              primary: false,
+              itemExtent: 120,
+              scrollDirection: Axis.horizontal,
+              itemCount: snapshot.data.length + 1,
+              itemBuilder: (context, index) {
+                if (index == 0) {
+                  return _buildAddItem(onTap: () {});
+                }
+
+                var sourceModel = snapshot.data[index - 1];
+                return MiniCardListItem(
+                    context: context,
+                    name: sourceModel.name,
+                    icon: sourceModel.icon,
+                    onTap: () {
+                      Provider.of<NavigationService>(context, listen: false)
+                          .toNewsSourceFeedScreen(context, sourceModel);
+                    });
+              },
+            ),
+          );
+        }
+        return Center(child: ProgressView());
       },
     );
   }
@@ -228,8 +190,147 @@ class _FavouritesPageState extends State<FavouritesPage> {
     );
   }
 
-  Widget _buildNewsCategorySection(FavouritesStore favouritesStore) {}
-  Widget _buildNewsTopicsSection(FavouritesStore favouritesStore) {}
+  Widget _buildNewsCategoriesList(FavouritesStore favouritesStore) {
+    return StreamBuilder<List<NewsCategoryModel>>(
+      stream: favouritesStore.newsCategoryFeedStream,
+      builder: (context, snapshot) {
+        if (snapshot.hasError) {
+          return Center(
+            child: ErrorDataView(
+              onRetry: () {
+                favouritesStore.retryNewsCategory();
+              },
+            ),
+          );
+        }
+        if (snapshot.hasData) {
+          if (snapshot.data.isEmpty) {
+            return Center(child: EmptyDataView());
+          }
+
+          return LimitedBox(
+            maxHeight: 100,
+            child: ListView.builder(
+              primary: false,
+              itemExtent: 120,
+              scrollDirection: Axis.horizontal,
+              itemCount: snapshot.data.length + 1,
+              itemBuilder: (context, index) {
+                if (index == 0) {
+                  return _buildAddItem(onTap: () {});
+                }
+
+                var categoryModel = snapshot.data[index - 1];
+                return MiniCardListItem(
+                    context: context,
+                    name: categoryModel.name,
+                    icon: categoryModel.icon,
+                    onTap: () {
+                      Provider.of<NavigationService>(context, listen: false)
+                          .toNewsCategoryScreen(context, categoryModel);
+                    });
+              },
+            ),
+          );
+        }
+        return Center(child: ProgressView());
+      },
+    );
+  }
+
+  Widget _buildNewsCategorySection(FavouritesStore favouritesStore) {
+    return Card(
+      color: Theme.of(context).cardColor,
+      elevation: 1,
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            _buildSectionTitle('News Categories'),
+            SizedBox(
+              height: 8,
+            ),
+            Flexible(
+                fit: FlexFit.loose,
+                child: _buildNewsCategoriesList(favouritesStore)),
+            SizedBox(
+              height: 8,
+            ),
+            Divider(),
+            _buildViewAndManageButton(onTap: () {
+            }),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildNewsTopicsList(FavouritesStore favouritesStore) {
+    return StreamBuilder<NewsTopicModel>(
+      stream: favouritesStore.newsTopicFeedStream,
+      builder: (context, snapshot) {
+        if (snapshot.hasError) {
+          return Center(
+            child: ErrorDataView(
+              onRetry: () {
+                favouritesStore.retryNewsTopic();
+              },
+            ),
+          );
+        }
+        if (snapshot.hasData) {
+          if (snapshot.data.tags?.isEmpty ?? true) {
+            return Center(child: EmptyDataView());
+          }
+
+          return Wrap(
+            spacing: 6.0,
+            runSpacing: 6.0,
+            children: List<Widget>.generate(
+                snapshot.data.tags.length,
+                (index) => NewsTagItem(
+                      title: snapshot.data.tags[index],
+                      onTap: (value) {
+                        Provider.of<NavigationService>(context, listen: false)
+                            .toNewsTopicScreen(title: value, context: context);
+                      },
+                    )),
+          );
+        }
+        return Center(child: ProgressView());
+      },
+    );
+  }
+
+  Widget _buildNewsTopicsSection(FavouritesStore favouritesStore) {
+    return Card(
+      color: Theme.of(context).cardColor,
+      elevation: 1,
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            _buildSectionTitle('News Topics'),
+            SizedBox(
+              height: 8,
+            ),
+            Flexible(
+                fit: FlexFit.loose,
+                child: _buildNewsTopicsList(favouritesStore)),
+            SizedBox(
+              height: 8,
+            ),
+            Divider(),
+            _buildViewAndManageButton(onTap: () {}),
+          ],
+        ),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -261,13 +362,13 @@ class _FavouritesPageState extends State<FavouritesPage> {
                       ),
                       Flexible(
                           fit: FlexFit.loose,
-                          child: _buildNewsSourcesSection(_favouriteskStore)),
+                          child: _buildNewsCategorySection(_favouriteskStore)),
                       SizedBox(
                         height: 8,
                       ),
                       Flexible(
                           fit: FlexFit.loose,
-                          child: _buildNewsSourcesSection(_favouriteskStore)),
+                          child: _buildNewsTopicsSection(_favouriteskStore)),
                       SizedBox(
                         height: 8,
                       ),

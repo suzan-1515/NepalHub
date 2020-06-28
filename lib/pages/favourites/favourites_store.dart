@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
 import 'package:mobx/mobx.dart';
 import 'package:samachar_hub/data/models/models.dart';
 import 'package:samachar_hub/repository/favourites_repository.dart';
@@ -16,40 +15,77 @@ abstract class _FavouritesStore with Store {
     this._favouritesRepository,
   );
 
-  // List<NewsFeedModel> _feedData = List<NewsFeedModel>();
+  StreamController<List<NewsSourceModel>> _newsSourceStreamController =
+      StreamController<List<NewsSourceModel>>.broadcast();
+  StreamController<List<NewsCategoryModel>> _newsCategoryStreamController =
+      StreamController<List<NewsCategoryModel>>.broadcast();
+  StreamController<NewsTopicModel> _newsTopicStreamController =
+      StreamController<NewsTopicModel>.broadcast();
 
-  static const int DATA_LIMIT = 20;
-
-  bool _hasMoreData = false;
-  bool _isLoadingMore = false;
-  // StreamController<List<NewsFeedModel>> _feedStreamController =
-  //     StreamController<List<NewsFeedModel>>.broadcast();
-
-  // Stream<List<NewsFeedModel>> get feedStream => _feedStreamController.stream;
+  Stream<List<NewsSourceModel>> get newsSourceFeedStream =>
+      _newsSourceStreamController.stream;
+  Stream<List<NewsCategoryModel>> get newsCategoryFeedStream =>
+      _newsCategoryStreamController.stream;
+  Stream<NewsTopicModel> get newsTopicFeedStream =>
+      _newsTopicStreamController.stream;
 
   @observable
   String error;
 
-  bool get hasMoreData => _hasMoreData;
-  bool get isLoadingMore => _isLoadingMore;
+  @observable
+  String message;
 
   @action
-  Future<void> loadData() async {
-    // _favouritesRepository
-    //     .getFavouritessAsStream(userId: userModel.uId)
-    //     .where((data) => data != null)
-    //     .listen((onData) {
-    //   _feedData.clear();
-    //   _feedData.addAll(onData);
-    //   _feedStreamController.add(_feedData);
-    //   _hasMoreData = onData.length == DATA_LIMIT;
-    // }, onError: (e) {
-    //   print(e.toString());
-    //   _feedStreamController.addError(e);
-    // });
+  retryNewsSources() {
+    loadFollowedNewsSourceData();
+  }
+
+  @action
+  retryNewsCategory() {
+    loadFollowedNewsCategoryData();
+  }
+
+  @action
+  retryNewsTopic() {
+    loadFollowedNewsTopicData();
+  }
+
+  @action
+  Future<void> loadFollowedNewsSourceData() {
+    return _favouritesRepository.getFollowedSources().then((value) {
+      if (value != null) {
+        _newsSourceStreamController.add(value);
+      }
+    }).catchError((onError) {
+      _newsSourceStreamController.addError(onError);
+    });
+  }
+
+  @action
+  Future<void> loadFollowedNewsCategoryData() {
+    return _favouritesRepository.getFollowedCategories().then((value) {
+      if (value != null) {
+        _newsCategoryStreamController.add(value);
+      }
+    }).catchError((onError) {
+      _newsCategoryStreamController.addError(onError);
+    });
+  }
+
+  @action
+  Future<void> loadFollowedNewsTopicData() {
+    return _favouritesRepository.getFollowedTopics().then((value) {
+      if (value != null) {
+        _newsTopicStreamController.add(value);
+      }
+    }).catchError((onError) {
+      _newsTopicStreamController.addError(onError);
+    });
   }
 
   dispose() {
-    // _feedStreamController.close();
+    _newsSourceStreamController.close();
+    _newsCategoryStreamController.close();
+    _newsTopicStreamController.close();
   }
 }
