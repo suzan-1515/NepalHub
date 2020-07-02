@@ -10,6 +10,12 @@ import 'package:samachar_hub/pages/comment/comment_firestore_service.dart';
 import 'package:samachar_hub/pages/comment/comment_repository.dart';
 import 'package:samachar_hub/pages/comment/comment_screen.dart';
 import 'package:samachar_hub/pages/comment/comment_store.dart';
+import 'package:samachar_hub/pages/favourites/news/categories_screen.dart';
+import 'package:samachar_hub/pages/favourites/news/category_selection_screen.dart';
+import 'package:samachar_hub/pages/favourites/news/category_store.dart';
+import 'package:samachar_hub/pages/favourites/news/source_selection_screen.dart';
+import 'package:samachar_hub/pages/favourites/news/source_store.dart';
+import 'package:samachar_hub/pages/favourites/news/sources_screen.dart';
 import 'package:samachar_hub/pages/forex/forex_detail_store.dart';
 import 'package:samachar_hub/pages/forex/forex_repository.dart';
 import 'package:samachar_hub/pages/forex/forex_screen.dart';
@@ -208,11 +214,52 @@ class NavigationService {
     debugPrint('to news source feeds screen');
   }
 
+  toFavouriteNewsSourceScreen(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) =>
+            ProxyProvider<NewsRepository, FavouriteNewsSourceStore>(
+          update: (BuildContext context, NewsRepository value,
+                  FavouriteNewsSourceStore previous) =>
+              FavouriteNewsSourceStore(value),
+          dispose: (context, value) => value.dispose(),
+          child: FavouriteNewsSourceScreen(),
+        ),
+      ),
+    );
+  }
+
   toNewsCategoryScreen(
       BuildContext context, NewsCategoryModel newsCategoryModel) {
     Provider.of<HomeScreenStore>(context, listen: false).setPage(1);
     Provider.of<CategoriesStore>(context, listen: false)
         .setActiveTab(newsCategoryModel.index);
+  }
+
+  toFavouriteNewsCategoryScreen(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) =>
+            ProxyProvider<NewsRepository, FavouriteNewsCategoryStore>(
+          update: (BuildContext context, NewsRepository value,
+                  FavouriteNewsCategoryStore previous) =>
+              FavouriteNewsCategoryStore(value),
+          dispose: (context, value) => value.dispose(),
+          child: FavouriteNewsCategoryScreen(),
+        ),
+      ),
+    );
+  }
+
+  toNewsCategorySelectionScreen(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => NewsCategorySelectionScreen(),
+      ),
+    );
   }
 
   onOpenLink(String title, String url, BuildContext context) {
@@ -258,16 +305,17 @@ class NavigationService {
     print('Tag selected: $source.name');
   }
 
-  onSourceViewAllTapped({@required BuildContext context}) {
+  toNewsSourceSelectionScreen({@required BuildContext context}) {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => ProxyProvider<NewsRepository, NewsSourceStore>(
+        builder: (context) =>
+            ProxyProvider<NewsRepository, FavouriteNewsSourceStore>(
           update: (BuildContext context, NewsRepository value,
-                  NewsSourceStore previous) =>
-              NewsSourceStore(value),
+                  FavouriteNewsSourceStore previous) =>
+              FavouriteNewsSourceStore(value),
           dispose: (context, value) => value.dispose(),
-          child: NewsSourceScreen(),
+          child: NewsSourceSelectionScreen(),
         ),
       ),
     );

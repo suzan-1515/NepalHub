@@ -5,20 +5,22 @@ import 'package:samachar_hub/data/api/api.dart';
 import 'package:samachar_hub/data/models/models.dart';
 import 'package:samachar_hub/pages/news/news_repository.dart';
 
-part 'news_source_store.g.dart';
+part 'category_store.g.dart';
 
-class NewsSourceStore = _NewsSourceStore with _$NewsSourceStore;
+class FavouriteNewsCategoryStore = _FavouriteNewsCategoryStore
+    with _$FavouriteNewsCategoryStore;
 
-abstract class _NewsSourceStore with Store {
+abstract class _FavouriteNewsCategoryStore with Store {
   final NewsRepository _newsRepository;
 
-  _NewsSourceStore(this._newsRepository);
+  _FavouriteNewsCategoryStore(this._newsRepository);
 
-  StreamController<List<NewsSourceModel>> _dataStreamController =
-      StreamController<List<NewsSourceModel>>.broadcast();
+  StreamController<List<NewsCategoryModel>> _dataStreamController =
+      StreamController<List<NewsCategoryModel>>.broadcast();
 
-  Stream<List<NewsSourceModel>> get dataStream => _dataStreamController.stream;
-  List<NewsSourceModel> data = List<NewsSourceModel>();
+  Stream<List<NewsCategoryModel>> get dataStream =>
+      _dataStreamController.stream;
+  List<NewsCategoryModel> data = List<NewsCategoryModel>();
 
   @observable
   APIException apiError;
@@ -28,17 +30,17 @@ abstract class _NewsSourceStore with Store {
 
   @action
   void loadInitialData() {
-    _loadSourceData();
+    _loadCategoryData();
   }
 
   @action
   void retry() {
     data.clear();
-    _loadSourceData();
+    _loadCategoryData();
   }
 
-  Future _loadSourceData() async {
-    return _newsRepository.getSources().then((onValue) {
+  Future _loadCategoryData() async {
+    return _newsRepository.getCategories().then((onValue) {
       if (onValue != null) {
         data.addAll(onValue);
       }

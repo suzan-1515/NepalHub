@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:samachar_hub/data/api/api.dart';
 import 'package:samachar_hub/pages/category/categories_store.dart';
 import 'package:samachar_hub/pages/category/category_view.dart';
+import 'package:samachar_hub/pages/widgets/api_error_dialog.dart';
 import 'package:samachar_hub/util/news_category.dart';
 
 class CategoriesPage extends StatefulWidget {
@@ -91,28 +92,7 @@ class _CategoriesPageState extends State<CategoriesPage>
         context: context,
         barrierDismissible: false, // user must tap button!
         builder: (BuildContext context) {
-          return AlertDialog(
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-            title: Text(
-              'API Error - ${apiError.message}',
-              style: Theme.of(context).textTheme.subtitle1
-            ),
-            content: SingleChildScrollView(
-              child: Text(
-                apiError.message,
-                style: Theme.of(context).textTheme.bodyText2,
-              ),
-            ),
-            actions: <Widget>[
-              FlatButton(
-                child: Text('OK'),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              ),
-            ],
-          );
+          return ApiErrorDialog(apiError: apiError);
         },
       );
   }
@@ -131,6 +111,9 @@ class _CategoriesPageState extends State<CategoriesPage>
       }),
       // Listens tab change
       autorun((_) {
+        // _tabs.indexWhere((element) =>
+        //     ((element.key as ValueKey<NewsCategory>).value) ==
+        //     NewsCategory.blog);
         _tabController.index = store.activeTabIndex;
       })
     ];

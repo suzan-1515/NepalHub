@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:mobx/mobx.dart';
 import 'package:provider/provider.dart';
 import 'package:samachar_hub/data/models/models.dart';
 import 'package:samachar_hub/pages/favourites/favourites_store.dart';
+import 'package:samachar_hub/pages/favourites/widgets/add_list_item.dart';
 import 'package:samachar_hub/pages/widgets/empty_data_widget.dart';
 import 'package:samachar_hub/pages/widgets/error_data_widget.dart';
 import 'package:samachar_hub/pages/widgets/news_tag_item.dart';
@@ -78,42 +78,6 @@ class _FavouritesPageState extends State<FavouritesPage> {
     );
   }
 
-  Widget _buildAddItem({Function onTap}) {
-    return Card(
-      elevation: 1,
-      color: Theme.of(context).cardColor,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          onTap: onTap,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              Expanded(
-                child: Icon(
-                  FontAwesomeIcons.plusCircle,
-                  color: Theme.of(context).accentColor.withOpacity(.7),
-                  size: 32,
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text(
-                  'Add',
-                  style: Theme.of(context).textTheme.subtitle2,
-                  maxLines: 2,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
   Widget _buildNewsSourcesList(FavouritesStore favouritesStore) {
     return StreamBuilder<List<NewsSourceModel>>(
       stream: favouritesStore.newsSourceFeedStream,
@@ -128,10 +92,6 @@ class _FavouritesPageState extends State<FavouritesPage> {
           );
         }
         if (snapshot.hasData) {
-          if (snapshot.data.isEmpty) {
-            return Center(child: EmptyDataView());
-          }
-
           return LimitedBox(
             maxHeight: 100,
             child: ListView.builder(
@@ -141,7 +101,12 @@ class _FavouritesPageState extends State<FavouritesPage> {
               itemCount: snapshot.data.length + 1,
               itemBuilder: (context, index) {
                 if (index == 0) {
-                  return _buildAddItem(onTap: () {});
+                  return AddListItem(
+                      context: context,
+                      onTap: () {
+                        Provider.of<NavigationService>(context, listen: false)
+                            .toNewsSourceSelectionScreen(context: context);
+                      });
                 }
 
                 var sourceModel = snapshot.data[index - 1];
@@ -183,7 +148,10 @@ class _FavouritesPageState extends State<FavouritesPage> {
               height: 8,
             ),
             Divider(),
-            _buildViewAndManageButton(onTap: () {}),
+            _buildViewAndManageButton(onTap: () {
+              Provider.of<NavigationService>(context, listen: false)
+                  .toFavouriteNewsSourceScreen(context);
+            }),
           ],
         ),
       ),
@@ -204,10 +172,6 @@ class _FavouritesPageState extends State<FavouritesPage> {
           );
         }
         if (snapshot.hasData) {
-          if (snapshot.data.isEmpty) {
-            return Center(child: EmptyDataView());
-          }
-
           return LimitedBox(
             maxHeight: 100,
             child: ListView.builder(
@@ -217,7 +181,12 @@ class _FavouritesPageState extends State<FavouritesPage> {
               itemCount: snapshot.data.length + 1,
               itemBuilder: (context, index) {
                 if (index == 0) {
-                  return _buildAddItem(onTap: () {});
+                  return AddListItem(
+                      context: context,
+                      onTap: () {
+                        Provider.of<NavigationService>(context, listen: false)
+                            .toNewsCategorySelectionScreen(context);
+                      });
                 }
 
                 var categoryModel = snapshot.data[index - 1];
@@ -260,6 +229,8 @@ class _FavouritesPageState extends State<FavouritesPage> {
             ),
             Divider(),
             _buildViewAndManageButton(onTap: () {
+              Provider.of<NavigationService>(context, listen: false)
+                  .toFavouriteNewsCategoryScreen(context);
             }),
           ],
         ),

@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class EmptyDataView extends StatelessWidget {
-  const EmptyDataView({Key key}) : super(key: key);
+  final String text;
+  const EmptyDataView({Key key, this.text = 'Empty Data!'}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -16,7 +17,7 @@ class EmptyDataView extends StatelessWidget {
         ),
         SizedBox(height: 8),
         Text(
-          'Empty Data!',
+          text,
           style: Theme.of(context).textTheme.bodyText2,
         ),
       ],
