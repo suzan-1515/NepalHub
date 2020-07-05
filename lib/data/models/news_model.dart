@@ -81,11 +81,10 @@ class NewsCategoryModel {
   final int id;
   final String name;
   final String code;
-  final String icon;
+  final IconData icon;
   final int priority;
   final FeedCategoryApiResponse rawData;
   final ValueNotifier<bool> enabled = ValueNotifier<bool>(true);
-  int index;
 
   NewsCategoryModel(
       {@required this.id,
@@ -94,8 +93,7 @@ class NewsCategoryModel {
       @required this.icon,
       @required this.priority,
       @required this.rawData,
-      bool enable = true,
-      this.index = 0}) {
+      bool enable = true}) {
     this.enabled.value = enable;
   }
   Map<String, dynamic> toJson() => <String, dynamic>{

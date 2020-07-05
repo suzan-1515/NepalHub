@@ -7,7 +7,6 @@ import 'package:samachar_hub/pages/favourites/favourites_page.dart';
 import 'package:samachar_hub/pages/favourites/favourites_store.dart';
 import 'package:samachar_hub/pages/home/home_screen_store.dart';
 import 'package:samachar_hub/pages/news/news_repository.dart';
-import 'package:samachar_hub/pages/news/sources/news_source_store.dart';
 import 'package:samachar_hub/pages/pages.dart';
 import 'package:samachar_hub/repository/favourites_repository.dart';
 import 'package:samachar_hub/services/favourites_firestore_service.dart';
@@ -42,7 +41,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Consumer<HomeScreenStore>(
-      builder: (BuildContext context, HomeScreenStore homeStore, Widget child) {
+      builder: (_, HomeScreenStore homeStore, Widget child) {
         return Scaffold(
           backgroundColor: Theme.of(context).backgroundColor,
           body: SafeArea(
@@ -54,23 +53,17 @@ class _HomeScreenState extends State<HomeScreen> {
                   PersonalisedPage(),
                   CategoriesPage(),
                   MultiProvider(providers: [
-                    ProxyProvider3<AnalyticsService, PreferenceService,
-                        NewsRepository, FavouritesRepository>(
-                      update: (_, _analyticsService, _preferenceService,
-                              _newsRepository, __) =>
-                          FavouritesRepository(
-                              FavouritesFirestoreService(),
-                              _analyticsService,
-                              _preferenceService,
-                              _newsRepository),
+                    ProxyProvider2<AnalyticsService, PreferenceService,
+                        FavouritesRepository>(
+                      update: (_, _analyticsService, _preferenceService, __) =>
+                          FavouritesRepository(FavouritesFirestoreService(),
+                              _analyticsService, _preferenceService),
                     ),
-                    ProxyProvider<FavouritesRepository, FavouritesStore>(
-                      update: (_, _favouritesRepository, __) =>
-                          FavouritesStore(_favouritesRepository),
-                    ),
-                    ProxyProvider<NewsRepository, NewsSourceStore>(
-                      update: (_, _newsRepository, __) =>
-                          NewsSourceStore(_newsRepository),
+                    ProxyProvider2<FavouritesRepository, NewsRepository,
+                        FavouritesStore>(
+                      update: (_, _favouritesRepository, _newsRepository, __) =>
+                          FavouritesStore(
+                              _favouritesRepository, _newsRepository),
                     ),
                   ], child: FavouritesPage()),
                   // BookmarkPage(),
@@ -97,7 +90,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 BottomNavigationBarItem(
                   icon: Icon(FontAwesomeIcons.solidHeart),
-                  title: Text('Bookmarks'),
+                  title: Text('Following'),
                 ),
                 BottomNavigationBarItem(
                   icon: Icon(FontAwesomeIcons.cog),

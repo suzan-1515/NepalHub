@@ -1,10 +1,9 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:mobx/mobx.dart';
 import 'package:provider/provider.dart';
 import 'package:samachar_hub/data/models/models.dart';
-import 'package:samachar_hub/pages/favourites/news/category_store.dart';
+import 'package:samachar_hub/pages/favourites/favourites_store.dart';
 import 'package:samachar_hub/pages/widgets/empty_data_widget.dart';
 import 'package:samachar_hub/pages/widgets/error_data_widget.dart';
 import 'package:samachar_hub/pages/widgets/progress_widget.dart';
@@ -22,9 +21,9 @@ class _FavouriteNewsCategoryScreenState
 
   @override
   void initState() {
-    var store = Provider.of<FavouriteNewsCategoryStore>(context, listen: false);
+    var store = Provider.of<FavouritesStore>(context, listen: false);
     _setupObserver(store);
-    store.loadInitialData();
+    store.loadFollowedNewsCategoryData();
     super.initState();
   }
 
@@ -56,15 +55,15 @@ class _FavouriteNewsCategoryScreenState
     ];
   }
 
-  Widget _buildCategoryList(FavouriteNewsCategoryStore favouritesStore) {
+  Widget _buildCategoryList(FavouritesStore favouritesStore) {
     return StreamBuilder<List<NewsCategoryModel>>(
-      stream: favouritesStore.dataStream,
+      stream: favouritesStore.newsCategoryFeedStream,
       builder: (context, snapshot) {
         if (snapshot.hasError) {
           return Center(
             child: ErrorDataView(
               onRetry: () {
-                favouritesStore.retry();
+                favouritesStore.retryNewsCategory();
               },
             ),
           );
@@ -78,37 +77,47 @@ class _FavouriteNewsCategoryScreenState
             );
           }
           return ListView.builder(
+            padding: EdgeInsets.symmetric(vertical: 8),
             itemCount: snapshot.data.length,
             itemBuilder: (context, index) {
               var categoryModel = snapshot.data[index];
-              return ListTile(
-                onTap: () {
-                  // Provider.of<NavigationService>(context, listen: false)
-                  //     .toNewsCategoryScreen(context, categoryModel);
-                },
-                leading: Card(
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(6)),
-                  child: CachedNetworkImage(
-                    width: 42,
-                    height: 42,
-                    imageUrl: categoryModel.icon,
-                    errorWidget: (context, url, error) => Opacity(
-                        opacity: 0.7,
-                        child: Icon(FontAwesomeIcons.exclamationCircle)),
-                    progressIndicatorBuilder: (context, url, progress) =>
-                        Center(child: CircularProgressIndicator()),
+              return Material(
+                child: ListTile(
+                  onTap: () {
+                    Provider.of<NavigationService>(context, listen: false)
+                        .toNewsCategoryScreen(context, categoryModel);
+                  },
+                  leading: Container(
+                      width: 48,
+                      height: 48,
+                      decoration: BoxDecoration(
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey,
+                              blurRadius: 1.0,
+                            ),
+                          ],
+                          color: Theme.of(context).cardColor,
+                          borderRadius: BorderRadius.all(Radius.circular(6))),
+                      child: Icon(
+                        categoryModel.icon,
+                        size: 32,
+                        color: Theme.of(context).accentColor.withOpacity(.8),
+                      )),
+                  title: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      categoryModel.name,
+                      style: Theme.of(context).textTheme.subtitle1,
+                    ),
                   ),
+                  trailing: Opacity(
+                      opacity: 0.6,
+                      child: IconButton(
+                        icon: Icon(FontAwesomeIcons.ellipsisV),
+                        onPressed: () {},
+                      )),
                 ),
-                title: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text(
-                    categoryModel.name,
-                    style: Theme.of(context).textTheme.subtitle1,
-                  ),
-                ),
-                trailing: Opacity(
-                    opacity: 0.6, child: Icon(FontAwesomeIcons.ellipsisV)),
               );
             },
           );
@@ -131,7 +140,7 @@ class _FavouriteNewsCategoryScreenState
         child: Container(
           color: Theme.of(context).backgroundColor,
           padding: EdgeInsets.symmetric(horizontal: 8),
-          child: Consumer<FavouriteNewsCategoryStore>(
+          child: Consumer<FavouritesStore>(
             builder: (_, _favouriteskStore, child) {
               return _buildCategoryList(_favouriteskStore);
             },
@@ -140,8 +149,11 @@ class _FavouriteNewsCategoryScreenState
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Provider.of<NavigationService>(context, listen: false)
-              .toNewsCategorySelectionScreen(context);
+          context
+              .read<NavigationService>()
+              .toNewsCategorySelectionScreen(context)
+              .whenComplete(
+                  () => context.read<FavouritesStore>().retryNewsCategory());
         },
         child: Icon(FontAwesomeIcons.plus),
       ),

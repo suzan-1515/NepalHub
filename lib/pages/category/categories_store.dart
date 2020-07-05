@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:async/async.dart';
 import 'package:mobx/mobx.dart';
 import 'package:samachar_hub/data/api/api.dart';
@@ -24,7 +26,8 @@ abstract class _CategoriesStore with Store {
   ObservableMap<NewsCategory, ObservableFuture> loadFeedItemsFuture =
       ObservableMap<NewsCategory, ObservableFuture>();
 
-  Map<NewsCategory, List<NewsFeedModel>> newsData = Map<NewsCategory, List<NewsFeedModel>>();
+  Map<NewsCategory, List<NewsFeedModel>> newsData =
+      Map<NewsCategory, List<NewsFeedModel>>();
 
   Map<NewsCategory, bool> hasMoreData = Map<NewsCategory, bool>();
 
@@ -38,7 +41,7 @@ abstract class _CategoriesStore with Store {
   MenuItem view = MenuItem.LIST_VIEW;
 
   @observable
-  int activeTabIndex = 0;
+  String activeCategoryTab = 'tops';
 
   @action
   void loadInitialFeeds(NewsCategory category) {
@@ -115,8 +118,8 @@ abstract class _CategoriesStore with Store {
   }
 
   @action
-  setActiveTab(int value) {
-    activeTabIndex = value;
+  setActiveCategoryTab(String categoryCode) {
+    activeCategoryTab = categoryCode;
   }
 
   dispose() {

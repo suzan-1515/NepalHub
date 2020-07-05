@@ -1,5 +1,4 @@
 import 'package:samachar_hub/data/models/models.dart';
-import 'package:samachar_hub/pages/news/news_repository.dart';
 import 'package:samachar_hub/services/favourites_firestore_service.dart';
 import 'package:samachar_hub/services/services.dart';
 
@@ -7,10 +6,9 @@ class FavouritesRepository {
   final FavouritesFirestoreService _favouritesService;
   final AnalyticsService _analyticsService;
   final PreferenceService _preferenceService;
-  final NewsRepository _newsRepository;
 
-  FavouritesRepository(this._favouritesService, this._analyticsService,
-      this._preferenceService, this._newsRepository);
+  FavouritesRepository(
+      this._favouritesService, this._analyticsService, this._preferenceService);
 
   Future<void> followSource(NewsSourceModel sourceModel) {
     if (sourceModel == null) return Future.value();
@@ -42,14 +40,6 @@ class FavouritesRepository {
     var followedSources = _preferenceService.followedNewsSources;
     followedSources.addAll(sourceModel.map((e) => e.code));
     _preferenceService.followedNewsSources = followedSources;
-  }
-
-  Future<List<NewsSourceModel>> getFollowedSources({String userId}) {
-    return _newsRepository.getSources().then((value) {
-      if (value == null || value.isEmpty)
-        return Future.value(List<NewsSourceModel>());
-      return value.where((e) => e.enabled.value).toList();
-    });
   }
 
   Future<void> followCategory(NewsCategoryModel categoriesModel) {
@@ -85,14 +75,6 @@ class FavouritesRepository {
     var followedCategories = _preferenceService.followedNewsCategories;
     followedCategories.addAll(categoriesModel.map((e) => e.code));
     _preferenceService.followedNewsCategories = followedCategories;
-  }
-
-  Future<List<NewsCategoryModel>> getFollowedCategories({String userId}) {
-    return _newsRepository.getCategories().then((value) {
-      if (value == null || value.isEmpty)
-        return Future.value(List<NewsCategoryModel>());
-      return value.where((e) => e.enabled.value).toList();
-    });
   }
 
   Future<void> followTopic(String topic) {

@@ -13,7 +13,22 @@ const Map<NewsCategory, String> newsCategoryNameByCode = {
   NewsCategory.entm: 'Entertainment',
   NewsCategory.hlth: 'Health',
   NewsCategory.blog: 'Blog',
+  NewsCategory.advs: 'Advertisement',
   NewsCategory.oths: 'Uncategorized',
+};
+
+final Map<String, IconData> newsCategoryIcons = {
+  'tops': FontAwesomeIcons.newspaper,
+  'pltc': Icons.assistant_photo,
+  'sprt': FontAwesomeIcons.running,
+  'scte': FontAwesomeIcons.phone,
+  'wrld': FontAwesomeIcons.globe,
+  'busi': FontAwesomeIcons.businessTime,
+  'entm': FontAwesomeIcons.tv,
+  'hlth': FontAwesomeIcons.hospital,
+  'blog': FontAwesomeIcons.blog,
+  'advs': FontAwesomeIcons.ad,
+  'oths': FontAwesomeIcons.lightbulb,
 };
 
 final List<NewsCategoryMenuModel> newsCategoryMenus = List.unmodifiable([

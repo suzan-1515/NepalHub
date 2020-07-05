@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:samachar_hub/data/models/models.dart';
 import 'package:samachar_hub/pages/favourites/favourites_store.dart';
 import 'package:samachar_hub/pages/favourites/widgets/add_list_item.dart';
+import 'package:samachar_hub/widgets/news_category_horz_list_item.dart';
 import 'package:samachar_hub/pages/widgets/empty_data_widget.dart';
 import 'package:samachar_hub/pages/widgets/error_data_widget.dart';
 import 'package:samachar_hub/pages/widgets/news_tag_item.dart';
@@ -17,7 +18,8 @@ class FavouritesPage extends StatefulWidget {
   _FavouritesPageState createState() => _FavouritesPageState();
 }
 
-class _FavouritesPageState extends State<FavouritesPage> {
+class _FavouritesPageState extends State<FavouritesPage>
+    with AutomaticKeepAliveClientMixin {
   List<ReactionDisposer> _disposers;
 
   @override
@@ -78,10 +80,11 @@ class _FavouritesPageState extends State<FavouritesPage> {
     );
   }
 
-  Widget _buildNewsSourcesList(FavouritesStore favouritesStore) {
+  Widget _buildNewsSourcesList(
+      BuildContext context, FavouritesStore favouritesStore) {
     return StreamBuilder<List<NewsSourceModel>>(
       stream: favouritesStore.newsSourceFeedStream,
-      builder: (context, snapshot) {
+      builder: (_, snapshot) {
         if (snapshot.hasError) {
           return Center(
             child: ErrorDataView(
@@ -99,13 +102,15 @@ class _FavouritesPageState extends State<FavouritesPage> {
               itemExtent: 120,
               scrollDirection: Axis.horizontal,
               itemCount: snapshot.data.length + 1,
-              itemBuilder: (context, index) {
+              itemBuilder: (_, index) {
                 if (index == 0) {
                   return AddListItem(
                       context: context,
                       onTap: () {
                         Provider.of<NavigationService>(context, listen: false)
-                            .toNewsSourceSelectionScreen(context: context);
+                            .toNewsSourceSelectionScreen(context: context)
+                            .whenComplete(
+                                () => favouritesStore.retryNewsSources());
                       });
                 }
 
@@ -127,7 +132,8 @@ class _FavouritesPageState extends State<FavouritesPage> {
     );
   }
 
-  Widget _buildNewsSourcesSection(FavouritesStore favouritesStore) {
+  Widget _buildNewsSourcesSection(
+      BuildContext context, FavouritesStore favouritesStore) {
     return Card(
       color: Theme.of(context).cardColor,
       elevation: 1,
@@ -143,7 +149,7 @@ class _FavouritesPageState extends State<FavouritesPage> {
             ),
             Flexible(
                 fit: FlexFit.loose,
-                child: _buildNewsSourcesList(favouritesStore)),
+                child: _buildNewsSourcesList(context, favouritesStore)),
             SizedBox(
               height: 8,
             ),
@@ -158,7 +164,8 @@ class _FavouritesPageState extends State<FavouritesPage> {
     );
   }
 
-  Widget _buildNewsCategoriesList(FavouritesStore favouritesStore) {
+  Widget _buildNewsCategoriesList(
+      BuildContext context, FavouritesStore favouritesStore) {
     return StreamBuilder<List<NewsCategoryModel>>(
       stream: favouritesStore.newsCategoryFeedStream,
       builder: (context, snapshot) {
@@ -179,18 +186,20 @@ class _FavouritesPageState extends State<FavouritesPage> {
               itemExtent: 120,
               scrollDirection: Axis.horizontal,
               itemCount: snapshot.data.length + 1,
-              itemBuilder: (context, index) {
+              itemBuilder: (_, index) {
                 if (index == 0) {
                   return AddListItem(
                       context: context,
                       onTap: () {
                         Provider.of<NavigationService>(context, listen: false)
-                            .toNewsCategorySelectionScreen(context);
+                            .toNewsCategorySelectionScreen(context)
+                            .whenComplete(
+                                () => favouritesStore.retryNewsCategory());
                       });
                 }
 
                 var categoryModel = snapshot.data[index - 1];
-                return MiniCardListItem(
+                return NewsCategoryHorzListItem(
                     context: context,
                     name: categoryModel.name,
                     icon: categoryModel.icon,
@@ -207,7 +216,8 @@ class _FavouritesPageState extends State<FavouritesPage> {
     );
   }
 
-  Widget _buildNewsCategorySection(FavouritesStore favouritesStore) {
+  Widget _buildNewsCategorySection(
+      BuildContext context, FavouritesStore favouritesStore) {
     return Card(
       color: Theme.of(context).cardColor,
       elevation: 1,
@@ -223,7 +233,7 @@ class _FavouritesPageState extends State<FavouritesPage> {
             ),
             Flexible(
                 fit: FlexFit.loose,
-                child: _buildNewsCategoriesList(favouritesStore)),
+                child: _buildNewsCategoriesList(context, favouritesStore)),
             SizedBox(
               height: 8,
             ),
@@ -275,7 +285,8 @@ class _FavouritesPageState extends State<FavouritesPage> {
     );
   }
 
-  Widget _buildNewsTopicsSection(FavouritesStore favouritesStore) {
+  Widget _buildNewsTopicsSection(
+      BuildContext context, FavouritesStore favouritesStore) {
     return Card(
       color: Theme.of(context).cardColor,
       elevation: 1,
@@ -305,6 +316,7 @@ class _FavouritesPageState extends State<FavouritesPage> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Container(
       color: Theme.of(context).backgroundColor,
       padding: EdgeInsets.symmetric(horizontal: 8),
@@ -315,7 +327,7 @@ class _FavouritesPageState extends State<FavouritesPage> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
               PageHeading(
-                title: 'My Favourites',
+                title: 'Following',
               ),
               Expanded(
                 child: SingleChildScrollView(
@@ -327,19 +339,22 @@ class _FavouritesPageState extends State<FavouritesPage> {
                       ),
                       Flexible(
                           fit: FlexFit.loose,
-                          child: _buildNewsSourcesSection(_favouriteskStore)),
+                          child: _buildNewsSourcesSection(
+                              context, _favouriteskStore)),
                       SizedBox(
                         height: 8,
                       ),
                       Flexible(
                           fit: FlexFit.loose,
-                          child: _buildNewsCategorySection(_favouriteskStore)),
+                          child: _buildNewsCategorySection(
+                              context, _favouriteskStore)),
                       SizedBox(
                         height: 8,
                       ),
                       Flexible(
                           fit: FlexFit.loose,
-                          child: _buildNewsTopicsSection(_favouriteskStore)),
+                          child: _buildNewsTopicsSection(
+                              context, _favouriteskStore)),
                       SizedBox(
                         height: 8,
                       ),
@@ -353,4 +368,7 @@ class _FavouritesPageState extends State<FavouritesPage> {
       ),
     );
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }

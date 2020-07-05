@@ -123,11 +123,11 @@ class _NewsSourceSelectionScreenState extends State<NewsSourceSelectionScreen> {
   Widget _buildHeader() {
     return RichText(
       text: TextSpan(
-        text: 'Choose News Categories',
+        text: 'Choose News Sources',
         style: Theme.of(context).textTheme.headline6,
         children: <TextSpan>[
           TextSpan(
-            text: '\nPlease select at least 3 news categories',
+            text: '\nPlease select at least 3 news sources',
             style: Theme.of(context).textTheme.subtitle1,
           ),
         ],
@@ -139,7 +139,14 @@ class _NewsSourceSelectionScreenState extends State<NewsSourceSelectionScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('News Categories'),
+        title: Text('News Sources'),
+        leading: BackButton(
+          onPressed: () {
+            Provider.of<FavouriteNewsSourceStore>(context, listen: false)
+                .updateFollowedNewsSources();
+            Navigator.of(context).pop();
+          },
+        ),
       ),
       backgroundColor: Theme.of(context).backgroundColor,
       body: SafeArea(

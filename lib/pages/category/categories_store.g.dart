@@ -82,21 +82,22 @@ mixin _$CategoriesStore on _CategoriesStore, Store {
     }, _$viewAtom, name: '${_$viewAtom.name}_set');
   }
 
-  final _$activeTabIndexAtom = Atom(name: '_CategoriesStore.activeTabIndex');
+  final _$activeCategoryTabAtom =
+      Atom(name: '_CategoriesStore.activeCategoryTab');
 
   @override
-  int get activeTabIndex {
-    _$activeTabIndexAtom.context.enforceReadPolicy(_$activeTabIndexAtom);
-    _$activeTabIndexAtom.reportObserved();
-    return super.activeTabIndex;
+  String get activeCategoryTab {
+    _$activeCategoryTabAtom.context.enforceReadPolicy(_$activeCategoryTabAtom);
+    _$activeCategoryTabAtom.reportObserved();
+    return super.activeCategoryTab;
   }
 
   @override
-  set activeTabIndex(int value) {
-    _$activeTabIndexAtom.context.conditionallyRunInAction(() {
-      super.activeTabIndex = value;
-      _$activeTabIndexAtom.reportChanged();
-    }, _$activeTabIndexAtom, name: '${_$activeTabIndexAtom.name}_set');
+  set activeCategoryTab(String value) {
+    _$activeCategoryTabAtom.context.conditionallyRunInAction(() {
+      super.activeCategoryTab = value;
+      _$activeCategoryTabAtom.reportChanged();
+    }, _$activeCategoryTabAtom, name: '${_$activeCategoryTabAtom.name}_set');
   }
 
   final _$_loadFirstPageFeedsAsyncAction = AsyncAction('_loadFirstPageFeeds');
@@ -155,10 +156,10 @@ mixin _$CategoriesStore on _CategoriesStore, Store {
   }
 
   @override
-  dynamic setActiveTab(int value) {
+  dynamic setActiveCategoryTab(String categoryCode) {
     final _$actionInfo = _$_CategoriesStoreActionController.startAction();
     try {
-      return super.setActiveTab(value);
+      return super.setActiveCategoryTab(categoryCode);
     } finally {
       _$_CategoriesStoreActionController.endAction(_$actionInfo);
     }
@@ -167,7 +168,7 @@ mixin _$CategoriesStore on _CategoriesStore, Store {
   @override
   String toString() {
     final string =
-        'loadFeedItemsFuture: ${loadFeedItemsFuture.toString()},error: ${error.toString()},apiError: ${apiError.toString()},view: ${view.toString()},activeTabIndex: ${activeTabIndex.toString()}';
+        'loadFeedItemsFuture: ${loadFeedItemsFuture.toString()},error: ${error.toString()},apiError: ${apiError.toString()},view: ${view.toString()},activeCategoryTab: ${activeCategoryTab.toString()}';
     return '{$string}';
   }
 }

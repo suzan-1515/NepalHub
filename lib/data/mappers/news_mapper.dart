@@ -1,5 +1,6 @@
 import 'package:samachar_hub/data/api/api.dart';
 import 'package:samachar_hub/data/models/models.dart';
+import 'package:samachar_hub/util/news_category.dart';
 
 class NewsMapper {
   static NewsFeedModel fromFeedApi(FeedApiResponse response) {
@@ -41,8 +42,7 @@ class NewsMapper {
     return NewsTopicModel(response.tags);
   }
 
-  static NewsSourceModel fromSourceApi(
-      FeedSourceApiResponse response) {
+  static NewsSourceModel fromSourceApi(FeedSourceApiResponse response) {
     return NewsSourceModel(
       id: response.id,
       name: response.name,
@@ -54,13 +54,12 @@ class NewsMapper {
     );
   }
 
-  static NewsCategoryModel fromCategoryApi(
-      FeedCategoryApiResponse response) {
+  static NewsCategoryModel fromCategoryApi(FeedCategoryApiResponse response) {
     return NewsCategoryModel(
       id: response.id,
       name: response.name,
       code: response.code,
-      icon: response.icon,
+      icon: newsCategoryIcons[response.code],
       priority: response.priority,
       rawData: response,
     );

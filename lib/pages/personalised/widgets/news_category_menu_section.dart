@@ -3,12 +3,12 @@ import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:samachar_hub/data/models/models.dart';
 import 'package:samachar_hub/pages/home/home_screen_store.dart';
-import 'package:samachar_hub/pages/widgets/news_category_menu_item.dart';
 import 'package:samachar_hub/pages/widgets/section_heading.dart';
 import 'package:samachar_hub/services/services.dart';
+import 'package:samachar_hub/widgets/news_category_horz_list_item.dart';
 
 class NewsCategoryMenuSection extends StatelessWidget {
-  final List<NewsCategoryMenuModel> items;
+  final List<NewsCategoryModel> items;
   const NewsCategoryMenuSection({
     Key key,
     this.items,
@@ -36,12 +36,14 @@ class NewsCategoryMenuSection extends StatelessWidget {
                   itemCount: items.length,
                   scrollDirection: Axis.horizontal,
                   itemBuilder: (context, index) {
-                    return NewsCategoryMenuItem(
-                      category: items[index],
-                      onTap: (categoryMenu) =>
-                          navigationService.onNewsCategoryMenuTapped(
-                        category: categoryMenu,
-                        context: context,
+                    var categoryModel = items[index];
+                    return NewsCategoryHorzListItem(
+                      context: context,
+                      name: categoryModel.name,
+                      icon: categoryModel.icon,
+                      onTap: () => navigationService.toNewsCategoryScreen(
+                        context,
+                        categoryModel,
                       ),
                     );
                   }),

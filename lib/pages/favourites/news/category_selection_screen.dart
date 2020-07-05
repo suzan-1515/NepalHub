@@ -7,7 +7,7 @@ import 'package:provider/provider.dart';
 import 'package:samachar_hub/data/api/api.dart';
 import 'package:samachar_hub/data/models/models.dart';
 import 'package:samachar_hub/pages/favourites/news/category_store.dart';
-import 'package:samachar_hub/pages/favourites/news/news_source_selection_item.dart';
+import 'package:samachar_hub/pages/favourites/news/news_category_selection_item.dart';
 import 'package:samachar_hub/pages/widgets/api_error_dialog.dart';
 import 'package:samachar_hub/pages/widgets/empty_data_widget.dart';
 import 'package:samachar_hub/pages/widgets/error_data_widget.dart';
@@ -100,13 +100,13 @@ class _NewsCategorySelectionScreenState
           return GridView.builder(
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 3,
-                childAspectRatio: 2 / 3,
+                childAspectRatio: 1,
                 crossAxisSpacing: 4.0,
                 mainAxisSpacing: 4.0),
             itemCount: snapshot.data.length,
             itemBuilder: (_, int index) {
               var categoryModel = snapshot.data[index];
-              return NewsSourceSelectionItem(
+              return NewsCategorySelectionItem(
                 icon: categoryModel.icon,
                 name: categoryModel.name,
                 isSelected: categoryModel.enabled.value,
@@ -129,7 +129,7 @@ class _NewsCategorySelectionScreenState
         style: Theme.of(context).textTheme.headline6,
         children: <TextSpan>[
           TextSpan(
-            text: 'Please select at least 3 news categories',
+            text: '\nPlease select at least 3 news categories',
             style: Theme.of(context).textTheme.subtitle1,
           ),
         ],
@@ -142,6 +142,14 @@ class _NewsCategorySelectionScreenState
     return Scaffold(
       appBar: AppBar(
         title: Text('News Categories'),
+        leading: BackButton(
+          onPressed: () {
+            var store =
+                Provider.of<FavouriteNewsCategoryStore>(context, listen: false);
+            store.updateFollowedNewsCategory();
+            Navigator.of(context).pop();
+          },
+        ),
       ),
       backgroundColor: Theme.of(context).backgroundColor,
       body: SafeArea(

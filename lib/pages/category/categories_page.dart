@@ -47,6 +47,9 @@ class _CategoriesPageState extends State<CategoriesPage>
         key: ValueKey<NewsCategory>(NewsCategory.blog),
         text: newsCategoryNameByCode[NewsCategory.blog]),
     Tab(
+        key: ValueKey<NewsCategory>(NewsCategory.advs),
+        text: newsCategoryNameByCode[NewsCategory.advs]),
+    Tab(
         key: ValueKey<NewsCategory>(NewsCategory.oths),
         text: newsCategoryNameByCode[NewsCategory.oths]),
   ];
@@ -56,7 +59,13 @@ class _CategoriesPageState extends State<CategoriesPage>
     final store = Provider.of<CategoriesStore>(context, listen: false);
     _setupObserver(store);
     _tabController = TabController(
-      initialIndex: store.activeTabIndex,
+      initialIndex: _tabs.indexWhere((element) =>
+          ((element.key as ValueKey<NewsCategory>)
+              .value
+              .toString()
+              .split('.')
+              .last) ==
+          store.activeCategoryTab),
       vsync: this,
       length: _tabs.length,
     );
@@ -109,13 +118,6 @@ class _CategoriesPageState extends State<CategoriesPage>
         final APIException error = store.apiError;
         _showErrorDialog(error);
       }),
-      // Listens tab change
-      autorun((_) {
-        // _tabs.indexWhere((element) =>
-        //     ((element.key as ValueKey<NewsCategory>).value) ==
-        //     NewsCategory.blog);
-        _tabController.index = store.activeTabIndex;
-      })
     ];
   }
 
@@ -210,20 +212,11 @@ class _CategoriesPageState extends State<CategoriesPage>
               ),
               Expanded(
                 child: TabBarView(
-                  controller: _tabController,
-                  children: <Widget>[
-                    NewsCategoryView(NewsCategory.tops),
-                    NewsCategoryView(NewsCategory.pltc),
-                    NewsCategoryView(NewsCategory.sprt),
-                    NewsCategoryView(NewsCategory.scte),
-                    NewsCategoryView(NewsCategory.wrld),
-                    NewsCategoryView(NewsCategory.busi),
-                    NewsCategoryView(NewsCategory.entm),
-                    NewsCategoryView(NewsCategory.hlth),
-                    NewsCategoryView(NewsCategory.blog),
-                    NewsCategoryView(NewsCategory.oths),
-                  ],
-                ),
+                    controller: _tabController,
+                    children: _tabs
+                        .map((e) => NewsCategoryView(
+                            (e.key as ValueKey<NewsCategory>).value))
+                        .toList()),
               ),
             ],
           );

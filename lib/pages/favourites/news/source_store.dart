@@ -4,6 +4,7 @@ import 'package:mobx/mobx.dart';
 import 'package:samachar_hub/data/api/api.dart';
 import 'package:samachar_hub/data/models/models.dart';
 import 'package:samachar_hub/pages/news/news_repository.dart';
+import 'package:samachar_hub/repository/favourites_repository.dart';
 
 part 'source_store.g.dart';
 
@@ -12,8 +13,9 @@ class FavouriteNewsSourceStore = _FavouriteNewsSourceStore
 
 abstract class _FavouriteNewsSourceStore with Store {
   final NewsRepository _newsRepository;
+  final FavouritesRepository _favouritesRepository;
 
-  _FavouriteNewsSourceStore(this._newsRepository);
+  _FavouriteNewsSourceStore(this._newsRepository, this._favouritesRepository);
 
   StreamController<List<NewsSourceModel>> _dataStreamController =
       StreamController<List<NewsSourceModel>>.broadcast();
@@ -51,6 +53,11 @@ abstract class _FavouriteNewsSourceStore with Store {
       this.error = onError.toString();
       _dataStreamController.addError(error);
     });
+  }
+
+  Future updateFollowedNewsSources() {
+    return _favouritesRepository.unFollowSources(
+        data.where((element) => !element.enabled.value).toList());
   }
 
   dispose() {

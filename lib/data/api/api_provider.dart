@@ -40,6 +40,7 @@ enum NewsCategory {
   entm,
   hlth,
   blog,
+  advs,
   oths,
 }
 

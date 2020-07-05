@@ -9,7 +9,6 @@ import 'package:samachar_hub/pages/forex/forex_repository.dart';
 import 'package:samachar_hub/pages/horoscope/horoscope_repository.dart';
 import 'package:samachar_hub/pages/news/news_repository.dart';
 import 'package:samachar_hub/pages/pages.dart';
-import 'package:samachar_hub/util/news_category.dart';
 
 part 'personalised_store.g.dart';
 
@@ -76,11 +75,6 @@ abstract class _PersonalisedFeedStore with Store {
     view = value;
   }
 
-  Future _buildNewsCategoryData() async {
-    sectionData[MixedDataType.NEWS_CATEGORY] = newsCategoryMenus;
-    return Future.value();
-  }
-
   Future _buildNewsTopicsData() async {
     return _newsRepository
         .getTopics()
@@ -96,6 +90,16 @@ abstract class _PersonalisedFeedStore with Store {
         .getSources()
         .then((onValue) {
           sectionData[MixedDataType.NEWS_SOURCE] = onValue;
+        })
+        .catchError((onError) {}, test: (e) => e is APIException)
+        .catchError((onError) {});
+  }
+
+  Future _buildNewsCategoryData() async {
+    return _newsRepository
+        .getCategories()
+        .then((onValue) {
+          sectionData[MixedDataType.NEWS_CATEGORY] = onValue;
         })
         .catchError((onError) {}, test: (e) => e is APIException)
         .catchError((onError) {});

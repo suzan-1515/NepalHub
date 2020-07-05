@@ -4,7 +4,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:mobx/mobx.dart';
 import 'package:provider/provider.dart';
 import 'package:samachar_hub/data/models/models.dart';
-import 'package:samachar_hub/pages/favourites/news/source_store.dart';
+import 'package:samachar_hub/pages/favourites/favourites_store.dart';
 import 'package:samachar_hub/pages/widgets/empty_data_widget.dart';
 import 'package:samachar_hub/pages/widgets/error_data_widget.dart';
 import 'package:samachar_hub/pages/widgets/progress_widget.dart';
@@ -21,9 +21,9 @@ class _FavouriteNewsSourceScreenState extends State<FavouriteNewsSourceScreen> {
 
   @override
   void initState() {
-    var store = Provider.of<FavouriteNewsSourceStore>(context, listen: false);
+    var store = Provider.of<FavouritesStore>(context, listen: false);
     _setupObserver(store);
-    store.loadInitialData();
+    store.loadFollowedNewsSourceData();
     super.initState();
   }
 
@@ -55,16 +55,15 @@ class _FavouriteNewsSourceScreenState extends State<FavouriteNewsSourceScreen> {
     ];
   }
 
-  Widget _buildSourceList(FavouriteNewsSourceStore favouritesStore) {
+  Widget _buildSourceList(FavouritesStore favouritesStore) {
     return StreamBuilder<List<NewsSourceModel>>(
-      stream: favouritesStore.dataStream,
+      stream: favouritesStore.newsSourceFeedStream,
+      initialData: favouritesStore.sourceData,
       builder: (context, snapshot) {
         if (snapshot.hasError) {
           return Center(
             child: ErrorDataView(
-              onRetry: () {
-                favouritesStore.retry();
-              },
+              onRetry: () {},
             ),
           );
         }
@@ -85,8 +84,8 @@ class _FavouriteNewsSourceScreenState extends State<FavouriteNewsSourceScreen> {
                 color: Colors.transparent,
                 child: ListTile(
                   onTap: () {
-                    // Provider.of<NavigationService>(context, listen: false)
-                    //     .toNewsSourceScreen(context, categoryModel);
+                    Provider.of<NavigationService>(context, listen: false)
+                        .toNewsSourceFeedScreen(context, categoryModel);
                   },
                   leading: Container(
                     width: 84,
@@ -127,8 +126,9 @@ class _FavouriteNewsSourceScreenState extends State<FavouriteNewsSourceScreen> {
                           size: 18,
                         ),
                         onPressed: () {
-                          Provider.of<NavigationService>(context, listen: false)
-                              .toNewsSourceFeedScreen(context, categoryModel);
+                          context
+                              .read<NavigationService>()
+                              .toNewsSourceSelectionScreen(context: context);
                         },
                       )),
                 ),
@@ -153,21 +153,27 @@ class _FavouriteNewsSourceScreenState extends State<FavouriteNewsSourceScreen> {
         ),
       ),
       backgroundColor: Theme.of(context).backgroundColor,
-      body: SafeArea(
-        child: Container(
-          color: Theme.of(context).backgroundColor,
-          padding: EdgeInsets.symmetric(horizontal: 8),
-          child: Consumer<FavouriteNewsSourceStore>(
-            builder: (_, _favouriteskStore, child) {
-              return _buildSourceList(_favouriteskStore);
-            },
-          ),
-        ),
+      body: Builder(
+        builder: (BuildContext context) {
+          return SafeArea(
+              child: Container(
+            color: Theme.of(context).backgroundColor,
+            padding: EdgeInsets.symmetric(horizontal: 8),
+            child: Consumer<FavouritesStore>(
+              builder: (_, _favouriteskStore, child) {
+                return _buildSourceList(_favouriteskStore);
+              },
+            ),
+          ));
+        },
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Provider.of<NavigationService>(context, listen: false)
-              .toNewsSourceSelectionScreen(context: context);
+          context
+              .read<NavigationService>()
+              .toNewsCategorySelectionScreen(context)
+              .whenComplete(
+                  () => context.read<FavouritesStore>().retryNewsSources());
         },
         child: Icon(FontAwesomeIcons.plus),
       ),

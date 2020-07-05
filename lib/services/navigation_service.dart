@@ -10,6 +10,7 @@ import 'package:samachar_hub/pages/comment/comment_firestore_service.dart';
 import 'package:samachar_hub/pages/comment/comment_repository.dart';
 import 'package:samachar_hub/pages/comment/comment_screen.dart';
 import 'package:samachar_hub/pages/comment/comment_store.dart';
+import 'package:samachar_hub/pages/favourites/favourites_store.dart';
 import 'package:samachar_hub/pages/favourites/news/categories_screen.dart';
 import 'package:samachar_hub/pages/favourites/news/category_selection_screen.dart';
 import 'package:samachar_hub/pages/favourites/news/category_store.dart';
@@ -36,6 +37,7 @@ import 'package:samachar_hub/pages/news/topics/news_topic_screen.dart';
 import 'package:samachar_hub/pages/news/topics/news_topic_store.dart';
 import 'package:samachar_hub/pages/news/trending/trending_news_screen.dart';
 import 'package:samachar_hub/pages/news/trending/trending_news_store.dart';
+import 'package:samachar_hub/repository/favourites_repository.dart';
 import 'package:samachar_hub/repository/post_meta_repository.dart';
 import 'package:samachar_hub/services/services.dart';
 import 'package:samachar_hub/stores/stores.dart';
@@ -214,16 +216,14 @@ class NavigationService {
     debugPrint('to news source feeds screen');
   }
 
-  toFavouriteNewsSourceScreen(BuildContext context) {
-    Navigator.push(
-      context,
+  Future toFavouriteNewsSourceScreen(BuildContext context) {
+    return Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (context) =>
-            ProxyProvider<NewsRepository, FavouriteNewsSourceStore>(
-          update: (BuildContext context, NewsRepository value,
-                  FavouriteNewsSourceStore previous) =>
-              FavouriteNewsSourceStore(value),
-          dispose: (context, value) => value.dispose(),
+        builder: (_) => MultiProvider(
+          providers: [
+            Provider.value(value: Provider.of<FavouritesStore>(context)),
+            Provider.value(value: Provider.of<FavouritesRepository>(context)),
+          ],
           child: FavouriteNewsSourceScreen(),
         ),
       ),
@@ -234,30 +234,41 @@ class NavigationService {
       BuildContext context, NewsCategoryModel newsCategoryModel) {
     Provider.of<HomeScreenStore>(context, listen: false).setPage(1);
     Provider.of<CategoriesStore>(context, listen: false)
-        .setActiveTab(newsCategoryModel.index);
+        .setActiveCategoryTab(newsCategoryModel.code);
   }
 
-  toFavouriteNewsCategoryScreen(BuildContext context) {
-    Navigator.push(
-      context,
+  Future toFavouriteNewsCategoryScreen(BuildContext context) {
+    return Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (context) =>
-            ProxyProvider<NewsRepository, FavouriteNewsCategoryStore>(
-          update: (BuildContext context, NewsRepository value,
-                  FavouriteNewsCategoryStore previous) =>
-              FavouriteNewsCategoryStore(value),
-          dispose: (context, value) => value.dispose(),
+        builder: (_) => MultiProvider(
+          providers: [
+            Provider.value(value: Provider.of<FavouritesStore>(context)),
+            Provider.value(value: Provider.of<FavouritesRepository>(context)),
+          ],
           child: FavouriteNewsCategoryScreen(),
         ),
       ),
     );
   }
 
-  toNewsCategorySelectionScreen(BuildContext context) {
-    Navigator.push(
+  Future toNewsCategorySelectionScreen(BuildContext context) {
+    return Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => NewsCategorySelectionScreen(),
+        builder: (_) => MultiProvider(
+          providers: [
+            Provider.value(value: Provider.of<FavouritesRepository>(context)),
+            ProxyProvider2<NewsRepository, FavouritesRepository,
+                    FavouriteNewsCategoryStore>(
+                update: (BuildContext context,
+                        NewsRepository value,
+                        FavouritesRepository favouritesRepository,
+                        FavouriteNewsCategoryStore previous) =>
+                    FavouriteNewsCategoryStore(value, favouritesRepository),
+                dispose: (context, value) => value.dispose()),
+          ],
+          child: NewsCategorySelectionScreen(),
+        ),
       ),
     );
   }
@@ -275,16 +286,9 @@ class NavigationService {
     );
   }
 
-  onNewsCategoryMenuTapped(
-      {@required NewsCategoryMenuModel category,
-      @required BuildContext context}) {
-    Provider.of<HomeScreenStore>(context, listen: false).setPage(1);
-    Provider.of<CategoriesStore>(context, listen: false)
-        .setActiveTab(category.index);
-  }
-
-  toNewsTopicScreen({@required String title, @required BuildContext context}) {
-    Navigator.push(
+  Future toNewsTopicScreen(
+      {@required String title, @required BuildContext context}) {
+    return Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => ProxyProvider<NewsRepository, NewsTopicStore>(
@@ -305,18 +309,21 @@ class NavigationService {
     print('Tag selected: $source.name');
   }
 
-  toNewsSourceSelectionScreen({@required BuildContext context}) {
-    Navigator.push(
-      context,
+  Future toNewsSourceSelectionScreen({@required BuildContext context}) {
+    return Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (context) =>
-            ProxyProvider<NewsRepository, FavouriteNewsSourceStore>(
-          update: (BuildContext context, NewsRepository value,
-                  FavouriteNewsSourceStore previous) =>
-              FavouriteNewsSourceStore(value),
-          dispose: (context, value) => value.dispose(),
-          child: NewsSourceSelectionScreen(),
-        ),
+        builder: (_) => MultiProvider(providers: [
+          Provider.value(value: Provider.of<FavouritesRepository>(context)),
+          ProxyProvider2<NewsRepository, FavouritesRepository,
+              FavouriteNewsSourceStore>(
+            update: (_,
+                    NewsRepository value,
+                    FavouritesRepository favouritesRepository,
+                    FavouriteNewsSourceStore previous) =>
+                FavouriteNewsSourceStore(value, favouritesRepository),
+            dispose: (context, value) => value.dispose(),
+          ),
+        ], child: NewsSourceSelectionScreen()),
       ),
     );
   }

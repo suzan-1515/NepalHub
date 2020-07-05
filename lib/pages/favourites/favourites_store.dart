@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:mobx/mobx.dart';
 import 'package:samachar_hub/data/models/models.dart';
+import 'package:samachar_hub/pages/news/news_repository.dart';
 import 'package:samachar_hub/repository/favourites_repository.dart';
 
 part 'favourites_store.g.dart';
@@ -10,9 +11,11 @@ class FavouritesStore = _FavouritesStore with _$FavouritesStore;
 
 abstract class _FavouritesStore with Store {
   final FavouritesRepository _favouritesRepository;
+  final NewsRepository _newsRepository;
 
   _FavouritesStore(
     this._favouritesRepository,
+    this._newsRepository,
   );
 
   StreamController<List<NewsSourceModel>> _newsSourceStreamController =
@@ -29,6 +32,9 @@ abstract class _FavouritesStore with Store {
   Stream<NewsTopicModel> get newsTopicFeedStream =>
       _newsTopicStreamController.stream;
 
+  List<NewsSourceModel> sourceData = List<NewsSourceModel>();
+  List<NewsCategoryModel> categoryData = List<NewsCategoryModel>();
+
   @observable
   String error;
 
@@ -37,11 +43,13 @@ abstract class _FavouritesStore with Store {
 
   @action
   retryNewsSources() {
+    sourceData.clear();
     loadFollowedNewsSourceData();
   }
 
   @action
   retryNewsCategory() {
+    categoryData.clear();
     loadFollowedNewsCategoryData();
   }
 
@@ -52,9 +60,12 @@ abstract class _FavouritesStore with Store {
 
   @action
   Future<void> loadFollowedNewsSourceData() {
-    return _favouritesRepository.getFollowedSources().then((value) {
+    if (sourceData.isNotEmpty) return Future.value();
+    return _newsRepository.getSources().then((value) {
       if (value != null) {
-        _newsSourceStreamController.add(value);
+        sourceData
+            .addAll(value.where((element) => element.enabled.value).toList());
+        _newsSourceStreamController.add(sourceData);
       }
     }).catchError((onError) {
       _newsSourceStreamController.addError(onError);
@@ -63,9 +74,12 @@ abstract class _FavouritesStore with Store {
 
   @action
   Future<void> loadFollowedNewsCategoryData() {
-    return _favouritesRepository.getFollowedCategories().then((value) {
+    if (categoryData.isNotEmpty) return Future.value();
+    return _newsRepository.getCategories().then((value) {
       if (value != null) {
-        _newsCategoryStreamController.add(value);
+        categoryData
+            .addAll(value.where((element) => element.enabled.value).toList());
+        _newsCategoryStreamController.add(categoryData);
       }
     }).catchError((onError) {
       _newsCategoryStreamController.addError(onError);
