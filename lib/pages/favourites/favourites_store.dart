@@ -61,6 +61,7 @@ abstract class _FavouritesStore with Store {
   @action
   Future<void> loadFollowedNewsSourceData() {
     if (sourceData.isNotEmpty) return Future.value();
+    _newsSourceStreamController.add(null);
     return _newsRepository.getSources().then((value) {
       if (value != null) {
         sourceData
@@ -75,6 +76,7 @@ abstract class _FavouritesStore with Store {
   @action
   Future<void> loadFollowedNewsCategoryData() {
     if (categoryData.isNotEmpty) return Future.value();
+    _newsCategoryStreamController.add(null);
     return _newsRepository.getCategories().then((value) {
       if (value != null) {
         categoryData

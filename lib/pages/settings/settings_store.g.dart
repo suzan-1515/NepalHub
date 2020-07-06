@@ -77,6 +77,23 @@ mixin _$SettingsStore on _SettingsStore, Store {
     }, _$openInAppAtom, name: '${_$openInAppAtom.name}_set');
   }
 
+  final _$reloadAppAtom = Atom(name: '_SettingsStore.reloadApp');
+
+  @override
+  bool get reloadApp {
+    _$reloadAppAtom.context.enforceReadPolicy(_$reloadAppAtom);
+    _$reloadAppAtom.reportObserved();
+    return super.reloadApp;
+  }
+
+  @override
+  set reloadApp(bool value) {
+    _$reloadAppAtom.context.conditionallyRunInAction(() {
+      super.reloadApp = value;
+      _$reloadAppAtom.reportChanged();
+    }, _$reloadAppAtom, name: '${_$reloadAppAtom.name}_set');
+  }
+
   final _$messageAtom = Atom(name: '_SettingsStore.message');
 
   @override
@@ -138,9 +155,19 @@ mixin _$SettingsStore on _SettingsStore, Store {
   }
 
   @override
+  dynamic setReloadApp() {
+    final _$actionInfo = _$_SettingsStoreActionController.startAction();
+    try {
+      return super.setReloadApp();
+    } finally {
+      _$_SettingsStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   String toString() {
     final string =
-        'useDarkMode: ${useDarkMode.toString()},usePitchBlack: ${usePitchBlack.toString()},themeSetBySystem: ${themeSetBySystem.toString()},openInApp: ${openInApp.toString()},message: ${message.toString()}';
+        'useDarkMode: ${useDarkMode.toString()},usePitchBlack: ${usePitchBlack.toString()},themeSetBySystem: ${themeSetBySystem.toString()},openInApp: ${openInApp.toString()},reloadApp: ${reloadApp.toString()},message: ${message.toString()}';
     return '{$string}';
   }
 }

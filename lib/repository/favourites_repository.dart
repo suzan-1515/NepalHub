@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:samachar_hub/data/models/models.dart';
 import 'package:samachar_hub/services/favourites_firestore_service.dart';
 import 'package:samachar_hub/services/services.dart';
@@ -35,11 +37,11 @@ class FavouritesRepository {
     _analyticsService.logNewsSourceFollowed(sourceCodes: followedSources);
   }
 
-  Future<void> unFollowSources(List<NewsSourceModel> sourceModel) {
-    if (sourceModel == null || sourceModel.isEmpty) return Future.value();
-    var followedSources = _preferenceService.followedNewsSources;
-    followedSources.addAll(sourceModel.map((e) => e.code));
-    _preferenceService.followedNewsSources = followedSources;
+  Future<void> unFollowSources(List<NewsSourceModel> sourceModel) async {
+    if (sourceModel != null) {
+      _preferenceService.followedNewsSources =
+          sourceModel.map((e) => e.code).toList();
+    }
   }
 
   Future<void> followCategory(NewsCategoryModel categoriesModel) {
@@ -69,28 +71,30 @@ class FavouritesRepository {
     _analyticsService.logNewsCategoryFollowed(sourceCodes: followedCategories);
   }
 
-  Future<void> unFollowCategories(List<NewsCategoryModel> categoriesModel) {
-    if (categoriesModel == null || categoriesModel.isEmpty)
-      return Future.value();
-    var followedCategories = _preferenceService.followedNewsCategories;
-    followedCategories.addAll(categoriesModel.map((e) => e.code));
-    _preferenceService.followedNewsCategories = followedCategories;
+  Future<void> unFollowCategories(
+      List<NewsCategoryModel> categoriesModel) async {
+    if (categoriesModel != null) {
+      _preferenceService.followedNewsCategories =
+          categoriesModel.map((e) => e.code).toList();
+    }
   }
 
-  Future<void> followTopic(String topic) {
-    if (topic == null) return Future.value();
-    var followedTopics = _preferenceService.followedNewsTopics;
-    followedTopics.add(topic);
-    _preferenceService.followedNewsTopics = followedTopics;
-    _analyticsService.logNewsTopicFollowed(topic: topic);
+  Future<void> followTopic(String topic) async {
+    if (topic != null) {
+      var followedTopics = _preferenceService.followedNewsTopics;
+      followedTopics.add(topic);
+      _preferenceService.followedNewsTopics = followedTopics;
+      _analyticsService.logNewsTopicFollowed(topic: topic);
+    }
   }
 
-  Future<void> unFollowTopic(String topic) {
-    if (topic == null) return Future.value();
-    var followedTopics = _preferenceService.followedNewsTopics;
-    followedTopics.remove(topic);
-    _preferenceService.followedNewsTopics = followedTopics;
-    _analyticsService.logNewsTopicUnFollowed(topic: topic);
+  Future<void> unFollowTopic(String topic) async {
+    if (topic != null) {
+      var followedTopics = _preferenceService.followedNewsTopics;
+      followedTopics.remove(topic);
+      _preferenceService.followedNewsTopics = followedTopics;
+      _analyticsService.logNewsTopicUnFollowed(topic: topic);
+    }
   }
 
   Future<NewsTopicModel> getFollowedTopics({String userId}) {

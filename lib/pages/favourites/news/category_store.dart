@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:mobx/mobx.dart';
 import 'package:samachar_hub/data/api/api.dart';
@@ -56,7 +57,8 @@ abstract class _FavouriteNewsCategoryStore with Store {
     });
   }
 
-  Future updateFollowedNewsCategory() {
+  @action
+  Future<void> updateFollowedNewsCategory() {
     return _favouritesRepository.unFollowCategories(
         data.where((element) => !element.enabled.value).toList());
   }

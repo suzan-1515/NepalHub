@@ -5,6 +5,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:nepali_utils/nepali_utils.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:samachar_hub/notifier/news_setting_notifier.dart';
 import 'package:samachar_hub/pages/authentication/login/login_screen.dart';
 import 'package:samachar_hub/pages/category/categories_store.dart';
 import 'package:samachar_hub/pages/corona/corona_api_service.dart';
@@ -73,7 +74,10 @@ class App extends StatelessWidget {
         ProxyProvider<AnalyticsService, ShareService>(
           update: (_, _analyticsService, __) => ShareService(_analyticsService),
         ),
-        
+        ChangeNotifierProvider(
+          create: (_) => NewsSettingNotifier(),
+        ),
+
         //repository
         ProxyProvider<AnalyticsService, AuthenticationRepository>(
           update: (_, _analyticsService, __) => AuthenticationRepository(

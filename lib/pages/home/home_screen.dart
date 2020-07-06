@@ -3,6 +3,7 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:mobx/mobx.dart';
 import 'package:provider/provider.dart';
+import 'package:samachar_hub/notifier/news_setting_notifier.dart';
 import 'package:samachar_hub/pages/favourites/favourites_page.dart';
 import 'package:samachar_hub/pages/favourites/favourites_store.dart';
 import 'package:samachar_hub/pages/home/home_screen_store.dart';

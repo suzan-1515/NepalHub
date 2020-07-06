@@ -58,6 +58,7 @@ class _FavouriteNewsCategoryScreenState
   Widget _buildCategoryList(FavouritesStore favouritesStore) {
     return StreamBuilder<List<NewsCategoryModel>>(
       stream: favouritesStore.newsCategoryFeedStream,
+      initialData: favouritesStore.categoryData,
       builder: (context, snapshot) {
         if (snapshot.hasError) {
           return Center(
@@ -152,8 +153,9 @@ class _FavouriteNewsCategoryScreenState
           context
               .read<NavigationService>()
               .toNewsCategorySelectionScreen(context)
-              .whenComplete(
-                  () => context.read<FavouritesStore>().retryNewsCategory());
+              .then((value) {
+            if (!value) context.read<FavouritesStore>().retryNewsCategory();
+          });
         },
         child: Icon(FontAwesomeIcons.plus),
       ),

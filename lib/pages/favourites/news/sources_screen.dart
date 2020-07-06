@@ -171,9 +171,10 @@ class _FavouriteNewsSourceScreenState extends State<FavouriteNewsSourceScreen> {
         onPressed: () {
           context
               .read<NavigationService>()
-              .toNewsCategorySelectionScreen(context)
-              .whenComplete(
-                  () => context.read<FavouritesStore>().retryNewsSources());
+              .toNewsSourceSelectionScreen(context: context)
+              .then((value) {
+            if (!value) context.read<FavouritesStore>().retryNewsSources();
+          });
         },
         child: Icon(FontAwesomeIcons.plus),
       ),

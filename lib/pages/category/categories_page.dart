@@ -1,8 +1,11 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:mobx/mobx.dart';
 import 'package:provider/provider.dart';
 import 'package:samachar_hub/data/api/api.dart';
+import 'package:samachar_hub/notifier/news_setting_notifier.dart';
 import 'package:samachar_hub/pages/category/categories_store.dart';
 import 'package:samachar_hub/pages/category/category_view.dart';
 import 'package:samachar_hub/pages/widgets/api_error_dialog.dart';
@@ -75,6 +78,13 @@ class _CategoriesPageState extends State<CategoriesPage>
     });
     store.loadInitialFeeds(
         (_tabs[_tabController.index].key as ValueKey<NewsCategory>).value);
+
+    final newsSettingNotifier =
+        Provider.of<NewsSettingNotifier>(context, listen: false);
+    newsSettingNotifier.addListener(() {
+      store.loadInitialFeeds(
+          (_tabs[_tabController.index].key as ValueKey<NewsCategory>).value);
+    });
     super.initState();
   }
 

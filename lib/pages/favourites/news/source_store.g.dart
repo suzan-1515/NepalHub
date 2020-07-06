@@ -69,6 +69,17 @@ mixin _$FavouriteNewsSourceStore on _FavouriteNewsSourceStore, Store {
   }
 
   @override
+  Future<dynamic> updateFollowedNewsSources() {
+    final _$actionInfo =
+        _$_FavouriteNewsSourceStoreActionController.startAction();
+    try {
+      return super.updateFollowedNewsSources();
+    } finally {
+      _$_FavouriteNewsSourceStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   String toString() {
     final string =
         'apiError: ${apiError.toString()},error: ${error.toString()}';

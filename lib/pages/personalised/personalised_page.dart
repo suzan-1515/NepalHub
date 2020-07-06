@@ -4,6 +4,7 @@ import 'package:mobx/mobx.dart';
 import 'package:provider/provider.dart';
 import 'package:samachar_hub/data/api/api.dart';
 import 'package:samachar_hub/data/models/models.dart';
+import 'package:samachar_hub/notifier/news_setting_notifier.dart';
 import 'package:samachar_hub/pages/personalised/personalised_store.dart';
 import 'package:samachar_hub/pages/personalised/widgets/corona_section.dart';
 import 'package:samachar_hub/pages/personalised/widgets/news_category_menu_section.dart';
@@ -39,7 +40,11 @@ class _PersonalisedPageState extends State<PersonalisedPage> {
     final store = Provider.of<PersonalisedFeedStore>(context, listen: false);
     _setupObserver(store);
     store.loadInitialData();
-
+    final newsSettingNotifier =
+        Provider.of<NewsSettingNotifier>(context, listen: false);
+    newsSettingNotifier.addListener(() {
+      store.loadInitialData();
+    });
     super.initState();
   }
 

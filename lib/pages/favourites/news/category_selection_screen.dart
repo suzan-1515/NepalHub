@@ -2,10 +2,12 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:mobx/mobx.dart';
 import 'package:provider/provider.dart';
 import 'package:samachar_hub/data/api/api.dart';
 import 'package:samachar_hub/data/models/models.dart';
+import 'package:samachar_hub/notifier/news_setting_notifier.dart';
 import 'package:samachar_hub/pages/favourites/news/category_store.dart';
 import 'package:samachar_hub/pages/favourites/news/news_category_selection_item.dart';
 import 'package:samachar_hub/pages/widgets/api_error_dialog.dart';
@@ -24,6 +26,8 @@ class _NewsCategorySelectionScreenState
   // Reaction disposers
   List<ReactionDisposer> _disposers;
 
+  final ValueNotifier<bool> shouldSaveNotifier = ValueNotifier<bool>(false);
+
   @override
   void initState() {
     final store =
@@ -40,6 +44,7 @@ class _NewsCategorySelectionScreenState
     for (final d in _disposers) {
       d();
     }
+    shouldSaveNotifier.dispose();
     super.dispose();
   }
 
@@ -111,7 +116,9 @@ class _NewsCategorySelectionScreenState
                 name: categoryModel.name,
                 isSelected: categoryModel.enabled.value,
                 onTap: (value) {
-                  log('Category ${categoryModel.name} selection status: $value');
+                  categoryModel.enabled.value = value;
+                  if (!shouldSaveNotifier.value)
+                    shouldSaveNotifier.value = true;
                 },
               );
             },
@@ -144,12 +151,35 @@ class _NewsCategorySelectionScreenState
         title: Text('News Categories'),
         leading: BackButton(
           onPressed: () {
-            var store =
-                Provider.of<FavouriteNewsCategoryStore>(context, listen: false);
-            store.updateFollowedNewsCategory();
-            Navigator.of(context).pop();
+            Navigator.of(context).pop(shouldSaveNotifier.value);
           },
         ),
+        actions: <Widget>[
+          ValueListenableBuilder(
+            valueListenable: shouldSaveNotifier,
+            builder: (_, value, __) {
+              return IgnorePointer(
+                ignoring: !value,
+                child: Opacity(
+                  opacity: value ? 1 : .4,
+                  child: IconButton(
+                    icon: Icon(
+                      FontAwesomeIcons.check,
+                      size: 22,
+                    ),
+                    onPressed: () {
+                      var store = context.read<FavouriteNewsCategoryStore>();
+                      store.updateFollowedNewsCategory().whenComplete(() {
+                        shouldSaveNotifier.value = false;
+                        context.read<NewsSettingNotifier>().notify();
+                      });
+                    },
+                  ),
+                ),
+              );
+            },
+          ),
+        ],
       ),
       backgroundColor: Theme.of(context).backgroundColor,
       body: SafeArea(

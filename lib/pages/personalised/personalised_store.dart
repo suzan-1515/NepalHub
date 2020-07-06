@@ -3,7 +3,6 @@ import 'dart:developer';
 
 import 'package:mobx/mobx.dart';
 import 'package:samachar_hub/data/api/api.dart';
-import 'package:samachar_hub/data/models/horoscope_type.dart';
 import 'package:samachar_hub/pages/corona/corona_repository.dart';
 import 'package:samachar_hub/pages/forex/forex_repository.dart';
 import 'package:samachar_hub/pages/horoscope/horoscope_repository.dart';
@@ -67,7 +66,6 @@ abstract class _PersonalisedFeedStore with Store {
     _buildNewsCategoryData();
     _buildNewsSourceData();
     _buildForexData();
-    // _buildHoroscopeData();
   }
 
   @action
@@ -137,17 +135,6 @@ abstract class _PersonalisedFeedStore with Store {
       log('Corona section data error', stackTrace: onError);
     }, test: (e) => e is APIException).catchError(
         (onError) => this.error = onError.toString());
-  }
-
-  Future _buildHoroscopeData() async {
-    return _horoscopeRepository.getHoroscope().then((onValue) {
-      if (onValue != null) {
-        sectionData[MixedDataType.HOROSCOPE] = onValue[HoroscopeType.DAILY];
-      }
-    }).catchError((onError) {
-      log('Horoscope data error', stackTrace: onError);
-    }, test: (e) => e is APIException).catchError(
-        (onError) => log('Horoscope data error', stackTrace: onError));
   }
 
   Future _buildForexData() async {

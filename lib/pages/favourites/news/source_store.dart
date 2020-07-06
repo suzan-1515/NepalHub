@@ -55,6 +55,7 @@ abstract class _FavouriteNewsSourceStore with Store {
     });
   }
 
+  @action
   Future updateFollowedNewsSources() {
     return _favouritesRepository.unFollowSources(
         data.where((element) => !element.enabled.value).toList());

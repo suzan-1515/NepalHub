@@ -2,10 +2,12 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:mobx/mobx.dart';
 import 'package:provider/provider.dart';
 import 'package:samachar_hub/data/api/api.dart';
 import 'package:samachar_hub/data/models/models.dart';
+import 'package:samachar_hub/notifier/news_setting_notifier.dart';
 import 'package:samachar_hub/pages/favourites/news/news_source_selection_item.dart';
 import 'package:samachar_hub/pages/favourites/news/source_store.dart';
 import 'package:samachar_hub/pages/widgets/api_error_dialog.dart';
@@ -23,6 +25,8 @@ class _NewsSourceSelectionScreenState extends State<NewsSourceSelectionScreen> {
   // Reaction disposers
   List<ReactionDisposer> _disposers;
 
+  final ValueNotifier<bool> shouldSaveNotifier = ValueNotifier<bool>(false);
+
   @override
   void initState() {
     final store = Provider.of<FavouriteNewsSourceStore>(context, listen: false);
@@ -38,6 +42,7 @@ class _NewsSourceSelectionScreenState extends State<NewsSourceSelectionScreen> {
     for (final d in _disposers) {
       d();
     }
+    shouldSaveNotifier.dispose();
     super.dispose();
   }
 
@@ -109,7 +114,9 @@ class _NewsSourceSelectionScreenState extends State<NewsSourceSelectionScreen> {
                 name: categoryModel.name,
                 isSelected: categoryModel.enabled.value,
                 onTap: (value) {
-                  log('Source ${categoryModel.name} selection status: $value');
+                  categoryModel.enabled.value = value;
+                  if (!shouldSaveNotifier.value)
+                    shouldSaveNotifier.value = true;
                 },
               );
             },
@@ -142,11 +149,35 @@ class _NewsSourceSelectionScreenState extends State<NewsSourceSelectionScreen> {
         title: Text('News Sources'),
         leading: BackButton(
           onPressed: () {
-            Provider.of<FavouriteNewsSourceStore>(context, listen: false)
-                .updateFollowedNewsSources();
-            Navigator.of(context).pop();
+            Navigator.of(context).pop(shouldSaveNotifier.value);
           },
         ),
+        actions: <Widget>[
+          ValueListenableBuilder(
+            valueListenable: shouldSaveNotifier,
+            builder: (_, value, __) {
+              return IgnorePointer(
+                ignoring: !value,
+                child: Opacity(
+                  opacity: value ? 1 : .4,
+                  child: IconButton(
+                    icon: Icon(
+                      FontAwesomeIcons.check,
+                      size: 22,
+                    ),
+                    onPressed: () {
+                      var store = context.read<FavouriteNewsSourceStore>();
+                      store.updateFollowedNewsSources().whenComplete(() {
+                        shouldSaveNotifier.value = false;
+                        context.read<NewsSettingNotifier>().notify();
+                      });
+                    },
+                  ),
+                ),
+              );
+            },
+          ),
+        ],
       ),
       backgroundColor: Theme.of(context).backgroundColor,
       body: SafeArea(

@@ -20,6 +20,9 @@ abstract class _SettingsStore with Store {
   @observable
   bool openInApp;
 
+  @observable
+  bool reloadApp;
+
   // Todo: Probably use a common store
   @observable
   String message;
@@ -53,5 +56,10 @@ abstract class _SettingsStore with Store {
   void setOpenInApp(bool updatedOpenInAppPreference) {
     _preferenceService.openInApp = updatedOpenInAppPreference;
     openInApp = updatedOpenInAppPreference;
+  }
+
+  @action
+  setReloadApp() {
+    reloadApp = true;
   }
 }

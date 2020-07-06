@@ -69,6 +69,17 @@ mixin _$FavouriteNewsCategoryStore on _FavouriteNewsCategoryStore, Store {
   }
 
   @override
+  Future<void> updateFollowedNewsCategory() {
+    final _$actionInfo =
+        _$_FavouriteNewsCategoryStoreActionController.startAction();
+    try {
+      return super.updateFollowedNewsCategory();
+    } finally {
+      _$_FavouriteNewsCategoryStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   String toString() {
     final string =
         'apiError: ${apiError.toString()},error: ${error.toString()}';
