@@ -3,15 +3,9 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:mobx/mobx.dart';
 import 'package:provider/provider.dart';
-import 'package:samachar_hub/notifier/news_setting_notifier.dart';
 import 'package:samachar_hub/pages/favourites/favourites_page.dart';
-import 'package:samachar_hub/pages/favourites/favourites_store.dart';
 import 'package:samachar_hub/pages/home/home_screen_store.dart';
-import 'package:samachar_hub/pages/news/news_repository.dart';
 import 'package:samachar_hub/pages/pages.dart';
-import 'package:samachar_hub/repository/favourites_repository.dart';
-import 'package:samachar_hub/services/favourites_firestore_service.dart';
-import 'package:samachar_hub/services/services.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -53,20 +47,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 children: <Widget>[
                   PersonalisedPage(),
                   CategoriesPage(),
-                  MultiProvider(providers: [
-                    ProxyProvider2<AnalyticsService, PreferenceService,
-                        FavouritesRepository>(
-                      update: (_, _analyticsService, _preferenceService, __) =>
-                          FavouritesRepository(FavouritesFirestoreService(),
-                              _analyticsService, _preferenceService),
-                    ),
-                    ProxyProvider2<FavouritesRepository, NewsRepository,
-                        FavouritesStore>(
-                      update: (_, _favouritesRepository, _newsRepository, __) =>
-                          FavouritesStore(
-                              _favouritesRepository, _newsRepository),
-                    ),
-                  ], child: FavouritesPage()),
+                  FavouritesPage(),
                   // BookmarkPage(),
                   SettingsPage(),
                 ],

@@ -25,7 +25,7 @@ class _NewsSourceSelectionScreenState extends State<NewsSourceSelectionScreen> {
   // Reaction disposers
   List<ReactionDisposer> _disposers;
 
-  final ValueNotifier<bool> shouldSaveNotifier = ValueNotifier<bool>(false);
+  final ValueNotifier<int> shouldSaveNotifier = ValueNotifier<int>(-1);
 
   @override
   void initState() {
@@ -115,8 +115,8 @@ class _NewsSourceSelectionScreenState extends State<NewsSourceSelectionScreen> {
                 isSelected: categoryModel.enabled.value,
                 onTap: (value) {
                   categoryModel.enabled.value = value;
-                  if (!shouldSaveNotifier.value)
-                    shouldSaveNotifier.value = true;
+                  if (shouldSaveNotifier.value != 0)
+                    shouldSaveNotifier.value = 0;
                 },
               );
             },
@@ -149,7 +149,7 @@ class _NewsSourceSelectionScreenState extends State<NewsSourceSelectionScreen> {
         title: Text('News Sources'),
         leading: BackButton(
           onPressed: () {
-            Navigator.of(context).pop(shouldSaveNotifier.value);
+            Navigator.of(context).pop(shouldSaveNotifier.value == 1);
           },
         ),
         actions: <Widget>[
@@ -157,9 +157,9 @@ class _NewsSourceSelectionScreenState extends State<NewsSourceSelectionScreen> {
             valueListenable: shouldSaveNotifier,
             builder: (_, value, __) {
               return IgnorePointer(
-                ignoring: !value,
+                ignoring: value != 0,
                 child: Opacity(
-                  opacity: value ? 1 : .4,
+                  opacity: value == 0 ? 1 : .4,
                   child: IconButton(
                     icon: Icon(
                       FontAwesomeIcons.check,
@@ -168,8 +168,10 @@ class _NewsSourceSelectionScreenState extends State<NewsSourceSelectionScreen> {
                     onPressed: () {
                       var store = context.read<FavouriteNewsSourceStore>();
                       store.updateFollowedNewsSources().whenComplete(() {
-                        shouldSaveNotifier.value = false;
-                        context.read<NewsSettingNotifier>().notify();
+                        shouldSaveNotifier.value = 1;
+                        context
+                            .read<NewsSettingNotifier>()
+                            .notify(NewsSetting.SOURCE);
                       });
                     },
                   ),

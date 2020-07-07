@@ -26,7 +26,7 @@ class _NewsCategorySelectionScreenState
   // Reaction disposers
   List<ReactionDisposer> _disposers;
 
-  final ValueNotifier<bool> shouldSaveNotifier = ValueNotifier<bool>(false);
+  final ValueNotifier<int> shouldSaveNotifier = ValueNotifier<int>(-1);
 
   @override
   void initState() {
@@ -117,8 +117,8 @@ class _NewsCategorySelectionScreenState
                 isSelected: categoryModel.enabled.value,
                 onTap: (value) {
                   categoryModel.enabled.value = value;
-                  if (!shouldSaveNotifier.value)
-                    shouldSaveNotifier.value = true;
+                  if (shouldSaveNotifier.value != 0)
+                    shouldSaveNotifier.value = 0;
                 },
               );
             },
@@ -151,7 +151,7 @@ class _NewsCategorySelectionScreenState
         title: Text('News Categories'),
         leading: BackButton(
           onPressed: () {
-            Navigator.of(context).pop(shouldSaveNotifier.value);
+            Navigator.of(context).pop(shouldSaveNotifier.value == 1);
           },
         ),
         actions: <Widget>[
@@ -159,9 +159,9 @@ class _NewsCategorySelectionScreenState
             valueListenable: shouldSaveNotifier,
             builder: (_, value, __) {
               return IgnorePointer(
-                ignoring: !value,
+                ignoring: value != 0,
                 child: Opacity(
-                  opacity: value ? 1 : .4,
+                  opacity: value == 0 ? 1 : .4,
                   child: IconButton(
                     icon: Icon(
                       FontAwesomeIcons.check,
@@ -170,8 +170,10 @@ class _NewsCategorySelectionScreenState
                     onPressed: () {
                       var store = context.read<FavouriteNewsCategoryStore>();
                       store.updateFollowedNewsCategory().whenComplete(() {
-                        shouldSaveNotifier.value = false;
-                        context.read<NewsSettingNotifier>().notify();
+                        shouldSaveNotifier.value = 1;
+                        context
+                            .read<NewsSettingNotifier>()
+                            .notify(NewsSetting.CATEGORY);
                       });
                     },
                   ),

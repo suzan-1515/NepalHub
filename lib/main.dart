@@ -10,6 +10,7 @@ import 'package:samachar_hub/pages/authentication/login/login_screen.dart';
 import 'package:samachar_hub/pages/category/categories_store.dart';
 import 'package:samachar_hub/pages/corona/corona_api_service.dart';
 import 'package:samachar_hub/pages/corona/corona_repository.dart';
+import 'package:samachar_hub/pages/favourites/favourites_store.dart';
 import 'package:samachar_hub/pages/forex/forex_api_service.dart';
 import 'package:samachar_hub/pages/forex/forex_repository.dart';
 import 'package:samachar_hub/pages/home/home_screen_store.dart';
@@ -19,8 +20,10 @@ import 'package:samachar_hub/pages/news/news_api_service.dart';
 import 'package:samachar_hub/pages/news/news_repository.dart';
 import 'package:samachar_hub/pages/personalised/personalised_store.dart';
 import 'package:samachar_hub/pages/settings/settings_store.dart';
+import 'package:samachar_hub/repository/favourites_repository.dart';
 import 'package:samachar_hub/repository/post_meta_repository.dart';
 import 'package:samachar_hub/repository/repositories.dart';
+import 'package:samachar_hub/services/favourites_firestore_service.dart';
 import 'package:samachar_hub/services/services.dart';
 import 'package:samachar_hub/stores/stores.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -112,6 +115,12 @@ class App extends StatelessWidget {
               BookmarkRepository(BookmarkFirestoreService(),
                   _postMetaRepository, _analyticsService, _preferenceService),
         ),
+        ProxyProvider2<AnalyticsService, PreferenceService,
+            FavouritesRepository>(
+          update: (_, _analyticsService, _preferenceService, __) =>
+              FavouritesRepository(FavouritesFirestoreService(),
+                  _analyticsService, _preferenceService),
+        ),
 
         //store
         ProxyProvider<AuthenticationRepository, AuthenticationStore>(
@@ -136,6 +145,11 @@ class App extends StatelessWidget {
         ProxyProvider2<BookmarkRepository, AuthenticationStore, BookmarkStore>(
           update: (_, _bookmarkRepository, _authenticationStore, __) =>
               BookmarkStore(_bookmarkRepository, _authenticationStore.user),
+        ),
+
+        ProxyProvider2<FavouritesRepository, NewsRepository, FavouritesStore>(
+          update: (_, _favouritesRepository, _newsRepository, __) =>
+              FavouritesStore(_favouritesRepository, _newsRepository),
         ),
 
         ProxyProvider<CoronaRepository, CoronaStore>(

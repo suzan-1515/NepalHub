@@ -40,10 +40,9 @@ class _PersonalisedPageState extends State<PersonalisedPage> {
     final store = Provider.of<PersonalisedFeedStore>(context, listen: false);
     _setupObserver(store);
     store.loadInitialData();
-    final newsSettingNotifier =
-        Provider.of<NewsSettingNotifier>(context, listen: false);
+    final newsSettingNotifier = context.read<NewsSettingNotifier>();
     newsSettingNotifier.addListener(() {
-      store.loadInitialData();
+      store.refresh();
     });
     super.initState();
   }

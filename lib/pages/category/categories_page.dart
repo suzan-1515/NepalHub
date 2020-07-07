@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:mobx/mobx.dart';
@@ -79,10 +77,9 @@ class _CategoriesPageState extends State<CategoriesPage>
     store.loadInitialFeeds(
         (_tabs[_tabController.index].key as ValueKey<NewsCategory>).value);
 
-    final newsSettingNotifier =
-        Provider.of<NewsSettingNotifier>(context, listen: false);
+    final newsSettingNotifier = context.read<NewsSettingNotifier>();
     newsSettingNotifier.addListener(() {
-      store.loadInitialFeeds(
+      store.refresh(
           (_tabs[_tabController.index].key as ValueKey<NewsCategory>).value);
     });
     super.initState();

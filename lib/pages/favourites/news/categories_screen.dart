@@ -154,7 +154,7 @@ class _FavouriteNewsCategoryScreenState
               .read<NavigationService>()
               .toNewsCategorySelectionScreen(context)
               .then((value) {
-            if (!value) context.read<FavouritesStore>().retryNewsCategory();
+            if (value) context.read<FavouritesStore>().retryNewsCategory();
           });
         },
         child: Icon(FontAwesomeIcons.plus),

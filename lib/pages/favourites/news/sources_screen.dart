@@ -173,7 +173,7 @@ class _FavouriteNewsSourceScreenState extends State<FavouriteNewsSourceScreen> {
               .read<NavigationService>()
               .toNewsSourceSelectionScreen(context: context)
               .then((value) {
-            if (!value) context.read<FavouritesStore>().retryNewsSources();
+            if (value) context.read<FavouritesStore>().retryNewsSources();
           });
         },
         child: Icon(FontAwesomeIcons.plus),

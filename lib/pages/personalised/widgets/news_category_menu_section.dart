@@ -25,7 +25,9 @@ class NewsCategoryMenuSection extends StatelessWidget {
           SectionHeadingView(
             title: 'Discover',
             subtitle: 'Get the latest news on your favourite category',
-            onTap: () => homeScreenStore.setPage(1),
+            onTap: () => context
+                .read<NavigationService>()
+                .toFavouriteNewsCategoryScreen(context),
           ),
           LimitedBox(
             maxHeight: 100,
