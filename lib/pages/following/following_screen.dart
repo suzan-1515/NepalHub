@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:mobx/mobx.dart';
 import 'package:provider/provider.dart';
 import 'package:samachar_hub/data/models/models.dart';
-import 'package:samachar_hub/pages/favourites/favourites_store.dart';
-import 'package:samachar_hub/pages/favourites/widgets/add_list_item.dart';
+import 'package:samachar_hub/pages/following/following_store.dart';
+import 'package:samachar_hub/pages/following/widgets/add_list_item.dart';
 import 'package:samachar_hub/widgets/news_category_horz_list_item.dart';
 import 'package:samachar_hub/pages/widgets/empty_data_widget.dart';
 import 'package:samachar_hub/pages/widgets/error_data_widget.dart';
@@ -13,18 +13,18 @@ import 'package:samachar_hub/pages/widgets/progress_widget.dart';
 import 'package:samachar_hub/services/services.dart';
 import 'package:samachar_hub/widgets/mini_card_list_item.dart';
 
-class FavouritesPage extends StatefulWidget {
+class FollowingPage extends StatefulWidget {
   @override
-  _FavouritesPageState createState() => _FavouritesPageState();
+  _FollowingPageState createState() => _FollowingPageState();
 }
 
-class _FavouritesPageState extends State<FavouritesPage>
+class _FollowingPageState extends State<FollowingPage>
     with AutomaticKeepAliveClientMixin {
   List<ReactionDisposer> _disposers;
 
   @override
   void initState() {
-    var store = Provider.of<FavouritesStore>(context, listen: false);
+    var store = Provider.of<FollowingStore>(context, listen: false);
     _setupObserver(store);
     store.loadFollowedNewsSourceData();
     store.loadFollowedNewsCategoryData();
@@ -81,7 +81,7 @@ class _FavouritesPageState extends State<FavouritesPage>
   }
 
   Widget _buildNewsSourcesList(
-      BuildContext context, FavouritesStore favouritesStore) {
+      BuildContext context, FollowingStore favouritesStore) {
     return StreamBuilder<List<NewsSourceModel>>(
       stream: favouritesStore.newsSourceFeedStream,
       builder: (_, snapshot) {
@@ -133,7 +133,7 @@ class _FavouritesPageState extends State<FavouritesPage>
   }
 
   Widget _buildNewsSourcesSection(
-      BuildContext context, FavouritesStore favouritesStore) {
+      BuildContext context, FollowingStore favouritesStore) {
     return Card(
       color: Theme.of(context).cardColor,
       elevation: 1,
@@ -165,7 +165,7 @@ class _FavouritesPageState extends State<FavouritesPage>
   }
 
   Widget _buildNewsCategoriesList(
-      BuildContext context, FavouritesStore favouritesStore) {
+      BuildContext context, FollowingStore favouritesStore) {
     return StreamBuilder<List<NewsCategoryModel>>(
       stream: favouritesStore.newsCategoryFeedStream,
       builder: (context, snapshot) {
@@ -217,7 +217,7 @@ class _FavouritesPageState extends State<FavouritesPage>
   }
 
   Widget _buildNewsCategorySection(
-      BuildContext context, FavouritesStore favouritesStore) {
+      BuildContext context, FollowingStore favouritesStore) {
     return Card(
       color: Theme.of(context).cardColor,
       elevation: 1,
@@ -248,7 +248,7 @@ class _FavouritesPageState extends State<FavouritesPage>
     );
   }
 
-  Widget _buildNewsTopicsList(FavouritesStore favouritesStore) {
+  Widget _buildNewsTopicsList(FollowingStore favouritesStore) {
     return StreamBuilder<NewsTopicModel>(
       stream: favouritesStore.newsTopicFeedStream,
       builder: (context, snapshot) {
@@ -286,7 +286,7 @@ class _FavouritesPageState extends State<FavouritesPage>
   }
 
   Widget _buildNewsTopicsSection(
-      BuildContext context, FavouritesStore favouritesStore) {
+      BuildContext context, FollowingStore favouritesStore) {
     return Card(
       color: Theme.of(context).cardColor,
       elevation: 1,
@@ -320,7 +320,7 @@ class _FavouritesPageState extends State<FavouritesPage>
     return Container(
       color: Theme.of(context).backgroundColor,
       padding: EdgeInsets.symmetric(horizontal: 8),
-      child: Consumer<FavouritesStore>(
+      child: Consumer<FollowingStore>(
         builder: (_, _favouriteskStore, child) {
           return Column(
             mainAxisSize: MainAxisSize.max,

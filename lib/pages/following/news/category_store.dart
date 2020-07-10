@@ -1,22 +1,21 @@
 import 'dart:async';
-import 'dart:developer';
 
 import 'package:mobx/mobx.dart';
 import 'package:samachar_hub/data/api/api.dart';
 import 'package:samachar_hub/data/models/models.dart';
 import 'package:samachar_hub/pages/news/news_repository.dart';
-import 'package:samachar_hub/repository/favourites_repository.dart';
+import 'package:samachar_hub/repository/following_repository.dart';
 
 part 'category_store.g.dart';
 
-class FavouriteNewsCategoryStore = _FavouriteNewsCategoryStore
-    with _$FavouriteNewsCategoryStore;
+class FollowNewsCategoryStore = _FollowNewsCategoryStore
+    with _$FollowNewsCategoryStore;
 
-abstract class _FavouriteNewsCategoryStore with Store {
+abstract class _FollowNewsCategoryStore with Store {
   final NewsRepository _newsRepository;
-  final FavouritesRepository _favouritesRepository;
+  final FollowingRepository _favouritesRepository;
 
-  _FavouriteNewsCategoryStore(this._newsRepository, this._favouritesRepository);
+  _FollowNewsCategoryStore(this._newsRepository, this._favouritesRepository);
 
   StreamController<List<NewsCategoryModel>> _dataStreamController =
       StreamController<List<NewsCategoryModel>>.broadcast();
@@ -61,6 +60,16 @@ abstract class _FavouriteNewsCategoryStore with Store {
   Future<void> updateFollowedNewsCategory() {
     return _favouritesRepository.unFollowCategories(
         data.where((element) => !element.enabled.value).toList());
+  }
+
+  @action
+  Future<void> followedNewsCategory(NewsCategoryModel categoryModel) {
+    return _favouritesRepository.followCategory(categoryModel);
+  }
+
+  @action
+  Future<void> unFollowedNewsCategory(NewsCategoryModel categoryModel) {
+    return _favouritesRepository.unFollowCategory(categoryModel);
   }
 
   dispose() {

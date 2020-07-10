@@ -3,17 +3,17 @@ import 'dart:async';
 import 'package:mobx/mobx.dart';
 import 'package:samachar_hub/data/models/models.dart';
 import 'package:samachar_hub/pages/news/news_repository.dart';
-import 'package:samachar_hub/repository/favourites_repository.dart';
+import 'package:samachar_hub/repository/following_repository.dart';
 
-part 'favourites_store.g.dart';
+part 'following_store.g.dart';
 
-class FavouritesStore = _FavouritesStore with _$FavouritesStore;
+class FollowingStore = _FollowingStore with _$FollowingStore;
 
-abstract class _FavouritesStore with Store {
-  final FavouritesRepository _favouritesRepository;
+abstract class _FollowingStore with Store {
+  final FollowingRepository _favouritesRepository;
   final NewsRepository _newsRepository;
 
-  _FavouritesStore(
+  _FollowingStore(
     this._favouritesRepository,
     this._newsRepository,
   );

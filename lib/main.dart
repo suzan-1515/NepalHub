@@ -1,5 +1,4 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:nepali_utils/nepali_utils.dart';
@@ -10,7 +9,7 @@ import 'package:samachar_hub/pages/authentication/login/login_screen.dart';
 import 'package:samachar_hub/pages/category/categories_store.dart';
 import 'package:samachar_hub/pages/corona/corona_api_service.dart';
 import 'package:samachar_hub/pages/corona/corona_repository.dart';
-import 'package:samachar_hub/pages/favourites/favourites_store.dart';
+import 'package:samachar_hub/pages/following/following_store.dart';
 import 'package:samachar_hub/pages/forex/forex_api_service.dart';
 import 'package:samachar_hub/pages/forex/forex_repository.dart';
 import 'package:samachar_hub/pages/home/home_screen_store.dart';
@@ -20,10 +19,10 @@ import 'package:samachar_hub/pages/news/news_api_service.dart';
 import 'package:samachar_hub/pages/news/news_repository.dart';
 import 'package:samachar_hub/pages/personalised/personalised_store.dart';
 import 'package:samachar_hub/pages/settings/settings_store.dart';
-import 'package:samachar_hub/repository/favourites_repository.dart';
+import 'package:samachar_hub/repository/following_repository.dart';
 import 'package:samachar_hub/repository/post_meta_repository.dart';
 import 'package:samachar_hub/repository/repositories.dart';
-import 'package:samachar_hub/services/favourites_firestore_service.dart';
+import 'package:samachar_hub/services/following_firestore_service.dart';
 import 'package:samachar_hub/services/services.dart';
 import 'package:samachar_hub/stores/stores.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -116,9 +115,9 @@ class App extends StatelessWidget {
                   _postMetaRepository, _analyticsService, _preferenceService),
         ),
         ProxyProvider2<AnalyticsService, PreferenceService,
-            FavouritesRepository>(
+            FollowingRepository>(
           update: (_, _analyticsService, _preferenceService, __) =>
-              FavouritesRepository(FavouritesFirestoreService(),
+              FollowingRepository(FollowingFirestoreService(),
                   _analyticsService, _preferenceService),
         ),
 
@@ -147,9 +146,9 @@ class App extends StatelessWidget {
               BookmarkStore(_bookmarkRepository, _authenticationStore.user),
         ),
 
-        ProxyProvider2<FavouritesRepository, NewsRepository, FavouritesStore>(
+        ProxyProvider2<FollowingRepository, NewsRepository, FollowingStore>(
           update: (_, _favouritesRepository, _newsRepository, __) =>
-              FavouritesStore(_favouritesRepository, _newsRepository),
+              FollowingStore(_favouritesRepository, _newsRepository),
         ),
 
         ProxyProvider<CoronaRepository, CoronaStore>(

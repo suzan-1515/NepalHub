@@ -9,14 +9,14 @@ class NewsRepository {
   final NewsApiService newsApiService;
   final PreferenceService preferenceService;
 
-  static const int DATA_LIMIT = 20;
+  static const int PAGE_SIZE = 20;
 
   NewsRepository(this.newsApiService, this.preferenceService);
 
   Future<List<NewsFeedModel>> getLatestFeeds() async {
     var bookmarks = preferenceService.bookmarkedFeeds;
     var likes = preferenceService.likedFeeds;
-    var unfollowedSources = preferenceService.followedNewsSources;
+    var unfollowedSources = preferenceService.unFollowedNewsSources;
     return await newsApiService.fetchLatestFeeds().then((onValue) => onValue
             .feeds
             ?.map((f) => NewsMapper.fromFeedApi(f))
@@ -32,7 +32,7 @@ class NewsRepository {
   Future<List<NewsFeedModel>> getTrendingFeeds({String limit}) async {
     var bookmarks = preferenceService.bookmarkedFeeds;
     var likes = preferenceService.likedFeeds;
-    var unfollowedSources = preferenceService.followedNewsSources;
+    var unfollowedSources = preferenceService.unFollowedNewsSources;
     return await newsApiService.fetchTrendingFeeds(limit: limit).then(
         (onValue) => onValue.feeds
                 ?.map((f) => NewsMapper.fromFeedApi(f))
@@ -49,7 +49,7 @@ class NewsRepository {
       {@required Api.NewsCategory category, String lastFeedId}) async {
     var bookmarks = preferenceService.bookmarkedFeeds;
     var likes = preferenceService.likedFeeds;
-    var unfollowedSources = preferenceService.followedNewsSources;
+    var unfollowedSources = preferenceService.unFollowedNewsSources;
     return await newsApiService
         .fetchFeedsByCategory(category: category, lastFeedId: lastFeedId)
         .then((onValue) => onValue.feeds
@@ -71,20 +71,26 @@ class NewsRepository {
 
   Future<List<NewsFeedModel>> getNewsByTopic({@required String tag}) async {
     return await newsApiService.fetchNewsByTopic(tag: tag).then((onValue) {
-      var unfollowedSources = preferenceService.followedNewsSources;
+      var bookmarks = preferenceService.bookmarkedFeeds;
+      var likes = preferenceService.likedFeeds;
+      var unfollowedSources = preferenceService.unFollowedNewsSources;
       return onValue.feeds
           ?.map((f) => NewsMapper.fromFeedApi(f))
           ?.where(
               (e) => !unfollowedSources.contains(e.rawData['source']['code']))
-          ?.toList();
+          ?.map((f) {
+        f.bookmarked.value = bookmarks.contains(f.uuid);
+        f.liked.value = likes.contains(f.uuid);
+        return f;
+      })?.toList();
     });
   }
 
   Future<List<NewsSourceModel>> getSources() async {
     return await newsApiService.fetchSources().then((onValue) {
-      var followedSources = preferenceService.followedNewsSources;
+      var unFollowedSources = preferenceService.unFollowedNewsSources;
       return onValue.sources?.map((f) => NewsMapper.fromSourceApi(f))?.map((e) {
-        e.enabled.value = !followedSources.contains(e.code);
+        e.enabled.value = !unFollowedSources.contains(e.code);
         return e;
       })?.toList();
     });
@@ -92,7 +98,7 @@ class NewsRepository {
 
   Future<List<NewsCategoryModel>> getCategories() async {
     return await newsApiService.fetchSources().then((onValue) {
-      var followedCategories = preferenceService.followedNewsCategories;
+      var followedCategories = preferenceService.unFollowedNewsCategories;
       return onValue.categories
           ?.map((f) => NewsMapper.fromCategoryApi(f))
           ?.map((e) {

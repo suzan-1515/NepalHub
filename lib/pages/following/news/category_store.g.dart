@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'source_store.dart';
+part of 'category_store.dart';
 
 // **************************************************************************
 // StoreGenerator
@@ -8,8 +8,8 @@ part of 'source_store.dart';
 
 // ignore_for_file: non_constant_identifier_names, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
 
-mixin _$FavouriteNewsSourceStore on _FavouriteNewsSourceStore, Store {
-  final _$apiErrorAtom = Atom(name: '_FavouriteNewsSourceStore.apiError');
+mixin _$FollowNewsCategoryStore on _FollowNewsCategoryStore, Store {
+  final _$apiErrorAtom = Atom(name: '_FavouriteNewsCategoryStore.apiError');
 
   @override
   APIException get apiError {
@@ -26,7 +26,7 @@ mixin _$FavouriteNewsSourceStore on _FavouriteNewsSourceStore, Store {
     }, _$apiErrorAtom, name: '${_$apiErrorAtom.name}_set');
   }
 
-  final _$errorAtom = Atom(name: '_FavouriteNewsSourceStore.error');
+  final _$errorAtom = Atom(name: '_FavouriteNewsCategoryStore.error');
 
   @override
   String get error {
@@ -43,39 +43,39 @@ mixin _$FavouriteNewsSourceStore on _FavouriteNewsSourceStore, Store {
     }, _$errorAtom, name: '${_$errorAtom.name}_set');
   }
 
-  final _$_FavouriteNewsSourceStoreActionController =
-      ActionController(name: '_FavouriteNewsSourceStore');
+  final _$_FavouriteNewsCategoryStoreActionController =
+      ActionController(name: '_FavouriteNewsCategoryStore');
 
   @override
   void loadInitialData() {
     final _$actionInfo =
-        _$_FavouriteNewsSourceStoreActionController.startAction();
+        _$_FavouriteNewsCategoryStoreActionController.startAction();
     try {
       return super.loadInitialData();
     } finally {
-      _$_FavouriteNewsSourceStoreActionController.endAction(_$actionInfo);
+      _$_FavouriteNewsCategoryStoreActionController.endAction(_$actionInfo);
     }
   }
 
   @override
   void retry() {
     final _$actionInfo =
-        _$_FavouriteNewsSourceStoreActionController.startAction();
+        _$_FavouriteNewsCategoryStoreActionController.startAction();
     try {
       return super.retry();
     } finally {
-      _$_FavouriteNewsSourceStoreActionController.endAction(_$actionInfo);
+      _$_FavouriteNewsCategoryStoreActionController.endAction(_$actionInfo);
     }
   }
 
   @override
-  Future<dynamic> updateFollowedNewsSources() {
+  Future<void> updateFollowedNewsCategory() {
     final _$actionInfo =
-        _$_FavouriteNewsSourceStoreActionController.startAction();
+        _$_FavouriteNewsCategoryStoreActionController.startAction();
     try {
-      return super.updateFollowedNewsSources();
+      return super.updateFollowedNewsCategory();
     } finally {
-      _$_FavouriteNewsSourceStoreActionController.endAction(_$actionInfo);
+      _$_FavouriteNewsCategoryStoreActionController.endAction(_$actionInfo);
     }
   }
 

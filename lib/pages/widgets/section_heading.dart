@@ -21,22 +21,28 @@ class SectionHeadingView extends StatelessWidget {
         padding: const EdgeInsets.only(left: 8, right: 8, top: 16, bottom: 16),
         child: Row(
           children: <Widget>[
-            RichText(
-              text: TextSpan(
-                text: title,
-                style: Theme.of(context).textTheme.subtitle1.copyWith(fontWeight: FontWeight.w600),
-                children: <TextSpan>[
-                  TextSpan(text: '\n'),
-                  TextSpan(
-                      text: subtitle,
-                      style: Theme.of(context).textTheme.bodyText2)
-                ],
+            Expanded(
+              child: RichText(
+                text: TextSpan(
+                  text: title,
+                  style: Theme.of(context)
+                      .textTheme
+                      .subtitle1
+                      .copyWith(fontWeight: FontWeight.w600),
+                  children: <TextSpan>[
+                    TextSpan(text: '\n'),
+                    TextSpan(
+                        text: subtitle,
+                        style: Theme.of(context).textTheme.bodyText2)
+                  ],
+                ),
+                softWrap: true,
               ),
             ),
             Spacer(),
             if (onTap != null)
               IconButton(
-                iconSize: 20,
+                  iconSize: 20,
                   icon: Icon(
                     FontAwesomeIcons.chevronRight,
                   ),

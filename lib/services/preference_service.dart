@@ -10,8 +10,8 @@ class PreferenceService {
   final String _userId = 'userId';
   final String _defaultForexCurrencyKey = 'default_forex_currency';
   final String _defaultZodiacKey = 'default_zodiac';
-  final String _followedNewsSourcesKey = 'followed_news_sources';
-  final String _followedNewsCategoriesKey = 'followed_news_categories';
+  final String _unFollowedNewsSourcesKey = 'unfollowed_news_sources';
+  final String _unFollowedNewsCategoriesKey = 'unfollowed_news_categories';
   final String _followedNewsTopicsKey = 'followed_news_topics';
   final String _firstTimeOpenKey = 'first_open';
 
@@ -59,12 +59,12 @@ class PreferenceService {
     _sharedPreferences.setInt(_defaultZodiacKey, zodiac);
   }
 
-  set followedNewsSources(List<String> sources) {
-    _sharedPreferences.setStringList(_followedNewsSourcesKey, sources);
+  set unFollowedNewsSources(List<String> sources) {
+    _sharedPreferences.setStringList(_unFollowedNewsSourcesKey, sources);
   }
 
-  set followedNewsCategories(List<String> categories) {
-    _sharedPreferences.setStringList(_followedNewsCategoriesKey, categories);
+  set unFollowedNewsCategories(List<String> categories) {
+    _sharedPreferences.setStringList(_unFollowedNewsCategoriesKey, categories);
   }
 
   set followedNewsTopics(List<String> topics) {
@@ -94,12 +94,12 @@ class PreferenceService {
 
   int get defaultZodiac => _sharedPreferences.getInt(_defaultZodiacKey) ?? 0;
 
-  List<String> get followedNewsSources =>
-      _sharedPreferences.getStringList(_followedNewsSourcesKey) ??
+  List<String> get unFollowedNewsSources =>
+      _sharedPreferences.getStringList(_unFollowedNewsSourcesKey) ??
       List<String>();
 
-  List<String> get followedNewsCategories =>
-      _sharedPreferences.getStringList(_followedNewsCategoriesKey) ??
+  List<String> get unFollowedNewsCategories =>
+      _sharedPreferences.getStringList(_unFollowedNewsCategoriesKey) ??
       List<String>();
 
   List<String> get followedNewsTopics =>

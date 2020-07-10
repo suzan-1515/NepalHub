@@ -81,13 +81,15 @@ class CommentRepository {
     });
   }
 
-  Stream<List<CommentModel>> getCommentsAsStream({@required String postId,@required String userId}) {
+  Stream<List<CommentModel>> getCommentsAsStream(
+      {@required String postId, @required String userId}) {
     return _commentService
         .fetchCommentsAsStream(postId: postId, limit: DATA_LIMIT)
         .map((value) {
       if (value != null && value.isNotEmpty) {
         return value
-            .map((response) => CommentsMapper.fromCommentFirestore(response,userId))
+            .map((response) =>
+                CommentsMapper.fromCommentFirestore(response, userId))
             .toList();
       }
       return List<CommentModel>();
@@ -98,13 +100,14 @@ class CommentRepository {
   }
 
   Future<List<CommentModel>> getComments(
-      {@required String postId,@required String userId, String after}) {
+      {@required String postId, @required String userId, String after}) {
     return _commentService
         .fetchComments(postId: postId, limit: DATA_LIMIT, after: after)
         .then((value) {
       if (value != null && value.isNotEmpty) {
         return value
-            .map((response) => CommentsMapper.fromCommentFirestore(response,userId))
+            .map((response) =>
+                CommentsMapper.fromCommentFirestore(response, userId))
             .toList();
       }
       return List<CommentModel>();

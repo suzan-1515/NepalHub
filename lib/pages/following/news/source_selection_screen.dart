@@ -8,8 +8,8 @@ import 'package:provider/provider.dart';
 import 'package:samachar_hub/data/api/api.dart';
 import 'package:samachar_hub/data/models/models.dart';
 import 'package:samachar_hub/notifier/news_setting_notifier.dart';
-import 'package:samachar_hub/pages/favourites/news/news_source_selection_item.dart';
-import 'package:samachar_hub/pages/favourites/news/source_store.dart';
+import 'package:samachar_hub/pages/following/news/news_source_selection_item.dart';
+import 'package:samachar_hub/pages/following/news/source_store.dart';
 import 'package:samachar_hub/pages/widgets/api_error_dialog.dart';
 import 'package:samachar_hub/pages/widgets/empty_data_widget.dart';
 import 'package:samachar_hub/pages/widgets/error_data_widget.dart';
@@ -29,7 +29,7 @@ class _NewsSourceSelectionScreenState extends State<NewsSourceSelectionScreen> {
 
   @override
   void initState() {
-    final store = Provider.of<FavouriteNewsSourceStore>(context, listen: false);
+    final store = Provider.of<FollowNewsSourceStore>(context, listen: false);
     _setupObserver(store);
     store.loadInitialData();
 
@@ -83,7 +83,7 @@ class _NewsSourceSelectionScreenState extends State<NewsSourceSelectionScreen> {
     ];
   }
 
-  Widget _buildList(FavouriteNewsSourceStore store) {
+  Widget _buildList(FollowNewsSourceStore store) {
     return StreamBuilder<List<NewsSourceModel>>(
       stream: store.dataStream,
       builder: (_, AsyncSnapshot<List<NewsSourceModel>> snapshot) {
@@ -166,7 +166,7 @@ class _NewsSourceSelectionScreenState extends State<NewsSourceSelectionScreen> {
                       size: 22,
                     ),
                     onPressed: () {
-                      var store = context.read<FavouriteNewsSourceStore>();
+                      var store = context.read<FollowNewsSourceStore>();
                       store.updateFollowedNewsSources().whenComplete(() {
                         shouldSaveNotifier.value = 1;
                         context
@@ -186,7 +186,7 @@ class _NewsSourceSelectionScreenState extends State<NewsSourceSelectionScreen> {
         child: Container(
           padding: EdgeInsets.all(8.0),
           color: Theme.of(context).backgroundColor,
-          child: Consumer<FavouriteNewsSourceStore>(builder: (_, store, __) {
+          child: Consumer<FollowNewsSourceStore>(builder: (_, store, __) {
             return NestedScrollView(
               headerSliverBuilder: (context, innerBoxIsScrolled) => [
                 SliverPadding(

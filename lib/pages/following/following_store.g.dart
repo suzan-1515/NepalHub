@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'favourites_store.dart';
+part of 'following_store.dart';
 
 // **************************************************************************
 // StoreGenerator
@@ -8,8 +8,8 @@ part of 'favourites_store.dart';
 
 // ignore_for_file: non_constant_identifier_names, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
 
-mixin _$FavouritesStore on _FavouritesStore, Store {
-  final _$errorAtom = Atom(name: '_FavouritesStore.error');
+mixin _$FollowingStore on _FollowingStore, Store {
+  final _$errorAtom = Atom(name: '_FollowingStore.error');
 
   @override
   String get error {
@@ -26,7 +26,7 @@ mixin _$FavouritesStore on _FavouritesStore, Store {
     }, _$errorAtom, name: '${_$errorAtom.name}_set');
   }
 
-  final _$messageAtom = Atom(name: '_FavouritesStore.message');
+  final _$messageAtom = Atom(name: '_FollowingStore.message');
 
   @override
   String get message {
@@ -43,66 +43,66 @@ mixin _$FavouritesStore on _FavouritesStore, Store {
     }, _$messageAtom, name: '${_$messageAtom.name}_set');
   }
 
-  final _$_FavouritesStoreActionController =
-      ActionController(name: '_FavouritesStore');
+  final _$_FollowingStoreActionController =
+      ActionController(name: '_FollowingStore');
 
   @override
   dynamic retryNewsSources() {
-    final _$actionInfo = _$_FavouritesStoreActionController.startAction();
+    final _$actionInfo = _$_FollowingStoreActionController.startAction();
     try {
       return super.retryNewsSources();
     } finally {
-      _$_FavouritesStoreActionController.endAction(_$actionInfo);
+      _$_FollowingStoreActionController.endAction(_$actionInfo);
     }
   }
 
   @override
   dynamic retryNewsCategory() {
-    final _$actionInfo = _$_FavouritesStoreActionController.startAction();
+    final _$actionInfo = _$_FollowingStoreActionController.startAction();
     try {
       return super.retryNewsCategory();
     } finally {
-      _$_FavouritesStoreActionController.endAction(_$actionInfo);
+      _$_FollowingStoreActionController.endAction(_$actionInfo);
     }
   }
 
   @override
   dynamic retryNewsTopic() {
-    final _$actionInfo = _$_FavouritesStoreActionController.startAction();
+    final _$actionInfo = _$_FollowingStoreActionController.startAction();
     try {
       return super.retryNewsTopic();
     } finally {
-      _$_FavouritesStoreActionController.endAction(_$actionInfo);
+      _$_FollowingStoreActionController.endAction(_$actionInfo);
     }
   }
 
   @override
   Future<void> loadFollowedNewsSourceData() {
-    final _$actionInfo = _$_FavouritesStoreActionController.startAction();
+    final _$actionInfo = _$_FollowingStoreActionController.startAction();
     try {
       return super.loadFollowedNewsSourceData();
     } finally {
-      _$_FavouritesStoreActionController.endAction(_$actionInfo);
+      _$_FollowingStoreActionController.endAction(_$actionInfo);
     }
   }
 
   @override
   Future<void> loadFollowedNewsCategoryData() {
-    final _$actionInfo = _$_FavouritesStoreActionController.startAction();
+    final _$actionInfo = _$_FollowingStoreActionController.startAction();
     try {
       return super.loadFollowedNewsCategoryData();
     } finally {
-      _$_FavouritesStoreActionController.endAction(_$actionInfo);
+      _$_FollowingStoreActionController.endAction(_$actionInfo);
     }
   }
 
   @override
   Future<void> loadFollowedNewsTopicData() {
-    final _$actionInfo = _$_FavouritesStoreActionController.startAction();
+    final _$actionInfo = _$_FollowingStoreActionController.startAction();
     try {
       return super.loadFollowedNewsTopicData();
     } finally {
-      _$_FavouritesStoreActionController.endAction(_$actionInfo);
+      _$_FollowingStoreActionController.endAction(_$actionInfo);
     }
   }
 

@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -8,8 +6,8 @@ import 'package:provider/provider.dart';
 import 'package:samachar_hub/data/api/api.dart';
 import 'package:samachar_hub/data/models/models.dart';
 import 'package:samachar_hub/notifier/news_setting_notifier.dart';
-import 'package:samachar_hub/pages/favourites/news/category_store.dart';
-import 'package:samachar_hub/pages/favourites/news/news_category_selection_item.dart';
+import 'package:samachar_hub/pages/following/news/category_store.dart';
+import 'package:samachar_hub/pages/following/news/news_category_selection_item.dart';
 import 'package:samachar_hub/pages/widgets/api_error_dialog.dart';
 import 'package:samachar_hub/pages/widgets/empty_data_widget.dart';
 import 'package:samachar_hub/pages/widgets/error_data_widget.dart';
@@ -30,8 +28,7 @@ class _NewsCategorySelectionScreenState
 
   @override
   void initState() {
-    final store =
-        Provider.of<FavouriteNewsCategoryStore>(context, listen: false);
+    final store = Provider.of<FollowNewsCategoryStore>(context, listen: false);
     _setupObserver(store);
     store.loadInitialData();
 
@@ -85,7 +82,7 @@ class _NewsCategorySelectionScreenState
     ];
   }
 
-  Widget _buildList(FavouriteNewsCategoryStore store) {
+  Widget _buildList(FollowNewsCategoryStore store) {
     return StreamBuilder<List<NewsCategoryModel>>(
       stream: store.dataStream,
       builder: (_, AsyncSnapshot<List<NewsCategoryModel>> snapshot) {
@@ -168,7 +165,7 @@ class _NewsCategorySelectionScreenState
                       size: 22,
                     ),
                     onPressed: () {
-                      var store = context.read<FavouriteNewsCategoryStore>();
+                      var store = context.read<FollowNewsCategoryStore>();
                       store.updateFollowedNewsCategory().whenComplete(() {
                         shouldSaveNotifier.value = 1;
                         context
@@ -188,7 +185,7 @@ class _NewsCategorySelectionScreenState
         child: Container(
           padding: EdgeInsets.all(8.0),
           color: Theme.of(context).backgroundColor,
-          child: Consumer<FavouriteNewsCategoryStore>(builder: (_, store, __) {
+          child: Consumer<FollowNewsCategoryStore>(builder: (_, store, __) {
             return NestedScrollView(
               headerSliverBuilder: (context, innerBoxIsScrolled) => [
                 SliverPadding(

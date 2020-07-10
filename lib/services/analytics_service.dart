@@ -108,11 +108,10 @@ class AnalyticsService {
     );
   }
 
-  Future logNewsSourceFollowed(
-      {String sourceCode, List<String> sourceCodes}) async {
+  Future logNewsSourceFollowed({String sourceCode}) async {
     await _analytics.logEvent(
       name: 'news_source_followed',
-      parameters: {'source_code': sourceCode, 'source_codes': sourceCodes},
+      parameters: {'source_code': sourceCode},
     );
   }
 
@@ -123,11 +122,10 @@ class AnalyticsService {
     );
   }
 
-  Future logNewsCategoryFollowed(
-      {String sourceCode, List<String> sourceCodes}) async {
+  Future logNewsCategoryFollowed({String sourceCode}) async {
     await _analytics.logEvent(
       name: 'news_category_followed',
-      parameters: {'category_code': sourceCode, 'category_codes': sourceCodes},
+      parameters: {'category_code': sourceCode},
     );
   }
 

@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class FavouritesFirestoreService {
+class FollowingFirestoreService {
   final CollectionReference _favouritesCollectionReference =
       Firestore.instance.collection('favourites');
 }
