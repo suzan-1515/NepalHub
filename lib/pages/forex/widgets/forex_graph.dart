@@ -34,39 +34,32 @@ class _ForexGraphState extends State<ForexGraph> {
 
   @override
   Widget build(BuildContext context) {
-    return AnimatedOpacity(
-      opacity: 1,
-      duration: Duration(milliseconds: 200),
-      child: Container(
-        margin: const EdgeInsets.all(8),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            Flexible(
-              child: Text(
-                widget.timeline?.first?.currency ?? 'Forex',
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-                style: Theme.of(context).textTheme.subtitle1,
-              ),
-            ),
-            const SizedBox(height: 8.0),
-            Text(
-              'Updated: ${widget.timeline?.last?.formattedDate(widget.timeline?.last?.date) ?? DateFormat('dd MMM, yyyy').format(DateTime.now())}',
-              style: Theme.of(context).textTheme.caption,
-            ),
-            const SizedBox(height: 20.0),
-            Padding(
-              padding: const EdgeInsets.only(right: 8.0),
-              child: SizedBox(width: double.infinity, child: _buildGraph()),
-            ),
-            _buildLabelRow(),
-            const SizedBox(height: 20.0),
-            const Divider(height: 8.0),
-          ],
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: <Widget>[
+        Flexible(
+          child: Text(
+            widget.timeline?.first?.currency ?? 'Forex',
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+            style: Theme.of(context).textTheme.subtitle1,
+          ),
         ),
-      ),
+        const SizedBox(height: 8.0),
+        Text(
+          'Updated: ${widget.timeline?.last?.formattedDate(widget.timeline?.last?.date) ?? DateFormat('dd MMM, yyyy').format(DateTime.now())}',
+          style: Theme.of(context).textTheme.caption,
+        ),
+        const SizedBox(height: 20.0),
+        Padding(
+          padding: const EdgeInsets.only(right: 8.0),
+          child: SizedBox(width: double.infinity, child: _buildGraph()),
+        ),
+        _buildLabelRow(),
+        const SizedBox(height: 20.0),
+        const Divider(height: 8.0),
+      ],
     );
   }
 
@@ -163,7 +156,7 @@ class _ForexGraphState extends State<ForexGraph> {
       preventCurveOverShooting: true,
       barWidth: 2,
       isStrokeCapRound: true,
-      dotData: FlDotData(show: false),
+      dotData: FlDotData(show: true),
       colors: [
         color.withOpacity(0.3),
         color.withOpacity(0.7),

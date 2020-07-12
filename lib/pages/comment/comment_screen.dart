@@ -172,7 +172,7 @@ class _CommentScreenState extends State<CommentScreen> {
                 loadMoreOffsetFromBottom: 2,
                 hasMore: () => store.hasMoreData,
                 itemBuilder: (_, int index) {
-                  Widget itemWidget = CommentItem(
+                  Widget itemWidget = CommentListItem(
                       context: context,
                       data: snapshot.data[index],
                       store: store);
@@ -311,6 +311,9 @@ class _CommentScreenState extends State<CommentScreen> {
     return Scaffold(
       key: _scaffoldkey,
       backgroundColor: Theme.of(context).backgroundColor,
+      appBar: AppBar(
+        title: Text('Comments'),
+      ),
       body: SafeArea(
         child: Container(
           color: Theme.of(context).backgroundColor,
@@ -321,16 +324,6 @@ class _CommentScreenState extends State<CommentScreen> {
                 mainAxisSize: MainAxisSize.max,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: <Widget>[
-                  Row(
-                    children: <Widget>[
-                      BackButton(
-                        onPressed: () => Navigator.of(context).pop(),
-                      ),
-                      PageHeading(
-                        title: 'Comments',
-                      ),
-                    ],
-                  ),
                   Expanded(
                     child: _buildList(store),
                   ),

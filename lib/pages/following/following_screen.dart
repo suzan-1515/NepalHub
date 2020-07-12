@@ -3,7 +3,6 @@ import 'package:mobx/mobx.dart';
 import 'package:provider/provider.dart';
 import 'package:samachar_hub/data/models/models.dart';
 import 'package:samachar_hub/pages/following/following_store.dart';
-import 'package:samachar_hub/pages/following/widgets/add_list_item.dart';
 import 'package:samachar_hub/widgets/news_category_horz_list_item.dart';
 import 'package:samachar_hub/pages/widgets/empty_data_widget.dart';
 import 'package:samachar_hub/pages/widgets/error_data_widget.dart';
@@ -95,32 +94,30 @@ class _FollowingPageState extends State<FollowingPage>
           );
         }
         if (snapshot.hasData) {
+          if (snapshot.data.isEmpty) {
+            return Center(
+              child: Text(
+                'You are not following any news sources.',
+                style: Theme.of(context).textTheme.bodyText2,
+              ),
+            );
+          }
           return LimitedBox(
             maxHeight: 100,
             child: ListView.builder(
               primary: false,
               itemExtent: 120,
               scrollDirection: Axis.horizontal,
-              itemCount: snapshot.data.length + 1,
+              itemCount: snapshot.data.length,
               itemBuilder: (_, index) {
-                if (index == 0) {
-                  return AddListItem(
-                      context: context,
-                      onTap: () {
-                        Provider.of<NavigationService>(context, listen: false)
-                            .toNewsSourceSelectionScreen(context: context)
-                            .whenComplete(
-                                () => favouritesStore.retryNewsSources());
-                      });
-                }
-
-                var sourceModel = snapshot.data[index - 1];
+                var sourceModel = snapshot.data[index];
                 return MiniCardListItem(
                     context: context,
                     name: sourceModel.name,
                     icon: sourceModel.icon,
                     onTap: () {
-                      Provider.of<NavigationService>(context, listen: false)
+                      context
+                          .read<NavigationService>()
                           .toNewsSourceFeedScreen(context, sourceModel);
                     });
               },
@@ -155,8 +152,10 @@ class _FollowingPageState extends State<FollowingPage>
             ),
             Divider(),
             _buildViewAndManageButton(onTap: () {
-              Provider.of<NavigationService>(context, listen: false)
-                  .toFavouriteNewsSourceScreen(context);
+              context
+                  .read<NavigationService>()
+                  .toFavouriteNewsSourceScreen(context)
+                  .whenComplete(() => favouritesStore.retryNewsSources());
             }),
           ],
         ),
@@ -179,32 +178,30 @@ class _FollowingPageState extends State<FollowingPage>
           );
         }
         if (snapshot.hasData) {
+          if (snapshot.data.isEmpty) {
+            return Center(
+              child: Text(
+                'You are not following any categories.',
+                style: Theme.of(context).textTheme.bodyText2,
+              ),
+            );
+          }
           return LimitedBox(
             maxHeight: 100,
             child: ListView.builder(
               primary: false,
               itemExtent: 120,
               scrollDirection: Axis.horizontal,
-              itemCount: snapshot.data.length + 1,
+              itemCount: snapshot.data.length,
               itemBuilder: (_, index) {
-                if (index == 0) {
-                  return AddListItem(
-                      context: context,
-                      onTap: () {
-                        Provider.of<NavigationService>(context, listen: false)
-                            .toNewsCategorySelectionScreen(context)
-                            .whenComplete(
-                                () => favouritesStore.retryNewsCategory());
-                      });
-                }
-
-                var categoryModel = snapshot.data[index - 1];
+                var categoryModel = snapshot.data[index];
                 return NewsCategoryHorzListItem(
                     context: context,
                     name: categoryModel.name,
                     icon: categoryModel.icon,
                     onTap: () {
-                      Provider.of<NavigationService>(context, listen: false)
+                      context
+                          .read<NavigationService>()
                           .toNewsCategoryScreen(context, categoryModel);
                     });
               },
@@ -240,7 +237,8 @@ class _FollowingPageState extends State<FollowingPage>
             Divider(),
             _buildViewAndManageButton(onTap: () {
               Provider.of<NavigationService>(context, listen: false)
-                  .toFavouriteNewsCategoryScreen(context);
+                  .toFavouriteNewsCategoryScreen(context)
+                  .whenComplete(() => favouritesStore.retryNewsCategory());
             }),
           ],
         ),

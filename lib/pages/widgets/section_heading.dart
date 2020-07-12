@@ -39,7 +39,6 @@ class SectionHeadingView extends StatelessWidget {
                 softWrap: true,
               ),
             ),
-            Spacer(),
             if (onTap != null)
               IconButton(
                   iconSize: 20,

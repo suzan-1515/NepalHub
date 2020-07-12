@@ -1,14 +1,14 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:provider/provider.dart';
 import 'package:samachar_hub/data/models/models.dart';
 import 'package:samachar_hub/services/services.dart';
 import 'package:samachar_hub/widgets/article_image_widget.dart';
 
 class NewsCompactView extends StatelessWidget {
   final NewsFeedModel feed;
-  final NavigationService navigationService;
-  NewsCompactView({@required this.feed, @required this.navigationService});
+  NewsCompactView({@required this.feed});
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +22,8 @@ class NewsCompactView extends StatelessWidget {
       child: Material(
         color: Colors.transparent,
         child: InkWell(
-          onTap: () => navigationService.toFeedDetail(feed, context),
+          onTap: () =>
+              context.read<NavigationService>().toFeedDetail(feed, context),
           child: ClipRRect(
             borderRadius: BorderRadius.all(Radius.circular(6.0)),
             child: Stack(

@@ -1,30 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:samachar_hub/data/models/models.dart';
 import 'package:samachar_hub/pages/widgets/article_info_widget.dart';
-import 'package:samachar_hub/repository/repositories.dart';
-import 'package:samachar_hub/services/services.dart';
+import 'package:samachar_hub/services/navigation_service.dart';
 import 'package:samachar_hub/stores/stores.dart';
 import 'package:samachar_hub/widgets/article_image_widget.dart';
 
 class NewsListView extends StatelessWidget {
   final NewsFeedModel feed;
-  final PostMetaRepository postMetaRepository;
   final AuthenticationStore authenticationStore;
-  final ShareService shareService;
-  final NavigationService navigationService;
 
-  NewsListView(
-      {@required this.feed,
-      @required this.navigationService,
-      this.postMetaRepository,
-      this.authenticationStore,
-      this.shareService});
+  NewsListView({@required this.feed, this.authenticationStore});
 
   @override
   Widget build(BuildContext context) {
     return Card(
       color: Theme.of(context).cardColor,
-      margin: EdgeInsets.symmetric(horizontal: 4, vertical: 6),
+      margin: const EdgeInsets.symmetric(vertical: 6, horizontal: 4),
       elevation: 0,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(6),
@@ -32,7 +24,8 @@ class NewsListView extends StatelessWidget {
       child: Material(
         color: Colors.transparent,
         child: InkWell(
-          onTap: () => navigationService.toFeedDetail(feed, context),
+          onTap: () =>
+              context.read<NavigationService>().toFeedDetail(feed, context),
           child: Padding(
             padding: const EdgeInsets.all(8.0),
             child: Column(
@@ -56,7 +49,7 @@ class NewsListView extends StatelessWidget {
                     Expanded(
                       flex: 2,
                       child: AspectRatio(
-                        aspectRatio: 4/3,
+                        aspectRatio: 4 / 3,
                         child: ClipRRect(
                           borderRadius: BorderRadius.all(Radius.circular(6)),
                           child: ArticleImageWidget(feed.image, tag: feed.tag),
@@ -70,9 +63,6 @@ class NewsListView extends StatelessWidget {
                 FeedOptionsSection(
                   article: feed,
                   authenticationStore: authenticationStore,
-                  navigationService: navigationService,
-                  shareService: shareService,
-                  postMetaRepository: postMetaRepository,
                 ),
               ],
             ),

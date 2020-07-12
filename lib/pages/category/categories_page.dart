@@ -1,13 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:mobx/mobx.dart';
 import 'package:provider/provider.dart';
 import 'package:samachar_hub/data/api/api.dart';
+import 'package:samachar_hub/data/models/news_model.dart';
 import 'package:samachar_hub/notifier/news_setting_notifier.dart';
 import 'package:samachar_hub/pages/category/categories_store.dart';
+import 'package:samachar_hub/pages/category/category_store.dart';
 import 'package:samachar_hub/pages/category/category_view.dart';
+import 'package:samachar_hub/pages/news/news_repository.dart';
 import 'package:samachar_hub/pages/widgets/api_error_dialog.dart';
-import 'package:samachar_hub/util/news_category.dart';
+import 'package:samachar_hub/pages/widgets/content_view_type_menu_widget.dart';
+import 'package:samachar_hub/pages/widgets/empty_data_widget.dart';
+import 'package:samachar_hub/pages/widgets/error_data_widget.dart';
+import 'package:samachar_hub/pages/widgets/progress_widget.dart';
 
 class CategoriesPage extends StatefulWidget {
   @override
@@ -15,72 +21,22 @@ class CategoriesPage extends StatefulWidget {
 }
 
 class _CategoriesPageState extends State<CategoriesPage>
-    with SingleTickerProviderStateMixin {
+    with TickerProviderStateMixin, AutomaticKeepAliveClientMixin {
   // Reaction disposers
   List<ReactionDisposer> _disposers;
   TabController _tabController;
-  final List<Tab> _tabs = <Tab>[
-    Tab(
-        key: ValueKey<NewsCategory>(NewsCategory.tops),
-        text: newsCategoryNameByCode[NewsCategory.tops]),
-    Tab(
-        key: ValueKey<NewsCategory>(NewsCategory.pltc),
-        text: newsCategoryNameByCode[NewsCategory.pltc]),
-    Tab(
-        key: ValueKey<NewsCategory>(NewsCategory.sprt),
-        text: newsCategoryNameByCode[NewsCategory.sprt]),
-    Tab(
-        key: ValueKey<NewsCategory>(NewsCategory.scte),
-        text: newsCategoryNameByCode[NewsCategory.scte]),
-    Tab(
-        key: ValueKey<NewsCategory>(NewsCategory.wrld),
-        text: newsCategoryNameByCode[NewsCategory.wrld]),
-    Tab(
-        key: ValueKey<NewsCategory>(NewsCategory.busi),
-        text: newsCategoryNameByCode[NewsCategory.busi]),
-    Tab(
-        key: ValueKey<NewsCategory>(NewsCategory.entm),
-        text: newsCategoryNameByCode[NewsCategory.entm]),
-    Tab(
-        key: ValueKey<NewsCategory>(NewsCategory.hlth),
-        text: newsCategoryNameByCode[NewsCategory.hlth]),
-    Tab(
-        key: ValueKey<NewsCategory>(NewsCategory.blog),
-        text: newsCategoryNameByCode[NewsCategory.blog]),
-    Tab(
-        key: ValueKey<NewsCategory>(NewsCategory.advs),
-        text: newsCategoryNameByCode[NewsCategory.advs]),
-    Tab(
-        key: ValueKey<NewsCategory>(NewsCategory.oths),
-        text: newsCategoryNameByCode[NewsCategory.oths]),
-  ];
 
   @override
   void initState() {
-    final store = Provider.of<CategoriesStore>(context, listen: false);
+    final store = context.read<CategoriesStore>();
     _setupObserver(store);
-    _tabController = TabController(
-      initialIndex: _tabs.indexWhere((element) =>
-          ((element.key as ValueKey<NewsCategory>)
-              .value
-              .toString()
-              .split('.')
-              .last) ==
-          store.activeCategoryTab),
-      vsync: this,
-      length: _tabs.length,
-    );
-    _tabController.addListener(() {
-      store.loadInitialFeeds(
-          (_tabs[_tabController.index].key as ValueKey<NewsCategory>).value);
-    });
-    store.loadInitialFeeds(
-        (_tabs[_tabController.index].key as ValueKey<NewsCategory>).value);
+    store.loadData();
 
     final newsSettingNotifier = context.read<NewsSettingNotifier>();
     newsSettingNotifier.addListener(() {
-      store.refresh(
-          (_tabs[_tabController.index].key as ValueKey<NewsCategory>).value);
+      if (newsSettingNotifier.setting == NewsSetting.CATEGORY) {
+        store.refresh();
+      }
     });
     super.initState();
   }
@@ -97,9 +53,11 @@ class _CategoriesPageState extends State<CategoriesPage>
 
   _showMessage(String message) {
     if (null != message)
-      Scaffold.of(context).showSnackBar(
-        SnackBar(content: Text(message)),
-      );
+      Scaffold.of(context)
+        ..hideCurrentSnackBar()
+        ..showSnackBar(
+          SnackBar(content: Text(message)),
+        );
   }
 
   _showErrorDialog(APIException apiError) {
@@ -128,31 +86,87 @@ class _CategoriesPageState extends State<CategoriesPage>
     ];
   }
 
-  Widget _newsPopupMenuItem(icon, color, title, value) {
-    return PopupMenuItem<MenuItem>(
-      value: value,
-      child: Row(
-        children: <Widget>[
-          Icon(icon, color: color),
-          Padding(
-            padding: EdgeInsets.only(left: 16),
-            child: Text(
-              title,
-              style: TextStyle(color: color),
+  List<Tab> _buildTabs(List<NewsCategoryModel> data) {
+    return data
+        .map(
+          (e) => Tab(key: ValueKey<String>(e.code), text: e.name),
+        )
+        .toList();
+  }
+
+  TabController _setupTabController(List<Tab> tabs) {
+    if (_tabController != null) _tabController.dispose();
+    return TabController(
+      initialIndex: 0,
+      vsync: this,
+      length: tabs.length,
+    );
+  }
+
+  Widget _buildContent(CategoriesStore store, NewsRepository newsRepository) {
+    return StreamBuilder<List<NewsCategoryModel>>(
+      stream: store.dataStream,
+      builder: (BuildContext context,
+          AsyncSnapshot<List<NewsCategoryModel>> snapshot) {
+        if (snapshot.hasError) {
+          return Center(
+            child: ErrorDataView(
+              onRetry: () => store.retry(),
             ),
-          ),
-        ],
-      ),
+          );
+        }
+        if (snapshot.hasData) {
+          if (snapshot.data.isEmpty) {
+            return Center(
+              child: EmptyDataView(
+                text:
+                    'News categories not available at the moment. Explore other news from home screen.',
+              ),
+            );
+          }
+          final tabs = _buildTabs(snapshot.data);
+          _tabController = _setupTabController(tabs);
+          return Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.max,
+            children: <Widget>[
+              TabBar(
+                controller: _tabController,
+                tabs: tabs,
+                isScrollable: true,
+              ),
+              Expanded(
+                child: TabBarView(
+                    controller: _tabController,
+                    children: tabs
+                        .map((e) => Provider<CategoryStore>(
+                              create: (_) => CategoryStore(newsRepository,
+                                  (e.key as ValueKey<String>).value),
+                              dispose: (context, value) => value.dispose(),
+                              child: NewsCategoryView(),
+                            ))
+                        .toList()),
+              ),
+            ],
+          );
+        }
+
+        return Center(
+          child: ProgressView(),
+        );
+      },
     );
   }
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Container(
       color: Theme.of(context).backgroundColor,
       padding: EdgeInsets.symmetric(horizontal: 8),
-      child: Consumer<CategoriesStore>(
-        builder: (context, topHeadlinesStore, child) {
+      child: Consumer2<CategoriesStore, NewsRepository>(
+        builder: (context, store, newsRepository, child) {
           return Column(
             mainAxisSize: MainAxisSize.max,
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -172,69 +186,25 @@ class _CategoriesPageState extends State<CategoriesPage>
                             .copyWith(fontWeight: FontWeight.w800),
                       ),
                     ),
-                    Opacity(
-                      opacity: 0.65,
-                      child: SizedBox(
-                        height: 40,
-                        width: 40,
-                        child: PopupMenuButton<MenuItem>(
-                          icon: Icon(FontAwesomeIcons.ellipsisV),
-                          onSelected: topHeadlinesStore.setView,
-                          itemBuilder: (BuildContext context) =>
-                              <PopupMenuEntry<MenuItem>>[
-                            //Todo: Create a separate widget for PopupMenuItem
-                            _newsPopupMenuItem(
-                                FontAwesomeIcons.list,
-                                topHeadlinesStore.view == MenuItem.LIST_VIEW
-                                    ? Theme.of(context).accentColor
-                                    : Theme.of(context).iconTheme.color,
-                                'List View',
-                                MenuItem.LIST_VIEW),
-                            _newsPopupMenuItem(
-                                FontAwesomeIcons.addressCard,
-                                topHeadlinesStore.view ==
-                                        MenuItem.THUMBNAIL_VIEW
-                                    ? Theme.of(context).accentColor
-                                    : Theme.of(context).iconTheme.color,
-                                'Thumbnail View',
-                                MenuItem.THUMBNAIL_VIEW),
-                            _newsPopupMenuItem(
-                                FontAwesomeIcons.image,
-                                topHeadlinesStore.view == MenuItem.COMPACT_VIEW
-                                    ? Theme.of(context).accentColor
-                                    : Theme.of(context).iconTheme.color,
-                                'Compact View',
-                                MenuItem.COMPACT_VIEW),
-                          ],
-                        ),
-                      ),
+                    Observer(
+                      builder: (_) {
+                        return ViewTypePopupMenu(
+                          onSelected: store.setView,
+                          selectedViewType: store.view,
+                        );
+                      },
                     ),
                   ],
                 ),
               ),
-              TabBar(
-                controller: _tabController,
-                tabs: _tabs,
-                isScrollable: true,
-              ),
-              Expanded(
-                child: TabBarView(
-                    controller: _tabController,
-                    children: _tabs
-                        .map((e) => NewsCategoryView(
-                            (e.key as ValueKey<NewsCategory>).value))
-                        .toList()),
-              ),
+              Expanded(child: _buildContent(store, newsRepository)),
             ],
           );
         },
       ),
     );
   }
-}
 
-enum MenuItem {
-  LIST_VIEW,
-  THUMBNAIL_VIEW,
-  COMPACT_VIEW,
+  @override
+  bool get wantKeepAlive => true;
 }

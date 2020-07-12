@@ -9,7 +9,7 @@ part of 'source_store.dart';
 // ignore_for_file: non_constant_identifier_names, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
 
 mixin _$FollowNewsSourceStore on _FollowNewsSourceStore, Store {
-  final _$apiErrorAtom = Atom(name: '_FavouriteNewsSourceStore.apiError');
+  final _$apiErrorAtom = Atom(name: '_FollowNewsSourceStore.apiError');
 
   @override
   APIException get apiError {
@@ -26,7 +26,7 @@ mixin _$FollowNewsSourceStore on _FollowNewsSourceStore, Store {
     }, _$apiErrorAtom, name: '${_$apiErrorAtom.name}_set');
   }
 
-  final _$errorAtom = Atom(name: '_FavouriteNewsSourceStore.error');
+  final _$errorAtom = Atom(name: '_FollowNewsSourceStore.error');
 
   @override
   String get error {
@@ -43,39 +43,56 @@ mixin _$FollowNewsSourceStore on _FollowNewsSourceStore, Store {
     }, _$errorAtom, name: '${_$errorAtom.name}_set');
   }
 
-  final _$_FavouriteNewsSourceStoreActionController =
-      ActionController(name: '_FavouriteNewsSourceStore');
+  final _$_FollowNewsSourceStoreActionController =
+      ActionController(name: '_FollowNewsSourceStore');
 
   @override
   void loadInitialData() {
-    final _$actionInfo =
-        _$_FavouriteNewsSourceStoreActionController.startAction();
+    final _$actionInfo = _$_FollowNewsSourceStoreActionController.startAction();
     try {
       return super.loadInitialData();
     } finally {
-      _$_FavouriteNewsSourceStoreActionController.endAction(_$actionInfo);
+      _$_FollowNewsSourceStoreActionController.endAction(_$actionInfo);
     }
   }
 
   @override
   void retry() {
-    final _$actionInfo =
-        _$_FavouriteNewsSourceStoreActionController.startAction();
+    final _$actionInfo = _$_FollowNewsSourceStoreActionController.startAction();
     try {
       return super.retry();
     } finally {
-      _$_FavouriteNewsSourceStoreActionController.endAction(_$actionInfo);
+      _$_FollowNewsSourceStoreActionController.endAction(_$actionInfo);
     }
   }
 
   @override
-  Future<dynamic> updateFollowedNewsSources() {
-    final _$actionInfo =
-        _$_FavouriteNewsSourceStoreActionController.startAction();
+  Future<dynamic> refresh() {
+    final _$actionInfo = _$_FollowNewsSourceStoreActionController.startAction();
     try {
-      return super.updateFollowedNewsSources();
+      return super.refresh();
     } finally {
-      _$_FavouriteNewsSourceStoreActionController.endAction(_$actionInfo);
+      _$_FollowNewsSourceStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  Future<void> followedNewsSource(NewsSourceModel sourceModel) {
+    final _$actionInfo = _$_FollowNewsSourceStoreActionController.startAction();
+    try {
+      return super.followedNewsSource(sourceModel);
+    } finally {
+      _$_FollowNewsSourceStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  Future<void> unFollowedNewsSource(NewsSourceModel sourceModel) {
+    final _$actionInfo = _$_FollowNewsSourceStoreActionController.startAction();
+    try {
+      return super.unFollowedNewsSource(sourceModel);
+    } finally {
+      _$_FollowNewsSourceStoreActionController.endAction(_$actionInfo);
     }
   }
 

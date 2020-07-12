@@ -30,26 +30,7 @@ const String _forexToday = '/forex';
 const String _forexByCountry =
     '/forex/currencycode'; //body: currency_code,from (date),to(date)
 
-enum NewsCategory {
-  tops,
-  pltc,
-  sprt,
-  scte,
-  wrld,
-  busi,
-  entm,
-  hlth,
-  blog,
-  advs,
-  oths,
-}
-
 enum SortBy { relevancy, popularity, publishedAt }
-
-String _getCategoryCode(NewsCategory category) {
-  if (null == category) return null;
-  return category.toString().split('.').last;
-}
 
 Future<NewsApiResponse> fetchLatestNews() async {
   var sourceCall = http.get(Uri.https(_baseNewsApiURL, _newsSources));
@@ -109,11 +90,11 @@ Future<NewsApiResponse> fetchTrendingNews({String limit}) async {
   }
 }
 
-Future<NewsApiResponse> fetchNewsByCategory(NewsCategory category,
+Future<NewsApiResponse> fetchNewsByCategory(String category,
     {String lastFeedId}) async {
   var sourceCall = http.get(Uri.https(_baseNewsApiURL, _newsSources));
   final Map<String, String> queryParams = _filterNullOrEmptyValuesFromMap({
-    'category': _getCategoryCode(category),
+    'category': category,
     'id': lastFeedId,
   });
   var newsCall =

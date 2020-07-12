@@ -20,7 +20,6 @@ import 'package:samachar_hub/pages/widgets/news_thumbnail_view.dart';
 import 'package:samachar_hub/pages/widgets/page_heading_widget.dart';
 import 'package:samachar_hub/pages/widgets/progress_widget.dart';
 import 'package:samachar_hub/pages/widgets/section_heading.dart';
-import 'package:samachar_hub/repository/post_meta_repository.dart';
 import 'package:samachar_hub/services/services.dart';
 import 'package:samachar_hub/stores/stores.dart';
 
@@ -143,30 +142,18 @@ class _PersonalisedPageState extends State<PersonalisedPage> {
     return SizedBox.shrink();
   }
 
-  Widget _buildLatestFeed(
-      int index,
-      NewsFeedModel feed,
-      PersonalisedFeedStore personalisedStore,
-      postMetaRepository,
-      shareService,
-      navigationService,
-      authenticationStore) {
+  Widget _buildLatestFeed(int index, NewsFeedModel feed,
+      PersonalisedFeedStore personalisedStore, authenticationStore) {
     Widget feedWidget;
     if (index % 3 == 0) {
       feedWidget = NewsThumbnailView(
         feed: feed,
         authenticationStore: authenticationStore,
-        navigationService: navigationService,
-        postMetaRepository: postMetaRepository,
-        shareService: shareService,
       );
     } else {
       feedWidget = NewsListView(
         feed: feed,
         authenticationStore: authenticationStore,
-        navigationService: navigationService,
-        postMetaRepository: postMetaRepository,
-        shareService: shareService,
       );
     }
     if (index == 0) {
@@ -186,56 +173,55 @@ class _PersonalisedPageState extends State<PersonalisedPage> {
   }
 
   Widget _buildList() {
-    return Consumer5<PersonalisedFeedStore, PostMetaRepository, ShareService,
-            NavigationService, AuthenticationStore>(
-        builder: (context, personalisedStore, postMetaRepository, shareService,
-            navigationService, authenticationStore, child) {
-      return StreamBuilder<List>(
-          stream: personalisedStore.dataStream,
-          builder: (context, snapshot) {
-            if (snapshot.hasError) {
-              return Center(
-                child: ErrorDataView(
-                  onRetry: () => personalisedStore.retry(),
-                ),
-              );
-            }
-            if (snapshot.hasData) {
-              if (snapshot.data.isEmpty) {
+    return Consumer2<PersonalisedFeedStore, AuthenticationStore>(
+        builder: (context, personalisedStore, authenticationStore, child) {
+      return RefreshIndicator(
+        onRefresh: () async {
+          await personalisedStore.refresh();
+        },
+        child: StreamBuilder<List>(
+            stream: personalisedStore.dataStream,
+            builder: (context, snapshot) {
+              if (snapshot.hasError) {
                 return Center(
-                  child: EmptyDataView(),
+                  child: ErrorDataView(
+                    onRetry: () => personalisedStore.retry(),
+                  ),
                 );
               }
+              if (snapshot.hasData) {
+                if (snapshot.data.isEmpty) {
+                  return Center(
+                    child: EmptyDataView(),
+                  );
+                }
 
-              return NestedScrollView(
-                headerSliverBuilder: (_, bool innerBoxIsScrolled) {
-                  var widgets = <Widget>[];
-                  widgets.add(SliverToBoxAdapter(child: DateWeatherSection()));
-                  if (personalisedStore.sectionData[MixedDataType.CORONA] !=
-                      null) {
-                    widgets.add(SliverToBoxAdapter(
-                      child: CoronaSection(
-                          data: personalisedStore
-                              .sectionData[MixedDataType.CORONA]),
-                    ));
-                  }
-                  if (personalisedStore
-                          .sectionData[MixedDataType.TRENDING_NEWS] !=
-                      null) {
-                    widgets.add(SliverToBoxAdapter(
-                      child: TrendingNewsSection(
-                        feeds: personalisedStore
-                            .sectionData[MixedDataType.TRENDING_NEWS],
-                      ),
-                    ));
-                  }
-                  return widgets;
-                },
-                body: RefreshIndicator(
-                  onRefresh: () async {
-                    await personalisedStore.refresh();
+                return NestedScrollView(
+                  headerSliverBuilder: (_, bool innerBoxIsScrolled) {
+                    var widgets = <Widget>[];
+                    widgets
+                        .add(SliverToBoxAdapter(child: DateWeatherSection()));
+                    if (personalisedStore.sectionData[MixedDataType.CORONA] !=
+                        null) {
+                      widgets.add(SliverToBoxAdapter(
+                        child: CoronaSection(
+                            data: personalisedStore
+                                .sectionData[MixedDataType.CORONA]),
+                      ));
+                    }
+                    if (personalisedStore
+                            .sectionData[MixedDataType.TRENDING_NEWS] !=
+                        null) {
+                      widgets.add(SliverToBoxAdapter(
+                        child: TrendingNewsSection(
+                          feeds: personalisedStore
+                              .sectionData[MixedDataType.TRENDING_NEWS],
+                        ),
+                      ));
+                    }
+                    return widgets;
                   },
-                  child: ListView.separated(
+                  body: ListView.separated(
                     itemCount: personalisedStore
                             .sectionData[MixedDataType.LATEST_NEWS]?.length ??
                         0,
@@ -245,20 +231,17 @@ class _PersonalisedPageState extends State<PersonalisedPage> {
                           personalisedStore
                               .sectionData[MixedDataType.LATEST_NEWS][index],
                           personalisedStore,
-                          postMetaRepository,
-                          shareService,
-                          navigationService,
                           authenticationStore);
                     },
                     separatorBuilder: (_, int index) {
                       return _buildMixedSection(index, personalisedStore);
                     },
                   ),
-                ),
-              );
-            }
-            return Center(child: ProgressView());
-          });
+                );
+              }
+              return Center(child: ProgressView());
+            }),
+      );
     });
   }
 

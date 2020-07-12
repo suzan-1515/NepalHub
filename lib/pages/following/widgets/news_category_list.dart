@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
@@ -23,33 +25,40 @@ class FollowNewsCategoryList extends StatefulWidget {
 class _FollowNewsCategoryListState extends State<FollowNewsCategoryList> {
   @override
   Widget build(BuildContext context) {
-    return ListView.separated(
-      padding: EdgeInsets.symmetric(vertical: 8),
-      itemCount: widget.data.length,
-      itemBuilder: (context, index) {
-        var categoryModel = widget.data[index];
-        return FollowedNewsCategoryListItem(
-          title: categoryModel.name,
-          icon: categoryModel.icon,
-          onTap: () {
-            Provider.of<NavigationService>(context, listen: false)
-                .toNewsCategoryScreen(context, categoryModel);
-          },
-          onFollowTap: () {
-            if (categoryModel.enabled.value) {
-              widget.store.unFollowedNewsCategory(categoryModel);
-            } else {
-              widget.store.followedNewsCategory(categoryModel);
-            }
-            setState(() {
-              categoryModel.enabled.value = !categoryModel.enabled.value;
-            });
-          },
-          followers: 200,
-          isSubscribed: categoryModel.enabled.value,
-        );
+    return RefreshIndicator(
+      onRefresh: () async {
+        await widget.store.refresh();
       },
-      separatorBuilder: (_, int index) => Divider(),
+      child: ListView.separated(
+        padding: EdgeInsets.symmetric(vertical: 8),
+        itemCount: widget.data.length,
+        itemBuilder: (context, index) {
+          var categoryModel = widget.data[index];
+          return FollowedNewsCategoryListItem(
+            title: categoryModel.name,
+            icon: categoryModel.icon,
+            onTap: () {
+              context
+                  .read<NavigationService>()
+                  .toNewsCategoryScreen(context, categoryModel);
+            },
+            onFollowTap: () {
+              if (categoryModel.isFollowed) {
+                widget.store.unFollowedNewsCategory(categoryModel);
+              } else {
+                widget.store.followedNewsCategory(categoryModel);
+              }
+              setState(() {
+                widget.data[index] = categoryModel.copyWith(
+                    isFollowed: !categoryModel.isFollowed);
+              });
+            },
+            followers: categoryModel.followerCount,
+            isSubscribed: categoryModel.isFollowed,
+          );
+        },
+        separatorBuilder: (_, int index) => Divider(),
+      ),
     );
   }
 }

@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:mobx/mobx.dart';
 import 'package:provider/provider.dart';
 import 'package:samachar_hub/data/models/models.dart';
-import 'package:samachar_hub/pages/following/following_store.dart';
-import 'package:samachar_hub/pages/following/widgets/news_source_list_item.dart';
+import 'package:samachar_hub/notifier/news_setting_notifier.dart';
+import 'package:samachar_hub/pages/following/news/source_store.dart';
+import 'package:samachar_hub/pages/following/widgets/news_source_list.dart';
 import 'package:samachar_hub/pages/widgets/empty_data_widget.dart';
 import 'package:samachar_hub/pages/widgets/error_data_widget.dart';
 import 'package:samachar_hub/pages/widgets/progress_widget.dart';
-import 'package:samachar_hub/services/services.dart';
 
 class FollowingNewsSourceScreen extends StatefulWidget {
   @override
@@ -21,9 +20,9 @@ class _FollowingNewsSourceScreenState extends State<FollowingNewsSourceScreen> {
 
   @override
   void initState() {
-    var store = Provider.of<FollowingStore>(context, listen: false);
+    var store = Provider.of<FollowNewsSourceStore>(context, listen: false);
     _setupObserver(store);
-    store.loadFollowedNewsSourceData();
+    store.loadInitialData();
     super.initState();
   }
 
@@ -55,10 +54,9 @@ class _FollowingNewsSourceScreenState extends State<FollowingNewsSourceScreen> {
     ];
   }
 
-  Widget _buildSourceList(FollowingStore favouritesStore) {
+  Widget _buildSourceList(FollowNewsSourceStore favouritesStore) {
     return StreamBuilder<List<NewsSourceModel>>(
-      stream: favouritesStore.newsSourceFeedStream,
-      initialData: favouritesStore.sourceData,
+      stream: favouritesStore.dataStream,
       builder: (context, snapshot) {
         if (snapshot.hasError) {
           return Center(
@@ -75,29 +73,8 @@ class _FollowingNewsSourceScreenState extends State<FollowingNewsSourceScreen> {
               ),
             );
           }
-          return ListView.separated(
-            itemCount: snapshot.data.length,
-            padding: EdgeInsets.symmetric(vertical: 8),
-            itemBuilder: (context, index) {
-              var sourceModel = snapshot.data[index];
-              return FollowedNewsSourceListItem(
-                title: sourceModel.name,
-                icon: sourceModel.icon,
-                onTap: () {
-                  Provider.of<NavigationService>(context, listen: false)
-                      .toNewsSourceFeedScreen(context, sourceModel);
-                },
-                onFollowTap: () {
-                  context
-                      .read<NavigationService>()
-                      .toNewsSourceSelectionScreen(context: context);
-                },
-                followers: 200,
-                isSubscribed: sourceModel.enabled.value,
-              );
-            },
-            separatorBuilder: (_, int index) => Divider(),
-          );
+          return FollowNewsSourceList(
+              data: snapshot.data, store: favouritesStore);
         }
         return Center(child: ProgressView());
       },
@@ -111,29 +88,24 @@ class _FollowingNewsSourceScreenState extends State<FollowingNewsSourceScreen> {
         title: Text(
           'News Sources',
         ),
+        leading: BackButton(
+          onPressed: () {
+            context.read<NewsSettingNotifier>().notify(NewsSetting.SOURCE);
+            Navigator.of(context).pop();
+          },
+        ),
       ),
       backgroundColor: Theme.of(context).backgroundColor,
       body: SafeArea(
         child: Container(
           color: Theme.of(context).backgroundColor,
           padding: EdgeInsets.symmetric(horizontal: 8),
-          child: Consumer<FollowingStore>(
+          child: Consumer<FollowNewsSourceStore>(
             builder: (_, _favouriteskStore, child) {
               return _buildSourceList(_favouriteskStore);
             },
           ),
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          context
-              .read<NavigationService>()
-              .toNewsSourceSelectionScreen(context: context)
-              .then((value) {
-            if (value) context.read<FollowingStore>().retryNewsSources();
-          });
-        },
-        child: Icon(FontAwesomeIcons.plus),
       ),
     );
   }

@@ -8,6 +8,7 @@ import 'package:samachar_hub/pages/forex/forex_repository.dart';
 import 'package:samachar_hub/pages/horoscope/horoscope_repository.dart';
 import 'package:samachar_hub/pages/news/news_repository.dart';
 import 'package:samachar_hub/pages/pages.dart';
+import 'package:samachar_hub/util/content_view_type.dart';
 
 part 'personalised_store.g.dart';
 
@@ -39,7 +40,7 @@ abstract class _PersonalisedFeedStore with Store {
   String error;
 
   @observable
-  MenuItem view = MenuItem.THUMBNAIL_VIEW;
+  ContentViewType view = ContentViewType.THUMBNAIL_VIEW;
 
   @action
   void loadInitialData() {
@@ -69,7 +70,7 @@ abstract class _PersonalisedFeedStore with Store {
   }
 
   @action
-  setView(MenuItem value) {
+  setView(ContentViewType value) {
     view = value;
   }
 

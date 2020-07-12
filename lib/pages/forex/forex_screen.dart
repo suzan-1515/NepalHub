@@ -9,7 +9,6 @@ import 'package:samachar_hub/pages/forex/forex_store.dart';
 import 'package:samachar_hub/pages/widgets/api_error_dialog.dart';
 import 'package:samachar_hub/pages/widgets/empty_data_widget.dart';
 import 'package:samachar_hub/pages/widgets/error_data_widget.dart';
-import 'package:samachar_hub/pages/widgets/page_heading_widget.dart';
 import 'package:samachar_hub/pages/widgets/progress_widget.dart';
 import 'package:samachar_hub/services/navigation_service.dart';
 
@@ -77,13 +76,13 @@ class _ForexScreenState extends State<ForexScreen> {
     ];
   }
 
-  Widget _buildForexItem(BuildContext context, ForexModel data,
-      ForexStore store, NavigationService navigationService) {
+  Widget _buildForexItem(
+      BuildContext context, ForexModel data, ForexStore store) {
     return Material(
       color: Colors.transparent,
       child: InkWell(
         onTap: () {
-          navigationService.toForexDetailScreen(context, data);
+          context.read<NavigationService>().toForexDetailScreen(context, data);
         },
         child: Row(
           mainAxisAlignment: MainAxisAlignment.start,
@@ -178,55 +177,48 @@ class _ForexScreenState extends State<ForexScreen> {
   }
 
   Widget _buildList(BuildContext context, ForexStore store) {
-    return Consumer<NavigationService>(
-      builder: (_, NavigationService navigationService, __) {
-        return Padding(
-          padding: const EdgeInsets.only(top: 8.0),
-          child: StreamBuilder<List<ForexModel>>(
-            stream: store.dataStream,
-            builder: (_, AsyncSnapshot<List<ForexModel>> snapshot) {
-              if (snapshot.hasError) {
-                return Center(
-                  child: ErrorDataView(
-                    onRetry: () => store.retry(),
-                  ),
+    return StreamBuilder<List<ForexModel>>(
+      stream: store.dataStream,
+      builder: (_, AsyncSnapshot<List<ForexModel>> snapshot) {
+        if (snapshot.hasError) {
+          return Center(
+            child: ErrorDataView(
+              onRetry: () => store.retry(),
+            ),
+          );
+        }
+        if (snapshot.hasData) {
+          if (snapshot.data.isEmpty) {
+            return Center(
+              child: EmptyDataView(),
+            );
+          }
+          return ListView.separated(
+              itemCount: snapshot.data.length + 1,
+              separatorBuilder: (_, index) {
+                return Observer(
+                  builder: (_) {
+                    ForexModel defaultForex = store.defaultForex;
+                    if (index == 1) {
+                      if (defaultForex != null) {
+                        return ForexConverter(
+                            items: snapshot.data,
+                            defaultForex: defaultForex,
+                            store: store);
+                      }
+                    }
+                    return Divider();
+                  },
                 );
-              }
-              if (snapshot.hasData) {
-                if (snapshot.data.isEmpty) {
-                  return Center(
-                    child: EmptyDataView(),
-                  );
-                }
-                return ListView.separated(
-                    itemCount: snapshot.data.length + 1,
-                    separatorBuilder: (_, index) {
-                      return Observer(
-                        builder: (_) {
-                          ForexModel defaultForex = store.defaultForex;
-                          if (index == 1) {
-                            if (defaultForex != null) {
-                              return ForexConverter(
-                                  items: snapshot.data,
-                                  defaultForex: defaultForex,
-                                  store: store);
-                            }
-                          }
-                          return Divider();
-                        },
-                      );
-                    },
-                    itemBuilder: (_, index) {
-                      if (index == 0) return _buildHeader(context);
-                      return _buildForexItem(context, snapshot.data[index - 1],
-                          store, navigationService);
-                    });
-              } else {
-                return Center(child: ProgressView());
-              }
-            },
-          ),
-        );
+              },
+              itemBuilder: (_, index) {
+                if (index == 0) return _buildHeader(context);
+                return _buildForexItem(
+                    context, snapshot.data[index - 1], store);
+              });
+        } else {
+          return Center(child: ProgressView());
+        }
       },
     );
   }
@@ -246,11 +238,14 @@ class _ForexScreenState extends State<ForexScreen> {
   }
 
   Widget _buildContent(BuildContext context, ForexStore store) {
-    return NestedScrollView(
-      headerSliverBuilder: (_, __) => [
-        SliverToBoxAdapter(child: _buildDefaultCurrencyStat(context, store)),
-      ],
-      body: _buildList(context, store),
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: NestedScrollView(
+        headerSliverBuilder: (_, __) => [
+          SliverToBoxAdapter(child: _buildDefaultCurrencyStat(context, store)),
+        ],
+        body: _buildList(context, store),
+      ),
     );
   }
 
@@ -258,37 +253,19 @@ class _ForexScreenState extends State<ForexScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
+      appBar: AppBar(
+        title: Text('Forex'),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.settings),
+            onPressed: () {},
+          ),
+        ],
+      ),
       body: SafeArea(
         child: Consumer<ForexStore>(
           builder: (_, ForexStore store, __) {
-            return Container(
-              padding: EdgeInsets.symmetric(horizontal: 4, vertical: 8),
-              color: Theme.of(context).backgroundColor,
-              child: Column(
-                mainAxisSize: MainAxisSize.max,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: <Widget>[
-                  Row(
-                    children: <Widget>[
-                      BackButton(
-                        onPressed: () => Navigator.of(context).pop(),
-                      ),
-                      PageHeading(
-                        title: 'Forex',
-                      ),
-                      Spacer(),
-                      IconButton(
-                        icon: Icon(Icons.settings),
-                        onPressed: () {},
-                      ),
-                    ],
-                  ),
-                  Expanded(
-                    child: _buildContent(context, store),
-                  ),
-                ],
-              ),
-            );
+            return _buildContent(context, store);
           },
         ),
       ),

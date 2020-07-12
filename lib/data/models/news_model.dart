@@ -52,19 +52,42 @@ class NewsSourceModel {
   final int priority;
   final String favicon;
   final FeedSourceApiResponse rawData;
-  final ValueNotifier<bool> enabled = ValueNotifier<bool>(true);
+  final int followerCount;
+  final bool isFollowed;
 
-  NewsSourceModel(
-      {@required this.id,
-      @required this.name,
-      @required this.code,
-      @required this.icon,
-      @required this.priority,
-      @required this.favicon,
-      @required this.rawData,
-      bool enabled = true}) {
-    this.enabled.value = enabled;
-  }
+  NewsSourceModel({
+    @required this.id,
+    @required this.name,
+    @required this.code,
+    @required this.icon,
+    @required this.priority,
+    @required this.favicon,
+    @required this.rawData,
+    @required this.isFollowed,
+    @required this.followerCount,
+  });
+
+  NewsSourceModel copyWith({
+    int id,
+    String name,
+    String code,
+    String icon,
+    int priority,
+    String favicon,
+    FeedSourceApiResponse rawData,
+    int followerCount,
+    bool isFollowed,
+  }) =>
+      NewsSourceModel(
+          id: id ?? this.id,
+          name: name ?? this.name,
+          code: code ?? this.code,
+          icon: icon ?? this.icon,
+          priority: priority ?? this.priority,
+          favicon: favicon ?? this.favicon,
+          rawData: rawData ?? this.rawData,
+          followerCount: followerCount ?? this.followerCount,
+          isFollowed: isFollowed ?? this.isFollowed);
 
   Map<String, dynamic> toJson() => <String, dynamic>{
         'id': this.id,
@@ -73,7 +96,7 @@ class NewsSourceModel {
         'icon': this.icon,
         'priority': this.priority,
         'favicon': this.favicon,
-        'enable': this.enabled.value,
+        'enable': isFollowed,
       };
 }
 
@@ -84,25 +107,47 @@ class NewsCategoryModel {
   final IconData icon;
   final int priority;
   final FeedCategoryApiResponse rawData;
-  final ValueNotifier<bool> enabled = ValueNotifier<bool>(true);
+  final int followerCount;
+  final bool isFollowed;
 
-  NewsCategoryModel(
-      {@required this.id,
-      @required this.name,
-      @required this.code,
-      @required this.icon,
-      @required this.priority,
-      @required this.rawData,
-      bool enable = true}) {
-    this.enabled.value = enable;
-  }
+  NewsCategoryModel({
+    @required this.id,
+    @required this.name,
+    @required this.code,
+    @required this.icon,
+    @required this.priority,
+    @required this.rawData,
+    @required this.isFollowed,
+    @required this.followerCount,
+  });
+
+  NewsCategoryModel copyWith({
+    int id,
+    String name,
+    String code,
+    String icon,
+    int priority,
+    FeedSourceApiResponse rawData,
+    int followerCount,
+    bool isFollowed,
+  }) =>
+      NewsCategoryModel(
+          id: id ?? this.id,
+          name: name ?? this.name,
+          code: code ?? this.code,
+          icon: icon ?? this.icon,
+          priority: priority ?? this.priority,
+          rawData: rawData ?? this.rawData,
+          followerCount: followerCount ?? this.followerCount,
+          isFollowed: isFollowed ?? this.isFollowed);
+
   Map<String, dynamic> toJson() => <String, dynamic>{
         'id': this.id,
         'name': this.name,
         'code': this.code,
         'icon': this.icon,
         'priority': this.priority,
-        'enable': this.enabled.value,
+        'enable': this.isFollowed,
       };
 }
 

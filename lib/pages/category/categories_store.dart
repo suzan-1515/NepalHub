@@ -1,9 +1,10 @@
-import 'package:async/async.dart';
+import 'dart:async';
+
 import 'package:mobx/mobx.dart';
 import 'package:samachar_hub/data/api/api.dart';
 import 'package:samachar_hub/data/models/models.dart';
-import 'package:samachar_hub/pages/category/categories_page.dart';
 import 'package:samachar_hub/pages/news/news_repository.dart';
+import 'package:samachar_hub/util/content_view_type.dart';
 import 'package:throttling/throttling.dart';
 
 part 'categories_store.g.dart';
@@ -12,22 +13,20 @@ class CategoriesStore = _CategoriesStore with _$CategoriesStore;
 
 abstract class _CategoriesStore with Store {
   final NewsRepository _newsRepository;
-  final Map<NewsCategory, AsyncMemoizer> _asyncMemoizer =
-      Map<NewsCategory, AsyncMemoizer>();
-  final Map<NewsCategory, bool> isLoadingMore = Map<NewsCategory, bool>();
-  final Map<NewsCategory, Throttling> _throttling =
-      Map<NewsCategory, Throttling>();
+
+  final StreamController<List<NewsCategoryModel>> _dataStreamController =
+      StreamController<List<NewsCategoryModel>>();
+  final Throttling _throttling = Throttling(duration: Duration(minutes: 1));
 
   _CategoriesStore(this._newsRepository);
 
-  @observable
-  ObservableMap<NewsCategory, ObservableFuture> loadFeedItemsFuture =
-      ObservableMap<NewsCategory, ObservableFuture>();
+  Stream<List<NewsCategoryModel>> get dataStream =>
+      _dataStreamController.stream;
+  final List<NewsCategoryModel> _data = List<NewsCategoryModel>();
 
-  Map<NewsCategory, List<NewsFeedModel>> newsData =
-      Map<NewsCategory, List<NewsFeedModel>>();
+  bool _isLoading = false;
 
-  Map<NewsCategory, bool> hasMoreData = Map<NewsCategory, bool>();
+  bool get isLoading => _isLoading;
 
   @observable
   String error;
@@ -36,83 +35,45 @@ abstract class _CategoriesStore with Store {
   APIException apiError;
 
   @observable
-  MenuItem view = MenuItem.LIST_VIEW;
-
-  @observable
   String activeCategoryTab = 'tops';
 
-  @action
-  void loadInitialFeeds(NewsCategory category) {
-    if (!_throttling.containsKey(category))
-      _throttling[category] = Throttling(duration: Duration(minutes: 1));
+  @observable
+  ContentViewType view = ContentViewType.LIST_VIEW;
 
-    _throttling[category].throttle(() {
-      if (!_asyncMemoizer.containsKey(category))
-        _asyncMemoizer[category] = AsyncMemoizer();
-      loadFeedItemsFuture[category] =
-          ObservableFuture(_asyncMemoizer[category].runOnce(() async {
-        await _loadFirstPageFeeds(category);
-      }));
+  @action
+  void loadData() {
+    _throttling.throttle(() {
+      _loadCategories();
     });
   }
 
   @action
-  Future<void> _loadFirstPageFeeds(NewsCategory category) async {
-    newsData.remove(category);
-    await loadMoreData(category);
+  Future<void> refresh() async {
+    return _loadCategories();
   }
 
   @action
-  Future<void> refresh(NewsCategory category) async {
-    return _loadFirstPageFeeds(category);
+  void retry() {
+    _loadCategories();
   }
 
   @action
-  void retry(NewsCategory category) {
-    loadFeedItemsFuture[category] =
-        ObservableFuture(_loadFirstPageFeeds(category));
-  }
-
-  @action
-  Future<void> loadMoreData(NewsCategory category) async {
-    try {
-      if (isLoadingMore[category] ?? false) return;
-      isLoadingMore[category] = true;
-
-      List<NewsFeedModel> cachedNews = newsData[category];
-      if (cachedNews == null || cachedNews.isEmpty) {
-        List<NewsFeedModel> moreNews =
-            await _newsRepository.getFeedsByCategory(category: category);
-        if (moreNews != null) {
-          if (moreNews.isNotEmpty) {
-            newsData[category] = moreNews;
-            hasMoreData[category] = true;
-          } else
-            hasMoreData[category] = false;
-        }
-      } else {
-        List<NewsFeedModel> moreNews = await _newsRepository.getFeedsByCategory(
-            category: category, lastFeedId: cachedNews.last.id);
-        if (moreNews != null) {
-          if (moreNews.isNotEmpty) {
-            cachedNews.addAll(moreNews);
-            hasMoreData[category] = true;
-          } else
-            hasMoreData[category] = false;
-        }
+  Future<void> _loadCategories() async {
+    if (_isLoading) return;
+    _isLoading = true;
+    _data.clear();
+    return _newsRepository.getCategories().then((value) {
+      if (value != null) {
+        _data.addAll(value.where((e) => e.isFollowed).toList());
       }
-    } on APIException catch (apiError) {
-      this.apiError = apiError;
-    } on Exception catch (e) {
-      this.error = e.toString();
-    } finally {
-      isLoadingMore[category] = false;
-    }
-  }
-
-  @action
-  setView(MenuItem value) {
-    view = value;
+      _dataStreamController.add(_data);
+    }).catchError((onError) {
+      this.apiError = onError;
+      _dataStreamController.addError(onError);
+    }, test: (e) => e is APIException).catchError((onError) {
+      this.error = 'Unable to load data!';
+      _dataStreamController.addError(onError);
+    }).whenComplete(() => _isLoading = false);
   }
 
   @action
@@ -120,13 +81,13 @@ abstract class _CategoriesStore with Store {
     activeCategoryTab = categoryCode;
   }
 
+  @action
+  setView(ContentViewType value) {
+    view = value;
+  }
+
   dispose() {
-    _throttling.forEach((key, value) => value.dispose());
-    _throttling.clear();
-    _asyncMemoizer.clear();
-    isLoadingMore.clear();
-    loadFeedItemsFuture.clear();
-    newsData.clear();
-    hasMoreData.clear();
+    _dataStreamController.close();
+    _throttling.dispose();
   }
 }

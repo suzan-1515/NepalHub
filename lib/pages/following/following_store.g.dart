@@ -43,6 +43,13 @@ mixin _$FollowingStore on _FollowingStore, Store {
     }, _$messageAtom, name: '${_$messageAtom.name}_set');
   }
 
+  final _$refreshAsyncAction = AsyncAction('refresh');
+
+  @override
+  Future<dynamic> refresh() {
+    return _$refreshAsyncAction.run(() => super.refresh());
+  }
+
   final _$_FollowingStoreActionController =
       ActionController(name: '_FollowingStore');
 

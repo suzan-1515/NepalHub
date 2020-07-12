@@ -67,13 +67,15 @@ class FollowedNewsSourceListItem extends StatelessWidget {
                 style: Theme.of(context).textTheme.bodyText2,
               ),
               ActionChip(
-                backgroundColor: isSubscribed
-                    ? Theme.of(context).canvasColor
-                    : Theme.of(context).accentColor,
-                avatar: Icon(Icons.check),
+                backgroundColor:
+                    isSubscribed ? Colors.grey : Theme.of(context).accentColor,
+                avatar: isSubscribed ? Icon(Icons.check) : null,
                 label: Text(
-                  isSubscribed ? 'UnFollow' : 'Follow',
-                  style: Theme.of(context).textTheme.button,
+                  isSubscribed ? 'Followed' : 'Follow',
+                  style: Theme.of(context)
+                      .textTheme
+                      .button
+                      .copyWith(color: Colors.white),
                 ),
                 onPressed: onFollowTap,
               ),

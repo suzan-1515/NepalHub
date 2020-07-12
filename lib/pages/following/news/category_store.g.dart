@@ -9,7 +9,7 @@ part of 'category_store.dart';
 // ignore_for_file: non_constant_identifier_names, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
 
 mixin _$FollowNewsCategoryStore on _FollowNewsCategoryStore, Store {
-  final _$apiErrorAtom = Atom(name: '_FavouriteNewsCategoryStore.apiError');
+  final _$apiErrorAtom = Atom(name: '_FollowNewsCategoryStore.apiError');
 
   @override
   APIException get apiError {
@@ -26,7 +26,7 @@ mixin _$FollowNewsCategoryStore on _FollowNewsCategoryStore, Store {
     }, _$apiErrorAtom, name: '${_$apiErrorAtom.name}_set');
   }
 
-  final _$errorAtom = Atom(name: '_FavouriteNewsCategoryStore.error');
+  final _$errorAtom = Atom(name: '_FollowNewsCategoryStore.error');
 
   @override
   String get error {
@@ -43,39 +43,61 @@ mixin _$FollowNewsCategoryStore on _FollowNewsCategoryStore, Store {
     }, _$errorAtom, name: '${_$errorAtom.name}_set');
   }
 
-  final _$_FavouriteNewsCategoryStoreActionController =
-      ActionController(name: '_FavouriteNewsCategoryStore');
+  final _$_FollowNewsCategoryStoreActionController =
+      ActionController(name: '_FollowNewsCategoryStore');
 
   @override
   void loadInitialData() {
     final _$actionInfo =
-        _$_FavouriteNewsCategoryStoreActionController.startAction();
+        _$_FollowNewsCategoryStoreActionController.startAction();
     try {
       return super.loadInitialData();
     } finally {
-      _$_FavouriteNewsCategoryStoreActionController.endAction(_$actionInfo);
+      _$_FollowNewsCategoryStoreActionController.endAction(_$actionInfo);
     }
   }
 
   @override
   void retry() {
     final _$actionInfo =
-        _$_FavouriteNewsCategoryStoreActionController.startAction();
+        _$_FollowNewsCategoryStoreActionController.startAction();
     try {
       return super.retry();
     } finally {
-      _$_FavouriteNewsCategoryStoreActionController.endAction(_$actionInfo);
+      _$_FollowNewsCategoryStoreActionController.endAction(_$actionInfo);
     }
   }
 
   @override
-  Future<void> updateFollowedNewsCategory() {
+  Future<dynamic> refresh() {
     final _$actionInfo =
-        _$_FavouriteNewsCategoryStoreActionController.startAction();
+        _$_FollowNewsCategoryStoreActionController.startAction();
     try {
-      return super.updateFollowedNewsCategory();
+      return super.refresh();
     } finally {
-      _$_FavouriteNewsCategoryStoreActionController.endAction(_$actionInfo);
+      _$_FollowNewsCategoryStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  Future<void> followedNewsCategory(NewsCategoryModel categoryModel) {
+    final _$actionInfo =
+        _$_FollowNewsCategoryStoreActionController.startAction();
+    try {
+      return super.followedNewsCategory(categoryModel);
+    } finally {
+      _$_FollowNewsCategoryStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  Future<void> unFollowedNewsCategory(NewsCategoryModel categoryModel) {
+    final _$actionInfo =
+        _$_FollowNewsCategoryStoreActionController.startAction();
+    try {
+      return super.unFollowedNewsCategory(categoryModel);
+    } finally {
+      _$_FollowNewsCategoryStoreActionController.endAction(_$actionInfo);
     }
   }
 

@@ -14,6 +14,7 @@ import 'package:samachar_hub/pages/widgets/progress_widget.dart';
 import 'package:samachar_hub/services/services.dart';
 import 'package:samachar_hub/stores/stores.dart';
 import 'package:samachar_hub/widgets/comment_bar_widget.dart';
+import 'package:share/share.dart';
 
 import 'widgets/forex_graph.dart';
 
@@ -84,97 +85,74 @@ class _ForexDetailScreenState extends State<ForexDetailScreen> {
   }
 
   Widget _buildContent(BuildContext context, ForexDetailStore store) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: StreamBuilder<List<ForexModel>>(
-        stream: store.dataStream,
-        builder: (_, AsyncSnapshot<List<ForexModel>> snapshot) {
-          if (snapshot.hasError) {
+    return StreamBuilder<List<ForexModel>>(
+      stream: store.dataStream,
+      builder: (_, AsyncSnapshot<List<ForexModel>> snapshot) {
+        if (snapshot.hasError) {
+          return Center(
+            child: ErrorDataView(
+              onRetry: () => store.retry(),
+            ),
+          );
+        }
+        if (snapshot.hasData) {
+          if (snapshot.data.isEmpty) {
             return Center(
-              child: ErrorDataView(
-                onRetry: () => store.retry(),
-              ),
+              child: EmptyDataView(),
             );
           }
-          if (snapshot.hasData) {
-            if (snapshot.data.isEmpty) {
-              return Center(
-                child: EmptyDataView(),
-              );
-            }
-            return ForexGraph(timeline: snapshot.data);
-          } else {
-            return Center(child: ProgressView());
-          }
-        },
-      ),
+          return ForexGraph(timeline: snapshot.data);
+        }
+        return Center(child: ProgressView());
+      },
     );
   }
 
   Widget _buildTodayStat(BuildContext context, ForexDetailStore store) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Text(
-        'Buy: ${store.forex.buying} Sell: ${store.forex.selling}',
-        style: Theme.of(context).textTheme.bodyText1,
-      ),
+    return Text(
+      'Buy: ${store.forex.buying} Sell: ${store.forex.selling}',
+      style: Theme.of(context).textTheme.bodyText1,
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    return Consumer3<ForexDetailStore, ShareService, PostMetaStore>(
-      builder: (_, ForexDetailStore store, ShareService shareService,
-          PostMetaStore metaStore, __) {
+    return Consumer2<ForexDetailStore, PostMetaStore>(
+      builder: (_, ForexDetailStore store, PostMetaStore metaStore, __) {
         return Scaffold(
           backgroundColor: Theme.of(context).backgroundColor,
-          body: SafeArea(
-            child: Container(
-              padding: EdgeInsets.symmetric(horizontal: 4, vertical: 8),
-              color: Theme.of(context).backgroundColor,
-              child: Column(
-                mainAxisSize: MainAxisSize.max,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: <Widget>[
-                  Row(
-                    children: <Widget>[
-                      BackButton(
-                        onPressed: () => Navigator.of(context).pop(),
-                      ),
-                      PageHeading(
+          appBar: AppBar(
+            title: Text(store.forex.currency),
+            actions: <Widget>[
+              IconButton(
+                icon: Icon(FontAwesomeIcons.shareAlt),
+                onPressed: () {
+                  if (store.forex != null)
+                    context.read<ShareService>().share(
+                        postId: store.forex.code,
                         title: store.forex.currency,
-                      ),
-                      Spacer(),
-                      IconButton(
-                        icon: Icon(FontAwesomeIcons.shareAlt),
-                        onPressed: () {
-                          if (store.forex != null)
-                            shareService.share(
-                                postId: store.forex.code,
-                                title: store.forex.currency,
-                                data:
-                                    'Currency:${store.forex.currency}\nBuy: ${store.forex.buying}\nSell: ${store.forex.selling}\nLast updated: ${store.forex.addedDate}');
-                          metaStore.postShare();
-                        },
-                      ),
-                    ],
-                  ),
-                  Expanded(
-                    child: SingleChildScrollView(
-                        child: Column(
-                      children: <Widget>[
-                        _buildTodayStat(context, store),
-                        _buildContent(context, store),
-                      ],
-                    )),
-                  ),
-                ],
+                        data:
+                            'Currency:${store.forex.currency}\nBuy: ${store.forex.buying}\nSell: ${store.forex.selling}\nLast updated: ${store.forex.addedDate}');
+                  metaStore.postShare();
+                },
               ),
+            ],
+          ),
+          body: SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: SingleChildScrollView(
+                  child: Column(
+                children: <Widget>[
+                  _buildTodayStat(context, store),
+                  _buildContent(context, store),
+                ],
+              )),
             ),
           ),
           bottomNavigationBar: BottomAppBar(
-            child: Consumer2<AuthenticationStore, NavigationService>(
-              builder: (_, authenticationStore, navigationService, __) {
+            child: Consumer<AuthenticationStore>(
+              builder: (_, authenticationStore, __) {
                 return Observer(
                   builder: (_) {
                     return CommentBar(
@@ -185,7 +163,7 @@ class _ForexDetailScreenState extends State<ForexDetailScreen> {
                           metaStore.postMeta?.likeCount?.toString() ?? '0',
                       isLiked: metaStore.postMeta?.isUserLiked ?? false,
                       onCommentTap: () {
-                        navigationService.onViewCommentsTapped(
+                        context.read<NavigationService>().onViewCommentsTapped(
                             context: context, title: 'Forex', postId: 'forex');
                       },
                       onLikeTap: (value) {
@@ -201,7 +179,7 @@ class _ForexDetailScreenState extends State<ForexDetailScreen> {
                       },
                       onShareTap: () {
                         if (store.forex != null)
-                          shareService.share(
+                          context.read<ShareService>().share(
                               postId: store.forex.code,
                               title: store.forex.currency,
                               data:

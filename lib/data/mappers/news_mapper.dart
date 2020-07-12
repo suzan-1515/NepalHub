@@ -42,7 +42,8 @@ class NewsMapper {
     return NewsTopicModel(response.tags);
   }
 
-  static NewsSourceModel fromSourceApi(FeedSourceApiResponse response) {
+  static NewsSourceModel fromSourceApi(
+      FeedSourceApiResponse response, bool isFollowed) {
     return NewsSourceModel(
       id: response.id,
       name: response.name,
@@ -51,10 +52,13 @@ class NewsMapper {
       icon: response.icon,
       priority: response.priority,
       rawData: response,
+      followerCount: 0,
+      isFollowed: isFollowed,
     );
   }
 
-  static NewsCategoryModel fromCategoryApi(FeedCategoryApiResponse response) {
+  static NewsCategoryModel fromCategoryApi(
+      FeedCategoryApiResponse response, bool isFollowed) {
     return NewsCategoryModel(
       id: response.id,
       name: response.name,
@@ -62,6 +66,8 @@ class NewsMapper {
       icon: newsCategoryIcons[response.code],
       priority: response.priority,
       rawData: response,
+      followerCount: 0,
+      isFollowed: isFollowed,
     );
   }
 }

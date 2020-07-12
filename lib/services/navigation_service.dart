@@ -12,9 +12,7 @@ import 'package:samachar_hub/pages/comment/comment_screen.dart';
 import 'package:samachar_hub/pages/comment/comment_store.dart';
 import 'package:samachar_hub/pages/following/following_store.dart';
 import 'package:samachar_hub/pages/following/news/categories_screen.dart';
-import 'package:samachar_hub/pages/following/news/category_selection_screen.dart';
 import 'package:samachar_hub/pages/following/news/category_store.dart';
-import 'package:samachar_hub/pages/following/news/source_selection_screen.dart';
 import 'package:samachar_hub/pages/following/news/source_store.dart';
 import 'package:samachar_hub/pages/following/news/sources_screen.dart';
 import 'package:samachar_hub/pages/forex/forex_detail_store.dart';
@@ -31,8 +29,6 @@ import 'package:samachar_hub/pages/horoscope/horoscope_screen.dart';
 import 'package:samachar_hub/pages/horoscope/horoscope_store.dart';
 import 'package:samachar_hub/pages/news/details/news_details.dart';
 import 'package:samachar_hub/pages/news/news_repository.dart';
-import 'package:samachar_hub/pages/news/sources/news_source_screen.dart';
-import 'package:samachar_hub/pages/news/sources/news_source_store.dart';
 import 'package:samachar_hub/pages/news/topics/news_topic_screen.dart';
 import 'package:samachar_hub/pages/news/topics/news_topic_store.dart';
 import 'package:samachar_hub/pages/news/trending/trending_news_screen.dart';
@@ -221,8 +217,15 @@ class NavigationService {
       MaterialPageRoute(
         builder: (_) => MultiProvider(
           providers: [
-            Provider.value(value: Provider.of<FollowingStore>(context)),
             Provider.value(value: Provider.of<FollowingRepository>(context)),
+            ProxyProvider2<NewsRepository, FollowingRepository,
+                    FollowNewsSourceStore>(
+                update: (BuildContext context,
+                        NewsRepository value,
+                        FollowingRepository favouritesRepository,
+                        FollowNewsSourceStore previous) =>
+                    FollowNewsSourceStore(value, favouritesRepository),
+                dispose: (context, value) => value.dispose()),
           ],
           child: FollowingNewsSourceScreen(),
         ),
@@ -232,8 +235,9 @@ class NavigationService {
 
   toNewsCategoryScreen(
       BuildContext context, NewsCategoryModel newsCategoryModel) {
-    Provider.of<HomeScreenStore>(context, listen: false).setPage(1);
-    Provider.of<CategoriesStore>(context, listen: false)
+    context.read<HomeScreenStore>().setPage(1);
+    context
+        .read<CategoriesStore>()
         .setActiveCategoryTab(newsCategoryModel.code);
   }
 
@@ -255,28 +259,6 @@ class NavigationService {
             // Provider.value(value: Provider.of<FollowingRepository>(context)),
           ],
           child: FollowingNewsCategoryScreen(),
-        ),
-      ),
-    );
-  }
-
-  Future toNewsCategorySelectionScreen(BuildContext context) {
-    return Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (_) => MultiProvider(
-          providers: [
-            Provider.value(value: Provider.of<FollowingRepository>(context)),
-            ProxyProvider2<NewsRepository, FollowingRepository,
-                    FollowNewsCategoryStore>(
-                update: (BuildContext context,
-                        NewsRepository value,
-                        FollowingRepository favouritesRepository,
-                        FollowNewsCategoryStore previous) =>
-                    FollowNewsCategoryStore(value, favouritesRepository),
-                dispose: (context, value) => value.dispose()),
-          ],
-          child: NewsCategorySelectionScreen(),
         ),
       ),
     );
@@ -316,25 +298,6 @@ class NavigationService {
   onNewsSourceMenuTapped(
       {@required NewsSourceModel source, @required BuildContext context}) {
     print('Tag selected: $source.name');
-  }
-
-  Future toNewsSourceSelectionScreen({@required BuildContext context}) {
-    return Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (_) => MultiProvider(providers: [
-          Provider.value(value: Provider.of<FollowingRepository>(context)),
-          ProxyProvider2<NewsRepository, FollowingRepository,
-              FollowNewsSourceStore>(
-            update: (_,
-                    NewsRepository value,
-                    FollowingRepository favouritesRepository,
-                    FollowNewsSourceStore previous) =>
-                FollowNewsSourceStore(value, favouritesRepository),
-            dispose: (context, value) => value.dispose(),
-          ),
-        ], child: NewsSourceSelectionScreen()),
-      ),
-    );
   }
 
   onViewCommentsTapped(

@@ -3,6 +3,7 @@ import 'package:mobx/mobx.dart';
 import 'package:provider/provider.dart';
 import 'package:samachar_hub/data/api/api.dart';
 import 'package:samachar_hub/data/models/models.dart';
+import 'package:samachar_hub/notifier/news_setting_notifier.dart';
 import 'package:samachar_hub/pages/following/news/category_store.dart';
 import 'package:samachar_hub/pages/following/widgets/news_category_list.dart';
 import 'package:samachar_hub/pages/widgets/api_error_dialog.dart';
@@ -108,6 +109,12 @@ class _FollowingNewsCategoryScreenState
       appBar: AppBar(
         title: Text(
           'News Categories',
+        ),
+        leading: BackButton(
+          onPressed: () {
+            context.read<NewsSettingNotifier>().notify(NewsSetting.CATEGORY);
+            Navigator.of(context).pop();
+          },
         ),
       ),
       backgroundColor: Theme.of(context).backgroundColor,

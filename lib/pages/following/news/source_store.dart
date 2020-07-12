@@ -21,7 +21,6 @@ abstract class _FollowNewsSourceStore with Store {
       StreamController<List<NewsSourceModel>>.broadcast();
 
   Stream<List<NewsSourceModel>> get dataStream => _dataStreamController.stream;
-  List<NewsSourceModel> data = List<NewsSourceModel>();
 
   @observable
   APIException apiError;
@@ -36,16 +35,17 @@ abstract class _FollowNewsSourceStore with Store {
 
   @action
   void retry() {
-    data.clear();
     _loadSourceData();
+  }
+
+  @action
+  Future refresh() {
+    return _loadSourceData();
   }
 
   Future _loadSourceData() async {
     return _newsRepository.getSources().then((onValue) {
-      if (onValue != null) {
-        data.addAll(onValue);
-      }
-      _dataStreamController.add(data);
+      _dataStreamController.add(onValue);
     }).catchError((onError) {
       this.apiError = onError;
       _dataStreamController.addError(error);
@@ -53,12 +53,6 @@ abstract class _FollowNewsSourceStore with Store {
       this.error = onError.toString();
       _dataStreamController.addError(error);
     });
-  }
-
-  @action
-  Future updateFollowedNewsSources() {
-    return _favouritesRepository.unFollowSources(
-        data.where((element) => !element.enabled.value).toList());
   }
 
   @action

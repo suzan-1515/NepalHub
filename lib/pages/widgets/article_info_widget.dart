@@ -1,10 +1,12 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:provider/provider.dart';
 import 'package:samachar_hub/data/models/models.dart';
 import 'package:samachar_hub/repository/post_meta_repository.dart';
 import 'package:samachar_hub/services/services.dart';
 import 'package:samachar_hub/stores/stores.dart';
+import 'package:share/share.dart';
 
 class FeedSourceSection extends StatelessWidget {
   final NewsFeedModel article;
@@ -99,19 +101,13 @@ class FeedTitleDescriptionSection extends StatelessWidget {
 
 class FeedOptionsSection extends StatelessWidget {
   final NewsFeedModel article;
-  final PostMetaRepository postMetaRepository;
   final AuthenticationStore authenticationStore;
-  final ShareService shareService;
-  final NavigationService navigationService;
 
-  FeedOptionsSection(
-      {Key key,
-      @required this.article,
-      @required this.postMetaRepository,
-      @required this.authenticationStore,
-      @required this.shareService,
-      @required this.navigationService})
-      : super(key: key);
+  FeedOptionsSection({
+    Key key,
+    @required this.article,
+    @required this.authenticationStore,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -134,10 +130,13 @@ class FeedOptionsSection extends StatelessWidget {
                 ),
                 onPressed: () async {
                   if (!authenticationStore.isLoggedIn)
-                    return navigationService.loginRedirect(context);
+                    return context
+                        .read<NavigationService>()
+                        .loginRedirect(context);
                   if (value) {
                     article.liked.value = false;
-                    postMetaRepository
+                    context
+                        .read<PostMetaRepository>()
                         .removeLike(
                             postId: article.uuid,
                             userId: authenticationStore.user.uId)
@@ -145,7 +144,8 @@ class FeedOptionsSection extends StatelessWidget {
                         .catchError((onError) => article.liked.value = true);
                   } else {
                     article.liked.value = true;
-                    postMetaRepository
+                    context
+                        .read<PostMetaRepository>()
                         .postLike(
                             postId: article.uuid,
                             userId: authenticationStore.user.uId)
@@ -162,7 +162,7 @@ class FeedOptionsSection extends StatelessWidget {
               size: 16,
             ),
             onPressed: () {
-              navigationService.onViewCommentsTapped(
+              context.read<NavigationService>().onViewCommentsTapped(
                   context: context, title: article.title, postId: article.uuid);
             },
           ),
@@ -172,11 +172,11 @@ class FeedOptionsSection extends StatelessWidget {
               size: 16,
             ),
             onPressed: () {
-              shareService.share(
+              context.read<ShareService>().share(
                   postId: article.uuid,
                   title: article.title,
                   data: article.link);
-              postMetaRepository.postShare(
+              context.read<PostMetaRepository>().postShare(
                   postId: article.uuid, userId: authenticationStore.user.uId);
             },
           ),

@@ -46,14 +46,14 @@ mixin _$PersonalisedFeedStore on _PersonalisedFeedStore, Store {
   final _$viewAtom = Atom(name: '_PersonalisedFeedStore.view');
 
   @override
-  MenuItem get view {
+  ContentViewType get view {
     _$viewAtom.context.enforceReadPolicy(_$viewAtom);
     _$viewAtom.reportObserved();
     return super.view;
   }
 
   @override
-  set view(MenuItem value) {
+  set view(ContentViewType value) {
     _$viewAtom.context.conditionallyRunInAction(() {
       super.view = value;
       _$viewAtom.reportChanged();
@@ -98,7 +98,7 @@ mixin _$PersonalisedFeedStore on _PersonalisedFeedStore, Store {
   }
 
   @override
-  dynamic setView(MenuItem value) {
+  dynamic setView(ContentViewType value) {
     final _$actionInfo = _$_PersonalisedFeedStoreActionController.startAction();
     try {
       return super.setView(value);

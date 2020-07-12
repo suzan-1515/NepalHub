@@ -12,7 +12,7 @@ class NewsApiService {
   }
 
   Future<NewsApiResponse> fetchFeedsByCategory(
-      {@required Api.NewsCategory category, String lastFeedId}) async {
+      {@required String category, String lastFeedId}) async {
     return await Api.fetchNewsByCategory(category, lastFeedId: lastFeedId);
   }
 

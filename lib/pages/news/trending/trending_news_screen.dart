@@ -9,10 +9,7 @@ import 'package:samachar_hub/pages/widgets/api_error_dialog.dart';
 import 'package:samachar_hub/pages/widgets/empty_data_widget.dart';
 import 'package:samachar_hub/pages/widgets/error_data_widget.dart';
 import 'package:samachar_hub/pages/widgets/news_list_view.dart';
-import 'package:samachar_hub/pages/widgets/page_heading_widget.dart';
 import 'package:samachar_hub/pages/widgets/progress_widget.dart';
-import 'package:samachar_hub/repository/repositories.dart';
-import 'package:samachar_hub/services/services.dart';
 import 'package:samachar_hub/stores/stores.dart';
 
 class TrendingNewsScreen extends StatefulWidget {
@@ -79,53 +76,45 @@ class _TrendingNewsScreenState extends State<TrendingNewsScreen> {
   }
 
   Widget _buildList() {
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 4),
-      child: Consumer5<TrendingNewsStore, PostMetaRepository, ShareService,
-          NavigationService, AuthenticationStore>(
-        builder: (context, store, postMetaRepository, shareService,
-            navigationService, authenticationStore, child) {
-          return RefreshIndicator(
-            onRefresh: () async {
-              await store.refresh();
-            },
-            child: StreamBuilder<List<NewsFeedModel>>(
-              stream: store.dataStream,
-              builder: (BuildContext context,
-                  AsyncSnapshot<List<NewsFeedModel>> snapshot) {
-                if (snapshot.hasError) {
-                  return Center(
-                    child: ErrorDataView(
-                      onRetry: () => store.retry(),
-                    ),
-                  );
-                }
-                if (snapshot.hasData) {
-                  if (snapshot.data.isEmpty) {
-                    return Center(
-                      child: EmptyDataView(),
+    return Consumer2<TrendingNewsStore, AuthenticationStore>(
+      builder: (context, store, authenticationStore, child) {
+        return StreamBuilder<List<NewsFeedModel>>(
+          stream: store.dataStream,
+          builder: (BuildContext context,
+              AsyncSnapshot<List<NewsFeedModel>> snapshot) {
+            if (snapshot.hasError) {
+              return Center(
+                child: ErrorDataView(
+                  onRetry: () => store.retry(),
+                ),
+              );
+            }
+            if (snapshot.hasData) {
+              if (snapshot.data.isEmpty) {
+                return Center(
+                  child: EmptyDataView(),
+                );
+              }
+              return RefreshIndicator(
+                onRefresh: () async {
+                  await store.refresh();
+                },
+                child: ListView.builder(
+                  itemCount: snapshot.data.length,
+                  itemBuilder: (_, int index) {
+                    return NewsListView(
+                      feed: snapshot.data[index],
+                      authenticationStore: authenticationStore,
                     );
-                  }
-                  return ListView.builder(
-                    itemCount: snapshot.data.length,
-                    itemBuilder: (_, int index) {
-                      return NewsListView(
-                        feed: snapshot.data[index],
-                        postMetaRepository: postMetaRepository,
-                        shareService: shareService,
-                        navigationService: navigationService,
-                        authenticationStore: authenticationStore,
-                      );
-                    },
-                  );
-                } else {
-                  return Center(child: ProgressView());
-                }
-              },
-            ),
-          );
-        },
-      ),
+                  },
+                ),
+              );
+            } else {
+              return Center(child: ProgressView());
+            }
+          },
+        );
+      },
     );
   }
 
@@ -133,29 +122,13 @@ class _TrendingNewsScreenState extends State<TrendingNewsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
+      appBar: AppBar(
+        title: Text('Trending News'),
+      ),
       body: SafeArea(
-        child: Container(
-          padding: EdgeInsets.symmetric(horizontal: 4, vertical: 8),
-          color: Theme.of(context).backgroundColor,
-          child: Column(
-            mainAxisSize: MainAxisSize.max,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
-              Row(
-                children: <Widget>[
-                  BackButton(
-                    onPressed: () => Navigator.of(context).pop(),
-                  ),
-                  PageHeading(
-                    title: 'Trending News',
-                  ),
-                ],
-              ),
-              Expanded(
-                child: _buildList(),
-              ),
-            ],
-          ),
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: _buildList(),
         ),
       ),
     );

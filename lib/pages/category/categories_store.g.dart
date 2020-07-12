@@ -9,28 +9,6 @@ part of 'categories_store.dart';
 // ignore_for_file: non_constant_identifier_names, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
 
 mixin _$CategoriesStore on _CategoriesStore, Store {
-  final _$loadFeedItemsFutureAtom =
-      Atom(name: '_CategoriesStore.loadFeedItemsFuture');
-
-  @override
-  ObservableMap<NewsCategory, ObservableFuture<dynamic>>
-      get loadFeedItemsFuture {
-    _$loadFeedItemsFutureAtom.context
-        .enforceReadPolicy(_$loadFeedItemsFutureAtom);
-    _$loadFeedItemsFutureAtom.reportObserved();
-    return super.loadFeedItemsFuture;
-  }
-
-  @override
-  set loadFeedItemsFuture(
-      ObservableMap<NewsCategory, ObservableFuture<dynamic>> value) {
-    _$loadFeedItemsFutureAtom.context.conditionallyRunInAction(() {
-      super.loadFeedItemsFuture = value;
-      _$loadFeedItemsFutureAtom.reportChanged();
-    }, _$loadFeedItemsFutureAtom,
-        name: '${_$loadFeedItemsFutureAtom.name}_set');
-  }
-
   final _$errorAtom = Atom(name: '_CategoriesStore.error');
 
   @override
@@ -65,23 +43,6 @@ mixin _$CategoriesStore on _CategoriesStore, Store {
     }, _$apiErrorAtom, name: '${_$apiErrorAtom.name}_set');
   }
 
-  final _$viewAtom = Atom(name: '_CategoriesStore.view');
-
-  @override
-  MenuItem get view {
-    _$viewAtom.context.enforceReadPolicy(_$viewAtom);
-    _$viewAtom.reportObserved();
-    return super.view;
-  }
-
-  @override
-  set view(MenuItem value) {
-    _$viewAtom.context.conditionallyRunInAction(() {
-      super.view = value;
-      _$viewAtom.reportChanged();
-    }, _$viewAtom, name: '${_$viewAtom.name}_set');
-  }
-
   final _$activeCategoryTabAtom =
       Atom(name: '_CategoriesStore.activeCategoryTab');
 
@@ -100,56 +61,55 @@ mixin _$CategoriesStore on _CategoriesStore, Store {
     }, _$activeCategoryTabAtom, name: '${_$activeCategoryTabAtom.name}_set');
   }
 
-  final _$_loadFirstPageFeedsAsyncAction = AsyncAction('_loadFirstPageFeeds');
+  final _$viewAtom = Atom(name: '_CategoriesStore.view');
 
   @override
-  Future<void> _loadFirstPageFeeds(NewsCategory category) {
-    return _$_loadFirstPageFeedsAsyncAction
-        .run(() => super._loadFirstPageFeeds(category));
+  ContentViewType get view {
+    _$viewAtom.context.enforceReadPolicy(_$viewAtom);
+    _$viewAtom.reportObserved();
+    return super.view;
+  }
+
+  @override
+  set view(ContentViewType value) {
+    _$viewAtom.context.conditionallyRunInAction(() {
+      super.view = value;
+      _$viewAtom.reportChanged();
+    }, _$viewAtom, name: '${_$viewAtom.name}_set');
   }
 
   final _$refreshAsyncAction = AsyncAction('refresh');
 
   @override
-  Future<void> refresh(NewsCategory category) {
-    return _$refreshAsyncAction.run(() => super.refresh(category));
+  Future<void> refresh() {
+    return _$refreshAsyncAction.run(() => super.refresh());
   }
 
-  final _$loadMoreDataAsyncAction = AsyncAction('loadMoreData');
+  final _$_loadCategoriesAsyncAction = AsyncAction('_loadCategories');
 
   @override
-  Future<void> loadMoreData(NewsCategory category) {
-    return _$loadMoreDataAsyncAction.run(() => super.loadMoreData(category));
+  Future<void> _loadCategories() {
+    return _$_loadCategoriesAsyncAction.run(() => super._loadCategories());
   }
 
   final _$_CategoriesStoreActionController =
       ActionController(name: '_CategoriesStore');
 
   @override
-  void loadInitialFeeds(NewsCategory category) {
+  void loadData() {
     final _$actionInfo = _$_CategoriesStoreActionController.startAction();
     try {
-      return super.loadInitialFeeds(category);
+      return super.loadData();
     } finally {
       _$_CategoriesStoreActionController.endAction(_$actionInfo);
     }
   }
 
   @override
-  void retry(NewsCategory category) {
+  void retry() {
     final _$actionInfo = _$_CategoriesStoreActionController.startAction();
     try {
-      return super.retry(category);
-    } finally {
-      _$_CategoriesStoreActionController.endAction(_$actionInfo);
-    }
-  }
-
-  @override
-  dynamic setView(MenuItem value) {
-    final _$actionInfo = _$_CategoriesStoreActionController.startAction();
-    try {
-      return super.setView(value);
+      return super.retry();
     } finally {
       _$_CategoriesStoreActionController.endAction(_$actionInfo);
     }
@@ -166,9 +126,19 @@ mixin _$CategoriesStore on _CategoriesStore, Store {
   }
 
   @override
+  dynamic setView(ContentViewType value) {
+    final _$actionInfo = _$_CategoriesStoreActionController.startAction();
+    try {
+      return super.setView(value);
+    } finally {
+      _$_CategoriesStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   String toString() {
     final string =
-        'loadFeedItemsFuture: ${loadFeedItemsFuture.toString()},error: ${error.toString()},apiError: ${apiError.toString()},view: ${view.toString()},activeCategoryTab: ${activeCategoryTab.toString()}';
+        'error: ${error.toString()},apiError: ${apiError.toString()},activeCategoryTab: ${activeCategoryTab.toString()},view: ${view.toString()}';
     return '{$string}';
   }
 }

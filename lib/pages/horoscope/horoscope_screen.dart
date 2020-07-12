@@ -4,7 +4,6 @@ import 'package:provider/provider.dart';
 import 'package:samachar_hub/data/api/api.dart';
 import 'package:samachar_hub/data/models/horoscope_model.dart';
 import 'package:samachar_hub/data/models/horoscope_type.dart';
-import 'package:samachar_hub/pages/home/home_screen_store.dart';
 import 'package:samachar_hub/pages/horoscope/horoscope_store.dart';
 import 'package:samachar_hub/pages/horoscope/horoscope_type_view.dart';
 import 'package:samachar_hub/pages/widgets/api_error_dialog.dart';
@@ -92,81 +91,63 @@ class _HoroscopeScreenState extends State<HoroscopeScreen>
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
+      appBar: AppBar(
+        title: Text('Horoscope'),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.settings),
+            onPressed: () {},
+          ),
+        ],
+      ),
       body: SafeArea(
         child: Consumer<HoroscopeStore>(
           builder: (_, HoroscopeStore store, __) {
-            return Container(
-              padding: EdgeInsets.symmetric(horizontal: 4, vertical: 8),
-              color: Theme.of(context).backgroundColor,
+            return Padding(
+              padding: const EdgeInsets.all(16.0),
               child: Column(
                 mainAxisSize: MainAxisSize.max,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: <Widget>[
-                  Row(
-                    children: <Widget>[
-                      BackButton(
-                        onPressed: () => Navigator.of(context).pop(),
-                      ),
-                      PageHeading(
-                        title: 'Horoscope',
-                      ),
-                      Spacer(),
-                      IconButton(
-                        icon: Icon(Icons.settings),
-                        onPressed: () {
-                          
-                        },
-                      ),
-                    ],
-                  ),
                   TabBar(
                     controller: _tabController,
                     tabs: _tabs,
                     isScrollable: true,
                   ),
                   Expanded(
-                    child: Builder(
-                      builder: (_) {
-                        return StreamBuilder<
-                            Map<HoroscopeType, HoroscopeModel>>(
-                          stream: store.dataStream,
-                          builder: (_,
-                              AsyncSnapshot<Map<HoroscopeType, HoroscopeModel>>
-                                  snapshot) {
-                            if (snapshot.hasError) {
-                              return Center(
-                                child: ErrorDataView(
-                                  onRetry: () => store.retry(),
-                                ),
-                              );
-                            }
-                            if (snapshot.hasData) {
-                              if (snapshot.data.isEmpty) {
-                                return Center(
-                                  child: EmptyDataView(),
-                                );
-                              }
-                              return TabBarView(
-                                controller: _tabController,
-                                children: <Widget>[
-                                  HoroscopeTypeView(
-                                      data: snapshot.data[HoroscopeType.DAILY]),
-                                  HoroscopeTypeView(
-                                      data:
-                                          snapshot.data[HoroscopeType.WEEKLY]),
-                                  HoroscopeTypeView(
-                                      data:
-                                          snapshot.data[HoroscopeType.MONTHLY]),
-                                  HoroscopeTypeView(
-                                      data:
-                                          snapshot.data[HoroscopeType.YEARKY]),
-                                ],
-                              );
-                            } else {
-                              return Center(child: ProgressView());
-                            }
-                          },
-                        );
+                    child: StreamBuilder<Map<HoroscopeType, HoroscopeModel>>(
+                      stream: store.dataStream,
+                      builder: (_,
+                          AsyncSnapshot<Map<HoroscopeType, HoroscopeModel>>
+                              snapshot) {
+                        if (snapshot.hasError) {
+                          return Center(
+                            child: ErrorDataView(
+                              onRetry: () => store.retry(),
+                            ),
+                          );
+                        }
+                        if (snapshot.hasData) {
+                          if (snapshot.data.isEmpty) {
+                            return Center(
+                              child: EmptyDataView(),
+                            );
+                          }
+                          return TabBarView(
+                            controller: _tabController,
+                            children: <Widget>[
+                              HoroscopeTypeView(
+                                  data: snapshot.data[HoroscopeType.DAILY]),
+                              HoroscopeTypeView(
+                                  data: snapshot.data[HoroscopeType.WEEKLY]),
+                              HoroscopeTypeView(
+                                  data: snapshot.data[HoroscopeType.MONTHLY]),
+                              HoroscopeTypeView(
+                                  data: snapshot.data[HoroscopeType.YEARKY]),
+                            ],
+                          );
+                        }
+                        return Center(child: ProgressView());
                       },
                     ),
                   ),

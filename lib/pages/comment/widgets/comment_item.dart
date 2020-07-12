@@ -3,8 +3,8 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:samachar_hub/data/models/models.dart';
 import 'package:samachar_hub/pages/comment/comment_store.dart';
 
-class CommentItem extends StatefulWidget {
-  const CommentItem({
+class CommentListItem extends StatefulWidget {
+  const CommentListItem({
     Key key,
     @required this.context,
     @required this.data,
@@ -16,16 +16,16 @@ class CommentItem extends StatefulWidget {
   final CommentStore store;
 
   @override
-  _CommentItemState createState() => _CommentItemState();
+  _CommentListItemState createState() => _CommentListItemState();
 }
 
-class _CommentItemState extends State<CommentItem> {
+class _CommentListItemState extends State<CommentListItem> {
   final ValueNotifier<bool> _likeNotifier = ValueNotifier<bool>(false);
 
   @override
   void initState() {
     super.initState();
-  }  
+  }
 
   @override
   void dispose() {
@@ -89,7 +89,9 @@ class _CommentItemState extends State<CommentItem> {
                   },
                 ),
                 Text(
-                  widget.data.likesCount==0?'':'${widget.data.likesCount}',
+                  widget.data.likesCount == 0
+                      ? ''
+                      : '${widget.data.likesCount}',
                   style: Theme.of(context).textTheme.overline,
                 ),
               ],
