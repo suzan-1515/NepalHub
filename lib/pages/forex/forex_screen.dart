@@ -43,9 +43,11 @@ class _ForexScreenState extends State<ForexScreen> {
 
   _showMessage(String message) {
     if (null != message)
-      Scaffold.of(context).showSnackBar(
-        SnackBar(content: Text(message)),
-      );
+      Scaffold.of(context)
+        ..hideCurrentSnackBar()
+        ..showSnackBar(
+          SnackBar(content: Text(message)),
+        );
   }
 
   _showErrorDialog(APIException apiError) {
@@ -258,7 +260,11 @@ class _ForexScreenState extends State<ForexScreen> {
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.settings),
-            onPressed: () {},
+            onPressed: () {
+              context
+                  .read<NavigationService>()
+                  .toSettingsScreen(context: context);
+            },
           ),
         ],
       ),

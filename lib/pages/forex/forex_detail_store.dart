@@ -56,9 +56,7 @@ abstract class _ForexDetailStore with Store {
     final fromDate = df.format(DateTime.now().subtract(Duration(days: 30)));
     return _forexRepository
         .getByCountry(
-            currencyCode: _forexModel.code,
-            fromDate: fromDate,
-            toDate: toDate)
+            currencyCode: _forexModel.code, fromDate: fromDate, toDate: toDate)
         .then((value) {
       if (value != null) {
         _data.clear();

@@ -338,7 +338,7 @@ class _NewsDetailScreenState extends State<NewsDetailScreen> {
                           metaStore.postMeta?.likeCount?.toString() ?? '0',
                       isLiked: metaStore.postMeta?.isUserLiked ?? false,
                       onCommentTap: () {
-                        navigationService.onViewCommentsTapped(
+                        navigationService.toCommentsScreen(
                             context: context,
                             title: store.feed.title,
                             postId: store.feed.uuid);

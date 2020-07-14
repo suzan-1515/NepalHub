@@ -4,6 +4,8 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:nepali_utils/nepali_utils.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:samachar_hub/notifier/forex_setting_notifier.dart';
+import 'package:samachar_hub/notifier/horoscope_setting_notifier.dart';
 import 'package:samachar_hub/notifier/news_setting_notifier.dart';
 import 'package:samachar_hub/pages/authentication/login/login_screen.dart';
 import 'package:samachar_hub/pages/category/categories_store.dart';
@@ -15,6 +17,7 @@ import 'package:samachar_hub/pages/forex/forex_repository.dart';
 import 'package:samachar_hub/pages/home/home_screen_store.dart';
 import 'package:samachar_hub/pages/horoscope/horoscope_api_service.dart';
 import 'package:samachar_hub/pages/horoscope/horoscope_repository.dart';
+import 'package:samachar_hub/pages/more_menu/more_menu_store.dart';
 import 'package:samachar_hub/pages/news/news_api_service.dart';
 import 'package:samachar_hub/pages/news/news_repository.dart';
 import 'package:samachar_hub/pages/personalised/personalised_store.dart';
@@ -79,6 +82,12 @@ class App extends StatelessWidget {
         ChangeNotifierProvider(
           create: (_) => NewsSettingNotifier(),
         ),
+        ChangeNotifierProvider(
+          create: (_) => ForexSettingNotifier(),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => HoroscopeSettingNotifier(),
+        ),
 
         //repository
         ProxyProvider<AnalyticsService, AuthenticationRepository>(
@@ -107,13 +116,7 @@ class App extends StatelessWidget {
           update: (_, analyticsService, __) =>
               HoroscopeRepository(HoroscopeApiService(), analyticsService),
         ),
-        ProxyProvider3<AnalyticsService, PreferenceService, PostMetaRepository,
-            BookmarkRepository>(
-          update: (_, _analyticsService, _preferenceService,
-                  _postMetaRepository, __) =>
-              BookmarkRepository(BookmarkFirestoreService(),
-                  _postMetaRepository, _analyticsService, _preferenceService),
-        ),
+
         ProxyProvider2<AnalyticsService, PreferenceService,
             FollowingRepository>(
           update: (_, _analyticsService, _preferenceService, __) =>
@@ -141,10 +144,6 @@ class App extends StatelessWidget {
           update: (_, _newsRepository, __) => CategoriesStore(_newsRepository),
           dispose: (context, categoriesStore) => categoriesStore.dispose(),
         ),
-        ProxyProvider2<BookmarkRepository, AuthenticationStore, BookmarkStore>(
-          update: (_, _bookmarkRepository, _authenticationStore, __) =>
-              BookmarkStore(_bookmarkRepository, _authenticationStore.user),
-        ),
 
         ProxyProvider2<FollowingRepository, NewsRepository, FollowingStore>(
           update: (_, _favouritesRepository, _newsRepository, __) =>
@@ -158,6 +157,10 @@ class App extends StatelessWidget {
         ProxyProvider<PreferenceService, SettingsStore>(
           update: (_, preferenceService, __) =>
               SettingsStore(preferenceService),
+        ),
+        ProxyProvider<PreferenceService, MoreMenuStore>(
+          update: (_, preferenceService, __) =>
+              MoreMenuStore(preferenceService),
         ),
       ],
       child: Consumer2<SettingsStore, AnalyticsService>(

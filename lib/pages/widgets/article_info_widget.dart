@@ -162,7 +162,7 @@ class FeedOptionsSection extends StatelessWidget {
               size: 16,
             ),
             onPressed: () {
-              context.read<NavigationService>().onViewCommentsTapped(
+              context.read<NavigationService>().toCommentsScreen(
                   context: context, title: article.title, postId: article.uuid);
             },
           ),

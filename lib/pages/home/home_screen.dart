@@ -5,6 +5,7 @@ import 'package:mobx/mobx.dart';
 import 'package:provider/provider.dart';
 import 'package:samachar_hub/pages/following/following_screen.dart';
 import 'package:samachar_hub/pages/home/home_screen_store.dart';
+import 'package:samachar_hub/pages/more_menu/more_menu_screen.dart';
 import 'package:samachar_hub/pages/pages.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -48,8 +49,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   PersonalisedPage(),
                   CategoriesPage(),
                   FollowingPage(),
-                  // BookmarkPage(),
-                  SettingsPage(),
+                  // SettingsPage(),
+                  MoreMenuScreen(),
                 ],
                 physics: NeverScrollableScrollPhysics(),
               ),
@@ -63,7 +64,7 @@ class _HomeScreenState extends State<HomeScreen> {
               backgroundColor: Theme.of(context).backgroundColor,
               items: const <BottomNavigationBarItem>[
                 BottomNavigationBarItem(
-                  icon: Icon(FontAwesomeIcons.user),
+                  icon: Icon(FontAwesomeIcons.home),
                   title: Text('For You'),
                 ),
                 BottomNavigationBarItem(
@@ -75,8 +76,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   title: Text('Following'),
                 ),
                 BottomNavigationBarItem(
-                  icon: Icon(FontAwesomeIcons.cog),
-                  title: Text('Settings'),
+                  icon: Icon(FontAwesomeIcons.userAlt),
+                  title: Text('Me'),
                 ),
               ],
               type: BottomNavigationBarType.fixed,

@@ -12,7 +12,3 @@ class NewsSettingNotifier extends ChangeNotifier {
 }
 
 enum NewsSetting { SOURCE, CATEGORY }
-
-// class FollowedNewsCategoryNotifier extends NewsSettingNotifier {}
-
-// class FollowedNewsSourceNotifier extends ChangeNotifier {}

@@ -4,7 +4,6 @@ import 'package:mobx/mobx.dart';
 import 'package:samachar_hub/data/api/api.dart';
 import 'package:samachar_hub/data/models/models.dart';
 import 'package:samachar_hub/pages/news/news_repository.dart';
-import 'package:samachar_hub/util/content_view_type.dart';
 
 part 'category_store.g.dart';
 

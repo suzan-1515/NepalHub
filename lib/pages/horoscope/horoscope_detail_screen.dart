@@ -168,7 +168,7 @@ class _HoroscopeDetailScreenState extends State<HoroscopeDetailScreen> {
                           metaStore.postMeta?.likeCount?.toString() ?? '0',
                       isLiked: metaStore.postMeta?.isUserLiked ?? false,
                       onCommentTap: () {
-                        context.read<NavigationService>().onViewCommentsTapped(
+                        context.read<NavigationService>().toCommentsScreen(
                             context: context,
                             title: 'Horoscope',
                             postId: 'horoscope');

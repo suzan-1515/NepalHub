@@ -11,6 +11,7 @@ import 'package:samachar_hub/pages/widgets/empty_data_widget.dart';
 import 'package:samachar_hub/pages/widgets/error_data_widget.dart';
 import 'package:samachar_hub/pages/widgets/page_heading_widget.dart';
 import 'package:samachar_hub/pages/widgets/progress_widget.dart';
+import 'package:samachar_hub/services/services.dart';
 
 class HoroscopeScreen extends StatefulWidget {
   @override
@@ -96,7 +97,11 @@ class _HoroscopeScreenState extends State<HoroscopeScreen>
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.settings),
-            onPressed: () {},
+            onPressed: () {
+              context
+                  .read<NavigationService>()
+                  .toSettingsScreen(context: context);
+            },
           ),
         ],
       ),

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:mobx/mobx.dart';
 import 'package:provider/provider.dart';
 import 'package:samachar_hub/data/api/api.dart';
@@ -9,12 +8,10 @@ import 'package:samachar_hub/pages/forex/forex_detail_store.dart';
 import 'package:samachar_hub/pages/widgets/api_error_dialog.dart';
 import 'package:samachar_hub/pages/widgets/empty_data_widget.dart';
 import 'package:samachar_hub/pages/widgets/error_data_widget.dart';
-import 'package:samachar_hub/pages/widgets/page_heading_widget.dart';
 import 'package:samachar_hub/pages/widgets/progress_widget.dart';
 import 'package:samachar_hub/services/services.dart';
 import 'package:samachar_hub/stores/stores.dart';
 import 'package:samachar_hub/widgets/comment_bar_widget.dart';
-import 'package:share/share.dart';
 
 import 'widgets/forex_graph.dart';
 
@@ -125,15 +122,11 @@ class _ForexDetailScreenState extends State<ForexDetailScreen> {
             title: Text(store.forex.currency),
             actions: <Widget>[
               IconButton(
-                icon: Icon(FontAwesomeIcons.shareAlt),
+                icon: Icon(Icons.settings),
                 onPressed: () {
-                  if (store.forex != null)
-                    context.read<ShareService>().share(
-                        postId: store.forex.code,
-                        title: store.forex.currency,
-                        data:
-                            'Currency:${store.forex.currency}\nBuy: ${store.forex.buying}\nSell: ${store.forex.selling}\nLast updated: ${store.forex.addedDate}');
-                  metaStore.postShare();
+                  context
+                      .read<NavigationService>()
+                      .toSettingsScreen(context: context);
                 },
               ),
             ],
@@ -163,7 +156,7 @@ class _ForexDetailScreenState extends State<ForexDetailScreen> {
                           metaStore.postMeta?.likeCount?.toString() ?? '0',
                       isLiked: metaStore.postMeta?.isUserLiked ?? false,
                       onCommentTap: () {
-                        context.read<NavigationService>().onViewCommentsTapped(
+                        context.read<NavigationService>().toCommentsScreen(
                             context: context, title: 'Forex', postId: 'forex');
                       },
                       onLikeTap: (value) {

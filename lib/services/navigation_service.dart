@@ -4,7 +4,10 @@ import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:samachar_hub/data/models/models.dart';
 import 'package:samachar_hub/pages/authentication/login/login_screen.dart';
+import 'package:samachar_hub/pages/bookmark/bookmark_firestore_service.dart';
+import 'package:samachar_hub/pages/bookmark/bookmark_page.dart';
 import 'package:samachar_hub/pages/bookmark/bookmark_repository.dart';
+import 'package:samachar_hub/pages/bookmark/bookmark_store.dart';
 import 'package:samachar_hub/pages/category/categories_store.dart';
 import 'package:samachar_hub/pages/comment/comment_firestore_service.dart';
 import 'package:samachar_hub/pages/comment/comment_repository.dart';
@@ -65,17 +68,6 @@ class NavigationService {
   }
 
   toCoronaScreen(BuildContext context) {
-    // Navigator.push(
-    //   context,
-    //   MaterialPageRoute(
-    //     builder: (context) => ProxyProvider<CoronaRepository, CoronaStore>(
-    //       update: (_, CoronaRepository value, CoronaStore previous) =>
-    //           CoronaStore(value),
-    //       dispose: (context, value) => value.dispose(),
-    //       child: CoronaScreen(),
-    //     ),
-    //   ),
-    // );
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -300,7 +292,7 @@ class NavigationService {
     print('Tag selected: $source.name');
   }
 
-  onViewCommentsTapped(
+  toCommentsScreen(
       {@required BuildContext context,
       @required String title,
       @required String postId}) {
@@ -356,6 +348,32 @@ class NavigationService {
       context,
       MaterialPageRoute(
         builder: (context) => LoginScreen(),
+      ),
+    );
+  }
+
+  Future toSettingsScreen({@required BuildContext context}) {}
+
+  Future toUserProfileScreen({@required BuildContext context}) {}
+
+  Future toBookmarkedNewsScreen({@required BuildContext context}) {
+    return Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => MultiProvider(providers: [
+          ProxyProvider3<AnalyticsService, PreferenceService,
+              PostMetaRepository, BookmarkRepository>(
+            update: (_, _analyticsService, _preferenceService,
+                    _postMetaRepository, __) =>
+                BookmarkRepository(BookmarkFirestoreService(),
+                    _postMetaRepository, _analyticsService, _preferenceService),
+          ),
+          ProxyProvider2<BookmarkRepository, AuthenticationStore,
+              BookmarkStore>(
+            update: (_, _bookmarkRepository, _authenticationStore, __) =>
+                BookmarkStore(_bookmarkRepository, _authenticationStore.user),
+          ),
+        ], child: BookmarkScreen()),
       ),
     );
   }
