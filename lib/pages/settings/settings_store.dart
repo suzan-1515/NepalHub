@@ -23,6 +23,15 @@ abstract class _SettingsStore with Store {
   @observable
   bool reloadApp;
 
+  @observable
+  bool showDailyMorningNews;
+
+  @observable
+  String defaultForexCurrency;
+
+  @observable
+  int defaultHoroscopeSign;
+
   // Todo: Probably use a common store
   @observable
   String message;
@@ -32,6 +41,9 @@ abstract class _SettingsStore with Store {
     usePitchBlack = _preferenceService.usePitchBlack;
     themeSetBySystem = _preferenceService.themeSetBySystem;
     openInApp = _preferenceService.openInApp;
+    showDailyMorningNews = _preferenceService.showDailyMorningNews;
+    defaultForexCurrency = _preferenceService.defaultForexCurrency;
+    defaultHoroscopeSign = _preferenceService.defaultZodiac;
   }
 
   @action
@@ -61,5 +73,23 @@ abstract class _SettingsStore with Store {
   @action
   setReloadApp() {
     reloadApp = true;
+  }
+
+  @action
+  setShowDailyMorningNews(bool value) {
+    _preferenceService.showDailyMorningNews = value;
+    showDailyMorningNews = value;
+  }
+
+  @action
+  setdefaultForexCurrency(String value) {
+    _preferenceService.defaultForexCurrency = value;
+    defaultForexCurrency = value;
+  }
+
+  @action
+  setdefaultHoroscopeSign(int value) {
+    _preferenceService.defaultZodiac = value;
+    defaultHoroscopeSign = value;
   }
 }

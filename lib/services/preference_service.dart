@@ -5,6 +5,8 @@ class PreferenceService {
   final String _pitchBlackKey = 'pitchBlack';
   final String _themeSetBySystemKey = 'themeSetBySystem';
   final String _openInAppKey = 'openInApp';
+  final String _showDailyMorningNewsKey = 'showDailyMorningNews';
+
   final String _bookmarkedFeedsKey = 'bookmarked_feeds';
   final String _likedFeedsKey = 'liked_feeds';
   final String _userId = 'userId';
@@ -37,6 +39,10 @@ class PreferenceService {
 
   set openInApp(bool openInApp) {
     _sharedPreferences.setBool(_openInAppKey, openInApp);
+  }
+
+  set showDailyMorningNews(bool value) {
+    _sharedPreferences.setBool(_showDailyMorningNewsKey, value);
   }
 
   set bookmarkedFeeds(List<String> favourites) {
@@ -81,6 +87,8 @@ class PreferenceService {
   bool get usePitchBlack => _sharedPreferences.getBool(_pitchBlackKey) ?? false;
 
   bool get openInApp => _sharedPreferences.getBool(_openInAppKey) ?? true;
+  bool get showDailyMorningNews =>
+      _sharedPreferences.getBool(_showDailyMorningNewsKey) ?? false;
 
   List<String> get bookmarkedFeeds =>
       _sharedPreferences.getStringList(_bookmarkedFeedsKey) ?? List<String>();

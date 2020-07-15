@@ -94,6 +94,66 @@ mixin _$SettingsStore on _SettingsStore, Store {
     }, _$reloadAppAtom, name: '${_$reloadAppAtom.name}_set');
   }
 
+  final _$showDailyMorningNewsAtom =
+      Atom(name: '_SettingsStore.showDailyMorningNews');
+
+  @override
+  bool get showDailyMorningNews {
+    _$showDailyMorningNewsAtom.context
+        .enforceReadPolicy(_$showDailyMorningNewsAtom);
+    _$showDailyMorningNewsAtom.reportObserved();
+    return super.showDailyMorningNews;
+  }
+
+  @override
+  set showDailyMorningNews(bool value) {
+    _$showDailyMorningNewsAtom.context.conditionallyRunInAction(() {
+      super.showDailyMorningNews = value;
+      _$showDailyMorningNewsAtom.reportChanged();
+    }, _$showDailyMorningNewsAtom,
+        name: '${_$showDailyMorningNewsAtom.name}_set');
+  }
+
+  final _$defaultForexCurrencyAtom =
+      Atom(name: '_SettingsStore.defaultForexCurrency');
+
+  @override
+  String get defaultForexCurrency {
+    _$defaultForexCurrencyAtom.context
+        .enforceReadPolicy(_$defaultForexCurrencyAtom);
+    _$defaultForexCurrencyAtom.reportObserved();
+    return super.defaultForexCurrency;
+  }
+
+  @override
+  set defaultForexCurrency(String value) {
+    _$defaultForexCurrencyAtom.context.conditionallyRunInAction(() {
+      super.defaultForexCurrency = value;
+      _$defaultForexCurrencyAtom.reportChanged();
+    }, _$defaultForexCurrencyAtom,
+        name: '${_$defaultForexCurrencyAtom.name}_set');
+  }
+
+  final _$defaultHoroscopeSignAtom =
+      Atom(name: '_SettingsStore.defaultHoroscopeSign');
+
+  @override
+  int get defaultHoroscopeSign {
+    _$defaultHoroscopeSignAtom.context
+        .enforceReadPolicy(_$defaultHoroscopeSignAtom);
+    _$defaultHoroscopeSignAtom.reportObserved();
+    return super.defaultHoroscopeSign;
+  }
+
+  @override
+  set defaultHoroscopeSign(int value) {
+    _$defaultHoroscopeSignAtom.context.conditionallyRunInAction(() {
+      super.defaultHoroscopeSign = value;
+      _$defaultHoroscopeSignAtom.reportChanged();
+    }, _$defaultHoroscopeSignAtom,
+        name: '${_$defaultHoroscopeSignAtom.name}_set');
+  }
+
   final _$messageAtom = Atom(name: '_SettingsStore.message');
 
   @override
@@ -165,9 +225,39 @@ mixin _$SettingsStore on _SettingsStore, Store {
   }
 
   @override
+  dynamic setShowDailyMorningNews(bool value) {
+    final _$actionInfo = _$_SettingsStoreActionController.startAction();
+    try {
+      return super.setShowDailyMorningNews(value);
+    } finally {
+      _$_SettingsStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  dynamic setdefaultForexCurrency(String value) {
+    final _$actionInfo = _$_SettingsStoreActionController.startAction();
+    try {
+      return super.setdefaultForexCurrency(value);
+    } finally {
+      _$_SettingsStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  dynamic setdefaultHoroscopeSign(int value) {
+    final _$actionInfo = _$_SettingsStoreActionController.startAction();
+    try {
+      return super.setdefaultHoroscopeSign(value);
+    } finally {
+      _$_SettingsStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   String toString() {
     final string =
-        'useDarkMode: ${useDarkMode.toString()},usePitchBlack: ${usePitchBlack.toString()},themeSetBySystem: ${themeSetBySystem.toString()},openInApp: ${openInApp.toString()},reloadApp: ${reloadApp.toString()},message: ${message.toString()}';
+        'useDarkMode: ${useDarkMode.toString()},usePitchBlack: ${usePitchBlack.toString()},themeSetBySystem: ${themeSetBySystem.toString()},openInApp: ${openInApp.toString()},reloadApp: ${reloadApp.toString()},showDailyMorningNews: ${showDailyMorningNews.toString()},defaultForexCurrency: ${defaultForexCurrency.toString()},defaultHoroscopeSign: ${defaultHoroscopeSign.toString()},message: ${message.toString()}';
     return '{$string}';
   }
 }

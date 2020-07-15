@@ -19,10 +19,7 @@ class MoreMenuListItem extends StatelessWidget {
       leading: Opacity(opacity: 0.7, child: Icon(icon)),
       title: Text(
         title,
-        style: Theme.of(context)
-            .textTheme
-            .subtitle1
-            .copyWith(fontSize: 18, fontWeight: FontWeight.w500),
+        style: Theme.of(context).textTheme.subtitle2,
       ),
     );
   }

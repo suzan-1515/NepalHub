@@ -113,7 +113,7 @@ class _MoreMenuScreenState extends State<MoreMenuScreen> {
       title: 'Settings',
       icon: FontAwesomeIcons.poll,
       onTap: () {
-        context.read<MoreMenuStore>().message = 'This feature is comming soon!';
+        context.read<NavigationService>().toSettingsScreen(context: context);
       },
     );
   }

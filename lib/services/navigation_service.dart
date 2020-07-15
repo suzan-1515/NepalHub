@@ -36,6 +36,8 @@ import 'package:samachar_hub/pages/news/topics/news_topic_screen.dart';
 import 'package:samachar_hub/pages/news/topics/news_topic_store.dart';
 import 'package:samachar_hub/pages/news/trending/trending_news_screen.dart';
 import 'package:samachar_hub/pages/news/trending/trending_news_store.dart';
+import 'package:samachar_hub/pages/settings/settings_page.dart';
+import 'package:samachar_hub/pages/settings/settings_store.dart';
 import 'package:samachar_hub/repository/following_repository.dart';
 import 'package:samachar_hub/repository/post_meta_repository.dart';
 import 'package:samachar_hub/services/services.dart';
@@ -352,7 +354,14 @@ class NavigationService {
     );
   }
 
-  Future toSettingsScreen({@required BuildContext context}) {}
+  Future toSettingsScreen({@required BuildContext context}) {
+    return Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => SettingsPage(),
+      ),
+    );
+  }
 
   Future toUserProfileScreen({@required BuildContext context}) {}
 

@@ -6,15 +6,16 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:mobx/mobx.dart';
 import 'package:provider/provider.dart';
 import 'package:samachar_hub/pages/settings/settings_store.dart';
-import 'package:samachar_hub/pages/widgets/page_heading_widget.dart';
+import 'package:samachar_hub/pages/settings/widgets/section_heading.dart';
+import 'package:samachar_hub/util/forex_currency.dart';
+import 'package:samachar_hub/util/horoscope_signs.dart';
 
 class SettingsPage extends StatefulWidget {
   @override
   _SettingsPageState createState() => _SettingsPageState();
 }
 
-class _SettingsPageState extends State<SettingsPage>
-    with AutomaticKeepAliveClientMixin {
+class _SettingsPageState extends State<SettingsPage> {
   // Reaction disposers
   List<ReactionDisposer> _disposers;
 
@@ -46,204 +47,332 @@ class _SettingsPageState extends State<SettingsPage>
 
   _showMessage(String message) {
     if (message != null)
-      Scaffold.of(context).showSnackBar(
-        SnackBar(content: Text(message)),
-      );
+      Scaffold.of(context)
+        ..hideCurrentSnackBar()
+        ..showSnackBar(
+          SnackBar(content: Text(message)),
+        );
   }
 
-  @override
-  Widget build(BuildContext context) {
-    super.build(context);
-    return Container(
-      color: Theme.of(context).backgroundColor,
-      padding: EdgeInsets.symmetric(horizontal: 24),
+  Widget _buildGeneralSettings(
+      BuildContext context, SettingsStore settingsStore) {
+    return Padding(
+      padding: const EdgeInsets.only(left: 4, top: 4),
       child: Column(
-        mainAxisSize: MainAxisSize.max,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          PageHeading(title: 'Settings'),
-          Expanded(
-            child: Consumer<SettingsStore>(
-              builder: (BuildContext context, SettingsStore settingsStore,
-                  Widget child) {
-                return SingleChildScrollView(
-                  child: Column(
+          SizedBox(height: 8),
+          ListTile(
+            dense: true,
+            onTap: () {
+              context.read<SettingsStore>().message = 'Comming soon!';
+            },
+            title: Text(
+              'Default news read mode',
+              style: Theme.of(context).textTheme.bodyText1,
+            ),
+            subtitle: Text(
+              'Switches between summark view or detail view when opening a particular news.',
+              softWrap: true,
+              style: Theme.of(context).textTheme.caption,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildNewsSettings(BuildContext context, SettingsStore settingsStore) {
+    return Observer(
+      builder: (_) => Padding(
+        padding: const EdgeInsets.only(left: 16.0, top: 16.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: <Widget>[
+            Text(
+              'Show daily news at 7 am',
+              style: Theme.of(context).textTheme.bodyText1,
+            ),
+            Switch(
+              value: settingsStore.showDailyMorningNews,
+              onChanged: settingsStore.setShowDailyMorningNews,
+              activeColor: Theme.of(context).accentColor,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildForexSettings(
+      BuildContext context, SettingsStore settingsStore) {
+    return Observer(
+      builder: (_) => Padding(
+        padding: const EdgeInsets.only(left: 16.0, top: 16.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: <Widget>[
+            Text(
+              'Default Currency',
+              style: Theme.of(context).textTheme.bodyText1,
+            ),
+            DropdownButton<String>(
+              value: settingsStore.defaultForexCurrency,
+              onChanged: settingsStore.setdefaultForexCurrency,
+              items: forexCurrencies.entries
+                  .map(
+                    (entry) => DropdownMenuItem<String>(
+                      value: entry.key,
+                      child: Text(entry.value),
+                    ),
+                  )
+                  .toList(),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildHoroscopeSettings(
+      BuildContext context, SettingsStore settingsStore) {
+    return Observer(
+      builder: (_) => Padding(
+        padding: const EdgeInsets.only(left: 16.0, top: 16.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: <Widget>[
+            Text(
+              'Default Horoscope',
+              style: Theme.of(context).textTheme.bodyText1,
+            ),
+            DropdownButton<int>(
+                value: settingsStore.defaultHoroscopeSign,
+                onChanged: settingsStore.setdefaultHoroscopeSign,
+                items: horoscopeSigns
+                    .map(
+                      (e) => DropdownMenuItem<int>(
+                        value: horoscopeSigns.indexOf(e),
+                        child: Text(e),
+                      ),
+                    )
+                    .toList()),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildAppThemeSettings(
+      SettingsStore settingsStore, BuildContext context) {
+    return Observer(
+      builder: (_) => Padding(
+        padding: const EdgeInsets.only(left: 16, top: 16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            AbsorbPointer(
+              absorbing: settingsStore.themeSetBySystem,
+              child: Opacity(
+                opacity: settingsStore.themeSetBySystem ? 0.45 : 1.0,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Text(
+                      'Use dark theme',
+                      style: Theme.of(context).textTheme.bodyText1,
+                    ),
+                    Switch(
+                      value: settingsStore.useDarkMode,
+                      onChanged: settingsStore.setDarkMode,
+                      activeColor: Theme.of(context).accentColor,
+                    )
+                  ],
+                ),
+              ),
+            ),
+            IgnorePointer(
+              ignoring: !settingsStore.useDarkMode,
+              child: Opacity(
+                opacity: !settingsStore.useDarkMode ? 0.45 : 1.0,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
-                      Column(
-                        mainAxisSize: MainAxisSize.max,
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: <Widget>[
-                          Container(
-                            decoration: BoxDecoration(
-                              border: Border(
-                                  bottom: BorderSide(
-                                      color: Theme.of(context).dividerColor)),
-                            ),
-                            padding: EdgeInsets.only(bottom: 16),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: <Widget>[
-                                Icon(
-                                  FontAwesomeIcons.paintRoller,
-                                  color: Theme.of(context).accentColor,
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.only(left: 8),
-                                  child: Text(
-                                    'Customization',
-                                    style:
-                                        Theme.of(context).textTheme.subtitle1,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          Observer(
-                            builder: (_) => Padding(
-                              padding: const EdgeInsets.only(left: 16, top: 16),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: <Widget>[
-                                  AbsorbPointer(
-                                    absorbing: settingsStore.themeSetBySystem,
-                                    child: Opacity(
-                                      opacity: settingsStore.themeSetBySystem
-                                          ? 0.45
-                                          : 1.0,
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: <Widget>[
-                                          Text(
-                                            'Use dark theme',
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .bodyText1,
-                                          ),
-                                          Switch(
-                                            value: settingsStore.useDarkMode,
-                                            onChanged:
-                                                settingsStore.setDarkMode,
-                                            activeColor:
-                                                Theme.of(context).accentColor,
-                                          )
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding:
-                                        const EdgeInsets.symmetric(vertical: 8),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: <Widget>[
-                                        Expanded(
-                                          child: Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.start,
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.stretch,
-                                            children: <Widget>[
-                                              Padding(
-                                                padding: const EdgeInsets.only(
-                                                    bottom: 4),
-                                                child: Text(
-                                                  'Use pitch black theme',
-                                                  style: Theme.of(context)
-                                                      .textTheme
-                                                      .bodyText1,
-                                                ),
-                                              ),
-                                              Text(
-                                                'Only applies when dark mode is on',
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .caption,
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                        Checkbox(
-                                          value: settingsStore.usePitchBlack,
-                                          onChanged:
-                                              settingsStore.setPitchBlack,
-                                          activeColor:
-                                              Theme.of(context).accentColor,
-                                        )
-                                      ],
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding:
-                                        const EdgeInsets.symmetric(vertical: 8),
-                                    child: AbsorbPointer(
-                                      absorbing: settingsStore.useDarkMode,
-                                      child: Opacity(
-                                        opacity: settingsStore.useDarkMode
-                                            ? 0.45
-                                            : 1.0,
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: <Widget>[
-                                            Expanded(
-                                              child: Column(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.start,
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.stretch,
-                                                children: <Widget>[
-                                                  Padding(
-                                                    padding:
-                                                        const EdgeInsets.only(
-                                                            bottom: 4),
-                                                    child: Text(
-                                                      'Theme set by system',
-                                                      style: Theme.of(context)
-                                                          .textTheme
-                                                          .bodyText1,
-                                                    ),
-                                                  ),
-                                                  Text(
-                                                    'Requires minimum OS version ${Platform.isAndroid ? 'Android 10' : 'IOS 13'}',
-                                                    style: Theme.of(context)
-                                                        .textTheme
-                                                        .caption,
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                            Checkbox(
-                                              value: settingsStore
-                                                  .themeSetBySystem,
-                                              onChanged:
-                                                  settingsStore.setSystemTheme,
-                                              activeColor:
-                                                  Theme.of(context).accentColor,
-                                            )
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  )
-                                ],
+                      Expanded(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: <Widget>[
+                            Padding(
+                              padding: const EdgeInsets.only(bottom: 4),
+                              child: Text(
+                                'Use pitch black theme',
+                                style: Theme.of(context).textTheme.bodyText1,
                               ),
                             ),
-                          ),
-                        ],
+                            Text(
+                              'Only applies when dark mode is on',
+                              style: Theme.of(context).textTheme.caption,
+                            ),
+                          ],
+                        ),
                       ),
+                      Checkbox(
+                        value: settingsStore.usePitchBlack,
+                        onChanged: settingsStore.setPitchBlack,
+                        activeColor: Theme.of(context).accentColor,
+                      )
                     ],
                   ),
-                );
-              },
+                ),
+              ),
             ),
-          )
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8),
+              child: AbsorbPointer(
+                absorbing: settingsStore.useDarkMode,
+                child: Opacity(
+                  opacity: settingsStore.useDarkMode ? 0.45 : 1.0,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Expanded(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: <Widget>[
+                            Padding(
+                              padding: const EdgeInsets.only(bottom: 4),
+                              child: Text(
+                                'Theme set by system',
+                                style: Theme.of(context).textTheme.bodyText1,
+                              ),
+                            ),
+                            Text(
+                              'Requires minimum OS version ${Platform.isAndroid ? 'Android 10' : 'IOS 13'}',
+                              style: Theme.of(context).textTheme.caption,
+                            ),
+                          ],
+                        ),
+                      ),
+                      Checkbox(
+                        value: settingsStore.themeSetBySystem,
+                        onChanged: settingsStore.setSystemTheme,
+                        activeColor: Theme.of(context).accentColor,
+                      )
+                    ],
+                  ),
+                ),
+              ),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildAboutSettings(
+      BuildContext context, SettingsStore settingsStore) {
+    return Padding(
+      padding: const EdgeInsets.only(left: 4, top: 4),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          SizedBox(height: 8),
+          ListTile(
+            dense: true,
+            onTap: () {
+              context.read<SettingsStore>().message = 'Comming soon!';
+            },
+            title: Text(
+              'Privacy Policy',
+              style: Theme.of(context).textTheme.bodyText1,
+            ),
+          ),
+          ListTile(
+            dense: true,
+            onTap: () {
+              context.read<SettingsStore>().message = 'Comming soon!';
+            },
+            title: Text(
+              'Rate us',
+              style: Theme.of(context).textTheme.bodyText1,
+            ),
+          ),
+          ListTile(
+            dense: true,
+            onTap: () {
+              context.read<SettingsStore>().message = 'Comming soon!';
+            },
+            title: Text(
+              'About',
+              style: Theme.of(context).textTheme.bodyText1,
+            ),
+          ),
         ],
       ),
     );
   }
 
   @override
-  bool get wantKeepAlive => true;
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Theme.of(context).backgroundColor,
+      appBar: AppBar(
+        title: Text('Settings'),
+      ),
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Consumer<SettingsStore>(
+            builder: (_, SettingsStore settingsStore, Widget child) {
+              return ListView(
+                physics: BouncingScrollPhysics(),
+                children: <Widget>[
+                  SectionHeading(
+                    title: 'General',
+                    icon: FontAwesomeIcons.sitemap,
+                  ),
+                  _buildGeneralSettings(context, settingsStore),
+                  SizedBox(height: 16),
+                  SectionHeading(
+                    title: 'News',
+                    icon: FontAwesomeIcons.newspaper,
+                  ),
+                  _buildNewsSettings(context, settingsStore),
+                  SizedBox(height: 16),
+                  SectionHeading(
+                    title: 'Forex',
+                    icon: FontAwesomeIcons.chartLine,
+                  ),
+                  _buildForexSettings(context, settingsStore),
+                  SizedBox(height: 16),
+                  SectionHeading(
+                    title: 'Horoscope',
+                    icon: FontAwesomeIcons.starOfDavid,
+                  ),
+                  _buildHoroscopeSettings(context, settingsStore),
+                  SizedBox(height: 16),
+                  SectionHeading(
+                    title: 'App Theme',
+                    icon: FontAwesomeIcons.adjust,
+                  ),
+                  _buildAppThemeSettings(settingsStore, context),
+                  SizedBox(height: 16),
+                  SectionHeading(
+                    title: 'About',
+                    icon: FontAwesomeIcons.infoCircle,
+                  ),
+                  _buildAboutSettings(context, settingsStore),
+                  SizedBox(height: 16),
+                ],
+              );
+            },
+          ),
+        ),
+      ),
+    );
+  }
 }
