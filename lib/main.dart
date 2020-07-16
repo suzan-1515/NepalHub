@@ -123,6 +123,13 @@ class App extends StatelessWidget {
               FollowingRepository(FollowingFirestoreService(),
                   _analyticsService, _preferenceService),
         ),
+        ProxyProvider3<AnalyticsService, PreferenceService, PostMetaRepository,
+            BookmarkRepository>(
+          update: (_, _analyticsService, _preferenceService,
+                  _postMetaRepository, __) =>
+              BookmarkRepository(BookmarkFirestoreService(),
+                  _postMetaRepository, _analyticsService, _preferenceService),
+        ),
 
         //store
         ProxyProvider<AuthenticationRepository, AuthenticationStore>(

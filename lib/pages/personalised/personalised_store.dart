@@ -88,7 +88,8 @@ abstract class _PersonalisedFeedStore with Store {
     return _newsRepository
         .getSources()
         .then((onValue) {
-          sectionData[MixedDataType.NEWS_SOURCE] = onValue;
+          sectionData[MixedDataType.NEWS_SOURCE] =
+              onValue?.where((element) => element.isFollowed)?.toList();
         })
         .catchError((onError) {}, test: (e) => e is APIException)
         .catchError((onError) {});
@@ -98,7 +99,8 @@ abstract class _PersonalisedFeedStore with Store {
     return _newsRepository
         .getCategories()
         .then((onValue) {
-          sectionData[MixedDataType.NEWS_CATEGORY] = onValue;
+          sectionData[MixedDataType.NEWS_CATEGORY] =
+              onValue?.where((element) => element.isFollowed)?.toList();
         })
         .catchError((onError) {}, test: (e) => e is APIException)
         .catchError((onError) {});

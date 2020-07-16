@@ -30,7 +30,8 @@ class PersonalisedPage extends StatefulWidget {
   _PersonalisedPageState createState() => _PersonalisedPageState();
 }
 
-class _PersonalisedPageState extends State<PersonalisedPage> {
+class _PersonalisedPageState extends State<PersonalisedPage>
+    with AutomaticKeepAliveClientMixin {
 // Reaction disposers
   List<ReactionDisposer> _disposers;
 
@@ -247,6 +248,7 @@ class _PersonalisedPageState extends State<PersonalisedPage> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Container(
       color: Theme.of(context).backgroundColor,
       padding: EdgeInsets.symmetric(horizontal: 8),
@@ -264,6 +266,9 @@ class _PersonalisedPageState extends State<PersonalisedPage> {
       ),
     );
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }
 
 enum MixedDataType {

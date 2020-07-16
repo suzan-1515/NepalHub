@@ -369,20 +369,12 @@ class NavigationService {
     return Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (_) => MultiProvider(providers: [
-          ProxyProvider3<AnalyticsService, PreferenceService,
-              PostMetaRepository, BookmarkRepository>(
-            update: (_, _analyticsService, _preferenceService,
-                    _postMetaRepository, __) =>
-                BookmarkRepository(BookmarkFirestoreService(),
-                    _postMetaRepository, _analyticsService, _preferenceService),
-          ),
-          ProxyProvider2<BookmarkRepository, AuthenticationStore,
-              BookmarkStore>(
-            update: (_, _bookmarkRepository, _authenticationStore, __) =>
-                BookmarkStore(_bookmarkRepository, _authenticationStore.user),
-          ),
-        ], child: BookmarkScreen()),
+        builder: (_) => ProxyProvider2<BookmarkRepository, AuthenticationStore,
+            BookmarkStore>(
+          update: (_, _bookmarkRepository, _authenticationStore, __) =>
+              BookmarkStore(_bookmarkRepository, _authenticationStore.user),
+          child: BookmarkScreen(),
+        ),
       ),
     );
   }
