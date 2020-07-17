@@ -99,10 +99,12 @@ class _PersonalisedPageState extends State<PersonalisedPage>
         return Consumer<NavigationService>(
           builder:
               (BuildContext context, NavigationService service, Widget child) {
+            final topicModel =
+                personalisedStore.sectionData[MixedDataType.NEWS_TOPIC];
             return NewsTopicsSection(
-              item: personalisedStore.sectionData[MixedDataType.NEWS_TOPIC],
-              onTap: (topic) =>
-                  service.toNewsTopicScreen(title: topic, context: context),
+              item: topicModel,
+              onTap: (topic) => service.toNewsTopicFeedScreen(
+                  topicModel: topicModel, context: context),
             );
           },
         );

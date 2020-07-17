@@ -39,7 +39,7 @@ class NewsSourceMenuSection extends StatelessWidget {
                     return NewsSourceMenuItem(
                       source: items[index],
                       onTap: (sourceMenu) =>
-                          navigationService.onNewsSourceMenuTapped(
+                          navigationService.toNewsSourceFeedScreen(
                         source: sourceMenu,
                         context: context,
                       ),

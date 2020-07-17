@@ -45,6 +45,20 @@ class NewsRepository {
             })?.toList());
   }
 
+  Future<List<NewsFeedModel>> getFeedsBySource(
+      {@required String source, String lastFeedId}) async {
+    var bookmarks = preferenceService.bookmarkedFeeds;
+    var likes = preferenceService.likedFeeds;
+    return await newsApiService
+        .fetchFeedsBySource(source: source, lastFeedId: lastFeedId)
+        .then((onValue) =>
+            onValue.feeds?.map((f) => NewsMapper.fromFeedApi(f))?.map((f) {
+              f.bookmarked.value = bookmarks.contains(f.uuid);
+              f.liked.value = likes.contains(f.uuid);
+              return f;
+            })?.toList());
+  }
+
   Future<List<NewsFeedModel>> getFeedsByCategory(
       {@required String category, String lastFeedId}) async {
     var bookmarks = preferenceService.bookmarkedFeeds;

@@ -30,8 +30,14 @@ import 'package:samachar_hub/pages/horoscope/horoscope_detail_store.dart';
 import 'package:samachar_hub/pages/horoscope/horoscope_repository.dart';
 import 'package:samachar_hub/pages/horoscope/horoscope_screen.dart';
 import 'package:samachar_hub/pages/horoscope/horoscope_store.dart';
+import 'package:samachar_hub/pages/news/category/news_category_feed_screen.dart';
+import 'package:samachar_hub/pages/news/category/news_category_feed_store.dart';
 import 'package:samachar_hub/pages/news/details/news_details.dart';
 import 'package:samachar_hub/pages/news/news_repository.dart';
+import 'package:samachar_hub/pages/news/source/news_source_feed_screen.dart';
+import 'package:samachar_hub/pages/news/source/news_source_feed_store.dart';
+import 'package:samachar_hub/pages/news/topics/news_topic_feed_screen.dart';
+import 'package:samachar_hub/pages/news/topics/news_topic_feed_store.dart';
 import 'package:samachar_hub/pages/news/topics/news_topic_screen.dart';
 import 'package:samachar_hub/pages/news/topics/news_topic_store.dart';
 import 'package:samachar_hub/pages/news/trending/trending_news_screen.dart';
@@ -202,10 +208,6 @@ class NavigationService {
     );
   }
 
-  toNewsSourceFeedScreen(BuildContext context, NewsSourceModel sourceModel) {
-    debugPrint('to news source feeds screen');
-  }
-
   Future toFavouriteNewsSourceScreen(BuildContext context) {
     return Navigator.of(context).push(
       MaterialPageRoute(
@@ -227,12 +229,18 @@ class NavigationService {
     );
   }
 
-  toNewsCategoryScreen(
+  Future toNewsCategoryScreen(
       BuildContext context, NewsCategoryModel newsCategoryModel) {
-    context.read<HomeScreenStore>().setPage(1);
-    context
-        .read<CategoriesStore>()
-        .setActiveCategoryTab(newsCategoryModel.code);
+    return Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) => ProxyProvider<NewsRepository, NewsCategoryFeedStore>(
+            update: (_, NewsRepository value, NewsCategoryFeedStore previous) =>
+                NewsCategoryFeedStore(value, newsCategoryModel),
+            dispose: (context, value) => value.dispose(),
+            child: NewsCategoryFeedScreen(),
+          ),
+        ));
   }
 
   Future toFavouriteNewsCategoryScreen(BuildContext context) {
@@ -289,9 +297,34 @@ class NavigationService {
     );
   }
 
-  onNewsSourceMenuTapped(
+  Future toNewsTopicFeedScreen(
+      {@required BuildContext context, @required NewsTopicModel topicModel}) {
+    return Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ProxyProvider<NewsRepository, NewsTopicFeedStore>(
+          update: (_, NewsRepository value, NewsTopicFeedStore previous) =>
+              NewsTopicFeedStore(value, topicModel),
+          dispose: (context, value) => value.dispose(),
+          child: NewsTopicFeedScreen(),
+        ),
+      ),
+    );
+  }
+
+  Future toNewsSourceFeedScreen(
       {@required NewsSourceModel source, @required BuildContext context}) {
-    print('Tag selected: $source.name');
+    return Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) => ProxyProvider<NewsRepository, NewsSourceFeedStore>(
+            update:
+                (_, NewsRepository newsRepository, NewsSourceFeedStore store) =>
+                    NewsSourceFeedStore(newsRepository, source),
+            dispose: (context, value) => value.dispose(),
+            child: NewsSourceFeedScreen(),
+          ),
+        ));
   }
 
   toCommentsScreen(

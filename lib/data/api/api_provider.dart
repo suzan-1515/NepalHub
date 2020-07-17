@@ -90,6 +90,38 @@ Future<NewsApiResponse> fetchTrendingNews({String limit}) async {
   }
 }
 
+Future<NewsApiResponse> fetchNewsBySource(String source,
+    {String lastFeedId}) async {
+  var sourceCall = http.get(Uri.https(_baseNewsApiURL, _newsSources));
+  final Map<String, String> queryParams = _filterNullOrEmptyValuesFromMap({
+    'source': source,
+    'id': lastFeedId,
+  });
+  var newsCall =
+      http.get(Uri.https(_baseNewsApiURL, _categoryNews, queryParams));
+  var results = await Future.wait([sourceCall, newsCall], eagerError: true)
+      .catchError((err) {
+    throw err;
+  });
+
+  var sourceResponse = results.first;
+  // If response is not ok
+  _checkResponse(sourceResponse);
+  // Deserialize
+  var newsResponse = results.last;
+  // If response is not ok
+  _checkResponse(newsResponse);
+  // Deserialize
+
+  try {
+    return NewsApiParser.parse(
+        feeds: json.decode(newsResponse.body),
+        sources: json.decode(sourceResponse.body));
+  } on Exception catch (e) {
+    throw e;
+  }
+}
+
 Future<NewsApiResponse> fetchNewsByCategory(String category,
     {String lastFeedId}) async {
   var sourceCall = http.get(Uri.https(_baseNewsApiURL, _newsSources));

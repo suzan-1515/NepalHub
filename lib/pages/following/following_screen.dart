@@ -116,9 +116,8 @@ class _FollowingPageState extends State<FollowingPage>
                     name: sourceModel.name,
                     icon: sourceModel.icon,
                     onTap: () {
-                      context
-                          .read<NavigationService>()
-                          .toNewsSourceFeedScreen(context, sourceModel);
+                      context.read<NavigationService>().toNewsSourceFeedScreen(
+                          context: context, source: sourceModel);
                     });
               },
             ),

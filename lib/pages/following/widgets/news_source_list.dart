@@ -36,9 +36,8 @@ class _FollowNewsSourceListState extends State<FollowNewsSourceList> {
             title: sourceModel.name,
             icon: sourceModel.icon,
             onTap: () {
-              context
-                  .read<NavigationService>()
-                  .toNewsSourceFeedScreen(context, sourceModel);
+              context.read<NavigationService>().toNewsSourceFeedScreen(
+                  context: context, source: sourceModel);
             },
             onFollowTap: () {
               if (sourceModel.isFollowed) {
