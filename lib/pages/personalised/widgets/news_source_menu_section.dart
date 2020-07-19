@@ -28,12 +28,13 @@ class NewsSourceMenuSection extends StatelessWidget {
             onTap: () => navigationService.toFavouriteNewsSourceScreen(context),
           ),
           LimitedBox(
-            maxHeight: 120,
+            maxHeight: 100,
             child: Container(
               color: Theme.of(context).cardColor,
-              padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
               child: ListView.builder(
+                  itemExtent: 120,
                   itemCount: items.length,
+                  primary: false,
                   scrollDirection: Axis.horizontal,
                   itemBuilder: (context, index) {
                     return NewsSourceMenuItem(

@@ -21,34 +21,40 @@ class NewsCategoryHorzListItem extends StatelessWidget {
       elevation: 1,
       color: Theme.of(context).cardColor,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
+        side: BorderSide(color: Colors.grey[200]),
+        borderRadius: BorderRadius.circular(8),
       ),
       child: InkWell(
         onTap: onTap,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            Expanded(
-                child: Icon(
-              icon,
-              color: Theme.of(context).accentColor,
-            )),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              Expanded(
+                child: Container(
+                  width: 48,
+                  height: 48,
+                  padding: EdgeInsets.all(8),
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                      color: Colors.grey[100], shape: BoxShape.circle),
+                  child: Icon(
+                    icon,
+                    color: Theme.of(context).accentColor,
+                  ),
+                ),
+              ),
+              SizedBox(height: 5),
+              Text(
                 name,
-                style: Theme.of(context).textTheme.subtitle2.copyWith(
-                    color: Theme.of(context)
-                        .textTheme
-                        .bodyText2
-                        .color
-                        .withOpacity(.6)),
+                style: Theme.of(context).textTheme.subtitle2,
                 maxLines: 2,
                 textAlign: TextAlign.center,
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

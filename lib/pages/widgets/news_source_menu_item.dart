@@ -29,6 +29,8 @@ class NewsSourceMenuItem extends StatelessWidget {
             children: <Widget>[
               Expanded(
                 child: Container(
+                  width: 48,
+                  height: 48,
                   padding: EdgeInsets.all(8),
                   alignment: Alignment.center,
                   decoration: BoxDecoration(
@@ -39,8 +41,10 @@ class NewsSourceMenuItem extends StatelessWidget {
                     fit: BoxFit.cover,
                     imageUrl: source.favicon,
                     placeholder: (context, _) => Icon(FontAwesomeIcons.image),
-                    errorWidget: (context, url, error) =>
-                        Icon(FontAwesomeIcons.image),
+                    errorWidget: (context, url, error) => Icon(
+                      FontAwesomeIcons.image,
+                      color: Colors.black12,
+                    ),
                     progressIndicatorBuilder: (context, url, progress) =>
                         CircularProgressIndicator(
                       value: progress.progress,
@@ -53,7 +57,9 @@ class NewsSourceMenuItem extends StatelessWidget {
               ),
               Text(
                 source.name,
-                style: Theme.of(context).textTheme.bodyText2,
+                textAlign: TextAlign.center,
+                maxLines: 2,
+                style: Theme.of(context).textTheme.subtitle2,
               )
             ],
           ),

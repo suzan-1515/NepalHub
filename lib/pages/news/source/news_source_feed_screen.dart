@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:mobx/mobx.dart';
@@ -141,7 +142,10 @@ class _NewsSourceFeedScreenState extends State<NewsSourceFeedScreen> {
             builder: (_, store, authStore, __) {
           return NewsFilteringAppBar(
             icon: DecorationImage(
-              image: AssetImage('assets/images/user.png'),
+              image: CachedNetworkImageProvider(
+                store.source.favicon,
+                errorListener: () {},
+              ),
               fit: BoxFit.cover,
             ),
             isFollowed: store.source.isFollowed,

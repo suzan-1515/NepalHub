@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -75,7 +76,10 @@ class _HoroscopeDetailScreenState extends State<HoroscopeDetailScreen> {
           tag: widget.sign,
           child: CircleAvatar(
             backgroundColor: Theme.of(context).canvasColor,
-            backgroundImage: NetworkImage(widget.signIcon),
+            backgroundImage: CachedNetworkImageProvider(
+              widget.signIcon,
+              errorListener: () {},
+            ),
           ),
         ),
         SizedBox(width: 8),

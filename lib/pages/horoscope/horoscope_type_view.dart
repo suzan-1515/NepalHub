@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
@@ -23,7 +24,10 @@ class HoroscopeTypeView extends StatelessWidget {
           tag: sign,
           child: CircleAvatar(
             backgroundColor: Theme.of(context).canvasColor,
-            backgroundImage: NetworkImage(signIcon),
+            backgroundImage: CachedNetworkImageProvider(
+              signIcon,
+              errorListener: () {},
+            ),
           ),
         ),
         title: Text(

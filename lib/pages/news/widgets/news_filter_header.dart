@@ -39,10 +39,10 @@ class _NewsFilterHeaderState extends State<NewsFilterHeader> {
             width: 64,
             height: 64,
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(30),
-              color: Theme.of(context).cardColor,
-              image: widget.icon,
-            ),
+                borderRadius: BorderRadius.circular(30),
+                color: Theme.of(context).cardColor,
+                image: widget.icon,
+                border: Border.all(color: Theme.of(context).dividerColor)),
           ),
           SizedBox(height: 8),
           Text(

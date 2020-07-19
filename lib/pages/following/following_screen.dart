@@ -3,6 +3,7 @@ import 'package:mobx/mobx.dart';
 import 'package:provider/provider.dart';
 import 'package:samachar_hub/data/models/models.dart';
 import 'package:samachar_hub/pages/following/following_store.dart';
+import 'package:samachar_hub/pages/widgets/news_source_menu_item.dart';
 import 'package:samachar_hub/widgets/news_category_horz_list_item.dart';
 import 'package:samachar_hub/pages/widgets/empty_data_widget.dart';
 import 'package:samachar_hub/pages/widgets/error_data_widget.dart';
@@ -10,7 +11,6 @@ import 'package:samachar_hub/pages/widgets/news_tag_item.dart';
 import 'package:samachar_hub/pages/widgets/page_heading_widget.dart';
 import 'package:samachar_hub/pages/widgets/progress_widget.dart';
 import 'package:samachar_hub/services/services.dart';
-import 'package:samachar_hub/widgets/mini_card_list_item.dart';
 
 class FollowingPage extends StatefulWidget {
   @override
@@ -111,10 +111,8 @@ class _FollowingPageState extends State<FollowingPage>
               itemCount: snapshot.data.length,
               itemBuilder: (_, index) {
                 var sourceModel = snapshot.data[index];
-                return MiniCardListItem(
-                    context: context,
-                    name: sourceModel.name,
-                    icon: sourceModel.icon,
+                return NewsSourceMenuItem(
+                    source: sourceModel,
                     onTap: () {
                       context.read<NavigationService>().toNewsSourceFeedScreen(
                           context: context,

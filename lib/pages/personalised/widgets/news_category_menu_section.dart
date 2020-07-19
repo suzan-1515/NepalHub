@@ -33,8 +33,9 @@ class NewsCategoryMenuSection extends StatelessWidget {
             maxHeight: 100,
             child: Container(
               color: Theme.of(context).cardColor,
-              padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
               child: ListView.builder(
+                  itemExtent: 120,
+                  primary: false,
                   itemCount: items.length,
                   scrollDirection: Axis.horizontal,
                   itemBuilder: (context, index) {
