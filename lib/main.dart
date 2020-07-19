@@ -152,9 +152,8 @@ class App extends StatelessWidget {
           dispose: (context, categoriesStore) => categoriesStore.dispose(),
         ),
 
-        ProxyProvider2<FollowingRepository, NewsRepository, FollowingStore>(
-          update: (_, _favouritesRepository, _newsRepository, __) =>
-              FollowingStore(_favouritesRepository, _newsRepository),
+        ProxyProvider<NewsRepository, FollowingStore>(
+          update: (_, _newsRepository, __) => FollowingStore(_newsRepository),
         ),
 
         ProxyProvider<CoronaRepository, CoronaStore>(

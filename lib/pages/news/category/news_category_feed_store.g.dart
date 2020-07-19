@@ -9,6 +9,58 @@ part of 'news_category_feed_store.dart';
 // ignore_for_file: non_constant_identifier_names, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
 
 mixin _$NewsCategoryFeedStore on _NewsCategoryFeedStore, Store {
+  final _$sourcesAtom = Atom(name: '_NewsCategoryFeedStore.sources');
+
+  @override
+  ObservableList<NewsSourceModel> get sources {
+    _$sourcesAtom.context.enforceReadPolicy(_$sourcesAtom);
+    _$sourcesAtom.reportObserved();
+    return super.sources;
+  }
+
+  @override
+  set sources(ObservableList<NewsSourceModel> value) {
+    _$sourcesAtom.context.conditionallyRunInAction(() {
+      super.sources = value;
+      _$sourcesAtom.reportChanged();
+    }, _$sourcesAtom, name: '${_$sourcesAtom.name}_set');
+  }
+
+  final _$sortAtom = Atom(name: '_NewsCategoryFeedStore.sort');
+
+  @override
+  SortBy get sort {
+    _$sortAtom.context.enforceReadPolicy(_$sortAtom);
+    _$sortAtom.reportObserved();
+    return super.sort;
+  }
+
+  @override
+  set sort(SortBy value) {
+    _$sortAtom.context.conditionallyRunInAction(() {
+      super.sort = value;
+      _$sortAtom.reportChanged();
+    }, _$sortAtom, name: '${_$sortAtom.name}_set');
+  }
+
+  final _$selectedSourceAtom =
+      Atom(name: '_NewsCategoryFeedStore.selectedSource');
+
+  @override
+  NewsSourceModel get selectedSource {
+    _$selectedSourceAtom.context.enforceReadPolicy(_$selectedSourceAtom);
+    _$selectedSourceAtom.reportObserved();
+    return super.selectedSource;
+  }
+
+  @override
+  set selectedSource(NewsSourceModel value) {
+    _$selectedSourceAtom.context.conditionallyRunInAction(() {
+      super.selectedSource = value;
+      _$selectedSourceAtom.reportChanged();
+    }, _$selectedSourceAtom, name: '${_$selectedSourceAtom.name}_set');
+  }
+
   final _$apiErrorAtom = Atom(name: '_NewsCategoryFeedStore.apiError');
 
   @override
@@ -92,9 +144,39 @@ mixin _$NewsCategoryFeedStore on _NewsCategoryFeedStore, Store {
   }
 
   @override
+  Future<dynamic> _loadNewsSources() {
+    final _$actionInfo = _$_NewsCategoryFeedStoreActionController.startAction();
+    try {
+      return super._loadNewsSources();
+    } finally {
+      _$_NewsCategoryFeedStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  dynamic setSortBy(SortBy value) {
+    final _$actionInfo = _$_NewsCategoryFeedStoreActionController.startAction();
+    try {
+      return super.setSortBy(value);
+    } finally {
+      _$_NewsCategoryFeedStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  dynamic setSource(NewsSourceModel source) {
+    final _$actionInfo = _$_NewsCategoryFeedStoreActionController.startAction();
+    try {
+      return super.setSource(source);
+    } finally {
+      _$_NewsCategoryFeedStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   String toString() {
     final string =
-        'apiError: ${apiError.toString()},error: ${error.toString()}';
+        'sources: ${sources.toString()},sort: ${sort.toString()},selectedSource: ${selectedSource.toString()},apiError: ${apiError.toString()},error: ${error.toString()}';
     return '{$string}';
   }
 }

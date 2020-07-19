@@ -38,8 +38,9 @@ class NewsMapper {
         bookmarked: true);
   }
 
-  static NewsTopicModel fromTagsApi(NewsTopicsApiResponse response) {
-    return NewsTopicModel(response.tags);
+  static NewsTopicModel fromTopicApi(String tag, bool isFollowed) {
+    return NewsTopicModel(
+        followerCount: 0, icon: null, isFollowed: isFollowed, tag: tag);
   }
 
   static NewsSourceModel fromSourceApi(

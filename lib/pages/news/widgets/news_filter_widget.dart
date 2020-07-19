@@ -1,9 +1,36 @@
 import 'package:flutter/material.dart';
+import 'package:samachar_hub/data/models/news_model.dart';
+import 'package:samachar_hub/domain/sort.dart';
+import 'package:samachar_hub/pages/news/widgets/news_sources_selector.dart';
+import 'package:samachar_hub/widgets/sortby_selector.dart';
 
-class NewsFilter extends StatelessWidget {
-  const NewsFilter({
+class NewsFilterView extends StatelessWidget {
+  NewsFilterView({
     Key key,
-  }) : super(key: key);
+    @required this.sources,
+    @required this.onSourceChanged,
+    @required this.onSortChanged,
+    this.initialSortBy,
+    this.initialSource,
+  }) : super(key: key) {
+    _initSourceOptions();
+  }
+
+  final List<NewsSourceModel> sources;
+  final Function(NewsSourceModel) onSourceChanged;
+  final Function(SortBy) onSortChanged;
+  final SortBy initialSortBy;
+  final NewsSourceModel initialSource;
+
+  final Map<String, String> sourceOptions = {};
+
+  _initSourceOptions() {
+    this.sourceOptions.clear();
+    this.sourceOptions['all'] = 'All Sources';
+    this.sources?.toSet()?.forEach(
+          (element) => this.sourceOptions[element.code] = element.name,
+        );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,44 +53,26 @@ class NewsFilter extends StatelessWidget {
                       width: 0.5, color: Theme.of(context).dividerColor),
                 ),
               ),
-              child: DropdownButtonHideUnderline(
-                child: DropdownButton<String>(
-                  isExpanded: true,
-                  value: 'all',
-                  items: <DropdownMenuItem<String>>[
-                    DropdownMenuItem(
-                      value: 'all',
-                      child: Text('All Sources'),
-                    ),
-                    DropdownMenuItem(
-                      value: 'ONK',
-                      child: Text('Online Khabar'),
-                    ),
-                  ],
-                  onChanged: (String value) {},
-                ),
+              child: NewsSourcesSelector(
+                onChanged: (value) {
+                  final changedSourceModel = sources?.firstWhere(
+                    (element) => element.code == value,
+                    orElse: null,
+                  );
+                  if (changedSourceModel != null)
+                    onSourceChanged(changedSourceModel);
+                },
+                options: this.sourceOptions,
+                selectedValue: initialSource?.code ?? 'all',
               ),
             ),
           ),
           Expanded(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8.0),
-              child: DropdownButtonHideUnderline(
-                child: DropdownButton<String>(
-                  isExpanded: true,
-                  value: 'recent',
-                  items: <DropdownMenuItem<String>>[
-                    DropdownMenuItem(
-                      value: 'recent',
-                      child: Text('Recent'),
-                    ),
-                    DropdownMenuItem(
-                      value: 'relevance',
-                      child: Text('Relevance'),
-                    ),
-                  ],
-                  onChanged: (String value) {},
-                ),
+              child: SortBySelector(
+                selectedValue: initialSortBy ?? SortBy.RELEVANCE,
+                onChanged: onSortChanged,
               ),
             ),
           ),

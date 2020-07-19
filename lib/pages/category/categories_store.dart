@@ -62,9 +62,9 @@ abstract class _CategoriesStore with Store {
     if (_isLoading) return;
     _isLoading = true;
     _data.clear();
-    return _newsRepository.getCategories().then((value) {
+    return _newsRepository.getCategories(followedOnly: true).then((value) {
       if (value != null) {
-        _data.addAll(value.where((e) => e.isFollowed).toList());
+        _data.addAll(value);
       }
       _dataStreamController.add(_data);
     }).catchError((onError) {

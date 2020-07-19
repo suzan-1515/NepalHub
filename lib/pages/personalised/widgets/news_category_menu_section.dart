@@ -43,7 +43,7 @@ class NewsCategoryMenuSection extends StatelessWidget {
                       context: context,
                       name: categoryModel.name,
                       icon: categoryModel.icon,
-                      onTap: () => navigationService.toNewsCategoryScreen(
+                      onTap: () => navigationService.toNewsCategoryFeedScreen(
                         context,
                         categoryModel,
                       ),

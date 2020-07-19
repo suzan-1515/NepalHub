@@ -1,9 +1,30 @@
 import 'package:flutter/material.dart';
 
-class NewsFollowingHeader extends StatelessWidget {
-  const NewsFollowingHeader({
+class NewsFilterHeader extends StatefulWidget {
+  const NewsFilterHeader({
     Key key,
+    @required this.isFollowed,
+    @required this.title,
+    @required this.icon,
+    @required this.onFollowTap,
   }) : super(key: key);
+
+  final bool isFollowed;
+  final String title;
+  final DecorationImage icon;
+  final Function(bool) onFollowTap;
+
+  @override
+  _NewsFilterHeaderState createState() => _NewsFilterHeaderState();
+}
+
+class _NewsFilterHeaderState extends State<NewsFilterHeader> {
+  bool _isFollowed;
+  @override
+  void initState() {
+    super.initState();
+    this._isFollowed = widget.isFollowed;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -20,15 +41,12 @@ class NewsFollowingHeader extends StatelessWidget {
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(30),
               color: Theme.of(context).cardColor,
-              image: DecorationImage(
-                image: AssetImage('assets/images/user.png'),
-                fit: BoxFit.cover,
-              ),
+              image: widget.icon,
             ),
           ),
           SizedBox(height: 8),
           Text(
-            'Corona Virus',
+            widget.title,
             style: Theme.of(context)
                 .textTheme
                 .subtitle1
@@ -38,9 +56,14 @@ class NewsFollowingHeader extends StatelessWidget {
           RaisedButton(
             visualDensity: VisualDensity.compact,
             textColor: Colors.white,
-            color: Colors.blue,
-            child: Text('Follow'),
-            onPressed: () {},
+            color: _isFollowed ? Colors.grey : Colors.blue,
+            child: Text(_isFollowed ? 'Followed' : 'Follow'),
+            onPressed: () {
+              setState(() {
+                _isFollowed = !_isFollowed;
+              });
+              widget.onFollowTap(_isFollowed);
+            },
           ),
           SizedBox(height: 8),
         ],

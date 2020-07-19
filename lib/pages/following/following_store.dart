@@ -3,18 +3,15 @@ import 'dart:async';
 import 'package:mobx/mobx.dart';
 import 'package:samachar_hub/data/models/models.dart';
 import 'package:samachar_hub/pages/news/news_repository.dart';
-import 'package:samachar_hub/repository/following_repository.dart';
 
 part 'following_store.g.dart';
 
 class FollowingStore = _FollowingStore with _$FollowingStore;
 
 abstract class _FollowingStore with Store {
-  final FollowingRepository _favouritesRepository;
   final NewsRepository _newsRepository;
 
   _FollowingStore(
-    this._favouritesRepository,
     this._newsRepository,
   );
 
@@ -22,14 +19,14 @@ abstract class _FollowingStore with Store {
       StreamController<List<NewsSourceModel>>.broadcast();
   StreamController<List<NewsCategoryModel>> _newsCategoryStreamController =
       StreamController<List<NewsCategoryModel>>.broadcast();
-  StreamController<NewsTopicModel> _newsTopicStreamController =
-      StreamController<NewsTopicModel>.broadcast();
+  StreamController<List<NewsTopicModel>> _newsTopicStreamController =
+      StreamController<List<NewsTopicModel>>.broadcast();
 
   Stream<List<NewsSourceModel>> get newsSourceFeedStream =>
       _newsSourceStreamController.stream;
   Stream<List<NewsCategoryModel>> get newsCategoryFeedStream =>
       _newsCategoryStreamController.stream;
-  Stream<NewsTopicModel> get newsTopicFeedStream =>
+  Stream<List<NewsTopicModel>> get newsTopicFeedStream =>
       _newsTopicStreamController.stream;
 
   @observable
@@ -62,10 +59,9 @@ abstract class _FollowingStore with Store {
 
   @action
   Future<void> loadFollowedNewsSourceData() {
-    return _newsRepository.getSources().then((value) {
+    return _newsRepository.getSources(followedOnly: true).then((value) {
       if (value != null) {
-        _newsSourceStreamController
-            .add(value.where((element) => element.isFollowed).toList());
+        _newsSourceStreamController.add(value);
       } else
         _newsSourceStreamController.add(List<NewsSourceModel>());
     }).catchError((onError) {
@@ -76,10 +72,9 @@ abstract class _FollowingStore with Store {
   @action
   Future<void> loadFollowedNewsCategoryData() {
     _newsCategoryStreamController.add(null);
-    return _newsRepository.getCategories().then((value) {
+    return _newsRepository.getCategories(followedOnly: true).then((value) {
       if (value != null) {
-        _newsCategoryStreamController
-            .add(value.where((element) => element.isFollowed).toList());
+        _newsCategoryStreamController.add(value);
       } else
         _newsCategoryStreamController.add(List<NewsCategoryModel>());
     }).catchError((onError) {
@@ -89,10 +84,11 @@ abstract class _FollowingStore with Store {
 
   @action
   Future<void> loadFollowedNewsTopicData() {
-    return _favouritesRepository.getFollowedTopics().then((value) {
+    return _newsRepository.getTopics(followedOnly: true).then((value) {
       if (value != null) {
         _newsTopicStreamController.add(value);
-      }
+      } else
+        _newsTopicStreamController.add(List<NewsTopicModel>());
     }).catchError((onError) {
       _newsTopicStreamController.addError(onError);
     });

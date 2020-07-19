@@ -104,7 +104,9 @@ class _PersonalisedPageState extends State<PersonalisedPage>
             return NewsTopicsSection(
               item: topicModel,
               onTap: (topic) => service.toNewsTopicFeedScreen(
-                  topicModel: topicModel, context: context),
+                topicModel: topic,
+                context: context,
+              ),
             );
           },
         );

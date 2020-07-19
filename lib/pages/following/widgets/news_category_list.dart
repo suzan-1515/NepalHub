@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
@@ -40,7 +38,7 @@ class _FollowNewsCategoryListState extends State<FollowNewsCategoryList> {
             onTap: () {
               context
                   .read<NavigationService>()
-                  .toNewsCategoryScreen(context, categoryModel);
+                  .toNewsCategoryFeedScreen(context, categoryModel);
             },
             onFollowTap: () {
               if (categoryModel.isFollowed) {

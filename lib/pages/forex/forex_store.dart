@@ -30,7 +30,10 @@ abstract class _ForexStore with Store {
       ObservableList<ForexModel>();
 
   @computed
-  ForexModel get defaultForex => defaultForexTimeline.last;
+  ForexModel get defaultForex {
+    if (defaultForexTimeline.isEmpty) return null;
+    return defaultForexTimeline.last;
+  }
 
   @observable
   APIException apiError;

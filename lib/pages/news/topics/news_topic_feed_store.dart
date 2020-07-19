@@ -1,8 +1,10 @@
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:mobx/mobx.dart';
 import 'package:samachar_hub/data/api/api.dart';
 import 'package:samachar_hub/data/models/models.dart';
+import 'package:samachar_hub/domain/sort.dart';
 import 'package:samachar_hub/pages/news/news_repository.dart';
 
 part 'news_topic_feed_store.g.dart';
@@ -11,13 +13,16 @@ class NewsTopicFeedStore = _NewsTopicFeedStore with _$NewsTopicFeedStore;
 
 abstract class _NewsTopicFeedStore with Store {
   final NewsRepository _newsRepository;
-  final NewsTopicModel topicModel;
+  final NewsTopicModel _topicModel;
 
-  _NewsTopicFeedStore(this._newsRepository, this.topicModel);
+  _NewsTopicFeedStore(this._newsRepository, this._topicModel);
 
   StreamController<List<NewsFeedModel>> _dataStreamController =
       StreamController<List<NewsFeedModel>>.broadcast();
   Stream<List<NewsFeedModel>> get dataStream => _dataStreamController.stream;
+
+  @observable
+  ObservableList<NewsSourceModel> sources = ObservableList();
 
   List<NewsFeedModel> _data = List<NewsFeedModel>();
 
@@ -27,6 +32,14 @@ abstract class _NewsTopicFeedStore with Store {
   bool get isLoading => _isLoading;
   bool get hasMore => _hasMore;
 
+  NewsTopicModel get topic => _topicModel;
+
+  @observable
+  SortBy sort = SortBy.RELEVANCE;
+
+  @observable
+  NewsSourceModel selectedSource;
+
   @observable
   APIException apiError;
 
@@ -35,7 +48,7 @@ abstract class _NewsTopicFeedStore with Store {
 
   @action
   void loadInitialData() {
-    _loadFirstPageData();
+    _loadNewsSources().whenComplete(() => _loadFirstPageData());
   }
 
   @action
@@ -52,9 +65,14 @@ abstract class _NewsTopicFeedStore with Store {
   Future _loadFirstPageData() async {
     if (isLoading) return;
     _isLoading = true;
+    _dataStreamController.add(null);
     _data.clear();
     return _newsRepository
-        .getNewsByTopic(tag: topicModel.tags.first)
+        .getNewsByTopic(
+      topic: topic.tag,
+      source: selectedSource?.code,
+      sort: sort,
+    )
         .then((onValue) {
       if (onValue != null) {
         _data.addAll(onValue);
@@ -76,7 +94,11 @@ abstract class _NewsTopicFeedStore with Store {
     if (isLoading) return;
     _isLoading = true;
     return _newsRepository
-        .getNewsByTopic(tag: topicModel.tags.first)
+        .getNewsByTopic(
+      topic: topic.tag,
+      source: selectedSource?.code,
+      sort: sort,
+    )
         .then((onValue) {
       if (onValue != null) {
         _data.addAll(onValue);
@@ -89,6 +111,29 @@ abstract class _NewsTopicFeedStore with Store {
     }, test: (e) => e is APIException).catchError((onError) {
       this.error = onError.toString();
     }).whenComplete(() => _isLoading = false);
+  }
+
+  @action
+  Future _loadNewsSources() {
+    return _newsRepository
+        .getSources(followedOnly: true)
+        .then((value) {
+          if (value != null) sources = ObservableList.of(value);
+        })
+        .catchError((onError) {}, test: (e) => e is APIException)
+        .catchError((onError) {});
+  }
+
+  @action
+  setSortBy(SortBy value) {
+    this.sort = value;
+    refresh();
+  }
+
+  @action
+  setSource(NewsSourceModel source) {
+    this.selectedSource = source;
+    refresh();
   }
 
   dispose() {

@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:mobx/mobx.dart';
 import 'package:samachar_hub/data/api/api.dart';
 import 'package:samachar_hub/data/models/models.dart';
+import 'package:samachar_hub/domain/sort.dart';
 import 'package:samachar_hub/pages/news/news_repository.dart';
 
 part 'news_category_feed_store.g.dart';
@@ -12,13 +13,16 @@ class NewsCategoryFeedStore = _NewsCategoryFeedStore
 
 abstract class _NewsCategoryFeedStore with Store {
   final NewsRepository _newsRepository;
-  final NewsCategoryModel categoryModel;
+  final NewsCategoryModel _categoryModel;
 
-  _NewsCategoryFeedStore(this._newsRepository, this.categoryModel);
+  _NewsCategoryFeedStore(this._newsRepository, this._categoryModel);
 
   StreamController<List<NewsFeedModel>> _dataStreamController =
       StreamController<List<NewsFeedModel>>.broadcast();
   Stream<List<NewsFeedModel>> get dataStream => _dataStreamController.stream;
+
+  @observable
+  ObservableList<NewsSourceModel> sources = ObservableList();
 
   List<NewsFeedModel> _data = List<NewsFeedModel>();
 
@@ -28,6 +32,14 @@ abstract class _NewsCategoryFeedStore with Store {
   bool get isLoading => _isLoading;
   bool get hasMore => _hasMore;
 
+  NewsCategoryModel get categoryModel => _categoryModel;
+
+  @observable
+  SortBy sort = SortBy.RELEVANCE;
+
+  @observable
+  NewsSourceModel selectedSource;
+
   @observable
   APIException apiError;
 
@@ -36,7 +48,7 @@ abstract class _NewsCategoryFeedStore with Store {
 
   @action
   void loadInitialData() {
-    _loadFirstPageData();
+    _loadNewsSources().whenComplete(() => _loadFirstPageData());
   }
 
   @action
@@ -53,9 +65,13 @@ abstract class _NewsCategoryFeedStore with Store {
   Future _loadFirstPageData() async {
     if (isLoading) return;
     _isLoading = true;
+    _dataStreamController.add(null);
     _data.clear();
     return _newsRepository
-        .getFeedsByCategory(category: categoryModel.code)
+        .getFeedsByCategory(
+            category: categoryModel.code,
+            source: selectedSource?.code,
+            sort: sort)
         .then((onValue) {
       if (onValue != null) {
         _data.addAll(onValue);
@@ -78,7 +94,10 @@ abstract class _NewsCategoryFeedStore with Store {
     _isLoading = true;
     return _newsRepository
         .getFeedsByCategory(
-            category: categoryModel.code, lastFeedId: _data?.last?.id)
+            category: categoryModel.code,
+            lastFeedId: _data?.last?.id,
+            source: selectedSource?.code,
+            sort: sort)
         .then((onValue) {
       if (onValue != null) {
         _data.addAll(onValue);
@@ -91,6 +110,29 @@ abstract class _NewsCategoryFeedStore with Store {
     }, test: (e) => e is APIException).catchError((onError) {
       this.error = onError.toString();
     }).whenComplete(() => _isLoading = false);
+  }
+
+  @action
+  Future _loadNewsSources() {
+    return _newsRepository
+        .getSources(followedOnly: true)
+        .then((value) {
+          if (value != null) sources = ObservableList.of(value);
+        })
+        .catchError((onError) {}, test: (e) => e is APIException)
+        .catchError((onError) {});
+  }
+
+  @action
+  setSortBy(SortBy value) {
+    this.sort = value;
+    refresh();
+  }
+
+  @action
+  setSource(NewsSourceModel source) {
+    this.selectedSource = source;
+    refresh();
   }
 
   dispose() {

@@ -11,7 +11,7 @@ class FollowingRepository {
       this._favouritesService, this._analyticsService, this._preferenceService);
 
   Future<void> followSource(NewsSourceModel sourceModel) async {
-    if (sourceModel == null) return Future.value();
+    if (sourceModel == null) return;
     var followedSources = _preferenceService.unFollowedNewsSources;
     followedSources.remove(sourceModel.code);
     _preferenceService.unFollowedNewsSources = followedSources;
@@ -19,7 +19,7 @@ class FollowingRepository {
   }
 
   Future<void> unFollowSource(NewsSourceModel sourceModel) async {
-    if (sourceModel == null) return Future.value();
+    if (sourceModel == null) return;
     var followedSources = _preferenceService.unFollowedNewsSources;
     followedSources.add(sourceModel.code);
     _preferenceService.unFollowedNewsSources = followedSources;
@@ -58,26 +58,21 @@ class FollowingRepository {
     }
   }
 
-  Future<void> followTopic(String topic) async {
+  Future<void> followTopic(NewsTopicModel topic) async {
     if (topic != null) {
       var followedTopics = _preferenceService.followedNewsTopics;
-      followedTopics.add(topic);
+      followedTopics.add(topic.tag);
       _preferenceService.followedNewsTopics = followedTopics;
-      _analyticsService.logNewsTopicFollowed(topic: topic);
+      _analyticsService.logNewsTopicFollowed(topic: topic.tag);
     }
   }
 
-  Future<void> unFollowTopic(String topic) async {
+  Future<void> unFollowTopic(NewsTopicModel topic) async {
     if (topic != null) {
       var followedTopics = _preferenceService.followedNewsTopics;
-      followedTopics.remove(topic);
+      followedTopics.remove(topic.tag);
       _preferenceService.followedNewsTopics = followedTopics;
-      _analyticsService.logNewsTopicUnFollowed(topic: topic);
+      _analyticsService.logNewsTopicUnFollowed(topic: topic.tag);
     }
-  }
-
-  Future<NewsTopicModel> getFollowedTopics({String userId}) {
-    return Future.value(_preferenceService.followedNewsTopics)
-        .then((value) => NewsTopicModel(value));
   }
 }

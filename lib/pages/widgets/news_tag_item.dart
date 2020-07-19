@@ -12,7 +12,7 @@ class NewsTagItem extends StatelessWidget {
         title,
         style: Theme.of(context).textTheme.bodyText2,
       ),
-      onPressed:()=> onTap(title),
+      onPressed: () => onTap(title),
       labelPadding: const EdgeInsets.all(4.0),
     );
   }

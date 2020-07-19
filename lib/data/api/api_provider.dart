@@ -30,8 +30,6 @@ const String _forexToday = '/forex';
 const String _forexByCountry =
     '/forex/currencycode'; //body: currency_code,from (date),to(date)
 
-enum SortBy { relevancy, popularity, publishedAt }
-
 Future<NewsApiResponse> fetchLatestNews() async {
   var sourceCall = http.get(Uri.https(_baseNewsApiURL, _newsSources));
   var latestNewsCall = http.get(Uri.https(_baseNewsApiURL, _latestNews));

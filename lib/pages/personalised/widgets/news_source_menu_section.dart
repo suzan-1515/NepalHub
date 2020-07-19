@@ -42,6 +42,7 @@ class NewsSourceMenuSection extends StatelessWidget {
                           navigationService.toNewsSourceFeedScreen(
                         source: sourceMenu,
                         context: context,
+                        sources: items,
                       ),
                     );
                   }),

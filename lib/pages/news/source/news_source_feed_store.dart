@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:mobx/mobx.dart';
 import 'package:samachar_hub/data/api/api.dart';
 import 'package:samachar_hub/data/models/models.dart';
+import 'package:samachar_hub/domain/sort.dart';
 import 'package:samachar_hub/pages/news/news_repository.dart';
 
 part 'news_source_feed_store.g.dart';
@@ -11,9 +12,12 @@ class NewsSourceFeedStore = _NewsSourceFeedStore with _$NewsSourceFeedStore;
 
 abstract class _NewsSourceFeedStore with Store {
   final NewsRepository _newsRepository;
-  final NewsSourceModel sourceModel;
+  final NewsSourceModel _sourceModel;
+  final List<NewsSourceModel> _sources;
 
-  _NewsSourceFeedStore(this._newsRepository, this.sourceModel);
+  _NewsSourceFeedStore(this._newsRepository, this._sourceModel, this._sources) {
+    this.selectedSource = _sourceModel;
+  }
 
   StreamController<List<NewsFeedModel>> _dataStreamController =
       StreamController<List<NewsFeedModel>>.broadcast();
@@ -26,6 +30,15 @@ abstract class _NewsSourceFeedStore with Store {
 
   bool get isLoading => _isLoading;
   bool get hasMore => _hasMore;
+
+  NewsSourceModel get source => _sourceModel;
+  List<NewsSourceModel> get sources => _sources;
+
+  @observable
+  SortBy sort = SortBy.RELEVANCE;
+
+  @observable
+  NewsSourceModel selectedSource;
 
   @observable
   APIException apiError;
@@ -52,9 +65,10 @@ abstract class _NewsSourceFeedStore with Store {
   Future _loadFirstPageData() async {
     if (isLoading) return;
     _isLoading = true;
+    _dataStreamController.add(null);
     _data.clear();
     return _newsRepository
-        .getFeedsBySource(source: sourceModel.code)
+        .getFeedsBySource(source: selectedSource.code, sort: sort)
         .then((onValue) {
       if (onValue != null) {
         _data.addAll(onValue);
@@ -76,7 +90,10 @@ abstract class _NewsSourceFeedStore with Store {
     if (isLoading) return;
     _isLoading = true;
     return _newsRepository
-        .getFeedsBySource(source: sourceModel.code, lastFeedId: _data?.last?.id)
+        .getFeedsBySource(
+            source: selectedSource.code,
+            lastFeedId: _data?.last?.id,
+            sort: sort)
         .then((onValue) {
       if (onValue != null) {
         _data.addAll(onValue);
@@ -89,6 +106,18 @@ abstract class _NewsSourceFeedStore with Store {
     }, test: (e) => e is APIException).catchError((onError) {
       this.error = onError.toString();
     }).whenComplete(() => _isLoading = false);
+  }
+
+  @action
+  setSortBy(SortBy value) {
+    this.sort = value;
+    refresh();
+  }
+
+  @action
+  setSource(NewsSourceModel source) {
+    this.selectedSource = source;
+    refresh();
   }
 
   dispose() {

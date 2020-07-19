@@ -117,7 +117,9 @@ class _FollowingPageState extends State<FollowingPage>
                     icon: sourceModel.icon,
                     onTap: () {
                       context.read<NavigationService>().toNewsSourceFeedScreen(
-                          context: context, source: sourceModel);
+                          context: context,
+                          source: sourceModel,
+                          sources: snapshot.data);
                     });
               },
             ),
@@ -201,7 +203,7 @@ class _FollowingPageState extends State<FollowingPage>
                     onTap: () {
                       context
                           .read<NavigationService>()
-                          .toNewsCategoryScreen(context, categoryModel);
+                          .toNewsCategoryFeedScreen(context, categoryModel);
                     });
               },
             ),
@@ -246,7 +248,7 @@ class _FollowingPageState extends State<FollowingPage>
   }
 
   Widget _buildNewsTopicsList(FollowingStore favouritesStore) {
-    return StreamBuilder<NewsTopicModel>(
+    return StreamBuilder<List<NewsTopicModel>>(
       stream: favouritesStore.newsTopicFeedStream,
       builder: (context, snapshot) {
         if (snapshot.hasError) {
@@ -259,22 +261,22 @@ class _FollowingPageState extends State<FollowingPage>
           );
         }
         if (snapshot.hasData) {
-          if (snapshot.data.tags?.isEmpty ?? true) {
+          if (snapshot.data.isEmpty) {
             return Center(child: EmptyDataView());
           }
 
           return Wrap(
             spacing: 6.0,
             runSpacing: 6.0,
-            children: List<Widget>.generate(
-                snapshot.data.tags.length,
-                (index) => NewsTagItem(
-                      title: snapshot.data.tags[index],
+            children: snapshot.data
+                .map((e) => NewsTagItem(
+                      title: e.tag,
                       onTap: (value) {
-                        Provider.of<NavigationService>(context, listen: false)
-                            .toNewsTopicScreen(title: value, context: context);
+                        context.read<NavigationService>().toNewsTopicFeedScreen(
+                            context: context, topicModel: e);
                       },
-                    )),
+                    ))
+                .toList(),
           );
         }
         return Center(child: ProgressView());
@@ -327,35 +329,40 @@ class _FollowingPageState extends State<FollowingPage>
                 title: 'Following',
               ),
               Expanded(
-                child: SingleChildScrollView(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                      SizedBox(
-                        height: 8,
-                      ),
-                      Flexible(
-                          fit: FlexFit.loose,
-                          child: _buildNewsSourcesSection(
-                              context, _favouriteskStore)),
-                      SizedBox(
-                        height: 8,
-                      ),
-                      Flexible(
-                          fit: FlexFit.loose,
-                          child: _buildNewsCategorySection(
-                              context, _favouriteskStore)),
-                      SizedBox(
-                        height: 8,
-                      ),
-                      Flexible(
-                          fit: FlexFit.loose,
-                          child: _buildNewsTopicsSection(
-                              context, _favouriteskStore)),
-                      SizedBox(
-                        height: 8,
-                      ),
-                    ],
+                child: RefreshIndicator(
+                  onRefresh: () async {
+                    _favouriteskStore.refresh();
+                  },
+                  child: SingleChildScrollView(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        SizedBox(
+                          height: 8,
+                        ),
+                        Flexible(
+                            fit: FlexFit.loose,
+                            child: _buildNewsSourcesSection(
+                                context, _favouriteskStore)),
+                        SizedBox(
+                          height: 8,
+                        ),
+                        Flexible(
+                            fit: FlexFit.loose,
+                            child: _buildNewsCategorySection(
+                                context, _favouriteskStore)),
+                        SizedBox(
+                          height: 8,
+                        ),
+                        Flexible(
+                            fit: FlexFit.loose,
+                            child: _buildNewsTopicsSection(
+                                context, _favouriteskStore)),
+                        SizedBox(
+                          height: 8,
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),

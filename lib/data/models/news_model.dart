@@ -151,6 +151,33 @@ class NewsCategoryModel {
       };
 }
 
-class NewsTopicModel extends NewsTopicsApiResponse {
-  NewsTopicModel(List<String> tags) : super(tags);
+class NewsTopicModel {
+  final String tag;
+  final String icon;
+  final int followerCount;
+  final bool isFollowed;
+  NewsTopicModel({
+    @required this.tag,
+    @required this.icon,
+    @required this.followerCount,
+    @required this.isFollowed,
+  });
+  NewsTopicModel copyWith({
+    String tag,
+    String icon,
+    int followerCount,
+    bool isFollowed,
+  }) =>
+      NewsTopicModel(
+          tag: tag ?? this.tag,
+          icon: icon ?? this.icon,
+          followerCount: followerCount ?? this.followerCount,
+          isFollowed: isFollowed ?? this.isFollowed);
+
+  Map<String, dynamic> toJson() => <String, dynamic>{
+        'tag': this.tag,
+        'icon': this.icon,
+        'follower_count': this.followerCount,
+        'is_followed': this.isFollowed,
+      };
 }

@@ -4,16 +4,13 @@ import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:samachar_hub/data/models/models.dart';
 import 'package:samachar_hub/pages/authentication/login/login_screen.dart';
-import 'package:samachar_hub/pages/bookmark/bookmark_firestore_service.dart';
 import 'package:samachar_hub/pages/bookmark/bookmark_page.dart';
 import 'package:samachar_hub/pages/bookmark/bookmark_repository.dart';
 import 'package:samachar_hub/pages/bookmark/bookmark_store.dart';
-import 'package:samachar_hub/pages/category/categories_store.dart';
 import 'package:samachar_hub/pages/comment/comment_firestore_service.dart';
 import 'package:samachar_hub/pages/comment/comment_repository.dart';
 import 'package:samachar_hub/pages/comment/comment_screen.dart';
 import 'package:samachar_hub/pages/comment/comment_store.dart';
-import 'package:samachar_hub/pages/following/following_store.dart';
 import 'package:samachar_hub/pages/following/news/categories_screen.dart';
 import 'package:samachar_hub/pages/following/news/category_store.dart';
 import 'package:samachar_hub/pages/following/news/source_store.dart';
@@ -24,7 +21,6 @@ import 'package:samachar_hub/pages/forex/forex_screen.dart';
 import 'package:samachar_hub/pages/forex/forex_detail_screen.dart';
 import 'package:samachar_hub/pages/forex/forex_store.dart';
 import 'package:samachar_hub/pages/home/home_screen.dart';
-import 'package:samachar_hub/pages/home/home_screen_store.dart';
 import 'package:samachar_hub/pages/horoscope/horoscope_detail_screen.dart';
 import 'package:samachar_hub/pages/horoscope/horoscope_detail_store.dart';
 import 'package:samachar_hub/pages/horoscope/horoscope_repository.dart';
@@ -38,12 +34,9 @@ import 'package:samachar_hub/pages/news/source/news_source_feed_screen.dart';
 import 'package:samachar_hub/pages/news/source/news_source_feed_store.dart';
 import 'package:samachar_hub/pages/news/topics/news_topic_feed_screen.dart';
 import 'package:samachar_hub/pages/news/topics/news_topic_feed_store.dart';
-import 'package:samachar_hub/pages/news/topics/news_topic_screen.dart';
-import 'package:samachar_hub/pages/news/topics/news_topic_store.dart';
 import 'package:samachar_hub/pages/news/trending/trending_news_screen.dart';
 import 'package:samachar_hub/pages/news/trending/trending_news_store.dart';
 import 'package:samachar_hub/pages/settings/settings_page.dart';
-import 'package:samachar_hub/pages/settings/settings_store.dart';
 import 'package:samachar_hub/repository/following_repository.dart';
 import 'package:samachar_hub/repository/post_meta_repository.dart';
 import 'package:samachar_hub/services/services.dart';
@@ -229,7 +222,7 @@ class NavigationService {
     );
   }
 
-  Future toNewsCategoryScreen(
+  Future toNewsCategoryFeedScreen(
       BuildContext context, NewsCategoryModel newsCategoryModel) {
     return Navigator.push(
         context,
@@ -279,24 +272,6 @@ class NavigationService {
     );
   }
 
-  Future toNewsTopicScreen(
-      {@required String title, @required BuildContext context}) {
-    return Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => ProxyProvider<NewsRepository, NewsTopicStore>(
-          update: (BuildContext context, NewsRepository value,
-                  NewsTopicStore previous) =>
-              NewsTopicStore(value),
-          dispose: (context, value) => value.dispose(),
-          child: NewsTopicScreen(
-            topic: title,
-          ),
-        ),
-      ),
-    );
-  }
-
   Future toNewsTopicFeedScreen(
       {@required BuildContext context, @required NewsTopicModel topicModel}) {
     return Navigator.push(
@@ -313,14 +288,16 @@ class NavigationService {
   }
 
   Future toNewsSourceFeedScreen(
-      {@required NewsSourceModel source, @required BuildContext context}) {
+      {@required NewsSourceModel source,
+      @required List<NewsSourceModel> sources,
+      @required BuildContext context}) {
     return Navigator.push(
         context,
         MaterialPageRoute(
           builder: (_) => ProxyProvider<NewsRepository, NewsSourceFeedStore>(
             update:
                 (_, NewsRepository newsRepository, NewsSourceFeedStore store) =>
-                    NewsSourceFeedStore(newsRepository, source),
+                    NewsSourceFeedStore(newsRepository, source, sources),
             dispose: (context, value) => value.dispose(),
             child: NewsSourceFeedScreen(),
           ),
