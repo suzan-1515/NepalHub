@@ -77,7 +77,7 @@ mixin _$FollowNewsSourceStore on _FollowNewsSourceStore, Store {
   }
 
   @override
-  Future<void> followedNewsSource(NewsSourceModel sourceModel) {
+  Future<void> followedNewsSource(NewsSource sourceModel) {
     final _$actionInfo = _$_FollowNewsSourceStoreActionController.startAction();
     try {
       return super.followedNewsSource(sourceModel);
@@ -87,7 +87,7 @@ mixin _$FollowNewsSourceStore on _FollowNewsSourceStore, Store {
   }
 
   @override
-  Future<void> unFollowedNewsSource(NewsSourceModel sourceModel) {
+  Future<void> unFollowedNewsSource(NewsSource sourceModel) {
     final _$actionInfo = _$_FollowNewsSourceStoreActionController.startAction();
     try {
       return super.unFollowedNewsSource(sourceModel);

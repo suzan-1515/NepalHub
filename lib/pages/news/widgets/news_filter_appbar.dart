@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:samachar_hub/data/models/news_model.dart';
-import 'package:samachar_hub/domain/sort.dart';
+import 'package:samachar_hub/data/models/sort.dart';
 import 'package:samachar_hub/pages/news/widgets/news_filter_widget.dart';
 import 'package:samachar_hub/pages/news/widgets/news_filter_header.dart';
 
@@ -23,12 +23,12 @@ class NewsFilteringAppBar extends StatelessWidget {
   final String title;
   final DecorationImage icon;
   final bool isFollowed;
-  final List<NewsSourceModel> sources;
+  final List<NewsSource> sources;
   final Function(bool) onFollowTap;
-  final Function(NewsSourceModel) onSourceChanged;
+  final Function(NewsSource) onSourceChanged;
   final Function(SortBy) onSortByChanged;
   final SortBy initialSortBy;
-  final NewsSourceModel initialSource;
+  final NewsSource initialSource;
 
   @override
   Widget build(BuildContext context) {

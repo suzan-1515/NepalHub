@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -86,9 +84,9 @@ class _NewsTopicFeedScreenState extends State<NewsTopicFeedScreen> {
 
   Widget _buildList(BuildContext context, NewsTopicFeedStore store,
       AuthenticationStore authStore) {
-    return StreamBuilder<List<NewsFeedModel>>(
+    return StreamBuilder<List<NewsFeed>>(
       stream: store.dataStream,
-      builder: (_, AsyncSnapshot<List<NewsFeedModel>> snapshot) {
+      builder: (_, AsyncSnapshot<List<NewsFeed>> snapshot) {
         if (snapshot.hasError) {
           return Center(
             child: ErrorDataView(
@@ -114,12 +112,12 @@ class _NewsTopicFeedScreenState extends State<NewsTopicFeedScreen> {
                 if (index % 5 == 0) {
                   widget = NewsThumbnailView(
                     feed: snapshot.data[index],
-                    authenticationStore: authStore,
+                    authStore: authStore,
                   );
                 } else {
                   widget = NewsListView(
                     feed: snapshot.data[index],
-                    authenticationStore: authStore,
+                    authStore: authStore,
                   );
                 }
 
@@ -151,14 +149,19 @@ class _NewsTopicFeedScreenState extends State<NewsTopicFeedScreen> {
                 ),
                 isFollowed: store.topic.isFollowed,
                 onFollowTap: (value) {
+                  store.topic.followNotifier.value = value;
                   if (value)
                     context
                         .read<FollowingRepository>()
-                        .followTopic(store.topic);
+                        .followTopic(store.topic)
+                        .catchError((onError) =>
+                            store.topic.followNotifier.value = !value);
                   else
                     context
                         .read<FollowingRepository>()
-                        .unFollowTopic(store.topic);
+                        .unFollowTopic(store.topic)
+                        .catchError((onError) =>
+                            store.topic.followNotifier.value = !value);
                 },
                 onSortByChanged: (value) {
                   store.setSortBy(value);
@@ -167,7 +170,7 @@ class _NewsTopicFeedScreenState extends State<NewsTopicFeedScreen> {
                   store.setSource(value);
                 },
                 sources: store.sources,
-                title: store.topic.tag,
+                title: store.topic.title,
                 initialSortBy: store.sort,
                 initialSource: store.selectedSource,
                 child: Padding(

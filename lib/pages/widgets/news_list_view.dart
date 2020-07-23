@@ -3,14 +3,15 @@ import 'package:provider/provider.dart';
 import 'package:samachar_hub/data/models/models.dart';
 import 'package:samachar_hub/pages/widgets/article_info_widget.dart';
 import 'package:samachar_hub/services/navigation_service.dart';
+import 'package:samachar_hub/services/services.dart';
 import 'package:samachar_hub/stores/stores.dart';
 import 'package:samachar_hub/widgets/article_image_widget.dart';
 
 class NewsListView extends StatelessWidget {
-  final NewsFeedModel feed;
-  final AuthenticationStore authenticationStore;
+  final NewsFeed feed;
+  final AuthenticationStore authStore;
 
-  NewsListView({@required this.feed, this.authenticationStore});
+  NewsListView({@required this.feed, @required this.authStore});
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +33,12 @@ class NewsListView extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                FeedSourceSection(feed),
+                NewsFeedCardSourceCategory(
+                  category: feed.category.name,
+                  publishedDate: feed.momentPublishedDate,
+                  source: feed.source.name,
+                  sourceIcon: feed.source.favicon,
+                ),
                 SizedBox(height: 8),
                 Row(
                   mainAxisSize: MainAxisSize.max,
@@ -40,7 +46,10 @@ class NewsListView extends StatelessWidget {
                   children: <Widget>[
                     Expanded(
                       flex: 4,
-                      child: FeedTitleDescriptionSection(feed),
+                      child: NewsFeedCardTitleDescription(
+                        description: feed.description,
+                        title: feed.title,
+                      ),
                     ),
                     SizedBox(
                       width: 8,
@@ -60,10 +69,7 @@ class NewsListView extends StatelessWidget {
                 ),
                 SizedBox(height: 8),
                 Divider(),
-                FeedOptionsSection(
-                  article: feed,
-                  authenticationStore: authenticationStore,
-                ),
+                NewsFeedOptions(feed: feed, authStore: authStore),
               ],
             ),
           ),

@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:mobx/mobx.dart';
 import 'package:samachar_hub/data/models/models.dart';
-import 'package:samachar_hub/pages/news/news_repository.dart';
+import 'package:samachar_hub/repository/news_repository.dart';
 
 part 'following_store.g.dart';
 
@@ -15,18 +15,18 @@ abstract class _FollowingStore with Store {
     this._newsRepository,
   );
 
-  StreamController<List<NewsSourceModel>> _newsSourceStreamController =
-      StreamController<List<NewsSourceModel>>.broadcast();
-  StreamController<List<NewsCategoryModel>> _newsCategoryStreamController =
-      StreamController<List<NewsCategoryModel>>.broadcast();
-  StreamController<List<NewsTopicModel>> _newsTopicStreamController =
-      StreamController<List<NewsTopicModel>>.broadcast();
+  StreamController<List<NewsSource>> _newsSourceStreamController =
+      StreamController<List<NewsSource>>.broadcast();
+  StreamController<List<NewsCategory>> _newsCategoryStreamController =
+      StreamController<List<NewsCategory>>.broadcast();
+  StreamController<List<NewsTopic>> _newsTopicStreamController =
+      StreamController<List<NewsTopic>>.broadcast();
 
-  Stream<List<NewsSourceModel>> get newsSourceFeedStream =>
+  Stream<List<NewsSource>> get newsSourceFeedStream =>
       _newsSourceStreamController.stream;
-  Stream<List<NewsCategoryModel>> get newsCategoryFeedStream =>
+  Stream<List<NewsCategory>> get newsCategoryFeedStream =>
       _newsCategoryStreamController.stream;
-  Stream<List<NewsTopicModel>> get newsTopicFeedStream =>
+  Stream<List<NewsTopic>> get newsTopicFeedStream =>
       _newsTopicStreamController.stream;
 
   @observable
@@ -63,7 +63,7 @@ abstract class _FollowingStore with Store {
       if (value != null) {
         _newsSourceStreamController.add(value);
       } else
-        _newsSourceStreamController.add(List<NewsSourceModel>());
+        _newsSourceStreamController.add(List<NewsSource>());
     }).catchError((onError) {
       _newsSourceStreamController.addError(onError);
     });
@@ -76,7 +76,7 @@ abstract class _FollowingStore with Store {
       if (value != null) {
         _newsCategoryStreamController.add(value);
       } else
-        _newsCategoryStreamController.add(List<NewsCategoryModel>());
+        _newsCategoryStreamController.add(List<NewsCategory>());
     }).catchError((onError) {
       _newsCategoryStreamController.addError(onError);
     });
@@ -88,7 +88,7 @@ abstract class _FollowingStore with Store {
       if (value != null) {
         _newsTopicStreamController.add(value);
       } else
-        _newsTopicStreamController.add(List<NewsTopicModel>());
+        _newsTopicStreamController.add(List<NewsTopic>());
     }).catchError((onError) {
       _newsTopicStreamController.addError(onError);
     });

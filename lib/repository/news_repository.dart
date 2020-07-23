@@ -1,8 +1,8 @@
 import 'package:flutter/widgets.dart';
 import 'package:samachar_hub/data/mappers/mappers.dart';
 import 'package:samachar_hub/data/models/models.dart';
-import 'package:samachar_hub/domain/sort.dart';
-import 'package:samachar_hub/pages/news/news_api_service.dart';
+import 'package:samachar_hub/data/models/sort.dart';
+import 'package:samachar_hub/services/news_api_service.dart';
 import 'package:samachar_hub/services/services.dart';
 
 class NewsRepository {
@@ -13,74 +13,65 @@ class NewsRepository {
 
   NewsRepository(this.newsApiService, this.preferenceService);
 
-  Future<List<NewsFeedModel>> getLatestFeeds() async {
+  Future<List<NewsFeed>> getLatestFeeds() async {
     var bookmarks = preferenceService.bookmarkedFeeds;
     var likes = preferenceService.likedFeeds;
-    var unfollowedSources = preferenceService.unFollowedNewsSources;
+    var unFollowedSources = preferenceService.unFollowedNewsSources;
+    var unFollowedCategories = preferenceService.unFollowedNewsCategories;
     return await newsApiService.fetchLatestFeeds().then((onValue) => onValue
-            .feeds
-            ?.map((f) => NewsMapper.fromFeedApi(f))
-            ?.where(
-                (e) => !unfollowedSources.contains(e.rawData['source']['code']))
-            ?.map((f) {
-          f.bookmarked.value = bookmarks.contains(f.uuid);
-          f.liked.value = likes.contains(f.uuid);
-          return f;
-        })?.toList());
+        .feeds
+        ?.map((f) => NewsMapper.fromFeedApi(
+            f, bookmarks, likes, unFollowedSources, unFollowedCategories))
+        ?.where((e) => !unFollowedSources.contains(e.source.code))
+        ?.toList());
   }
 
-  Future<List<NewsFeedModel>> getTrendingFeeds({String limit}) async {
+  Future<List<NewsFeed>> getTrendingFeeds({String limit}) async {
     var bookmarks = preferenceService.bookmarkedFeeds;
     var likes = preferenceService.likedFeeds;
-    var unfollowedSources = preferenceService.unFollowedNewsSources;
+    var unFollowedSources = preferenceService.unFollowedNewsSources;
+    var unFollowedCategories = preferenceService.unFollowedNewsCategories;
     return await newsApiService.fetchTrendingFeeds(limit: limit).then(
         (onValue) => onValue.feeds
-                ?.map((f) => NewsMapper.fromFeedApi(f))
-                ?.where((e) =>
-                    !unfollowedSources.contains(e.rawData['source']['code']))
-                ?.map((f) {
-              f.bookmarked.value = bookmarks.contains(f.uuid);
-              f.liked.value = likes.contains(f.uuid);
-              return f;
-            })?.toList());
+            ?.map((f) => NewsMapper.fromFeedApi(
+                f, bookmarks, likes, unFollowedSources, unFollowedCategories))
+            ?.where((e) => !unFollowedSources.contains(e.source.code))
+            ?.toList());
   }
 
-  Future<List<NewsFeedModel>> getFeedsBySource(
+  Future<List<NewsFeed>> getFeedsBySource(
       {@required String source, String lastFeedId, SortBy sort}) async {
     var bookmarks = preferenceService.bookmarkedFeeds;
     var likes = preferenceService.likedFeeds;
+    var unFollowedSources = preferenceService.unFollowedNewsSources;
+    var unFollowedCategories = preferenceService.unFollowedNewsCategories;
     return await newsApiService
         .fetchFeedsBySource(source: source, lastFeedId: lastFeedId)
-        .then((onValue) =>
-            onValue.feeds?.map((f) => NewsMapper.fromFeedApi(f))?.map((f) {
-              f.bookmarked.value = bookmarks.contains(f.uuid);
-              f.liked.value = likes.contains(f.uuid);
-              return f;
-            })?.toList());
+        .then((onValue) => onValue.feeds
+            ?.map((f) => NewsMapper.fromFeedApi(
+                f, bookmarks, likes, unFollowedSources, unFollowedCategories))
+            ?.toList());
   }
 
-  Future<List<NewsFeedModel>> getFeedsByCategory(
+  Future<List<NewsFeed>> getFeedsByCategory(
       {@required String category,
       String lastFeedId,
       String source,
       SortBy sort}) async {
     var bookmarks = preferenceService.bookmarkedFeeds;
     var likes = preferenceService.likedFeeds;
-    var unfollowedSources = preferenceService.unFollowedNewsSources;
+    var unFollowedSources = preferenceService.unFollowedNewsSources;
+    var unFollowedCategories = preferenceService.unFollowedNewsCategories;
     return await newsApiService
         .fetchFeedsByCategory(category: category, lastFeedId: lastFeedId)
         .then((onValue) => onValue.feeds
-                ?.map((f) => NewsMapper.fromFeedApi(f))
-                ?.where((e) =>
-                    !unfollowedSources.contains(e.rawData['source']['code']))
-                ?.map((f) {
-              f.bookmarked.value = bookmarks.contains(f.uuid);
-              f.liked.value = likes.contains(f.uuid);
-              return f;
-            })?.toList());
+            ?.map((f) => NewsMapper.fromFeedApi(
+                f, bookmarks, likes, unFollowedSources, unFollowedCategories))
+            ?.where((e) => !unFollowedSources.contains(e.source.code))
+            ?.toList());
   }
 
-  Future<List<NewsTopicModel>> getTopics({bool followedOnly = false}) async {
+  Future<List<NewsTopic>> getTopics({bool followedOnly = false}) async {
     var followedTopics = preferenceService.followedNewsTopics;
     return await newsApiService.fetchTopics().then((onValue) => onValue.tags
             ?.map((e) => NewsMapper.fromTopicApi(e, followedTopics.contains(e)))
@@ -90,25 +81,22 @@ class NewsRepository {
         })?.toList());
   }
 
-  Future<List<NewsFeedModel>> getNewsByTopic(
+  Future<List<NewsFeed>> getNewsByTopic(
       {@required String topic, String source, SortBy sort}) async {
     return await newsApiService.fetchNewsByTopic(tag: topic).then((onValue) {
       var bookmarks = preferenceService.bookmarkedFeeds;
       var likes = preferenceService.likedFeeds;
-      var unfollowedSources = preferenceService.unFollowedNewsSources;
+      var unFollowedSources = preferenceService.unFollowedNewsSources;
+      var unFollowedCategories = preferenceService.unFollowedNewsCategories;
       return onValue.feeds
-          ?.map((f) => NewsMapper.fromFeedApi(f))
-          ?.where(
-              (e) => !unfollowedSources.contains(e.rawData['source']['code']))
-          ?.map((f) {
-        f.bookmarked.value = bookmarks.contains(f.uuid);
-        f.liked.value = likes.contains(f.uuid);
-        return f;
-      })?.toList();
+          ?.map((f) => NewsMapper.fromFeedApi(
+              f, bookmarks, likes, unFollowedSources, unFollowedCategories))
+          ?.where((e) => !unFollowedSources.contains(e.source.code))
+          ?.toList();
     });
   }
 
-  Future<List<NewsSourceModel>> getSources({bool followedOnly = false}) async {
+  Future<List<NewsSource>> getSources({bool followedOnly = false}) async {
     return await newsApiService.fetchSources().then((onValue) {
       var unFollowedSources = preferenceService.unFollowedNewsSources;
       return onValue.sources
@@ -121,8 +109,7 @@ class NewsRepository {
     });
   }
 
-  Future<List<NewsCategoryModel>> getCategories(
-      {bool followedOnly = false}) async {
+  Future<List<NewsCategory>> getCategories({bool followedOnly = false}) async {
     return await newsApiService.fetchSources().then((onValue) {
       var followedCategories = preferenceService.unFollowedNewsCategories;
       return onValue.categories

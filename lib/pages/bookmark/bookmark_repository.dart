@@ -23,7 +23,7 @@ class BookmarkRepository {
   Future<void> postBookmark(
       {@required String postId,
       @required UserModel user,
-      @required NewsFeedModel bookmarkFeed}) {
+      @required NewsFeed bookmarkFeed}) {
     var metaData = {
       'bookmark_count': FieldValue.increment(1),
     };
@@ -92,33 +92,40 @@ class BookmarkRepository {
         bookmarkId: generateBookmarkId(postId, userId));
   }
 
-  Future<List<NewsFeedModel>> getBookmarks(
-      {@required String userId, String after}) {
+  Future<List<NewsFeed>> getBookmarks({@required String userId, String after}) {
+    var likes = _preferenceService.likedFeeds;
+    var unFollowedSources = _preferenceService.unFollowedNewsSources;
+    var unFollowedCategories = _preferenceService.unFollowedNewsCategories;
     return _bookmarkService
         .fetchBookmarks(userId: userId, limit: DATA_LIMIT, after: after)
         .then((value) {
       if (value != null && value.isNotEmpty) {
         return value
-            .map((response) => NewsMapper.fromBookmarkFeed(response))
+            .map((response) => NewsMapper.fromBookmarkFeed(
+                response, likes, unFollowedSources, unFollowedCategories))
             .toList();
       }
-      return List<NewsFeedModel>();
+      return List<NewsFeed>();
     }).then((value) {
       _analyticsService.logFeedBookmarkFetched(page: after);
       return value;
     });
   }
 
-  Stream<List<NewsFeedModel>> getBookmarksAsStream({@required String userId}) {
+  Stream<List<NewsFeed>> getBookmarksAsStream({@required String userId}) {
+    var likes = _preferenceService.likedFeeds;
+    var unFollowedSources = _preferenceService.unFollowedNewsSources;
+    var unFollowedCategories = _preferenceService.unFollowedNewsCategories;
     return _bookmarkService
         .fetchBookmarksAsStream(userId: userId, limit: DATA_LIMIT)
         .map((value) {
       if (value != null && value.isNotEmpty) {
         return value
-            .map((response) => NewsMapper.fromBookmarkFeed(response))
+            .map((response) => NewsMapper.fromBookmarkFeed(
+                response, likes, unFollowedSources, unFollowedCategories))
             .toList();
       }
-      return List<NewsFeedModel>();
+      return List<NewsFeed>();
     }).map((value) {
       _analyticsService.logFeedBookmarkFetched(page: '0');
       return value;

@@ -13,7 +13,7 @@ import 'package:samachar_hub/widgets/article_image_widget.dart';
 import 'package:samachar_hub/widgets/comment_bar_widget.dart';
 
 class NewsDetailScreen extends StatefulWidget {
-  final NewsFeedModel feed;
+  final NewsFeed feed;
   NewsDetailScreen({this.feed});
 
   @override
@@ -110,7 +110,7 @@ class _NewsDetailScreenState extends State<NewsDetailScreen> {
             store.feed.description ?? 'No article content available.',
             style: Theme.of(context).textTheme.bodyText2,
           ),
-          _buildAdRow(),
+          // _buildAdRow(),
           _buildReadMoreRow(context, store),
         ],
       ),
@@ -183,7 +183,7 @@ class _NewsDetailScreenState extends State<NewsDetailScreen> {
                   ),
               children: <TextSpan>[
                 TextSpan(
-                  text: '\n${store.feed.publishedAt}',
+                  text: '\n${store.feed.momentPublishedDate}',
                   style: Theme.of(context).textTheme.caption,
                 )
               ]),
@@ -200,7 +200,7 @@ class _NewsDetailScreenState extends State<NewsDetailScreen> {
               color: Theme.of(context).highlightColor,
               borderRadius: BorderRadius.all(Radius.circular(12))),
           child: Text(
-            store.feed.category,
+            store.feed.category.name,
             style: Theme.of(context).textTheme.caption,
           ),
         ),
@@ -211,7 +211,7 @@ class _NewsDetailScreenState extends State<NewsDetailScreen> {
   Builder _buildSourceRow(NewsDetailStore store, PostMetaStore metaStore) {
     return Builder(
       builder: (_) {
-        final String faviconUrl = store.feed.sourceFavicon;
+        final String faviconUrl = store.feed.source.favicon;
         return Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           mainAxisSize: MainAxisSize.max,
@@ -226,7 +226,7 @@ class _NewsDetailScreenState extends State<NewsDetailScreen> {
                 Padding(
                   padding: EdgeInsets.only(left: 8),
                   child: Text(
-                    'Article\nPublished on\n${store.feed.source}',
+                    'Article\nPublished on\n${store.feed.source.name}',
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
@@ -345,15 +345,13 @@ class _NewsDetailScreenState extends State<NewsDetailScreen> {
                       },
                       onLikeTap: (value) {
                         if (value) {
-                          store.feed.liked.value = false;
-                          metaStore.removeLike().then((value) {
-                            store.feed.liked.value = !value;
-                          });
+                          store.feed.likeNotifier.value = !value;
+                          return metaStore.removeLike().catchError((onError) =>
+                              store.feed.likeNotifier.value = value);
                         } else {
-                          store.feed.liked.value = true;
-                          metaStore.postLike().then((value) {
-                            store.feed.liked.value = value;
-                          });
+                          store.feed.likeNotifier.value = !value;
+                          return metaStore.postLike().catchError((onError) =>
+                              store.feed.likeNotifier.value = value);
                         }
                       },
                       onShareTap: () {

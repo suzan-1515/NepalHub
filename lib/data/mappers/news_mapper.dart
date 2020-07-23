@@ -3,70 +3,98 @@ import 'package:samachar_hub/data/models/models.dart';
 import 'package:samachar_hub/util/news_category.dart';
 
 class NewsMapper {
-  static NewsFeedModel fromFeedApi(FeedApiResponse response) {
-    return NewsFeedModel(response.toJson(),
-        id: response.id,
-        source: response.formatedSource,
-        sourceFavicon: response.sourceFavicon,
-        category: response.formatedCategory,
-        author: response.formatedAuthor,
-        title: response.title,
-        description: response.description,
-        link: response.link,
-        image: response.image,
-        publishedAt: response.formatedPublishedDate,
-        content: response.content,
-        uuid: response.uuid,
-        related: response.related?.map((f) => fromFeedApi(f))?.toList());
+  static NewsFeed fromBookmarkFeed(BookmarkFirestoreResponse response, likes,
+      unFollowedSources, unFollowedCategories) {
+    return NewsFeed(
+      id: response.id,
+      source: fromSourceApi(
+          response.source, !unFollowedSources.contains(response.uuid)),
+      category: fromCategoryApi(
+          response.category, !unFollowedCategories.contains(response.uuid)),
+      author: response.formatedAuthor,
+      title: response.title,
+      description: response.description,
+      link: response.link,
+      image: response.image,
+      publishedDate: response.getPublishedDate,
+      momentPublishedDate: response.formatedPublishedDate,
+      content: response.content,
+      uuid: response.uuid,
+      related: null,
+      userId: response.userid,
+      timestamp: response.timestamp,
+      bookmarkCount: 0,
+      commentCount: 0,
+      shareCount: 0,
+      likeCount: 0,
+      isBookmarked: true,
+      viewCount: 0,
+      isLiked: likes.contains(response.uuid),
+    );
   }
 
-  static NewsFeedModel fromBookmarkFeed(BookmarkFirestoreResponse response) {
-    return NewsFeedModel(response.toJson(),
-        id: response.id,
-        source: response.formatedSource,
-        sourceFavicon: response.sourceFavicon,
-        category: response.formatedCategory,
-        author: response.formatedAuthor,
-        title: response.title,
-        description: response.description,
-        link: response.link,
-        image: response.image,
-        publishedAt: response.formatedPublishedDate,
-        content: response.content,
-        uuid: response.uuid,
-        related: null,
-        bookmarked: true);
+  static NewsTopic fromTopicApi(String tag, bool isFollowed) {
+    return NewsTopic(
+      followerCount: 0,
+      icon: null,
+      isFollowed: isFollowed,
+      title: tag,
+    );
   }
 
-  static NewsTopicModel fromTopicApi(String tag, bool isFollowed) {
-    return NewsTopicModel(
-        followerCount: 0, icon: null, isFollowed: isFollowed, tag: tag);
+  static NewsFeed fromFeedApi(FeedApiResponse response, bookmarks, likes,
+      unFollowedSources, unFollowedCategories) {
+    return NewsFeed(
+      id: response.id,
+      source: fromSourceApi(
+          response.source, !unFollowedSources.contains(response.uuid)),
+      category: fromCategoryApi(
+          response.category, !unFollowedCategories.contains(response.uuid)),
+      author: response.formatedAuthor,
+      title: response.title,
+      description: response.description,
+      link: response.link,
+      image: response.image,
+      publishedDate: response.getPublishedDate,
+      momentPublishedDate: response.formatedPublishedDate,
+      content: response.content,
+      uuid: response.uuid,
+      related: response.related
+          ?.map((f) => fromFeedApi(
+              f, bookmarks, likes, unFollowedSources, unFollowedCategories))
+          ?.toList(),
+      bookmarkCount: 0,
+      commentCount: 0,
+      shareCount: 0,
+      likeCount: 0,
+      isBookmarked: bookmarks.contains(response.uuid),
+      viewCount: 0,
+      isLiked: likes.contains(response.uuid),
+    );
   }
 
-  static NewsSourceModel fromSourceApi(
+  static NewsSource fromSourceApi(
       FeedSourceApiResponse response, bool isFollowed) {
-    return NewsSourceModel(
+    return NewsSource(
       id: response.id,
       name: response.name,
       code: response.code,
       favicon: response.favicon,
       icon: response.icon,
       priority: response.priority,
-      rawData: response,
-      followerCount: 0,
+      followerCount: 200,
       isFollowed: isFollowed,
     );
   }
 
-  static NewsCategoryModel fromCategoryApi(
+  static NewsCategory fromCategoryApi(
       FeedCategoryApiResponse response, bool isFollowed) {
-    return NewsCategoryModel(
+    return NewsCategory(
       id: response.id,
       name: response.name,
       code: response.code,
       icon: newsCategoryIcons[response.code],
       priority: response.priority,
-      rawData: response,
       followerCount: 0,
       isFollowed: isFollowed,
     );

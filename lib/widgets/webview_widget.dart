@@ -26,33 +26,37 @@ class _WebviewState extends State<Webview> {
         title: Text(widget.title),
       ),
       body: SafeArea(
-        child: Builder(builder: (BuildContext context) {
-          return Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              ValueListenableBuilder<bool>(
-                builder: (BuildContext context, bool value, Widget child) {
-                  return value ? SizedBox.shrink() : LinearProgressIndicator();
-                },
-                valueListenable: _isLoading,
-              ),
-              Expanded(
-                child: WebView(
-                  initialUrl: widget.url,
-                  javascriptMode: JavascriptMode.unrestricted,
-                  onPageStarted: (String url) {
-                    _isLoading.value = true;
+        child: Builder(
+          builder: (_) {
+            return Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                ValueListenableBuilder<bool>(
+                  builder: (BuildContext context, bool value, Widget child) {
+                    return value
+                        ? SizedBox.shrink()
+                        : LinearProgressIndicator();
                   },
-                  onPageFinished: (String url) {
-                    _isLoading.value = false;
-                  },
-                  gestureNavigationEnabled: true,
+                  valueListenable: _isLoading,
                 ),
-              ),
-            ],
-          );
-        }),
+                Expanded(
+                  child: WebView(
+                    initialUrl: widget.url,
+                    javascriptMode: JavascriptMode.unrestricted,
+                    onPageStarted: (String url) {
+                      if (url.contains(widget.url)) _isLoading.value = true;
+                    },
+                    onPageFinished: (String url) {
+                      if (url.contains(widget.url)) _isLoading.value = false;
+                    },
+                    gestureNavigationEnabled: true,
+                  ),
+                ),
+              ],
+            );
+          },
+        ),
       ),
     );
   }

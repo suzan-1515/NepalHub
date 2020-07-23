@@ -8,7 +8,7 @@ import 'package:samachar_hub/pages/widgets/section_heading.dart';
 import 'package:samachar_hub/services/navigation_service.dart';
 
 class TrendingNewsSection extends StatefulWidget {
-  final List<NewsFeedModel> feeds;
+  final List<NewsFeed> feeds;
 
   const TrendingNewsSection({Key key, this.feeds}) : super(key: key);
   @override

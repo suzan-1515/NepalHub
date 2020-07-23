@@ -80,7 +80,7 @@ mixin _$FollowNewsCategoryStore on _FollowNewsCategoryStore, Store {
   }
 
   @override
-  Future<void> followedNewsCategory(NewsCategoryModel categoryModel) {
+  Future<void> followedNewsCategory(NewsCategory categoryModel) {
     final _$actionInfo =
         _$_FollowNewsCategoryStoreActionController.startAction();
     try {
@@ -91,7 +91,7 @@ mixin _$FollowNewsCategoryStore on _FollowNewsCategoryStore, Store {
   }
 
   @override
-  Future<void> unFollowedNewsCategory(NewsCategoryModel categoryModel) {
+  Future<void> unFollowedNewsCategory(NewsCategory categoryModel) {
     final _$actionInfo =
         _$_FollowNewsCategoryStoreActionController.startAction();
     try {

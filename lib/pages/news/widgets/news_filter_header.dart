@@ -20,10 +20,18 @@ class NewsFilterHeader extends StatefulWidget {
 
 class _NewsFilterHeaderState extends State<NewsFilterHeader> {
   bool _isFollowed;
+  final ValueNotifier<bool> _followProgressNotifier =
+      ValueNotifier<bool>(false);
   @override
   void initState() {
     super.initState();
     this._isFollowed = widget.isFollowed;
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _followProgressNotifier.dispose();
   }
 
   @override

@@ -1,5 +1,6 @@
 import 'package:json_annotation/json_annotation.dart';
 import 'package:samachar_hub/util/helper.dart';
+import 'package:validators/validators.dart' as Validator;
 
 part 'news_api_response.g.dart';
 
@@ -12,6 +13,7 @@ class NewsApiResponse {
 
   factory NewsApiResponse.fromJson(Map<String, dynamic> json) =>
       _$NewsApiResponseFromJson(json);
+
   Map<String, dynamic> toJson() => _$NewsApiResponseToJson(this);
 }
 
@@ -24,6 +26,7 @@ class NewsSourcesApiResponse {
 
   factory NewsSourcesApiResponse.fromJson(Map<String, dynamic> json) =>
       _$NewsSourcesApiResponseFromJson(json);
+
   Map<String, dynamic> toJson() => _$NewsSourcesApiResponseToJson(this);
 }
 
@@ -63,16 +66,20 @@ class FeedApiResponse {
       (source == null || source.name == null || source.name.isEmpty)
           ? 'N/A'
           : source.name;
+
   String get sourceFavicon =>
       (source == null || source.favicon == null || source.favicon.isEmpty)
           ? ''
           : source.favicon;
+
   String get formatedCategory =>
       (category == null || category.name == null || category.name.isEmpty)
           ? 'N/A'
           : category.name;
+
   String get formatedAuthor =>
       (author == null || author.isEmpty) ? formatedSource : author;
+
   String get formatedPublishedDate {
     var fomattedDate = publishedAt;
     try {
@@ -85,8 +92,23 @@ class FeedApiResponse {
     return fomattedDate;
   }
 
+  DateTime get getPublishedDate {
+    try {
+      return DateTime.parse(publishedAt);
+    } catch (e) {
+      return null;
+    }
+  }
+
+  String get descriptionPreview {
+    if (!Validator.isNull(description) && description.length > 100)
+      return description?.substring(0, 100);
+    return description;
+  }
+
   factory FeedApiResponse.fromJson(Map<String, dynamic> json) =>
       _$FeedApiResponseFromJson(json);
+
   Map<String, dynamic> toJson() => <String, dynamic>{
         'id': this.id,
         'source': this.source.toJson(),
@@ -120,6 +142,7 @@ class FeedSourceApiResponse {
 
   factory FeedSourceApiResponse.fromJson(Map<String, dynamic> json) =>
       _$FeedSourceApiResponseFromJson(json);
+
   Map<String, dynamic> toJson() => _$FeedSourceApiResponseToJson(this);
 }
 
@@ -139,6 +162,7 @@ class FeedCategoryApiResponse {
 
   factory FeedCategoryApiResponse.fromJson(Map<String, dynamic> json) =>
       _$FeedCategoryApiResponseFromJson(json);
+
   Map<String, dynamic> toJson() => _$FeedCategoryApiResponseToJson(this);
 }
 
@@ -150,6 +174,7 @@ class NewsTopicsApiResponse {
 
   factory NewsTopicsApiResponse.fromJson(Map<String, dynamic> json) =>
       _$NewsTopicsApiResponseFromJson(json);
+
   Map<String, dynamic> toJson() => _$NewsTopicsApiResponseToJson(this);
 }
 

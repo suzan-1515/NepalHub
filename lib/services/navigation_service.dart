@@ -29,7 +29,7 @@ import 'package:samachar_hub/pages/horoscope/horoscope_store.dart';
 import 'package:samachar_hub/pages/news/category/news_category_feed_screen.dart';
 import 'package:samachar_hub/pages/news/category/news_category_feed_store.dart';
 import 'package:samachar_hub/pages/news/details/news_details.dart';
-import 'package:samachar_hub/pages/news/news_repository.dart';
+import 'package:samachar_hub/repository/news_repository.dart';
 import 'package:samachar_hub/pages/news/source/news_source_feed_screen.dart';
 import 'package:samachar_hub/pages/news/source/news_source_feed_store.dart';
 import 'package:samachar_hub/pages/news/topics/news_topic_feed_screen.dart';
@@ -168,7 +168,7 @@ class NavigationService {
 
   toGoldSilverScreen(BuildContext context) {}
 
-  toFeedDetail(NewsFeedModel article, BuildContext context) {
+  toFeedDetail(NewsFeed article, BuildContext context) {
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -223,13 +223,13 @@ class NavigationService {
   }
 
   Future toNewsCategoryFeedScreen(
-      BuildContext context, NewsCategoryModel newsCategoryModel) {
+      BuildContext context, NewsCategory NewsCategory) {
     return Navigator.push(
         context,
         MaterialPageRoute(
           builder: (_) => ProxyProvider<NewsRepository, NewsCategoryFeedStore>(
             update: (_, NewsRepository value, NewsCategoryFeedStore previous) =>
-                NewsCategoryFeedStore(value, newsCategoryModel),
+                NewsCategoryFeedStore(value, NewsCategory),
             dispose: (context, value) => value.dispose(),
             child: NewsCategoryFeedScreen(),
           ),
@@ -273,7 +273,7 @@ class NavigationService {
   }
 
   Future toNewsTopicFeedScreen(
-      {@required BuildContext context, @required NewsTopicModel topicModel}) {
+      {@required BuildContext context, @required NewsTopic topicModel}) {
     return Navigator.push(
       context,
       MaterialPageRoute(
@@ -288,8 +288,8 @@ class NavigationService {
   }
 
   Future toNewsSourceFeedScreen(
-      {@required NewsSourceModel source,
-      @required List<NewsSourceModel> sources,
+      {@required NewsSource source,
+      @required List<NewsSource> sources,
       @required BuildContext context}) {
     return Navigator.push(
         context,

@@ -17,10 +17,8 @@ class BookmarkFeedModel {
   final String userId;
   final String timestamp;
 
-  BookmarkFeedModel(
-      this.rawData,
-      {
-      this.id,
+  BookmarkFeedModel(this.rawData,
+      {this.id,
       this.source,
       this.sourceFavicon,
       this.category,

@@ -253,28 +253,29 @@ class _ForexScreenState extends State<ForexScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Theme.of(context).backgroundColor,
-      appBar: AppBar(
-        title: Text('Forex'),
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(Icons.settings),
-            onPressed: () {
-              context
-                  .read<NavigationService>()
-                  .toSettingsScreen(context: context);
-            },
+    return Consumer<ForexStore>(
+      builder: (_, ForexStore store, __) {
+        return Scaffold(
+          backgroundColor: Theme.of(context).backgroundColor,
+          appBar: AppBar(
+            title: Text('Forex'),
+            actions: <Widget>[
+              IconButton(
+                icon: Icon(Icons.settings),
+                onPressed: () {
+                  context
+                      .read<NavigationService>()
+                      .toSettingsScreen(context: context)
+                      .whenComplete(() => store.retry());
+                },
+              ),
+            ],
           ),
-        ],
-      ),
-      body: SafeArea(
-        child: Consumer<ForexStore>(
-          builder: (_, ForexStore store, __) {
-            return _buildContent(context, store);
-          },
-        ),
-      ),
+          body: SafeArea(
+            child: _buildContent(context, store),
+          ),
+        );
+      },
     );
   }
 }

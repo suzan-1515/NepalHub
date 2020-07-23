@@ -1,183 +1,350 @@
+import 'package:equatable/equatable.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:samachar_hub/data/api/api.dart';
 import 'package:uuid/uuid.dart';
+import 'package:validators/validators.dart' as Validator;
 
-class NewsFeedModel {
-  final Map<String, dynamic> rawData;
+class NewsFeed extends Equatable {
   final String id;
-  final String source;
-  final String sourceFavicon;
-  final String category;
+  final NewsSource source;
+  final NewsCategory category;
   final String author;
   final String title;
   final String description;
   final String link;
   final String image;
-  final String publishedAt;
+  final DateTime publishedDate;
+  final String momentPublishedDate;
   final String content;
   final String uuid;
-  final List<NewsFeedModel> related;
-  ValueNotifier<bool> bookmarked = ValueNotifier(false);
-  ValueNotifier<bool> liked = ValueNotifier(false);
-  String tag = Uuid().v4();
+  final List<NewsFeed> related;
+  final String userId;
+  final String timestamp;
+  final String tag = Uuid().v4();
+  final ValueNotifier<bool> bookmarkNotifier = ValueNotifier<bool>(false);
+  final ValueNotifier<bool> likeNotifier = ValueNotifier<bool>(false);
+  final ValueNotifier<int> likeCountNotifier = ValueNotifier<int>(0);
+  final ValueNotifier<int> bookmarkCountNotifier = ValueNotifier<int>(0);
+  final ValueNotifier<int> shareCountNotifier = ValueNotifier<int>(0);
+  final ValueNotifier<int> commentCountNotifier = ValueNotifier<int>(0);
+  final ValueNotifier<int> viewCountNotifier = ValueNotifier<int>(0);
 
-  NewsFeedModel(this.rawData,
+  NewsFeed(
       {@required this.id,
       @required this.source,
-      @required this.sourceFavicon,
       @required this.category,
       @required this.author,
       @required this.title,
       @required this.description,
       @required this.link,
       @required this.image,
-      @required this.publishedAt,
+      @required this.publishedDate,
+      @required this.momentPublishedDate,
       @required this.content,
       @required this.uuid,
       @required this.related,
-      bool bookmarked = false,
-      bool liked = false}) {
-    this.bookmarked.value = bookmarked;
-    this.liked.value = liked;
+      this.userId,
+      this.timestamp,
+      @required bool isBookmarked,
+      @required bool isLiked,
+      @required int likeCount,
+      @required int bookmarkCount,
+      @required int shareCount,
+      @required int commentCount,
+      @required int viewCount}) {
+    this.bookmarkNotifier.value = isBookmarked;
+    this.likeNotifier.value = isLiked;
+    this.bookmarkCountNotifier.value = bookmarkCount;
+    this.likeCountNotifier.value = likeCount;
+    this.shareCountNotifier.value = shareCount;
+    this.commentCountNotifier.value = commentCount;
+    this.viewCountNotifier.value = viewCount;
   }
 
-  Map<String, dynamic> toJson() => this.rawData;
+  bool get isValidLink => Validator.isURL(link);
+
+  bool get isValidImage => Validator.isURL(image);
+  bool get isBookmarked => bookmarkNotifier.value;
+  bool get isLiked => likeNotifier.value;
+  int get likeCount => likeCountNotifier.value;
+  int get commentCount => commentCountNotifier.value;
+  int get shareCount => shareCountNotifier.value;
+  int get viewCount => viewCountNotifier.value;
+
+  Map<String, dynamic> toJson() => {
+        'id': this.id,
+        'source': this.source.toJson(),
+        'category': this.category.toJson(),
+        'author': this.author,
+        'title': this.title,
+        'description': this.description,
+        'link': this.link,
+        'image': this.image,
+        'pub_date': this.publishedDate.toIso8601String(),
+        'content': this.content,
+        'uuid': this.uuid,
+      };
+
+  @override
+  bool get stringify => true;
+
+  @override
+  List<Object> get props => [
+        id,
+        source,
+        category,
+        author,
+        title,
+        description,
+        link,
+        image,
+        publishedDate,
+        content,
+        uuid,
+        related,
+        bookmarkNotifier.value,
+        likeNotifier.value,
+        likeCountNotifier.value,
+        bookmarkCountNotifier.value,
+        shareCountNotifier.value,
+        commentCountNotifier.value,
+        tag
+      ];
 }
 
-class NewsSourceModel {
+class NewsSource extends Equatable {
   final int id;
   final String name;
   final String code;
   final String icon;
   final int priority;
   final String favicon;
-  final FeedSourceApiResponse rawData;
-  final int followerCount;
-  final bool isFollowed;
+  final ValueNotifier<bool> followNotifier = ValueNotifier<bool>(false);
+  final ValueNotifier<int> followerCountNotifier = ValueNotifier<int>(0);
 
-  NewsSourceModel({
-    @required this.id,
-    @required this.name,
-    @required this.code,
-    @required this.icon,
-    @required this.priority,
-    @required this.favicon,
-    @required this.rawData,
-    @required this.isFollowed,
-    @required this.followerCount,
-  });
-
-  NewsSourceModel copyWith({
-    int id,
-    String name,
-    String code,
-    String icon,
-    int priority,
-    String favicon,
-    FeedSourceApiResponse rawData,
-    int followerCount,
+  NewsSource({
+    this.id,
+    this.name,
+    this.code,
+    this.icon,
+    this.priority,
+    this.favicon,
     bool isFollowed,
-  }) =>
-      NewsSourceModel(
-          id: id ?? this.id,
-          name: name ?? this.name,
-          code: code ?? this.code,
-          icon: icon ?? this.icon,
-          priority: priority ?? this.priority,
-          favicon: favicon ?? this.favicon,
-          rawData: rawData ?? this.rawData,
-          followerCount: followerCount ?? this.followerCount,
-          isFollowed: isFollowed ?? this.isFollowed);
+    int followerCount,
+  }) {
+    this.followNotifier.value = isFollowed;
+    this.followerCountNotifier.value = followerCount;
+  }
 
-  Map<String, dynamic> toJson() => <String, dynamic>{
+  bool get isValidIcon => Validator.isURL(icon);
+
+  bool get isValidFavIcon => Validator.isURL(favicon);
+  bool get isFollowed => followNotifier.value;
+  int get followerCount => followerCountNotifier.value;
+
+  Map<String, dynamic> toJson() => {
         'id': this.id,
         'name': this.name,
         'code': this.code,
         'icon': this.icon,
         'priority': this.priority,
         'favicon': this.favicon,
-        'enable': isFollowed,
+        'is_followed': this.isFollowed,
       };
+
+  @override
+  List<Object> get props => [
+        id,
+        name,
+        code,
+        icon,
+        priority,
+        favicon,
+        followNotifier.value,
+        followerCountNotifier.value
+      ];
+
+  @override
+  bool get stringify => true;
 }
 
-class NewsCategoryModel {
+class NewsCategory extends Equatable {
   final int id;
   final String name;
   final String code;
   final IconData icon;
   final int priority;
-  final FeedCategoryApiResponse rawData;
-  final int followerCount;
-  final bool isFollowed;
+  final ValueNotifier<bool> followNotifier = ValueNotifier<bool>(false);
+  final ValueNotifier<int> followerCountNotifier = ValueNotifier<int>(0);
 
-  NewsCategoryModel({
-    @required this.id,
-    @required this.name,
-    @required this.code,
-    @required this.icon,
-    @required this.priority,
-    @required this.rawData,
-    @required this.isFollowed,
-    @required this.followerCount,
-  });
-
-  NewsCategoryModel copyWith({
-    int id,
-    String name,
-    String code,
-    String icon,
-    int priority,
-    FeedSourceApiResponse rawData,
-    int followerCount,
+  NewsCategory({
+    this.id,
+    this.name,
+    this.code,
+    this.icon,
+    this.priority,
     bool isFollowed,
-  }) =>
-      NewsCategoryModel(
-          id: id ?? this.id,
-          name: name ?? this.name,
-          code: code ?? this.code,
-          icon: icon ?? this.icon,
-          priority: priority ?? this.priority,
-          rawData: rawData ?? this.rawData,
-          followerCount: followerCount ?? this.followerCount,
-          isFollowed: isFollowed ?? this.isFollowed);
+    int followerCount,
+  }) {
+    this.followNotifier.value = isFollowed;
+    this.followerCountNotifier.value = followerCount;
+  }
 
-  Map<String, dynamic> toJson() => <String, dynamic>{
+  // bool get isValidIcon => Validator.isURL(icon);
+
+  bool get isFollowed => followNotifier.value;
+  int get followerCount => followerCountNotifier.value;
+
+  Map<String, dynamic> toJson() => {
         'id': this.id,
         'name': this.name,
         'code': this.code,
-        'icon': this.icon,
+        // 'icon': this.icon,
         'priority': this.priority,
-        'enable': this.isFollowed,
-      };
-}
-
-class NewsTopicModel {
-  final String tag;
-  final String icon;
-  final int followerCount;
-  final bool isFollowed;
-  NewsTopicModel({
-    @required this.tag,
-    @required this.icon,
-    @required this.followerCount,
-    @required this.isFollowed,
-  });
-  NewsTopicModel copyWith({
-    String tag,
-    String icon,
-    int followerCount,
-    bool isFollowed,
-  }) =>
-      NewsTopicModel(
-          tag: tag ?? this.tag,
-          icon: icon ?? this.icon,
-          followerCount: followerCount ?? this.followerCount,
-          isFollowed: isFollowed ?? this.isFollowed);
-
-  Map<String, dynamic> toJson() => <String, dynamic>{
-        'tag': this.tag,
-        'icon': this.icon,
-        'follower_count': this.followerCount,
         'is_followed': this.isFollowed,
       };
+
+  @override
+  List<Object> get props => [
+        id,
+        name,
+        code,
+        // icon,
+        priority,
+        followNotifier.value,
+        followerCountNotifier.value
+      ];
+
+  @override
+  bool get stringify => true;
+}
+
+class NewsTopic extends Equatable {
+  final String title;
+  final String icon;
+  final ValueNotifier<bool> followNotifier = ValueNotifier<bool>(false);
+  final ValueNotifier<int> followerCountNotifier = ValueNotifier<int>(0);
+
+  NewsTopic({
+    this.title,
+    this.icon,
+    bool isFollowed,
+    int followerCount,
+  }) {
+    this.followNotifier.value = isFollowed;
+    this.followerCountNotifier.value = followerCount;
+  }
+
+  bool get isValidIcon => Validator.isURL(icon);
+  bool get isFollowed => followNotifier.value;
+  int get followerCount => followerCountNotifier.value;
+
+  @override
+  List<Object> get props =>
+      [title, icon, followNotifier.value, followerCountNotifier.value];
+
+  @override
+  bool get stringify => true;
+}
+
+class BookmarkedNewsFeed extends Equatable {
+  final String id;
+  final NewsSource source;
+  final NewsCategory category;
+  final String author;
+  final String title;
+  final String description;
+  final String link;
+  final String image;
+  final DateTime publishedDate;
+  final String content;
+  final String uuid;
+  final ValueNotifier<bool> bookmarkNotifier = ValueNotifier<bool>(false);
+  final ValueNotifier<bool> likeNotifier = ValueNotifier<bool>(false);
+  final ValueNotifier<int> likeCountNotifier = ValueNotifier<int>(0);
+  final ValueNotifier<int> bookmarkCountNotifier = ValueNotifier<int>(0);
+  final ValueNotifier<int> shareCountNotifier = ValueNotifier<int>(0);
+  final ValueNotifier<int> commentCountNotifier = ValueNotifier<int>(0);
+  final ValueNotifier<int> viewCountNotifier = ValueNotifier<int>(0);
+  final String timestamp;
+  final String userId;
+
+  BookmarkedNewsFeed({
+    @required this.id,
+    @required this.source,
+    @required this.category,
+    @required this.author,
+    @required this.title,
+    @required this.description,
+    @required this.link,
+    @required this.image,
+    @required this.publishedDate,
+    @required this.content,
+    @required this.uuid,
+    @required this.userId,
+    @required this.timestamp,
+    @required bool isBookmarked,
+    @required bool isLiked,
+    @required int likeCount,
+    @required int bookmarkCount,
+    @required int shareCount,
+    @required int commentCount,
+    @required int viewCount,
+  }) {
+    this.bookmarkNotifier.value = isBookmarked;
+    this.likeNotifier.value = isLiked;
+    this.bookmarkCountNotifier.value = bookmarkCount;
+    this.likeCountNotifier.value = likeCount;
+    this.shareCountNotifier.value = shareCount;
+    this.commentCountNotifier.value = commentCount;
+    this.viewCountNotifier.value = viewCount;
+  }
+
+  bool get isValidLink => Validator.isURL(link);
+
+  bool get isValidImage => Validator.isURL(image);
+  bool get isBookmarked => bookmarkNotifier.value;
+  bool get isLiked => likeNotifier.value;
+  int get likeCount => likeCountNotifier.value;
+  int get commentCount => commentCountNotifier.value;
+  int get shareCount => shareCountNotifier.value;
+  int get viewCount => viewCountNotifier.value;
+
+  Map<String, dynamic> toJson() => {
+        'id': this.id,
+        'source': this.source.toJson(),
+        'category': this.category.toJson(),
+        'author': this.author,
+        'title': this.title,
+        'description': this.description,
+        'link': this.link,
+        'image': this.image,
+        'pub_date': this.publishedDate.toIso8601String(),
+        'content': this.content,
+        'uuid': this.uuid,
+      };
+
+  @override
+  bool get stringify => true;
+
+  @override
+  List<Object> get props => [
+        id,
+        source,
+        category,
+        author,
+        title,
+        description,
+        link,
+        image,
+        publishedDate,
+        content,
+        uuid,
+        bookmarkNotifier.value,
+        likeNotifier.value,
+        likeCountNotifier.value,
+        bookmarkCountNotifier.value,
+        shareCountNotifier.value,
+        commentCountNotifier.value,
+      ];
 }

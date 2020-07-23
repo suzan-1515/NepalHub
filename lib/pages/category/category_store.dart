@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:mobx/mobx.dart';
 import 'package:samachar_hub/data/api/api.dart';
 import 'package:samachar_hub/data/models/models.dart';
-import 'package:samachar_hub/pages/news/news_repository.dart';
+import 'package:samachar_hub/repository/news_repository.dart';
 
 part 'category_store.g.dart';
 
@@ -13,13 +13,13 @@ abstract class _CategoryStore with Store {
   final NewsRepository _newsRepository;
   final String _category;
 
-  final StreamController<List<NewsFeedModel>> _dataStreamController =
-      StreamController<List<NewsFeedModel>>();
+  final StreamController<List<NewsFeed>> _dataStreamController =
+      StreamController<List<NewsFeed>>();
 
   _CategoryStore(this._newsRepository, this._category);
 
-  Stream<List<NewsFeedModel>> get dataStream => _dataStreamController.stream;
-  final List<NewsFeedModel> _data = List<NewsFeedModel>();
+  Stream<List<NewsFeed>> get dataStream => _dataStreamController.stream;
+  final List<NewsFeed> _data = List<NewsFeed>();
 
   bool _isLoading = false;
   bool _hasMore = false;

@@ -3,8 +3,8 @@ import 'dart:async';
 import 'package:mobx/mobx.dart';
 import 'package:samachar_hub/data/api/api.dart';
 import 'package:samachar_hub/data/models/models.dart';
-import 'package:samachar_hub/domain/sort.dart';
-import 'package:samachar_hub/pages/news/news_repository.dart';
+import 'package:samachar_hub/data/models/sort.dart';
+import 'package:samachar_hub/repository/news_repository.dart';
 
 part 'news_category_feed_store.g.dart';
 
@@ -13,18 +13,18 @@ class NewsCategoryFeedStore = _NewsCategoryFeedStore
 
 abstract class _NewsCategoryFeedStore with Store {
   final NewsRepository _newsRepository;
-  final NewsCategoryModel _categoryModel;
+  final NewsCategory _categoryModel;
 
   _NewsCategoryFeedStore(this._newsRepository, this._categoryModel);
 
-  StreamController<List<NewsFeedModel>> _dataStreamController =
-      StreamController<List<NewsFeedModel>>.broadcast();
-  Stream<List<NewsFeedModel>> get dataStream => _dataStreamController.stream;
+  StreamController<List<NewsFeed>> _dataStreamController =
+      StreamController<List<NewsFeed>>.broadcast();
+  Stream<List<NewsFeed>> get dataStream => _dataStreamController.stream;
 
   @observable
-  ObservableList<NewsSourceModel> sources = ObservableList();
+  ObservableList<NewsSource> sources = ObservableList();
 
-  List<NewsFeedModel> _data = List<NewsFeedModel>();
+  List<NewsFeed> _data = List<NewsFeed>();
 
   bool _isLoading = false;
   bool _hasMore = false;
@@ -32,13 +32,13 @@ abstract class _NewsCategoryFeedStore with Store {
   bool get isLoading => _isLoading;
   bool get hasMore => _hasMore;
 
-  NewsCategoryModel get categoryModel => _categoryModel;
+  NewsCategory get categoryModel => _categoryModel;
 
   @observable
   SortBy sort = SortBy.RELEVANCE;
 
   @observable
-  NewsSourceModel selectedSource;
+  NewsSource selectedSource;
 
   @observable
   APIException apiError;
@@ -130,7 +130,7 @@ abstract class _NewsCategoryFeedStore with Store {
   }
 
   @action
-  setSource(NewsSourceModel source) {
+  setSource(NewsSource source) {
     this.selectedSource = source;
     refresh();
   }

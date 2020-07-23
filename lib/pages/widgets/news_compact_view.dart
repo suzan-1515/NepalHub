@@ -7,7 +7,7 @@ import 'package:samachar_hub/services/services.dart';
 import 'package:samachar_hub/widgets/article_image_widget.dart';
 
 class NewsCompactView extends StatelessWidget {
-  final NewsFeedModel feed;
+  final NewsFeed feed;
   NewsCompactView({@required this.feed});
 
   @override
@@ -66,7 +66,7 @@ class NewsCompactView extends StatelessWidget {
                                 color: Colors.grey[100],
                                 child: CachedNetworkImage(
                                   fit: BoxFit.cover,
-                                  imageUrl: feed.sourceFavicon,
+                                  imageUrl: feed.source.favicon,
                                   placeholder: (context, _) =>
                                       Icon(FontAwesomeIcons.image),
                                   errorWidget: (context, url, error) =>
@@ -80,14 +80,14 @@ class NewsCompactView extends StatelessWidget {
                             ),
                             RichText(
                               text: TextSpan(
-                                text: feed.source,
+                                text: feed.source.name,
                                 style: Theme.of(context)
                                     .textTheme
                                     .subtitle2
                                     .copyWith(color: Colors.white),
                                 children: <TextSpan>[
                                   TextSpan(
-                                      text: '\n${feed.publishedAt}',
+                                      text: '\n${feed.momentPublishedDate}',
                                       style: Theme.of(context)
                                           .textTheme
                                           .caption
@@ -105,7 +105,7 @@ class NewsCompactView extends StatelessWidget {
                                   borderRadius:
                                       BorderRadius.all(Radius.circular(12))),
                               child: Text(
-                                feed.category,
+                                feed.category.name,
                                 style: Theme.of(context)
                                     .textTheme
                                     .caption

@@ -7,9 +7,9 @@ import 'package:samachar_hub/stores/stores.dart';
 import 'package:samachar_hub/widgets/article_image_widget.dart';
 
 class NewsThumbnailView extends StatelessWidget {
-  final NewsFeedModel feed;
-  final AuthenticationStore authenticationStore;
-  NewsThumbnailView({@required this.feed, @required this.authenticationStore});
+  final NewsFeed feed;
+  final AuthenticationStore authStore;
+  NewsThumbnailView({@required this.feed, @required this.authStore});
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +31,12 @@ class NewsThumbnailView extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: <Widget>[
-                FeedSourceSection(feed),
+                NewsFeedCardSourceCategory(
+                  category: feed.category.name,
+                  publishedDate: feed.momentPublishedDate,
+                  source: feed.source.name,
+                  sourceIcon: feed.source.favicon,
+                ),
                 SizedBox(height: 8),
                 AspectRatio(
                   aspectRatio: 16 / 9,
@@ -43,13 +48,13 @@ class NewsThumbnailView extends StatelessWidget {
                   ),
                 ),
                 SizedBox(height: 8),
-                FeedTitleDescriptionSection(feed),
+                NewsFeedCardTitleDescription(
+                  description: feed.description,
+                  title: feed.title,
+                ),
                 SizedBox(height: 8),
                 Divider(),
-                FeedOptionsSection(
-                  article: feed,
-                  authenticationStore: authenticationStore,
-                ),
+                NewsFeedOptions(feed: feed, authStore: authStore),
               ],
             ),
           ),

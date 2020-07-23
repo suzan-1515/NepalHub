@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:samachar_hub/data/models/news_model.dart';
-import 'package:samachar_hub/domain/sort.dart';
+import 'package:samachar_hub/data/models/sort.dart';
 import 'package:samachar_hub/pages/news/widgets/news_sources_selector.dart';
 import 'package:samachar_hub/widgets/sortby_selector.dart';
 
@@ -16,11 +16,11 @@ class NewsFilterView extends StatelessWidget {
     _initSourceOptions();
   }
 
-  final List<NewsSourceModel> sources;
-  final Function(NewsSourceModel) onSourceChanged;
+  final List<NewsSource> sources;
+  final Function(NewsSource) onSourceChanged;
   final Function(SortBy) onSortChanged;
   final SortBy initialSortBy;
-  final NewsSourceModel initialSource;
+  final NewsSource initialSource;
 
   final Map<String, String> sourceOptions = {};
 

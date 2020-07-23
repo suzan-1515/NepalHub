@@ -13,7 +13,7 @@ class FollowNewsCategoryList extends StatefulWidget {
     @required this.store,
   }) : super(key: key);
 
-  final List<NewsCategoryModel> data;
+  final List<NewsCategory> data;
   final FollowNewsCategoryStore store;
 
   @override
@@ -47,8 +47,7 @@ class _FollowNewsCategoryListState extends State<FollowNewsCategoryList> {
                 widget.store.followedNewsCategory(categoryModel);
               }
               setState(() {
-                widget.data[index] = categoryModel.copyWith(
-                    isFollowed: !categoryModel.isFollowed);
+                categoryModel.followNotifier.value = !categoryModel.isFollowed;
               });
             },
             followers: categoryModel.followerCount,

@@ -3,15 +3,23 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:samachar_hub/data/models/models.dart';
-import 'package:samachar_hub/repository/post_meta_repository.dart';
+import 'package:samachar_hub/repository/repositories.dart';
 import 'package:samachar_hub/services/services.dart';
 import 'package:samachar_hub/stores/stores.dart';
-import 'package:share/share.dart';
+import 'package:samachar_hub/widgets/icon_badge_widget.dart';
 
-class FeedSourceSection extends StatelessWidget {
-  final NewsFeedModel article;
+class NewsFeedCardSourceCategory extends StatelessWidget {
+  final String sourceIcon;
+  final String source;
+  final String publishedDate;
+  final String category;
 
-  const FeedSourceSection(this.article);
+  const NewsFeedCardSourceCategory({
+    @required this.sourceIcon,
+    @required this.source,
+    @required this.publishedDate,
+    @required this.category,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -20,20 +28,19 @@ class FeedSourceSection extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.start,
       children: <Widget>[
-        ClipRRect(
-          borderRadius: BorderRadius.circular(15),
-          child: Container(
-            width: 28,
-            height: 28,
-            alignment: Alignment.center,
+        Container(
+          width: 28,
+          height: 28,
+          alignment: Alignment.center,
+          decoration: BoxDecoration(
             color: Colors.grey[100],
-            child: CachedNetworkImage(
-              fit: BoxFit.cover,
-              imageUrl: article.sourceFavicon,
-              placeholder: (context, _) => Icon(FontAwesomeIcons.image),
-              errorWidget: (context, url, error) =>
-                  Icon(FontAwesomeIcons.image),
-            ),
+            borderRadius: BorderRadius.circular(15),
+          ),
+          child: CachedNetworkImage(
+            fit: BoxFit.cover,
+            imageUrl: sourceIcon,
+            placeholder: (context, _) => Icon(FontAwesomeIcons.image),
+            errorWidget: (context, url, error) => Icon(FontAwesomeIcons.image),
           ),
         ),
         SizedBox(
@@ -41,11 +48,11 @@ class FeedSourceSection extends StatelessWidget {
         ),
         RichText(
           text: TextSpan(
-            text: article.source,
+            text: source,
             style: Theme.of(context).textTheme.subtitle2,
             children: <TextSpan>[
               TextSpan(
-                  text: '\n${article.publishedAt}',
+                  text: '\n$publishedDate',
                   style: Theme.of(context).textTheme.caption)
             ],
           ),
@@ -55,9 +62,9 @@ class FeedSourceSection extends StatelessWidget {
           padding: const EdgeInsets.all(6),
           decoration: BoxDecoration(
               color: Theme.of(context).highlightColor,
-              borderRadius: BorderRadius.all(Radius.circular(12))),
+              borderRadius: BorderRadius.circular(12)),
           child: Text(
-            article.category,
+            category,
             style: Theme.of(context).textTheme.caption,
           ),
         ),
@@ -66,10 +73,14 @@ class FeedSourceSection extends StatelessWidget {
   }
 }
 
-class FeedTitleDescriptionSection extends StatelessWidget {
-  final NewsFeedModel article;
+class NewsFeedCardTitleDescription extends StatelessWidget {
+  final String title;
+  final String description;
 
-  const FeedTitleDescriptionSection(this.article);
+  const NewsFeedCardTitleDescription({
+    @required this.title,
+    @required this.description,
+  });
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -77,7 +88,7 @@ class FeedTitleDescriptionSection extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: <Widget>[
         Text(
-          article.title,
+          title ?? '',
           maxLines: 2,
           overflow: TextOverflow.ellipsis,
           style: Theme.of(context)
@@ -89,7 +100,7 @@ class FeedTitleDescriptionSection extends StatelessWidget {
           height: 8,
         ),
         Text(
-          article.description ?? '',
+          description ?? '',
           maxLines: 2,
           overflow: TextOverflow.ellipsis,
           style: Theme.of(context).textTheme.bodyText2,
@@ -99,15 +110,32 @@ class FeedTitleDescriptionSection extends StatelessWidget {
   }
 }
 
-class FeedOptionsSection extends StatelessWidget {
-  final NewsFeedModel article;
-  final AuthenticationStore authenticationStore;
-
-  FeedOptionsSection({
+class NewsFeedOptions extends StatefulWidget {
+  const NewsFeedOptions({
     Key key,
-    @required this.article,
-    @required this.authenticationStore,
+    @required this.feed,
+    @required this.authStore,
   }) : super(key: key);
+
+  final NewsFeed feed;
+  final AuthenticationStore authStore;
+
+  @override
+  _NewsFeedOptionsState createState() => _NewsFeedOptionsState();
+}
+
+class _NewsFeedOptionsState extends State<NewsFeedOptions> {
+  ValueNotifier<bool> _likeProgressNotifier = ValueNotifier<bool>(false);
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _likeProgressNotifier.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -119,53 +147,87 @@ class FeedOptionsSection extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
           ValueListenableBuilder(
-            valueListenable: article.liked,
-            builder: (context, value, child) {
-              return IconButton(
-                icon: Icon(
-                  value
-                      ? FontAwesomeIcons.solidThumbsUp
-                      : FontAwesomeIcons.thumbsUp,
-                  size: 16,
-                ),
-                onPressed: () async {
-                  if (!authenticationStore.isLoggedIn)
-                    return context
-                        .read<NavigationService>()
-                        .loginRedirect(context);
-                  if (value) {
-                    article.liked.value = false;
-                    context
-                        .read<PostMetaRepository>()
-                        .removeLike(
-                            postId: article.uuid,
-                            userId: authenticationStore.user.uId)
-                        .then((onValue) => article.liked.value = false)
-                        .catchError((onError) => article.liked.value = true);
-                  } else {
-                    article.liked.value = true;
-                    context
-                        .read<PostMetaRepository>()
-                        .postLike(
-                            postId: article.uuid,
-                            userId: authenticationStore.user.uId)
-                        .then((onValue) => article.liked.value = true)
-                        .catchError((onError) => article.liked.value = false);
-                  }
+            valueListenable: widget.feed.likeNotifier,
+            builder: (_, value, Widget child) {
+              return ValueListenableBuilder(
+                valueListenable: _likeProgressNotifier,
+                builder: (_, isLikeProgress, Widget child) {
+                  return IgnorePointer(
+                    ignoring: isLikeProgress,
+                    child: IconButton(
+                      icon: value
+                          ? Icon(
+                              FontAwesomeIcons.solidThumbsUp,
+                              size: 16,
+                              color: Colors.blue,
+                            )
+                          : Icon(
+                              FontAwesomeIcons.thumbsUp,
+                              size: 16,
+                            ),
+                      onPressed: () {
+                        _likeProgressNotifier.value = true;
+                        final authStore = context.read<AuthenticationStore>();
+                        if (!authStore.isLoggedIn)
+                          return context
+                              .read<NavigationService>()
+                              .loginRedirect(context);
+
+                        final isLiked = widget.feed.isLiked;
+                        widget.feed.likeNotifier.value = !value;
+                        if (isLiked) {
+                          context
+                              .read<PostMetaRepository>()
+                              .removeLike(
+                                postId: widget.feed.uuid,
+                                userId: authStore.user.uId,
+                              )
+                              .catchError((onError) =>
+                                  widget.feed.likeNotifier.value = isLiked)
+                              .whenComplete(
+                                  () => _likeProgressNotifier.value = false);
+                        } else {
+                          context
+                              .read<PostMetaRepository>()
+                              .postLike(
+                                postId: widget.feed.uuid,
+                                userId: authStore.user.uId,
+                              )
+                              .catchError((onError) =>
+                                  widget.feed.likeNotifier.value = isLiked)
+                              .whenComplete(
+                                  () => _likeProgressNotifier.value = false);
+                        }
+                      },
+                    ),
+                  );
                 },
               );
             },
           ),
-          IconButton(
-            icon: Icon(
-              FontAwesomeIcons.comment,
-              size: 16,
-            ),
-            onPressed: () {
-              context.read<NavigationService>().toCommentsScreen(
-                  context: context, title: article.title, postId: article.uuid);
-            },
-          ),
+          (widget.feed.commentCount != null && widget.feed.commentCount > 0)
+              ? IconBadge(
+                  iconData: FontAwesomeIcons.comment,
+                  badgeText: widget.feed.commentCount.toString(),
+                  onTap: () =>
+                      context.read<NavigationService>().toCommentsScreen(
+                            context: context,
+                            title: widget.feed.title,
+                            postId: widget.feed.uuid,
+                          ),
+                )
+              : IconButton(
+                  icon: Icon(
+                    FontAwesomeIcons.comment,
+                    size: 16,
+                  ),
+                  onPressed: () =>
+                      context.read<NavigationService>().toCommentsScreen(
+                            context: context,
+                            title: widget.feed.title,
+                            postId: widget.feed.uuid,
+                          ),
+                ),
           IconButton(
             icon: Icon(
               FontAwesomeIcons.shareAlt,
@@ -173,11 +235,13 @@ class FeedOptionsSection extends StatelessWidget {
             ),
             onPressed: () {
               context.read<ShareService>().share(
-                  postId: article.uuid,
-                  title: article.title,
-                  data: article.link);
-              context.read<PostMetaRepository>().postShare(
-                  postId: article.uuid, userId: authenticationStore.user.uId);
+                  postId: widget.feed.uuid,
+                  title: widget.feed.title,
+                  data: widget.feed.link);
+              if (widget.authStore.isLoggedIn)
+                context.read<PostMetaRepository>().postShare(
+                    postId: widget.feed.uuid,
+                    userId: widget.authStore.user.uId);
             },
           ),
           Spacer(),

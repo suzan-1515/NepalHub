@@ -4,7 +4,7 @@ import 'package:flutter/widgets.dart';
 import 'package:mobx/mobx.dart';
 import 'package:samachar_hub/data/api/api.dart';
 import 'package:samachar_hub/data/models/models.dart';
-import 'package:samachar_hub/pages/news/news_repository.dart';
+import 'package:samachar_hub/repository/news_repository.dart';
 
 part 'trending_news_store.g.dart';
 
@@ -13,12 +13,12 @@ class TrendingNewsStore = _TrendingNewsStore with _$TrendingNewsStore;
 abstract class _TrendingNewsStore with Store {
   final NewsRepository _newsRepository;
 
-  StreamController<List<NewsFeedModel>> _dataStreamController =
-      StreamController<List<NewsFeedModel>>.broadcast();
+  StreamController<List<NewsFeed>> _dataStreamController =
+      StreamController<List<NewsFeed>>.broadcast();
 
-  Stream<List<NewsFeedModel>> get dataStream => _dataStreamController.stream;
+  Stream<List<NewsFeed>> get dataStream => _dataStreamController.stream;
 
-  List<NewsFeedModel> data = List<NewsFeedModel>();
+  List<NewsFeed> data = List<NewsFeed>();
   bool _isLoadingMore = false;
   bool _hasMoreData = false;
 

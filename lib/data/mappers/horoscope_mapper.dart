@@ -2,7 +2,7 @@ import 'package:samachar_hub/data/api/response/horoscope_api_response.dart';
 import 'package:samachar_hub/data/models/models.dart';
 
 class HoroscopeMapper {
-  static HoroscopeModel fromHoroscopeApi(Np response) {
+  static HoroscopeModel fromHoroscopeApi(Np response, int defaultZodiacIndex) {
     return HoroscopeModel(
         type: response.type,
         title: response.title,
@@ -20,6 +20,7 @@ class HoroscopeMapper {
         capricorn: response.capricorn,
         aquarius: response.aquarius,
         pisces: response.pisces,
-        todate: response.formattedDate);
+        todate: response.formattedDate,
+        defaultSignIndex: defaultZodiacIndex);
   }
 }

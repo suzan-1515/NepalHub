@@ -84,9 +84,9 @@ class _NewsCategoryFeedScreenState extends State<NewsCategoryFeedScreen> {
 
   Widget _buildList(BuildContext context, NewsCategoryFeedStore store,
       AuthenticationStore authenticationStore) {
-    return StreamBuilder<List<NewsFeedModel>>(
+    return StreamBuilder<List<NewsFeed>>(
       stream: store.dataStream,
-      builder: (_, AsyncSnapshot<List<NewsFeedModel>> snapshot) {
+      builder: (_, AsyncSnapshot<List<NewsFeed>> snapshot) {
         if (snapshot.hasError) {
           return Center(
             child: ErrorDataView(
@@ -112,12 +112,12 @@ class _NewsCategoryFeedScreenState extends State<NewsCategoryFeedScreen> {
                 if (index % 5 == 0) {
                   widget = NewsThumbnailView(
                     feed: snapshot.data[index],
-                    authenticationStore: authenticationStore,
+                    authStore: authenticationStore,
                   );
                 } else {
                   widget = NewsListView(
                     feed: snapshot.data[index],
-                    authenticationStore: authenticationStore,
+                    authStore: authenticationStore,
                   );
                 }
 
@@ -149,14 +149,19 @@ class _NewsCategoryFeedScreenState extends State<NewsCategoryFeedScreen> {
                 ),
                 isFollowed: store.categoryModel.isFollowed,
                 onFollowTap: (value) {
+                  store.categoryModel.followNotifier.value = value;
                   if (value)
                     context
                         .read<FollowingRepository>()
-                        .followCategory(store.categoryModel);
+                        .followCategory(store.categoryModel)
+                        .catchError((onError) =>
+                            store.categoryModel.followNotifier.value = !value);
                   else
                     context
                         .read<FollowingRepository>()
-                        .unFollowCategory(store.categoryModel);
+                        .unFollowCategory(store.categoryModel)
+                        .catchError((onError) =>
+                            store.categoryModel.followNotifier.value = !value);
                 },
                 onSortByChanged: (value) {
                   store.setSortBy(value);

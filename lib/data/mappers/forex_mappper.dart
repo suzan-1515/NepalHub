@@ -2,7 +2,7 @@ import 'package:samachar_hub/data/api/response/forex_api_response.dart';
 import 'package:samachar_hub/data/models/models.dart';
 
 class ForexMapper {
-  static ForexModel fromApi(ForexApiResponse response) {
+  static ForexModel fromApi(ForexApiResponse response, String defaultCurrency) {
     return ForexModel(
         id: response.id,
         date: response.date,
@@ -15,6 +15,7 @@ class ForexMapper {
         source: sourceValues.reverse[response.source],
         sourceUrl: response.sourceUrl,
         addedDate: response.addedDate,
-        rawData: response.rawData,);
+        rawData: response.rawData,
+        isDefault: defaultCurrency == response.code);
   }
 }

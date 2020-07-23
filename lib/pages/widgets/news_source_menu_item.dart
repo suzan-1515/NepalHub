@@ -4,7 +4,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:samachar_hub/data/models/models.dart';
 
 class NewsSourceMenuItem extends StatelessWidget {
-  final NewsSourceModel source;
+  final NewsSource source;
   final Function onTap;
 
   const NewsSourceMenuItem(

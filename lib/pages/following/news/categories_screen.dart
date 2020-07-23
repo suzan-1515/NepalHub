@@ -75,7 +75,7 @@ class _FollowingNewsCategoryScreenState
   }
 
   Widget _buildCategoryList(FollowNewsCategoryStore favouritesStore) {
-    return StreamBuilder<List<NewsCategoryModel>>(
+    return StreamBuilder<List<NewsCategory>>(
       stream: favouritesStore.dataStream,
       builder: (context, snapshot) {
         if (snapshot.hasError) {

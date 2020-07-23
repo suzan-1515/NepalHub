@@ -3,16 +3,22 @@ import 'package:samachar_hub/data/mappers/mappers.dart';
 import 'package:samachar_hub/data/models/models.dart';
 import 'package:samachar_hub/pages/forex/forex_api_service.dart';
 import 'package:samachar_hub/services/analytics_service.dart';
+import 'package:samachar_hub/services/preference_service.dart';
 
 class ForexRepository {
+  final PreferenceService _preferenceService;
   final ForexApiService _forexApiService;
   final AnalyticsService _analyticsService;
 
-  ForexRepository(this._forexApiService, this._analyticsService);
+  ForexRepository(
+      this._preferenceService, this._forexApiService, this._analyticsService);
 
   Future<List<ForexModel>> getToday() async {
+    var defaultCurrency = _preferenceService.defaultForexCurrency;
     return _forexApiService.fetchTodayForex().then((onValue) {
-      return onValue.map((e) => ForexMapper.fromApi(e)).toList();
+      return onValue
+          .map((e) => ForexMapper.fromApi(e, defaultCurrency))
+          .toList();
     });
   }
 
@@ -20,11 +26,14 @@ class ForexRepository {
       {@required String currencyCode,
       @required String fromDate,
       @required String toDate}) async {
+    var defaultCurrency = _preferenceService.defaultForexCurrency;
     return _forexApiService
         .fetchForexByCountry(
             currencyCode: currencyCode, fromDate: fromDate, toDate: toDate)
         .then((onValue) {
-      return onValue.map((e) => ForexMapper.fromApi(e)).toList();
+      return onValue
+          .map((e) => ForexMapper.fromApi(e, defaultCurrency))
+          .toList();
     }).then((value) {
       _analyticsService.logForexFetched(currency: currencyCode);
       return value;

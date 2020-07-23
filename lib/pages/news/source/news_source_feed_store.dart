@@ -3,8 +3,8 @@ import 'dart:async';
 import 'package:mobx/mobx.dart';
 import 'package:samachar_hub/data/api/api.dart';
 import 'package:samachar_hub/data/models/models.dart';
-import 'package:samachar_hub/domain/sort.dart';
-import 'package:samachar_hub/pages/news/news_repository.dart';
+import 'package:samachar_hub/data/models/sort.dart';
+import 'package:samachar_hub/repository/news_repository.dart';
 
 part 'news_source_feed_store.g.dart';
 
@@ -12,18 +12,18 @@ class NewsSourceFeedStore = _NewsSourceFeedStore with _$NewsSourceFeedStore;
 
 abstract class _NewsSourceFeedStore with Store {
   final NewsRepository _newsRepository;
-  final NewsSourceModel _sourceModel;
-  final List<NewsSourceModel> _sources;
+  final NewsSource _sourceModel;
+  final List<NewsSource> _sources;
 
   _NewsSourceFeedStore(this._newsRepository, this._sourceModel, this._sources) {
     this.selectedSource = _sourceModel;
   }
 
-  StreamController<List<NewsFeedModel>> _dataStreamController =
-      StreamController<List<NewsFeedModel>>.broadcast();
-  Stream<List<NewsFeedModel>> get dataStream => _dataStreamController.stream;
+  StreamController<List<NewsFeed>> _dataStreamController =
+      StreamController<List<NewsFeed>>.broadcast();
+  Stream<List<NewsFeed>> get dataStream => _dataStreamController.stream;
 
-  List<NewsFeedModel> _data = List<NewsFeedModel>();
+  List<NewsFeed> _data = List<NewsFeed>();
 
   bool _isLoading = false;
   bool _hasMore = false;
@@ -31,14 +31,14 @@ abstract class _NewsSourceFeedStore with Store {
   bool get isLoading => _isLoading;
   bool get hasMore => _hasMore;
 
-  NewsSourceModel get source => _sourceModel;
-  List<NewsSourceModel> get sources => _sources;
+  NewsSource get source => _sourceModel;
+  List<NewsSource> get sources => _sources;
 
   @observable
   SortBy sort = SortBy.RELEVANCE;
 
   @observable
-  NewsSourceModel selectedSource;
+  NewsSource selectedSource;
 
   @observable
   APIException apiError;
@@ -115,7 +115,7 @@ abstract class _NewsSourceFeedStore with Store {
   }
 
   @action
-  setSource(NewsSourceModel source) {
+  setSource(NewsSource source) {
     this.selectedSource = source;
     refresh();
   }

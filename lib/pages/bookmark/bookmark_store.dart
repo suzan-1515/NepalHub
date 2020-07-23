@@ -18,16 +18,16 @@ abstract class _BookmarkStore with Store {
     this.userModel,
   );
 
-  List<NewsFeedModel> _feedData = List<NewsFeedModel>();
+  List<NewsFeed> _feedData = List<NewsFeed>();
 
   static const int DATA_LIMIT = 20;
 
   bool _hasMoreData = false;
   bool _isLoadingMore = false;
-  StreamController<List<NewsFeedModel>> _feedStreamController =
-      StreamController<List<NewsFeedModel>>.broadcast();
+  StreamController<List<NewsFeed>> _feedStreamController =
+      StreamController<List<NewsFeed>>.broadcast();
 
-  Stream<List<NewsFeedModel>> get feedStream => _feedStreamController.stream;
+  Stream<List<NewsFeed>> get feedStream => _feedStreamController.stream;
 
   @observable
   String error;
@@ -80,7 +80,7 @@ abstract class _BookmarkStore with Store {
   }
 
   @action
-  Future<bool> addBookmarkedFeed({@required NewsFeedModel feed}) async {
+  Future<bool> addBookmarkedFeed({@required NewsFeed feed}) async {
     return await _bookmarkRepository
         .postBookmark(postId: feed.uuid, user: userModel, bookmarkFeed: feed)
         .then((onValue) => true, onError: (e) {
@@ -90,7 +90,7 @@ abstract class _BookmarkStore with Store {
   }
 
   @action
-  Future<bool> removeBookmarkedFeed({@required NewsFeedModel feed}) async {
+  Future<bool> removeBookmarkedFeed({@required NewsFeed feed}) async {
     return await _bookmarkRepository
         .removeBookmark(postId: feed.uuid, userId: userModel.uId)
         .then((onValue) => true, onError: (e) {
@@ -100,7 +100,7 @@ abstract class _BookmarkStore with Store {
   }
 
   @action
-  Future<bool> isBookmarkedFeed({@required NewsFeedModel feed}) async {
+  Future<bool> isBookmarkedFeed({@required NewsFeed feed}) async {
     return await _bookmarkRepository
         .doesBookmarkExist(postId: feed.uuid, userId: userModel.uId)
         .then((onValue) => onValue, onError: (e) {

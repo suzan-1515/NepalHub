@@ -40,6 +40,8 @@ dependencies:
   webview_flutter: ^0.3.20+2
   intl: ^0.16.1
   path_provider: ^1.6.7
+  equatable: ^1.2.2
+  validators: ^2.0.0
   
   cloud_firestore: ^0.13.5
   google_sign_in: ^4.4.2

@@ -55,7 +55,7 @@ class _BookmarkScreenState extends State<BookmarkScreen> {
   }
 
   Widget _buildList(BookmarkStore _bookmarkStore) {
-    return StreamBuilder<List<NewsFeedModel>>(
+    return StreamBuilder<List<NewsFeed>>(
         stream: _bookmarkStore.feedStream,
         builder: (context, snapshot) {
           if (snapshot.hasError) {
@@ -75,7 +75,7 @@ class _BookmarkScreenState extends State<BookmarkScreen> {
                 itemCount: () => snapshot.data.length,
                 loadMore: () async {
                   await _bookmarkStore.loadMoreData(
-                      after: snapshot.data.last?.rawData['timestamp']);
+                      after: snapshot.data.last?.timestamp);
                 },
                 loadMoreOffsetFromBottom: 2,
                 itemBuilder: (BuildContext context, int index) {

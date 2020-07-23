@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:mobx/mobx.dart';
 import 'package:samachar_hub/data/api/api.dart';
 import 'package:samachar_hub/data/models/models.dart';
-import 'package:samachar_hub/pages/news/news_repository.dart';
+import 'package:samachar_hub/repository/news_repository.dart';
 import 'package:samachar_hub/repository/following_repository.dart';
 
 part 'category_store.g.dart';
@@ -17,11 +17,10 @@ abstract class _FollowNewsCategoryStore with Store {
 
   _FollowNewsCategoryStore(this._newsRepository, this._favouritesRepository);
 
-  StreamController<List<NewsCategoryModel>> _dataStreamController =
-      StreamController<List<NewsCategoryModel>>.broadcast();
+  StreamController<List<NewsCategory>> _dataStreamController =
+      StreamController<List<NewsCategory>>.broadcast();
 
-  Stream<List<NewsCategoryModel>> get dataStream =>
-      _dataStreamController.stream;
+  Stream<List<NewsCategory>> get dataStream => _dataStreamController.stream;
 
   @observable
   APIException apiError;
@@ -57,12 +56,12 @@ abstract class _FollowNewsCategoryStore with Store {
   }
 
   @action
-  Future<void> followedNewsCategory(NewsCategoryModel categoryModel) {
+  Future<void> followedNewsCategory(NewsCategory categoryModel) {
     return _favouritesRepository.followCategory(categoryModel);
   }
 
   @action
-  Future<void> unFollowedNewsCategory(NewsCategoryModel categoryModel) {
+  Future<void> unFollowedNewsCategory(NewsCategory categoryModel) {
     return _favouritesRepository.unFollowCategory(categoryModel);
   }
 

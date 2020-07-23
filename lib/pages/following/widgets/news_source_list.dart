@@ -13,7 +13,7 @@ class FollowNewsSourceList extends StatefulWidget {
     @required this.store,
   }) : super(key: key);
 
-  final List<NewsSourceModel> data;
+  final List<NewsSource> data;
   final FollowNewsSourceStore store;
 
   @override
@@ -46,8 +46,7 @@ class _FollowNewsSourceListState extends State<FollowNewsSourceList> {
                 widget.store.followedNewsSource(sourceModel);
               }
               setState(() {
-                widget.data[index] =
-                    sourceModel.copyWith(isFollowed: !sourceModel.isFollowed);
+                sourceModel.followNotifier.value = !sourceModel.isFollowed;
               });
             },
             followers: sourceModel.followerCount,

@@ -7,8 +7,8 @@ class EmptyDataView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
-      mainAxisSize: MainAxisSize.max,
-      mainAxisAlignment: MainAxisAlignment.center,
+      mainAxisSize: MainAxisSize.min,
+      mainAxisAlignment: MainAxisAlignment.start,
       children: <Widget>[
         Icon(
           FontAwesomeIcons.boxOpen,

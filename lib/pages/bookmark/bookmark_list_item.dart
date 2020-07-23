@@ -4,12 +4,15 @@ import 'package:provider/provider.dart';
 import 'package:samachar_hub/data/models/models.dart';
 import 'package:samachar_hub/pages/bookmark/bookmark_store.dart';
 import 'package:samachar_hub/pages/widgets/article_info_widget.dart';
+import 'package:samachar_hub/repository/repositories.dart';
+import 'package:samachar_hub/services/services.dart';
+import 'package:samachar_hub/stores/stores.dart';
 import 'package:samachar_hub/widgets/article_image_widget.dart';
 
 class BookmarkListItem extends StatelessWidget {
-  BookmarkListItem(this.article);
+  BookmarkListItem(this.feed);
 
-  final NewsFeedModel article;
+  final NewsFeed feed;
 
   @override
   Widget build(BuildContext context) {
@@ -26,68 +29,93 @@ class BookmarkListItem extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            FeedSourceSection(article),
+            NewsFeedCardSourceCategory(
+              category: feed.category.name,
+              publishedDate: feed.momentPublishedDate,
+              source: feed.source.name,
+              sourceIcon: feed.source.favicon,
+            ),
             SizedBox(height: 8),
-            IntrinsicHeight(
-              child: Row(
-                mainAxisSize: MainAxisSize.max,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: <Widget>[
-                  Expanded(
-                    flex: 4,
-                    child: FeedTitleDescriptionSection(article),
+            Row(
+              mainAxisSize: MainAxisSize.max,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Expanded(
+                  flex: 4,
+                  child: NewsFeedCardTitleDescription(
+                    description: feed.description,
+                    title: feed.title,
                   ),
-                  SizedBox(
-                    width: 8,
-                    height: 8,
-                  ),
-                  Expanded(
-                    flex: 2,
+                ),
+                SizedBox(
+                  width: 8,
+                  height: 8,
+                ),
+                Expanded(
+                  flex: 2,
+                  child: AspectRatio(
+                    aspectRatio: 4 / 3,
                     child: ClipRRect(
                       borderRadius: BorderRadius.all(Radius.circular(6)),
-                      child:
-                          ArticleImageWidget(article.image, tag: article.tag),
+                      child: ArticleImageWidget(feed.image, tag: feed.tag),
                     ),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
             SizedBox(height: 8),
             Divider(),
-            Consumer<BookmarkStore>(
-              builder: (context, bookmarkStore, child) {
-                return Row(
-                  mainAxisSize: MainAxisSize.max,
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
-                    IconButton(
-                      icon: Icon(
-                        FontAwesomeIcons.shareAlt,
-                        size: 16,
-                      ),
-                      onPressed: () {},
-                    ),
-                    IconButton(
-                      icon: Icon(
-                        FontAwesomeIcons.comment,
-                        size: 16,
-                      ),
-                      onPressed: () {},
-                    ),
-                    IconButton(
-                      icon: Icon(
-                        FontAwesomeIcons.solidBookmark,
-                        size: 16,
-                      ),
-                      onPressed: () async {
-                        bookmarkStore.removeBookmarkedFeed(feed: article).then(
-                            (onValue) => article.bookmarked.value = !onValue);
-                      },
-                    ),
-                  ],
-                );
-              },
+            Row(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                IconButton(
+                  icon: Icon(
+                    FontAwesomeIcons.shareAlt,
+                    size: 16,
+                  ),
+                  onPressed: () {
+                    context.read<ShareService>().share(
+                          postId: feed.uuid,
+                          title: feed.title,
+                          data: feed.link,
+                        );
+                    final authStore = context.read<AuthenticationStore>();
+                    if (authStore.isLoggedIn)
+                      context.read<PostMetaRepository>().postShare(
+                            postId: feed.uuid,
+                            userId: authStore.user.uId,
+                          );
+                  },
+                ),
+                IconButton(
+                  icon: Icon(
+                    FontAwesomeIcons.comment,
+                    size: 16,
+                  ),
+                  onPressed: () {
+                    context.read<NavigationService>().toCommentsScreen(
+                          context: context,
+                          title: feed.title,
+                          postId: feed.uuid,
+                        );
+                  },
+                ),
+                IconButton(
+                  icon: Icon(
+                    FontAwesomeIcons.solidBookmark,
+                    size: 16,
+                  ),
+                  onPressed: () async {
+                    context
+                        .read<BookmarkStore>()
+                        .removeBookmarkedFeed(feed: feed)
+                        .then((onValue) =>
+                            feed.bookmarkNotifier.value = !onValue);
+                  },
+                ),
+              ],
             ),
           ],
         ),

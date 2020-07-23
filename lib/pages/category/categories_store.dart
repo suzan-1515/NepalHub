@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:mobx/mobx.dart';
 import 'package:samachar_hub/data/api/api.dart';
 import 'package:samachar_hub/data/models/models.dart';
-import 'package:samachar_hub/pages/news/news_repository.dart';
+import 'package:samachar_hub/repository/news_repository.dart';
 import 'package:samachar_hub/util/content_view_type.dart';
 import 'package:throttling/throttling.dart';
 
@@ -14,15 +14,14 @@ class CategoriesStore = _CategoriesStore with _$CategoriesStore;
 abstract class _CategoriesStore with Store {
   final NewsRepository _newsRepository;
 
-  final StreamController<List<NewsCategoryModel>> _dataStreamController =
-      StreamController<List<NewsCategoryModel>>();
+  final StreamController<List<NewsCategory>> _dataStreamController =
+      StreamController<List<NewsCategory>>();
   final Throttling _throttling = Throttling(duration: Duration(minutes: 1));
 
   _CategoriesStore(this._newsRepository);
 
-  Stream<List<NewsCategoryModel>> get dataStream =>
-      _dataStreamController.stream;
-  final List<NewsCategoryModel> _data = List<NewsCategoryModel>();
+  Stream<List<NewsCategory>> get dataStream => _dataStreamController.stream;
+  final List<NewsCategory> _data = List<NewsCategory>();
 
   bool _isLoading = false;
 

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:samachar_hub/domain/sort.dart';
+import 'package:samachar_hub/data/models/sort.dart';
 
 class SortBySelector extends StatefulWidget {
   const SortBySelector({

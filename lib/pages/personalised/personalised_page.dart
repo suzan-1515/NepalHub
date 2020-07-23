@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:mobx/mobx.dart';
+import 'dart:math' as math;
 import 'package:provider/provider.dart';
 import 'package:samachar_hub/data/api/api.dart';
 import 'package:samachar_hub/data/models/models.dart';
@@ -37,7 +38,7 @@ class _PersonalisedPageState extends State<PersonalisedPage>
 
   @override
   void initState() {
-    final store = Provider.of<PersonalisedFeedStore>(context, listen: false);
+    final store = context.read<PersonalisedFeedStore>();
     _setupObserver(store);
     store.loadInitialData();
     final newsSettingNotifier = context.read<NewsSettingNotifier>();
@@ -58,9 +59,11 @@ class _PersonalisedPageState extends State<PersonalisedPage>
 
   _showMessage(String message) {
     if (null != message)
-      Scaffold.of(context).showSnackBar(
-        SnackBar(content: Text(message)),
-      );
+      Scaffold.of(context)
+        ..hideCurrentSnackBar()
+        ..showSnackBar(
+          SnackBar(content: Text(message)),
+        );
   }
 
   _showErrorDialog(APIException apiError) {
@@ -91,74 +94,65 @@ class _PersonalisedPageState extends State<PersonalisedPage>
     ];
   }
 
-  Widget _buildMixedSection(
-      int index, PersonalisedFeedStore personalisedStore) {
-    if (index == 5) {
+  Widget _buildMixedSection(int index, Map<MixedDataType, dynamic> data,
+      PersonalisedFeedStore personalisedStore) {
+    if (index == 5 && data.containsKey(MixedDataType.NEWS_TOPIC)) {
       //topics view
-      if (personalisedStore.sectionData[MixedDataType.NEWS_TOPIC] != null)
-        return Consumer<NavigationService>(
-          builder:
-              (BuildContext context, NavigationService service, Widget child) {
-            final topicModel =
-                personalisedStore.sectionData[MixedDataType.NEWS_TOPIC];
-            return NewsTopicsSection(
-              item: topicModel,
-              onTap: (topic) => service.toNewsTopicFeedScreen(
-                topicModel: topic,
-                context: context,
-              ),
-            );
-          },
-        );
-    }
-    if (index == 10) {
-      //category view
-      if (personalisedStore.sectionData[MixedDataType.NEWS_CATEGORY] != null)
-        return NewsCategoryMenuSection(
-          items: personalisedStore.sectionData[MixedDataType.NEWS_CATEGORY],
-        );
-    }
-    if (index == 15) {
-      //sources view
-      if (personalisedStore.sectionData[MixedDataType.NEWS_SOURCE] != null)
-        return NewsSourceMenuSection(
-          items: personalisedStore.sectionData[MixedDataType.NEWS_SOURCE],
-        );
-    }
-    if (index == 20) {
-      //sources view
-      if (personalisedStore.sectionData[MixedDataType.FOREX] != null)
-        return OtherMenuSection(
-          forexData: personalisedStore.sectionData[MixedDataType.FOREX],
-        );
-    }
-
-    if ((index + 1) % 6 == 0) {
-      return Container(
-        color: Colors.blueGrey,
-        padding: const EdgeInsets.all(8),
-        child: Text(
-          'This is a ad section',
-          style: Theme.of(context).textTheme.headline6,
-        ),
+      final topics = data[MixedDataType.NEWS_TOPIC];
+      return NewsTopicsSection(
+        items: topics,
+        onTap: (topic) =>
+            context.read<NavigationService>().toNewsTopicFeedScreen(
+                  topicModel: topic,
+                  context: context,
+                ),
       );
     }
+    if (index == 10 && data.containsKey(MixedDataType.NEWS_CATEGORY)) {
+      //category view
+      return NewsCategoryMenuSection(
+        items: data[MixedDataType.NEWS_CATEGORY],
+      );
+    }
+    if (index == 15 && data.containsKey(MixedDataType.NEWS_SOURCE)) {
+      //sources view
+      return NewsSourceMenuSection(
+        items: data[MixedDataType.NEWS_SOURCE],
+      );
+    }
+    if (index == 20 && data.containsKey(MixedDataType.FOREX)) {
+      //sources view
+      return OtherMenuSection(
+        forexData: data[MixedDataType.FOREX],
+      );
+    }
+
+    // if ((index + 1) % 6 == 0) {
+    //   return Container(
+    //     color: Colors.blueGrey,
+    //     padding: const EdgeInsets.all(8),
+    //     child: Text(
+    //       'This is a ad section',
+    //       style: Theme.of(context).textTheme.headline6,
+    //     ),
+    //   );
+    // }
 
     return SizedBox.shrink();
   }
 
-  Widget _buildLatestFeed(int index, NewsFeedModel feed,
+  Widget _buildLatestFeed(int index, NewsFeed feed,
       PersonalisedFeedStore personalisedStore, authenticationStore) {
     Widget feedWidget;
     if (index % 3 == 0) {
       feedWidget = NewsThumbnailView(
         feed: feed,
-        authenticationStore: authenticationStore,
+        authStore: authenticationStore,
       );
     } else {
       feedWidget = NewsListView(
         feed: feed,
-        authenticationStore: authenticationStore,
+        authStore: authenticationStore,
       );
     }
     if (index == 0) {
@@ -174,79 +168,88 @@ class _PersonalisedPageState extends State<PersonalisedPage>
         ],
       );
     }
+
     return feedWidget;
+  }
+
+  SliverList _buildLatestNewsList(
+      Map<MixedDataType, dynamic> data,
+      PersonalisedFeedStore personalisedStore,
+      AuthenticationStore authenticationStore) {
+    final feeds = data[MixedDataType.LATEST_NEWS];
+    return SliverList(
+      delegate: SliverChildBuilderDelegate(
+        (_, int index) {
+          final int itemIndex = index ~/ 2;
+          if (index.isEven) {
+            return _buildLatestFeed(itemIndex, feeds[itemIndex],
+                personalisedStore, authenticationStore);
+          } else {
+            return _buildMixedSection(itemIndex, data, personalisedStore);
+          }
+        },
+        childCount: math.max(0, feeds.length * 2 - 1),
+        semanticIndexCallback: (Widget _, int index) {
+          return index.isEven ? index ~/ 2 : null;
+        },
+      ),
+    );
   }
 
   Widget _buildList() {
     return Consumer2<PersonalisedFeedStore, AuthenticationStore>(
         builder: (context, personalisedStore, authenticationStore, child) {
-      return RefreshIndicator(
-        onRefresh: () async {
-          await personalisedStore.refresh();
-        },
-        child: StreamBuilder<List>(
-            stream: personalisedStore.dataStream,
-            builder: (context, snapshot) {
-              if (snapshot.hasError) {
+      return StreamBuilder<Map<MixedDataType, dynamic>>(
+          stream: personalisedStore.dataStream,
+          builder: (context, snapshot) {
+            if (snapshot.hasError) {
+              return Center(
+                child: ErrorDataView(
+                  onRetry: () => personalisedStore.retry(),
+                ),
+              );
+            }
+            if (snapshot.hasData) {
+              if (snapshot.data.isEmpty) {
                 return Center(
-                  child: ErrorDataView(
-                    onRetry: () => personalisedStore.retry(),
-                  ),
+                  child: EmptyDataView(),
                 );
               }
-              if (snapshot.hasData) {
-                if (snapshot.data.isEmpty) {
-                  return Center(
-                    child: EmptyDataView(),
-                  );
-                }
 
-                return NestedScrollView(
-                  headerSliverBuilder: (_, bool innerBoxIsScrolled) {
-                    var widgets = <Widget>[];
-                    widgets
-                        .add(SliverToBoxAdapter(child: DateWeatherSection()));
-                    if (personalisedStore.sectionData[MixedDataType.CORONA] !=
-                        null) {
-                      widgets.add(SliverToBoxAdapter(
-                        child: CoronaSection(
-                            data: personalisedStore
-                                .sectionData[MixedDataType.CORONA]),
-                      ));
-                    }
-                    if (personalisedStore
-                            .sectionData[MixedDataType.TRENDING_NEWS] !=
-                        null) {
-                      widgets.add(SliverToBoxAdapter(
-                        child: TrendingNewsSection(
-                          feeds: personalisedStore
-                              .sectionData[MixedDataType.TRENDING_NEWS],
+              return RefreshIndicator(
+                onRefresh: () async {
+                  await personalisedStore.refresh();
+                },
+                child: CustomScrollView(
+                  slivers: <Widget>[
+                    if (snapshot.data.containsKey(MixedDataType.DATE_INFO))
+                      SliverToBoxAdapter(child: DateWeatherSection()),
+                    if (snapshot.data.containsKey(MixedDataType.CORONA))
+                      SliverToBoxAdapter(
+                          child: CoronaSection(
+                              data: snapshot.data[MixedDataType.CORONA])),
+                    if (snapshot.data.containsKey(MixedDataType.TRENDING_NEWS))
+                      SliverToBoxAdapter(
+                          child: TrendingNewsSection(
+                        feeds: snapshot.data[MixedDataType.TRENDING_NEWS],
+                      )),
+                    if (snapshot.data.containsKey(MixedDataType.LATEST_NEWS))
+                      _buildLatestNewsList(
+                          snapshot.data, personalisedStore, authenticationStore)
+                    else
+                      SliverFillRemaining(
+                        child: Center(
+                          child: EmptyDataView(
+                            text: 'News feed is not available at the moment.',
+                          ),
                         ),
-                      ));
-                    }
-                    return widgets;
-                  },
-                  body: ListView.separated(
-                    itemCount: personalisedStore
-                            .sectionData[MixedDataType.LATEST_NEWS]?.length ??
-                        0,
-                    itemBuilder: (_, int index) {
-                      return _buildLatestFeed(
-                          index,
-                          personalisedStore
-                              .sectionData[MixedDataType.LATEST_NEWS][index],
-                          personalisedStore,
-                          authenticationStore);
-                    },
-                    separatorBuilder: (_, int index) {
-                      return _buildMixedSection(index, personalisedStore);
-                    },
-                  ),
-                );
-              }
-              return Center(child: ProgressView());
-            }),
-      );
+                      ),
+                  ],
+                ),
+              );
+            }
+            return Center(child: ProgressView());
+          });
     });
   }
 
@@ -284,5 +287,6 @@ enum MixedDataType {
   NEWS_SOURCE,
   FOREX,
   HOROSCOPE,
-  CORONA
+  CORONA,
+  EMPTY
 }

@@ -8,7 +8,7 @@ import 'package:samachar_hub/pages/widgets/section_heading.dart';
 import 'package:samachar_hub/services/services.dart';
 
 class NewsSourceMenuSection extends StatelessWidget {
-  final List<NewsSourceModel> items;
+  final List<NewsSource> items;
   const NewsSourceMenuSection({
     Key key,
     this.items,

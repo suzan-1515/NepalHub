@@ -1,7 +1,8 @@
+import 'package:equatable/equatable.dart';
 import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 
-class ForexModel {
+class ForexModel extends Equatable {
   final Map<String, dynamic> rawData;
   final int id;
   final DateTime date;
@@ -14,7 +15,7 @@ class ForexModel {
   final String source;
   final String sourceUrl;
   final DateTime addedDate;
-  bool isDefault = false;
+  final ValueNotifier<bool> defaultNotifier = ValueNotifier<bool>(false);
 
   ForexModel(
       {@required this.id,
@@ -29,8 +30,29 @@ class ForexModel {
       @required this.sourceUrl,
       @required this.addedDate,
       @required this.rawData,
-      this.isDefault});
+      @required bool isDefault}) {
+    defaultNotifier.value = isDefault;
+  }
+
+  bool get isDefault => defaultNotifier.value;
 
   String formattedDate(DateTime date) =>
       DateFormat('dd MMMM, yyyy').format(date);
+
+  @override
+  List<Object> get props => [
+        id,
+        date,
+        type,
+        code,
+        currency,
+        unit,
+        buying,
+        selling,
+        source,
+        sourceUrl,
+        addedDate,
+        rawData,
+        defaultNotifier.value
+      ];
 }

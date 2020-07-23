@@ -12,14 +12,14 @@ mixin _$NewsCategoryFeedStore on _NewsCategoryFeedStore, Store {
   final _$sourcesAtom = Atom(name: '_NewsCategoryFeedStore.sources');
 
   @override
-  ObservableList<NewsSourceModel> get sources {
+  ObservableList<NewsSource> get sources {
     _$sourcesAtom.context.enforceReadPolicy(_$sourcesAtom);
     _$sourcesAtom.reportObserved();
     return super.sources;
   }
 
   @override
-  set sources(ObservableList<NewsSourceModel> value) {
+  set sources(ObservableList<NewsSource> value) {
     _$sourcesAtom.context.conditionallyRunInAction(() {
       super.sources = value;
       _$sourcesAtom.reportChanged();
@@ -47,14 +47,14 @@ mixin _$NewsCategoryFeedStore on _NewsCategoryFeedStore, Store {
       Atom(name: '_NewsCategoryFeedStore.selectedSource');
 
   @override
-  NewsSourceModel get selectedSource {
+  NewsSource get selectedSource {
     _$selectedSourceAtom.context.enforceReadPolicy(_$selectedSourceAtom);
     _$selectedSourceAtom.reportObserved();
     return super.selectedSource;
   }
 
   @override
-  set selectedSource(NewsSourceModel value) {
+  set selectedSource(NewsSource value) {
     _$selectedSourceAtom.context.conditionallyRunInAction(() {
       super.selectedSource = value;
       _$selectedSourceAtom.reportChanged();
@@ -164,7 +164,7 @@ mixin _$NewsCategoryFeedStore on _NewsCategoryFeedStore, Store {
   }
 
   @override
-  dynamic setSource(NewsSourceModel source) {
+  dynamic setSource(NewsSource source) {
     final _$actionInfo = _$_NewsCategoryFeedStoreActionController.startAction();
     try {
       return super.setSource(source);

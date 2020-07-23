@@ -44,7 +44,7 @@ mixin _$BookmarkStore on _BookmarkStore, Store {
   final _$addBookmarkedFeedAsyncAction = AsyncAction('addBookmarkedFeed');
 
   @override
-  Future<bool> addBookmarkedFeed({@required NewsFeedModel feed}) {
+  Future<bool> addBookmarkedFeed({@required NewsFeed feed}) {
     return _$addBookmarkedFeedAsyncAction
         .run(() => super.addBookmarkedFeed(feed: feed));
   }
@@ -52,7 +52,7 @@ mixin _$BookmarkStore on _BookmarkStore, Store {
   final _$removeBookmarkedFeedAsyncAction = AsyncAction('removeBookmarkedFeed');
 
   @override
-  Future<bool> removeBookmarkedFeed({@required NewsFeedModel feed}) {
+  Future<bool> removeBookmarkedFeed({@required NewsFeed feed}) {
     return _$removeBookmarkedFeedAsyncAction
         .run(() => super.removeBookmarkedFeed(feed: feed));
   }
@@ -60,7 +60,7 @@ mixin _$BookmarkStore on _BookmarkStore, Store {
   final _$isBookmarkedFeedAsyncAction = AsyncAction('isBookmarkedFeed');
 
   @override
-  Future<bool> isBookmarkedFeed({@required NewsFeedModel feed}) {
+  Future<bool> isBookmarkedFeed({@required NewsFeed feed}) {
     return _$isBookmarkedFeedAsyncAction
         .run(() => super.isBookmarkedFeed(feed: feed));
   }

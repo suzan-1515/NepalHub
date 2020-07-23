@@ -18,8 +18,9 @@ import 'package:samachar_hub/pages/home/home_screen_store.dart';
 import 'package:samachar_hub/pages/horoscope/horoscope_api_service.dart';
 import 'package:samachar_hub/pages/horoscope/horoscope_repository.dart';
 import 'package:samachar_hub/pages/more_menu/more_menu_store.dart';
-import 'package:samachar_hub/pages/news/news_api_service.dart';
-import 'package:samachar_hub/pages/news/news_repository.dart';
+import 'package:samachar_hub/services/news_api_service.dart';
+import 'package:samachar_hub/repository/news_repository.dart';
+import 'package:samachar_hub/pages/personalised/personalised_store.dart';
 import 'package:samachar_hub/pages/personalised/personalised_store.dart';
 import 'package:samachar_hub/pages/settings/settings_store.dart';
 import 'package:samachar_hub/repository/following_repository.dart';
@@ -32,7 +33,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'common/themes.dart' as Themes;
 import 'pages/bookmark/bookmark_firestore_service.dart';
 import 'pages/bookmark/bookmark_repository.dart';
-import 'pages/bookmark/bookmark_store.dart';
 import 'pages/corona/corona_store.dart';
 
 Future<void> main() async {
@@ -108,13 +108,16 @@ class App extends StatelessWidget {
         Provider<CoronaRepository>(
           create: (_) => CoronaRepository(CoronaApiService()),
         ),
-        ProxyProvider<AnalyticsService, ForexRepository>(
-          update: (_, analyticsService, __) =>
-              ForexRepository(ForexApiService(), analyticsService),
+        ProxyProvider2<PreferenceService, AnalyticsService, ForexRepository>(
+          update: (_, preferenceService, analyticsService, __) =>
+              ForexRepository(
+                  preferenceService, ForexApiService(), analyticsService),
         ),
-        ProxyProvider<AnalyticsService, HoroscopeRepository>(
-          update: (_, analyticsService, __) =>
-              HoroscopeRepository(HoroscopeApiService(), analyticsService),
+        ProxyProvider2<PreferenceService, AnalyticsService,
+            HoroscopeRepository>(
+          update: (_, preferenceService, analyticsService, __) =>
+              HoroscopeRepository(
+                  preferenceService, HoroscopeApiService(), analyticsService),
         ),
 
         ProxyProvider2<AnalyticsService, PreferenceService,
@@ -146,6 +149,7 @@ class App extends StatelessWidget {
                   _coronaRepository, __) =>
               PersonalisedFeedStore(_newsRepository, _horoscopeRepository,
                   _forexRepository, _coronaRepository),
+          dispose: (context, value) => value.dispose(),
         ),
         ProxyProvider<NewsRepository, CategoriesStore>(
           update: (_, _newsRepository, __) => CategoriesStore(_newsRepository),
@@ -154,6 +158,7 @@ class App extends StatelessWidget {
 
         ProxyProvider<NewsRepository, FollowingStore>(
           update: (_, _newsRepository, __) => FollowingStore(_newsRepository),
+          dispose: (context, value) => value.dispose(),
         ),
 
         ProxyProvider<CoronaRepository, CoronaStore>(

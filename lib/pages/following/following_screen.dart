@@ -81,7 +81,7 @@ class _FollowingPageState extends State<FollowingPage>
 
   Widget _buildNewsSourcesList(
       BuildContext context, FollowingStore favouritesStore) {
-    return StreamBuilder<List<NewsSourceModel>>(
+    return StreamBuilder<List<NewsSource>>(
       stream: favouritesStore.newsSourceFeedStream,
       builder: (_, snapshot) {
         if (snapshot.hasError) {
@@ -164,7 +164,7 @@ class _FollowingPageState extends State<FollowingPage>
 
   Widget _buildNewsCategoriesList(
       BuildContext context, FollowingStore favouritesStore) {
-    return StreamBuilder<List<NewsCategoryModel>>(
+    return StreamBuilder<List<NewsCategory>>(
       stream: favouritesStore.newsCategoryFeedStream,
       builder: (context, snapshot) {
         if (snapshot.hasError) {
@@ -246,7 +246,7 @@ class _FollowingPageState extends State<FollowingPage>
   }
 
   Widget _buildNewsTopicsList(FollowingStore favouritesStore) {
-    return StreamBuilder<List<NewsTopicModel>>(
+    return StreamBuilder<List<NewsTopic>>(
       stream: favouritesStore.newsTopicFeedStream,
       builder: (context, snapshot) {
         if (snapshot.hasError) {
@@ -268,7 +268,7 @@ class _FollowingPageState extends State<FollowingPage>
             runSpacing: 6.0,
             children: snapshot.data
                 .map((e) => NewsTagItem(
-                      title: e.tag,
+                      title: e.title,
                       onTap: (value) {
                         context.read<NavigationService>().toNewsTopicFeedScreen(
                             context: context, topicModel: e);

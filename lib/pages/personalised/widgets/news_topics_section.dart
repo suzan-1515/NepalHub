@@ -5,11 +5,11 @@ import 'package:samachar_hub/pages/widgets/news_tag_item.dart';
 import 'package:samachar_hub/pages/widgets/section_heading.dart';
 
 class NewsTopicsSection extends StatelessWidget {
-  final List<NewsTopicModel> item;
-  final Function(NewsTopicModel) onTap;
+  final List<NewsTopic> items;
+  final Function(NewsTopic) onTap;
   const NewsTopicsSection({
     Key key,
-    this.item,
+    this.items,
     this.onTap,
   }) : super(key: key);
 
@@ -29,9 +29,9 @@ class NewsTopicsSection extends StatelessWidget {
           child: Wrap(
             spacing: 6.0,
             runSpacing: 6.0,
-            children: item
+            children: items
                 .map((e) => NewsTagItem(
-                      title: e.tag,
+                      title: e.title,
                       onTap: (value) => this.onTap(e),
                     ))
                 .toList(),

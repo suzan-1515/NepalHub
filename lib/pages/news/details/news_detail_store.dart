@@ -11,42 +11,33 @@ abstract class _NewsDetailStore with Store {
   final ShareService shareService;
   final UserModel user;
   final BookmarkRepository _bookmarkRepository;
-  final NewsFeedModel feed;
+  final NewsFeed feed;
 
   _NewsDetailStore(
       this.shareService, this.user, this._bookmarkRepository, this.feed);
-
-  @observable
-  bool bookmarkStatus = false;
 
   @observable
   String message;
 
   @action
   bookmarkFeed() {
+    feed.bookmarkNotifier.value = true;
     _bookmarkRepository
         .postBookmark(postId: feed.uuid, user: user, bookmarkFeed: feed)
-        .then((onValue) {
-      bookmarkStatus = true;
-      feed.bookmarked.value = true;
-    }, onError: (e) {
+        .catchError((onError) {
       message = 'Unable to bookmark';
-      bookmarkStatus = false;
-      feed.bookmarked.value = false;
+      feed.bookmarkNotifier.value = false;
     });
   }
 
   @action
   removeBookmarkedFeed() {
+    feed.bookmarkNotifier.value = false;
     _bookmarkRepository
         .removeBookmark(postId: feed.uuid, userId: user.uId)
-        .then((onValue) {
-      bookmarkStatus = true;
-      feed.bookmarked.value = true;
-    }, onError: (e) {
+        .catchError((onError) {
       message = 'Unable to remove bookmark';
-      bookmarkStatus = false;
-      feed.bookmarked.value = false;
+      feed.bookmarkNotifier.value = true;
     });
   }
 

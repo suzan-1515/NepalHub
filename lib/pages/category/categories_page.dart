@@ -8,7 +8,7 @@ import 'package:samachar_hub/notifier/news_setting_notifier.dart';
 import 'package:samachar_hub/pages/category/categories_store.dart';
 import 'package:samachar_hub/pages/category/category_store.dart';
 import 'package:samachar_hub/pages/category/category_view.dart';
-import 'package:samachar_hub/pages/news/news_repository.dart';
+import 'package:samachar_hub/repository/news_repository.dart';
 import 'package:samachar_hub/pages/widgets/api_error_dialog.dart';
 import 'package:samachar_hub/pages/widgets/content_view_type_menu_widget.dart';
 import 'package:samachar_hub/pages/widgets/empty_data_widget.dart';
@@ -86,7 +86,7 @@ class _CategoriesPageState extends State<CategoriesPage>
     ];
   }
 
-  List<Tab> _buildTabs(List<NewsCategoryModel> data) {
+  List<Tab> _buildTabs(List<NewsCategory> data) {
     return data
         .map(
           (e) => Tab(key: ValueKey<String>(e.code), text: e.name),
@@ -104,10 +104,10 @@ class _CategoriesPageState extends State<CategoriesPage>
   }
 
   Widget _buildContent(CategoriesStore store, NewsRepository newsRepository) {
-    return StreamBuilder<List<NewsCategoryModel>>(
+    return StreamBuilder<List<NewsCategory>>(
       stream: store.dataStream,
-      builder: (BuildContext context,
-          AsyncSnapshot<List<NewsCategoryModel>> snapshot) {
+      builder:
+          (BuildContext context, AsyncSnapshot<List<NewsCategory>> snapshot) {
         if (snapshot.hasError) {
           return Center(
             child: ErrorDataView(

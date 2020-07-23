@@ -92,7 +92,7 @@ class _NewsCategoryViewState extends State<NewsCategoryView> {
             child) {
       return Observer(builder: (_) {
         final ContentViewType viewType = categoriesStore.view;
-        return StreamBuilder<List<NewsFeedModel>>(
+        return StreamBuilder<List<NewsFeed>>(
             stream: categoryStore.dataStream,
             builder: (_, snapshot) {
               if (snapshot.hasError) {
@@ -116,19 +116,19 @@ class _NewsCategoryViewState extends State<NewsCategoryView> {
                       },
                       loadMoreOffsetFromBottom: 2,
                       itemBuilder: (_, int index) {
-                        final NewsFeedModel feed = snapshot.data[index];
+                        final NewsFeed feed = snapshot.data[index];
                         Widget articleWidget;
                         switch (viewType) {
                           case ContentViewType.LIST_VIEW:
                             articleWidget = NewsListView(
                               feed: feed,
-                              authenticationStore: authenticationStore,
+                              authStore: authenticationStore,
                             );
                             break;
                           case ContentViewType.THUMBNAIL_VIEW:
                             articleWidget = NewsThumbnailView(
                               feed: feed,
-                              authenticationStore: authenticationStore,
+                              authStore: authenticationStore,
                             );
                             break;
                           case ContentViewType.COMPACT_VIEW:

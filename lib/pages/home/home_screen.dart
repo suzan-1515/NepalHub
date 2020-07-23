@@ -7,6 +7,7 @@ import 'package:samachar_hub/pages/following/following_screen.dart';
 import 'package:samachar_hub/pages/home/home_screen_store.dart';
 import 'package:samachar_hub/pages/more_menu/more_menu_screen.dart';
 import 'package:samachar_hub/pages/pages.dart';
+import 'package:samachar_hub/pages/personalised/personalised_page.dart';
 
 class HomeScreen extends StatefulWidget {
   @override

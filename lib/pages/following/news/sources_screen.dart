@@ -55,7 +55,7 @@ class _FollowingNewsSourceScreenState extends State<FollowingNewsSourceScreen> {
   }
 
   Widget _buildSourceList(FollowNewsSourceStore favouritesStore) {
-    return StreamBuilder<List<NewsSourceModel>>(
+    return StreamBuilder<List<NewsSource>>(
       stream: favouritesStore.dataStream,
       builder: (context, snapshot) {
         if (snapshot.hasError) {

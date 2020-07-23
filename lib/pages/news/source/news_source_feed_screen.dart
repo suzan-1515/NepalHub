@@ -84,9 +84,9 @@ class _NewsSourceFeedScreenState extends State<NewsSourceFeedScreen> {
 
   Widget _buildList(BuildContext context, NewsSourceFeedStore store,
       AuthenticationStore authStore) {
-    return StreamBuilder<List<NewsFeedModel>>(
+    return StreamBuilder<List<NewsFeed>>(
       stream: store.dataStream,
-      builder: (_, AsyncSnapshot<List<NewsFeedModel>> snapshot) {
+      builder: (_, AsyncSnapshot<List<NewsFeed>> snapshot) {
         if (snapshot.hasError) {
           return Center(
             child: ErrorDataView(
@@ -112,12 +112,12 @@ class _NewsSourceFeedScreenState extends State<NewsSourceFeedScreen> {
                 if (index % 5 == 0) {
                   widget = NewsThumbnailView(
                     feed: snapshot.data[index],
-                    authenticationStore: authStore,
+                    authStore: authStore,
                   );
                 } else {
                   widget = NewsListView(
                     feed: snapshot.data[index],
-                    authenticationStore: authStore,
+                    authStore: authStore,
                   );
                 }
 
@@ -150,12 +150,19 @@ class _NewsSourceFeedScreenState extends State<NewsSourceFeedScreen> {
             ),
             isFollowed: store.source.isFollowed,
             onFollowTap: (value) {
+              store.source.followNotifier.value = value;
               if (value)
-                context.read<FollowingRepository>().followSource(store.source);
+                context
+                    .read<FollowingRepository>()
+                    .followSource(store.source)
+                    .catchError((onError) =>
+                        store.source.followNotifier.value = !value);
               else
                 context
                     .read<FollowingRepository>()
-                    .unFollowSource(store.source);
+                    .unFollowSource(store.source)
+                    .catchError((onError) =>
+                        store.source.followNotifier.value = !value);
             },
             onSortByChanged: (value) {
               store.setSortBy(value);

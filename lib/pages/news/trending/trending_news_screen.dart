@@ -78,10 +78,10 @@ class _TrendingNewsScreenState extends State<TrendingNewsScreen> {
   Widget _buildList() {
     return Consumer2<TrendingNewsStore, AuthenticationStore>(
       builder: (context, store, authenticationStore, child) {
-        return StreamBuilder<List<NewsFeedModel>>(
+        return StreamBuilder<List<NewsFeed>>(
           stream: store.dataStream,
-          builder: (BuildContext context,
-              AsyncSnapshot<List<NewsFeedModel>> snapshot) {
+          builder:
+              (BuildContext context, AsyncSnapshot<List<NewsFeed>> snapshot) {
             if (snapshot.hasError) {
               return Center(
                 child: ErrorDataView(
@@ -104,7 +104,7 @@ class _TrendingNewsScreenState extends State<TrendingNewsScreen> {
                   itemBuilder: (_, int index) {
                     return NewsListView(
                       feed: snapshot.data[index],
-                      authenticationStore: authenticationStore,
+                      authStore: authenticationStore,
                     );
                   },
                 ),

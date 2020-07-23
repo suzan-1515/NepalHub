@@ -111,7 +111,7 @@ class _MoreMenuScreenState extends State<MoreMenuScreen> {
   Widget _buildSettingsMenu(BuildContext context) {
     return MoreMenuListItem(
       title: 'Settings',
-      icon: FontAwesomeIcons.poll,
+      icon: FontAwesomeIcons.cog,
       onTap: () {
         context.read<NavigationService>().toSettingsScreen(context: context);
       },

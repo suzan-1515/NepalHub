@@ -3,11 +3,12 @@ import 'dart:developer';
 
 import 'package:mobx/mobx.dart';
 import 'package:samachar_hub/data/api/api.dart';
+import 'package:samachar_hub/data/models/horoscope_type.dart';
 import 'package:samachar_hub/pages/corona/corona_repository.dart';
 import 'package:samachar_hub/pages/forex/forex_repository.dart';
 import 'package:samachar_hub/pages/horoscope/horoscope_repository.dart';
-import 'package:samachar_hub/pages/news/news_repository.dart';
-import 'package:samachar_hub/pages/pages.dart';
+import 'package:samachar_hub/repository/news_repository.dart';
+import 'package:samachar_hub/pages/personalised/personalised_page.dart';
 import 'package:samachar_hub/util/content_view_type.dart';
 
 part 'personalised_store.g.dart';
@@ -21,17 +22,16 @@ abstract class _PersonalisedFeedStore with Store {
   final ForexRepository _forexRepository;
   final CoronaRepository _coronaRepository;
 
-  StreamController<List> _dataStreamController =
-      StreamController<List>.broadcast();
+  StreamController<Map<MixedDataType, dynamic>> _dataStreamController =
+      StreamController<Map<MixedDataType, dynamic>>.broadcast();
 
-  Stream<List> get dataStream => _dataStreamController.stream;
+  Stream<Map<MixedDataType, dynamic>> get dataStream =>
+      _dataStreamController.stream;
 
   _PersonalisedFeedStore(this._newsRepository, this._horoscopeRepository,
       this._forexRepository, this._coronaRepository);
 
-  Map<MixedDataType, dynamic> sectionData = Map<MixedDataType, dynamic>();
-
-  List data = List();
+  Map<MixedDataType, dynamic> _data = Map<MixedDataType, dynamic>();
 
   @observable
   APIException apiError;
@@ -41,6 +41,8 @@ abstract class _PersonalisedFeedStore with Store {
 
   @observable
   ContentViewType view = ContentViewType.THUMBNAIL_VIEW;
+
+  bool _isBuilding = false;
 
   @action
   void loadInitialData() {
@@ -59,14 +61,32 @@ abstract class _PersonalisedFeedStore with Store {
 
   @action
   Future _buildData() async {
-    data.clear();
-    _buildLatestNewsData();
-    _loadTrendingNewsData();
-    _loadCoronaData();
-    _buildNewsTopicsData();
-    _buildNewsCategoryData();
-    _buildNewsSourceData();
-    _buildForexData();
+    if (_isBuilding) return;
+    _isBuilding = true;
+
+    _data.clear();
+    await Future.wait(
+      [
+        _loadDateWeatherData(),
+        _loadCoronaData(),
+        _loadTrendingNewsData(),
+        _loadLatestNewsData(),
+        _loadNewsTopicsData(),
+        _loadNewsCategoryData(),
+        _loadNewsSourceData(),
+        _loadForexData(),
+        _loadHoroscopeData(),
+      ],
+    ).catchError((onError) {
+      this.apiError = onError;
+      _dataStreamController.addError(onError);
+    }, test: (e) => e is APIException).catchError((onError) {
+      this.error = onError.toString();
+    });
+
+    _dataStreamController.add(_data);
+
+    _isBuilding = false;
   }
 
   @action
@@ -74,85 +94,111 @@ abstract class _PersonalisedFeedStore with Store {
     view = value;
   }
 
-  Future _buildNewsTopicsData() async {
-    return _newsRepository
-        .getTopics()
-        .then((onValue) {
-          sectionData[MixedDataType.NEWS_TOPIC] = onValue;
-        })
-        .catchError((onError) {}, test: (e) => e is APIException)
-        .catchError((onError) {});
+  Future<bool> _loadDateWeatherData() async {
+    _data[MixedDataType.DATE_INFO] = null;
+    return true;
   }
 
-  Future _buildNewsSourceData() async {
-    return _newsRepository
-        .getSources()
-        .then((onValue) {
-          sectionData[MixedDataType.NEWS_SOURCE] =
-              onValue?.where((element) => element.isFollowed)?.toList();
-        })
-        .catchError((onError) {}, test: (e) => e is APIException)
-        .catchError((onError) {});
+  Future<bool> _loadNewsTopicsData() async {
+    return _newsRepository.getTopics().then((onValue) {
+      if (onValue != null && onValue.isNotEmpty) {
+        _data[MixedDataType.NEWS_TOPIC] = onValue;
+        return true;
+      }
+      return false;
+    }).catchError((onError) => false);
   }
 
-  Future _buildNewsCategoryData() async {
-    return _newsRepository
-        .getCategories()
-        .then((onValue) {
-          sectionData[MixedDataType.NEWS_CATEGORY] =
-              onValue?.where((element) => element.isFollowed)?.toList();
-        })
-        .catchError((onError) {}, test: (e) => e is APIException)
-        .catchError((onError) {});
+  Future<bool> _loadNewsSourceData() async {
+    return _newsRepository.getSources(followedOnly: true).then((onValue) {
+      if (onValue != null && onValue.isNotEmpty) {
+        _data[MixedDataType.NEWS_SOURCE] = onValue;
+        return true;
+      }
+      return false;
+    }).catchError((onError) => false);
   }
 
-  Future<void> _loadTrendingNewsData({String limit = '5'}) {
+  Future<bool> _loadNewsCategoryData() async {
+    return _newsRepository.getCategories(followedOnly: true).then((onValue) {
+      if (onValue != null && onValue.isNotEmpty) {
+        _data[MixedDataType.NEWS_CATEGORY] = onValue;
+        return true;
+      }
+      return false;
+    }).catchError((onError) => false);
+  }
+
+  Future<bool> _loadTrendingNewsData({String limit = '5'}) {
     return _newsRepository.getTrendingFeeds(limit: limit).then((onValue) {
       if (onValue != null && onValue.isNotEmpty) {
-        sectionData[MixedDataType.TRENDING_NEWS] = onValue;
-        _dataStreamController.add([MixedDataType.TRENDING_NEWS]);
+        _data[MixedDataType.TRENDING_NEWS] = onValue;
+        return true;
       }
+      return false;
     }).catchError((onError) {
       log('Trending news section data error', stackTrace: onError);
-    }, test: (e) => e is APIException).catchError(
-        (onError) => this.error = onError.toString());
+      return false;
+    });
   }
 
-  Future _buildLatestNewsData() async {
+  Future<bool> _loadLatestNewsData() async {
     return _newsRepository.getLatestFeeds().then((onValue) {
-      sectionData[MixedDataType.LATEST_NEWS] = onValue;
-      _dataStreamController.add([MixedDataType.LATEST_NEWS]);
-    }).catchError((onError) {
-      this.apiError = onError;
-    }, test: (e) => e is APIException).catchError(
-        (onError) => this.error = onError.toString());
+      if (onValue != null && onValue.isNotEmpty) {
+        _data[MixedDataType.LATEST_NEWS] = onValue;
+        return true;
+      }
+      return false;
+    });
   }
 
-  Future _loadCoronaData() async {
+  Future<bool> _loadCoronaData() async {
     return _coronaRepository.getByCountry().then((onValue) {
       if (onValue != null) {
-        sectionData[MixedDataType.CORONA] = onValue;
-        _dataStreamController.add([MixedDataType.CORONA]);
+        _data[MixedDataType.CORONA] = onValue;
+        return true;
       }
+      return false;
     }).catchError((onError) {
       log('Corona section data error', stackTrace: onError);
-    }, test: (e) => e is APIException).catchError(
-        (onError) => this.error = onError.toString());
+      return false;
+    });
   }
 
-  Future _buildForexData() async {
+  Future<bool> _loadForexData() async {
     return _forexRepository.getToday().then((onValue) {
       if (onValue != null && onValue.isNotEmpty) {
         var defaultForex = onValue.firstWhere(
-          (element) => element.code == 'USD',
-          orElse: () => null,
+          (element) => element.isDefault,
+          orElse: () => onValue.first,
         );
-        sectionData[MixedDataType.FOREX] = defaultForex;
+        _data[MixedDataType.FOREX] = defaultForex;
+        return true;
       }
+      return false;
     }).catchError((onError) {
-      log('Forex data error', stackTrace: onError);
-    }, test: (e) => e is APIException).catchError(
-        (onError) => log('Forex data error', stackTrace: onError));
+      log('Forex data load error', stackTrace: onError);
+      return false;
+    });
+  }
+
+  Future<bool> _loadHoroscopeData() async {
+    return _horoscopeRepository.getHoroscope().then((onValue) {
+      if (onValue != null && onValue.isNotEmpty) {
+        var defaultHoroscope = onValue[HoroscopeType.DAILY]?.defaultHoroscope;
+        _data[MixedDataType.HOROSCOPE] = defaultHoroscope;
+        return true;
+      }
+      return false;
+    }).catchError((onError) {
+      log('Horoscope data load error', stackTrace: onError);
+      return false;
+    });
+  }
+
+  @action
+  Future loadMoreData() {
+    return _buildData();
   }
 
   dispose() {

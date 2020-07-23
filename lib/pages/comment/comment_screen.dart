@@ -11,7 +11,6 @@ import 'package:samachar_hub/pages/comment/widgets/comment_item.dart';
 import 'package:samachar_hub/pages/widgets/api_error_dialog.dart';
 import 'package:samachar_hub/pages/widgets/empty_data_widget.dart';
 import 'package:samachar_hub/pages/widgets/error_data_widget.dart';
-import 'package:samachar_hub/pages/widgets/page_heading_widget.dart';
 import 'package:samachar_hub/pages/widgets/progress_widget.dart';
 import 'package:samachar_hub/services/services.dart';
 import 'package:samachar_hub/stores/stores.dart';
@@ -222,11 +221,15 @@ class _CommentScreenState extends State<CommentScreen> {
   }
 
   Widget _buildCommentInputBar(BuildContext context, CommentStore store) {
-    return Consumer2<AuthenticationStore, NavigationService>(
-      builder: (_, AuthenticationStore authStore,
-          NavigationService navigationService, Widget child) {
+    return Consumer<AuthenticationStore>(
+      builder: (_, AuthenticationStore authStore, Widget child) {
         return Container(
-          color: Theme.of(context).backgroundColor,
+          decoration: BoxDecoration(
+            color: Theme.of(context).backgroundColor,
+            border: Border(
+                top: BorderSide(
+                    color: Theme.of(context).dividerColor, width: 0.5)),
+          ),
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
           child: Observer(
             builder: (_) {
@@ -250,8 +253,8 @@ class _CommentScreenState extends State<CommentScreen> {
                         child: Container(
                       child: TextField(
                         onSubmitted: (value) {
-                          _submitComment(context, store, authStore,
-                              navigationService, value.trim());
+                          _submitComment(
+                              context, store, authStore, value.trim());
                           _textEditingController.clear();
                           FocusScope.of(context).unfocus();
                         },
@@ -271,11 +274,7 @@ class _CommentScreenState extends State<CommentScreen> {
                         color: Colors.lightBlue,
                       ),
                       onPressed: () {
-                        _submitComment(
-                            context,
-                            store,
-                            authStore,
-                            navigationService,
+                        _submitComment(context, store, authStore,
                             _textEditingController.value.text.trim());
                         _textEditingController.clear();
                         FocusScope.of(context).unfocus();
@@ -291,19 +290,15 @@ class _CommentScreenState extends State<CommentScreen> {
     );
   }
 
-  _submitComment(
-      BuildContext context,
-      CommentStore store,
-      AuthenticationStore authStore,
-      NavigationService navigationService,
-      String comment) async {
+  _submitComment(BuildContext context, CommentStore store,
+      AuthenticationStore authStore, String comment) async {
     if (comment == null || comment.isEmpty) return;
     if (authStore.isLoggedIn) {
       return store.submitComment(comment: comment).then((value) {
         _showMessage('Comment posted.');
       });
     }
-    navigationService.loginRedirect(context);
+    context.read<NavigationService>().loginRedirect(context);
   }
 
   @override

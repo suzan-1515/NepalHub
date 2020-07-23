@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 final lightTheme = ThemeData(
-  fontFamily: 'Raleway',
+  fontFamily: GoogleFonts.lato().fontFamily,
   // textTheme: _textTheme,
   tabBarTheme: TabBarTheme(
-    labelStyle: TextStyle(fontFamily: 'Raleway', fontWeight: FontWeight.w700, fontSize: 16),
+    labelStyle: TextStyle(fontWeight: FontWeight.w700, fontSize: 16),
     labelColor: Colors.black,
     unselectedLabelColor: Colors.black54,
-    unselectedLabelStyle: TextStyle(fontFamily: 'Raleway', fontWeight: FontWeight.w700, fontSize: 16),
-    indicator: UnderlineTabIndicator(borderSide: BorderSide(color: Colors.red, width: 3)),
+    unselectedLabelStyle: TextStyle(fontWeight: FontWeight.w700, fontSize: 16),
+    indicator: UnderlineTabIndicator(
+        borderSide: BorderSide(color: Colors.red, width: 3)),
   ),
   brightness: Brightness.light,
   primarySwatch: Colors.blueGrey,
@@ -20,9 +22,7 @@ final lightTheme = ThemeData(
   splashColor: Colors.red[200],
   bottomAppBarColor: Colors.white,
   indicatorColor: Colors.red,
-  iconTheme: IconThemeData(
-    color: Colors.black
-  ),
+  iconTheme: IconThemeData(color: Colors.black),
   buttonTheme: ButtonThemeData(
     buttonColor: Colors.white70,
     textTheme: ButtonTextTheme.normal,
@@ -34,12 +34,13 @@ final lightTheme = ThemeData(
 );
 
 final darkTheme = ThemeData(
-  fontFamily: 'Raleway',
+  fontFamily: GoogleFonts.lato().fontFamily,
   // textTheme: _textTheme,
   tabBarTheme: TabBarTheme(
-    labelStyle: TextStyle(fontFamily: 'Raleway', fontWeight: FontWeight.w700, fontSize: 16),
-    unselectedLabelStyle: TextStyle(fontFamily: 'Raleway', fontWeight: FontWeight.w700, fontSize: 16),
-    indicator: UnderlineTabIndicator(borderSide: BorderSide(color: Colors.red, width: 3)),
+    labelStyle: TextStyle(fontWeight: FontWeight.w700, fontSize: 16),
+    unselectedLabelStyle: TextStyle(fontWeight: FontWeight.w700, fontSize: 16),
+    indicator: UnderlineTabIndicator(
+        borderSide: BorderSide(color: Colors.red, width: 3)),
   ),
   brightness: Brightness.dark,
   primarySwatch: Colors.blueGrey,
@@ -51,9 +52,7 @@ final darkTheme = ThemeData(
   splashColor: Colors.red[100],
   indicatorColor: Colors.red,
   bottomAppBarColor: Colors.grey[700],
-  iconTheme: IconThemeData(
-    color: Colors.white
-  ),
+  iconTheme: IconThemeData(color: Colors.white),
   buttonTheme: ButtonThemeData(
     buttonColor: Colors.white30,
     textTheme: ButtonTextTheme.normal,
@@ -65,12 +64,13 @@ final darkTheme = ThemeData(
 );
 
 final pitchBlack = ThemeData(
-  fontFamily: 'Raleway',
+  fontFamily: GoogleFonts.lato().fontFamily,
   // textTheme: _textTheme,
   tabBarTheme: TabBarTheme(
-    labelStyle: TextStyle(fontFamily: 'Raleway', fontWeight: FontWeight.w700, fontSize: 16),
-    unselectedLabelStyle: TextStyle(fontFamily: 'Raleway', fontWeight: FontWeight.w700, fontSize: 16),
-    indicator: UnderlineTabIndicator(borderSide: BorderSide(color: Colors.red, width: 3)),
+    labelStyle: TextStyle(fontWeight: FontWeight.w700, fontSize: 16),
+    unselectedLabelStyle: TextStyle(fontWeight: FontWeight.w700, fontSize: 16),
+    indicator: UnderlineTabIndicator(
+        borderSide: BorderSide(color: Colors.red, width: 3)),
   ),
   brightness: Brightness.dark,
   primarySwatch: Colors.blueGrey,

@@ -108,6 +108,16 @@ mixin _$PersonalisedFeedStore on _PersonalisedFeedStore, Store {
   }
 
   @override
+  Future<dynamic> loadMoreData() {
+    final _$actionInfo = _$_PersonalisedFeedStoreActionController.startAction();
+    try {
+      return super.loadMoreData();
+    } finally {
+      _$_PersonalisedFeedStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   String toString() {
     final string =
         'apiError: ${apiError.toString()},error: ${error.toString()},view: ${view.toString()}';
