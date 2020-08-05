@@ -148,22 +148,31 @@ class _NewsSourceFeedScreenState extends State<NewsSourceFeedScreen> {
               ),
               fit: BoxFit.cover,
             ),
-            isFollowed: store.source.isFollowed,
-            onFollowTap: (value) {
-              store.source.followNotifier.value = value;
-              if (value)
-                context
-                    .read<FollowingRepository>()
-                    .followSource(store.source)
-                    .catchError((onError) =>
-                        store.source.followNotifier.value = !value);
-              else
-                context
-                    .read<FollowingRepository>()
-                    .unFollowSource(store.source)
-                    .catchError((onError) =>
-                        store.source.followNotifier.value = !value);
-            },
+            followUnFollowButton: ValueListenableBuilder<bool>(
+              valueListenable: store.source.followNotifier,
+              builder: (context, value, child) => RaisedButton(
+                visualDensity: VisualDensity.compact,
+                textColor: Colors.white,
+                color: value ? Colors.grey : Colors.blue,
+                child: Text(value ? 'Followed' : 'Follow'),
+                onPressed: () {
+                  final currentValue = value;
+                  store.source.follow = !value;
+                  if (currentValue)
+                    context
+                        .read<FollowingRepository>()
+                        .unFollowSource(store.source)
+                        .catchError(
+                            (onError) => store.source.follow = currentValue);
+                  else
+                    context
+                        .read<FollowingRepository>()
+                        .followSource(store.source)
+                        .catchError(
+                            (onError) => store.source.follow = currentValue);
+                },
+              ),
+            ),
             onSortByChanged: (value) {
               store.setSortBy(value);
             },

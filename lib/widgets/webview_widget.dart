@@ -12,7 +12,7 @@ class Webview extends StatefulWidget {
 }
 
 class _WebviewState extends State<Webview> {
-  final ValueNotifier<bool> _isLoading = ValueNotifier<bool>(false);
+  final ValueNotifier<bool> _isLoading = ValueNotifier<bool>(true);
   @override
   void dispose() {
     _isLoading.dispose();
@@ -35,8 +35,8 @@ class _WebviewState extends State<Webview> {
                 ValueListenableBuilder<bool>(
                   builder: (BuildContext context, bool value, Widget child) {
                     return value
-                        ? SizedBox.shrink()
-                        : LinearProgressIndicator();
+                        ? LinearProgressIndicator()
+                        : SizedBox.shrink();
                   },
                   valueListenable: _isLoading,
                 ),
@@ -44,11 +44,9 @@ class _WebviewState extends State<Webview> {
                   child: WebView(
                     initialUrl: widget.url,
                     javascriptMode: JavascriptMode.unrestricted,
-                    onPageStarted: (String url) {
-                      if (url.contains(widget.url)) _isLoading.value = true;
-                    },
+                    onPageStarted: (String url) {},
                     onPageFinished: (String url) {
-                      if (url.contains(widget.url)) _isLoading.value = false;
+                      _isLoading.value = false;
                     },
                     gestureNavigationEnabled: true,
                   ),

@@ -52,13 +52,13 @@ class NewsFeed extends Equatable {
       @required int shareCount,
       @required int commentCount,
       @required int viewCount}) {
-    this.bookmarkNotifier.value = isBookmarked;
-    this.likeNotifier.value = isLiked;
-    this.bookmarkCountNotifier.value = bookmarkCount;
-    this.likeCountNotifier.value = likeCount;
-    this.shareCountNotifier.value = shareCount;
-    this.commentCountNotifier.value = commentCount;
-    this.viewCountNotifier.value = viewCount;
+    this.bookmarkNotifier.value = isBookmarked ?? false;
+    this.likeNotifier.value = isLiked ?? false;
+    this.bookmarkCountNotifier.value = bookmarkCount ?? 0;
+    this.likeCountNotifier.value = likeCount ?? 0;
+    this.shareCountNotifier.value = shareCount ?? 0;
+    this.commentCountNotifier.value = commentCount ?? 0;
+    this.viewCountNotifier.value = viewCount ?? 0;
   }
 
   bool get isValidLink => Validator.isURL(link);
@@ -70,6 +70,31 @@ class NewsFeed extends Equatable {
   int get commentCount => commentCountNotifier.value;
   int get shareCount => shareCountNotifier.value;
   int get viewCount => viewCountNotifier.value;
+  int get bookmarkCount => bookmarkCountNotifier.value;
+
+  set like(bool value) {
+    this.likeNotifier.value = value;
+    this.likeCountNotifier.value = value ? likeCount + 1 : likeCount - 1;
+  }
+
+  set bookmark(bool value) {
+    this.bookmarkNotifier.value = value;
+    this.bookmarkCountNotifier.value =
+        value ? bookmarkCount + 1 : bookmarkCount - 1;
+  }
+
+  set comment(bool value) {
+    this.commentCountNotifier.value =
+        value ? commentCount + 1 : commentCount - 1;
+  }
+
+  set view(bool value) {
+    this.viewCountNotifier.value = viewCount + 1;
+  }
+
+  set share(bool value) {
+    this.shareCountNotifier.value = shareCount + 1;
+  }
 
   Map<String, dynamic> toJson() => {
         'id': this.id,
@@ -132,8 +157,8 @@ class NewsSource extends Equatable {
     bool isFollowed,
     int followerCount,
   }) {
-    this.followNotifier.value = isFollowed;
-    this.followerCountNotifier.value = followerCount;
+    this.followNotifier.value = isFollowed ?? false;
+    this.followerCountNotifier.value = followerCount ?? 0;
   }
 
   bool get isValidIcon => Validator.isURL(icon);
@@ -141,6 +166,12 @@ class NewsSource extends Equatable {
   bool get isValidFavIcon => Validator.isURL(favicon);
   bool get isFollowed => followNotifier.value;
   int get followerCount => followerCountNotifier.value;
+
+  set follow(bool value) {
+    this.followNotifier.value = value;
+    this.followerCountNotifier.value =
+        value ? followerCount + 1 : followerCount - 1;
+  }
 
   Map<String, dynamic> toJson() => {
         'id': this.id,
@@ -186,14 +217,20 @@ class NewsCategory extends Equatable {
     bool isFollowed,
     int followerCount,
   }) {
-    this.followNotifier.value = isFollowed;
-    this.followerCountNotifier.value = followerCount;
+    this.followNotifier.value = isFollowed ?? false;
+    this.followerCountNotifier.value = followerCount ?? 0;
   }
 
   // bool get isValidIcon => Validator.isURL(icon);
 
   bool get isFollowed => followNotifier.value;
   int get followerCount => followerCountNotifier.value;
+
+  set follow(bool value) {
+    this.followNotifier.value = value;
+    this.followerCountNotifier.value =
+        value ? followerCount + 1 : followerCount - 1;
+  }
 
   Map<String, dynamic> toJson() => {
         'id': this.id,
@@ -231,13 +268,19 @@ class NewsTopic extends Equatable {
     bool isFollowed,
     int followerCount,
   }) {
-    this.followNotifier.value = isFollowed;
-    this.followerCountNotifier.value = followerCount;
+    this.followNotifier.value = isFollowed ?? false;
+    this.followerCountNotifier.value = followerCount ?? 0;
   }
 
   bool get isValidIcon => Validator.isURL(icon);
   bool get isFollowed => followNotifier.value;
   int get followerCount => followerCountNotifier.value;
+
+  set follow(bool value) {
+    this.followNotifier.value = value;
+    this.followerCountNotifier.value =
+        value ? followerCount + 1 : followerCount - 1;
+  }
 
   @override
   List<Object> get props =>
@@ -291,13 +334,13 @@ class BookmarkedNewsFeed extends Equatable {
     @required int commentCount,
     @required int viewCount,
   }) {
-    this.bookmarkNotifier.value = isBookmarked;
-    this.likeNotifier.value = isLiked;
-    this.bookmarkCountNotifier.value = bookmarkCount;
-    this.likeCountNotifier.value = likeCount;
-    this.shareCountNotifier.value = shareCount;
-    this.commentCountNotifier.value = commentCount;
-    this.viewCountNotifier.value = viewCount;
+    this.bookmarkNotifier.value = isBookmarked ?? false;
+    this.likeNotifier.value = isLiked ?? false;
+    this.bookmarkCountNotifier.value = bookmarkCount ?? 0;
+    this.likeCountNotifier.value = likeCount ?? 0;
+    this.shareCountNotifier.value = shareCount ?? 0;
+    this.commentCountNotifier.value = commentCount ?? 0;
+    this.viewCountNotifier.value = viewCount ?? 0;
   }
 
   bool get isValidLink => Validator.isURL(link);

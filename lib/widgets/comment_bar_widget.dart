@@ -4,46 +4,26 @@ import 'package:flutter/widgets.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:samachar_hub/widgets/icon_badge_widget.dart';
 
-class CommentBar extends StatefulWidget {
+class CommentBar extends StatelessWidget {
   final String userProfileImageUrl;
 
-  final bool isLiked;
-  final Future Function(bool) onLikeTap;
+  final Function(bool) onLikeTap;
   final VoidCallback onCommentTap;
   final VoidCallback onShareTap;
-  final String commentsCount;
-  final String likesCount;
+  final ValueNotifier<bool> likeNotifier;
+  final ValueNotifier<int> likeCountNotifier;
+  final ValueNotifier<int> commentCountNotifier;
+
   CommentBar({
     Key key,
     this.userProfileImageUrl,
-    @required this.isLiked,
+    @required this.likeNotifier,
     @required this.onLikeTap,
     @required this.onCommentTap,
     @required this.onShareTap,
-    @required this.commentsCount,
-    @required this.likesCount,
+    @required this.commentCountNotifier,
+    @required this.likeCountNotifier,
   }) : super(key: key);
-
-  @override
-  _CommentBarState createState() => _CommentBarState();
-}
-
-class _CommentBarState extends State<CommentBar> {
-  final ValueNotifier<bool> _likeProgressNotifier = ValueNotifier<bool>(false);
-  final ValueNotifier<bool> _likeNotifier = ValueNotifier<bool>(false);
-  bool isLiked;
-  @override
-  void initState() {
-    super.initState();
-    this._likeNotifier.value = widget.isLiked;
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    _likeProgressNotifier.dispose();
-    _likeNotifier.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -57,7 +37,7 @@ class _CommentBarState extends State<CommentBar> {
         children: <Widget>[
           Expanded(
             child: GestureDetector(
-              onTap: () => widget.onCommentTap(),
+              onTap: () => onCommentTap(),
               child: Container(
                 height: 34,
                 margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
@@ -69,11 +49,10 @@ class _CommentBarState extends State<CommentBar> {
                   children: <Widget>[
                     CircleAvatar(
                       radius: 12,
-                      backgroundImage: (widget.userProfileImageUrl == null ||
-                              widget.userProfileImageUrl.isEmpty)
+                      backgroundImage: (userProfileImageUrl == null ||
+                              userProfileImageUrl.isEmpty)
                           ? AssetImage('assets/images/user.png')
-                          : CachedNetworkImageProvider(
-                              widget.userProfileImageUrl,
+                          : CachedNetworkImageProvider(userProfileImageUrl,
                               errorListener: () {}),
                       backgroundColor:
                           Theme.of(context).primaryColor.withOpacity(0.3),
@@ -81,48 +60,41 @@ class _CommentBarState extends State<CommentBar> {
                     SizedBox(
                       width: 8,
                     ),
-                    Text(
-                      '${widget.commentsCount} Comments',
-                      style: Theme.of(context).textTheme.caption,
+                    ValueListenableBuilder<int>(
+                      valueListenable: commentCountNotifier,
+                      builder: (context, value, child) => Text(
+                        '$value Comments',
+                        style: Theme.of(context).textTheme.caption,
+                      ),
                     ),
                   ],
                 ),
               ),
             ),
           ),
-          IconBadge(
-              iconData: FontAwesomeIcons.comment,
-              badgeText: widget.commentsCount,
-              onTap: () => widget.onCommentTap()),
-          ValueListenableBuilder(
-            valueListenable: _likeNotifier,
-            builder: (context, isLiked, child) {
-              return ValueListenableBuilder(
-                  valueListenable: _likeProgressNotifier,
-                  builder: (_, value, Widget child) {
-                    return IgnorePointer(
-                      ignoring: value,
-                      child: IconBadge(
-                          iconData: isLiked
-                              ? FontAwesomeIcons.solidThumbsUp
-                              : FontAwesomeIcons.thumbsUp,
-                          badgeText: widget.likesCount,
-                          onTap: () {
-                            _likeProgressNotifier.value = true;
-                            _likeNotifier.value = !_likeNotifier.value;
-                            widget.onLikeTap(widget.isLiked).whenComplete(
-                                () => _likeProgressNotifier.value = false);
-                          }),
-                    );
-                  });
-            },
+          ValueListenableBuilder<int>(
+            valueListenable: commentCountNotifier,
+            builder: (context, value, child) => IconBadge(
+                iconData: FontAwesomeIcons.comment,
+                badgeText: value?.toString() ?? '0',
+                onTap: () => onCommentTap()),
+          ),
+          ValueListenableBuilder<bool>(
+            valueListenable: likeNotifier,
+            builder: (context, value, child) => IconBadge(
+              iconData: value
+                  ? FontAwesomeIcons.solidThumbsUp
+                  : FontAwesomeIcons.thumbsUp,
+              badgeText: likeCountNotifier.value?.toString() ?? '0',
+              onTap: () => onLikeTap(value),
+            ),
           ),
           IconButton(
             icon: Icon(
               FontAwesomeIcons.shareAlt,
               size: 16,
             ),
-            onPressed: widget.onShareTap,
+            onPressed: onShareTap,
           ),
         ],
       ),

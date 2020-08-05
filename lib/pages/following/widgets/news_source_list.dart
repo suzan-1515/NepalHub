@@ -32,25 +32,31 @@ class _FollowNewsSourceListState extends State<FollowNewsSourceList> {
         itemCount: widget.data.length,
         itemBuilder: (context, index) {
           var sourceModel = widget.data[index];
-          return FollowedNewsSourceListItem(
-            title: sourceModel.name,
-            icon: sourceModel.icon,
-            onTap: () {
-              context.read<NavigationService>().toNewsSourceFeedScreen(
-                  context: context, source: sourceModel, sources: widget.data);
-            },
-            onFollowTap: () {
-              if (sourceModel.isFollowed) {
-                widget.store.unFollowedNewsSource(sourceModel);
-              } else {
-                widget.store.followedNewsSource(sourceModel);
-              }
-              setState(() {
-                sourceModel.followNotifier.value = !sourceModel.isFollowed;
-              });
-            },
-            followers: sourceModel.followerCount,
-            isSubscribed: sourceModel.isFollowed,
+          return ValueListenableBuilder<bool>(
+            valueListenable: sourceModel.followNotifier,
+            builder: (context, value, child) => FollowedNewsSourceListItem(
+              title: sourceModel.name,
+              icon: sourceModel.icon,
+              onTap: () {
+                context.read<NavigationService>().toNewsSourceFeedScreen(
+                    context: context,
+                    source: sourceModel,
+                    sources: widget.data);
+              },
+              onFollowTap: () {
+                final currentValue = value;
+                sourceModel.follow = !value;
+                if (currentValue) {
+                  widget.store.unFollowedNewsSource(sourceModel).catchError(
+                      (onError) => sourceModel.follow = currentValue);
+                } else {
+                  widget.store.followedNewsSource(sourceModel).catchError(
+                      (onError) => sourceModel.follow = currentValue);
+                }
+              },
+              followers: sourceModel.followerCount,
+              isSubscribed: sourceModel.isFollowed,
+            ),
           );
         },
         separatorBuilder: (_, int index) => Divider(),

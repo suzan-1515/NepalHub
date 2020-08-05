@@ -139,7 +139,8 @@ class _NewsFeedOptionsState extends State<NewsFeedOptions> {
 
   @override
   Widget build(BuildContext context) {
-    return Opacity(
+    return AnimatedOpacity(
+      duration: Duration(milliseconds: 200),
       opacity: 0.6,
       child: Row(
         mainAxisSize: MainAxisSize.max,
@@ -174,7 +175,7 @@ class _NewsFeedOptionsState extends State<NewsFeedOptions> {
                               .loginRedirect(context);
 
                         final isLiked = widget.feed.isLiked;
-                        widget.feed.likeNotifier.value = !value;
+                        widget.feed.like = !value;
                         if (isLiked) {
                           context
                               .read<PostMetaRepository>()
@@ -182,8 +183,8 @@ class _NewsFeedOptionsState extends State<NewsFeedOptions> {
                                 postId: widget.feed.uuid,
                                 userId: authStore.user.uId,
                               )
-                              .catchError((onError) =>
-                                  widget.feed.likeNotifier.value = isLiked)
+                              .catchError(
+                                  (onError) => widget.feed.like = isLiked)
                               .whenComplete(
                                   () => _likeProgressNotifier.value = false);
                         } else {
@@ -193,8 +194,8 @@ class _NewsFeedOptionsState extends State<NewsFeedOptions> {
                                 postId: widget.feed.uuid,
                                 userId: authStore.user.uId,
                               )
-                              .catchError((onError) =>
-                                  widget.feed.likeNotifier.value = isLiked)
+                              .catchError(
+                                  (onError) => widget.feed.like = isLiked)
                               .whenComplete(
                                   () => _likeProgressNotifier.value = false);
                         }
@@ -205,29 +206,34 @@ class _NewsFeedOptionsState extends State<NewsFeedOptions> {
               );
             },
           ),
-          (widget.feed.commentCount != null && widget.feed.commentCount > 0)
-              ? IconBadge(
-                  iconData: FontAwesomeIcons.comment,
-                  badgeText: widget.feed.commentCount.toString(),
-                  onTap: () =>
-                      context.read<NavigationService>().toCommentsScreen(
-                            context: context,
-                            title: widget.feed.title,
-                            postId: widget.feed.uuid,
-                          ),
-                )
-              : IconButton(
-                  icon: Icon(
-                    FontAwesomeIcons.comment,
-                    size: 16,
-                  ),
-                  onPressed: () =>
-                      context.read<NavigationService>().toCommentsScreen(
-                            context: context,
-                            title: widget.feed.title,
-                            postId: widget.feed.uuid,
-                          ),
-                ),
+          ValueListenableBuilder<int>(
+            valueListenable: widget.feed.commentCountNotifier,
+            builder: (context, value, child) {
+              return (value > 0)
+                  ? IconBadge(
+                      iconData: FontAwesomeIcons.comment,
+                      badgeText: value.toString(),
+                      onTap: () =>
+                          context.read<NavigationService>().toCommentsScreen(
+                                context: context,
+                                title: widget.feed.title,
+                                postId: widget.feed.uuid,
+                              ),
+                    )
+                  : IconButton(
+                      icon: Icon(
+                        FontAwesomeIcons.comment,
+                        size: 16,
+                      ),
+                      onPressed: () =>
+                          context.read<NavigationService>().toCommentsScreen(
+                                context: context,
+                                title: widget.feed.title,
+                                postId: widget.feed.uuid,
+                              ),
+                    );
+            },
+          ),
           IconButton(
             icon: Icon(
               FontAwesomeIcons.shareAlt,

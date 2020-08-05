@@ -15,7 +15,9 @@ class ShareService {
         return Share.share(data, subject: title)
             .then((value) => _analyticsService.logShare(postId: postId));
       } on Exception {
-        return Future.error(Exception('Invalid data. Cannot share this data.'),);
+        return Future.error(
+          Exception('Invalid data. Cannot share this data.'),
+        );
       }
     }
 

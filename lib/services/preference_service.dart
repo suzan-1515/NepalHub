@@ -93,7 +93,7 @@ class PreferenceService {
   List<String> get bookmarkedFeeds =>
       _sharedPreferences.getStringList(_bookmarkedFeedsKey) ?? List<String>();
   List<String> get likedFeeds =>
-      _sharedPreferences.getStringList(_bookmarkedFeedsKey) ?? List<String>();
+      _sharedPreferences.getStringList(_likedFeedsKey) ?? List<String>();
 
   String get userId => _sharedPreferences.getString(_userId) ?? null;
 

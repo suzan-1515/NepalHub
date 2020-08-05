@@ -1,5 +1,6 @@
 import 'package:mobx/mobx.dart';
 import 'package:samachar_hub/data/models/horoscope_model.dart';
+import 'package:samachar_hub/data/models/models.dart';
 
 part 'horoscope_detail_store.g.dart';
 

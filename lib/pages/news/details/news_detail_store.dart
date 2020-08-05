@@ -21,24 +21,41 @@ abstract class _NewsDetailStore with Store {
 
   @action
   bookmarkFeed() {
-    feed.bookmarkNotifier.value = true;
+    feed.bookmark = true;
     _bookmarkRepository
         .postBookmark(postId: feed.uuid, user: user, bookmarkFeed: feed)
         .catchError((onError) {
       message = 'Unable to bookmark';
-      feed.bookmarkNotifier.value = false;
+      feed.bookmark = false;
     });
   }
 
   @action
   removeBookmarkedFeed() {
-    feed.bookmarkNotifier.value = false;
+    feed.bookmark = false;
     _bookmarkRepository
         .removeBookmark(postId: feed.uuid, userId: user.uId)
         .catchError((onError) {
       message = 'Unable to remove bookmark';
-      feed.bookmarkNotifier.value = true;
+      feed.bookmark = true;
     });
+  }
+
+  @action
+  updateMeta(PostMetaModel metaModel) {
+    if (metaModel == null) return;
+    if (metaModel.isUserBookmarked != null)
+      this.feed.bookmarkNotifier.value = metaModel.isUserBookmarked;
+    if (metaModel.isUserLiked != null)
+      this.feed.likeNotifier.value = metaModel.isUserLiked;
+    if (metaModel.commentCount != null)
+      this.feed.commentCountNotifier.value = metaModel.commentCount;
+    if (metaModel.likeCount != null)
+      this.feed.likeCountNotifier.value = metaModel.likeCount;
+    if (metaModel.shareCount != null)
+      this.feed.shareCountNotifier.value = metaModel.shareCount;
+    if (metaModel.viewCount != null)
+      this.feed.viewCountNotifier.value = metaModel.viewCount;
   }
 
   dispose() {}

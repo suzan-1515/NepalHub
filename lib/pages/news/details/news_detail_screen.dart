@@ -27,7 +27,7 @@ class _NewsDetailScreenState extends State<NewsDetailScreen> {
   void initState() {
     final store = Provider.of<NewsDetailStore>(context, listen: false);
     final metaStore = Provider.of<PostMetaStore>(context, listen: false);
-    _setupObserver(store);
+    _setupObserver(store, metaStore);
     metaStore.loadPostMeta();
     metaStore.postView();
 
@@ -42,7 +42,7 @@ class _NewsDetailScreenState extends State<NewsDetailScreen> {
     super.dispose();
   }
 
-  _setupObserver(store) {
+  _setupObserver(store, metaStore) {
     _disposers = [
       // Listens for error message
       autorun((_) {
@@ -53,7 +53,11 @@ class _NewsDetailScreenState extends State<NewsDetailScreen> {
       autorun((_) {
         final APIException error = store.apiError;
         _showErrorDialog(error);
-      })
+      }),
+      autorun((_) {
+        final PostMetaModel metaModel = metaStore.postMeta;
+        store.updateMeta(metaModel);
+      }),
     ];
   }
 
@@ -242,18 +246,19 @@ class _NewsDetailScreenState extends State<NewsDetailScreen> {
               padding: EdgeInsets.symmetric(horizontal: 16),
               child: Column(
                 children: <Widget>[
-                  Observer(
-                    builder: (_) {
+                  ValueListenableBuilder<bool>(
+                    valueListenable: store.feed.bookmarkNotifier,
+                    builder: (_, value, __) {
                       return IconButton(
                         icon: Icon(
-                          (metaStore.postMeta?.isUserBookmarked ?? false)
+                          value
                               ? FontAwesomeIcons.solidHeart
                               : FontAwesomeIcons.heart,
                           size: 36,
                           color: Theme.of(context).accentColor,
                         ),
                         onPressed: () {
-                          if ((metaStore.postMeta?.isUserBookmarked ?? false)) {
+                          if (value) {
                             store.removeBookmarkedFeed();
                           } else {
                             store.bookmarkFeed();
@@ -330,38 +335,40 @@ class _NewsDetailScreenState extends State<NewsDetailScreen> {
                   Widget child) {
                 return Observer(
                   builder: (_) {
-                    return CommentBar(
-                      userProfileImageUrl: _authenticationStore.user.avatar,
-                      commentsCount:
-                          metaStore.postMeta?.commentCount?.toString() ?? '0',
-                      likesCount:
-                          metaStore.postMeta?.likeCount?.toString() ?? '0',
-                      isLiked: metaStore.postMeta?.isUserLiked ?? false,
-                      onCommentTap: () {
-                        navigationService.toCommentsScreen(
-                            context: context,
-                            title: store.feed.title,
-                            postId: store.feed.uuid);
-                      },
-                      onLikeTap: (value) {
-                        if (value) {
-                          store.feed.likeNotifier.value = !value;
-                          return metaStore.removeLike().catchError((onError) =>
-                              store.feed.likeNotifier.value = value);
-                        } else {
-                          store.feed.likeNotifier.value = !value;
-                          return metaStore.postLike().catchError((onError) =>
-                              store.feed.likeNotifier.value = value);
-                        }
-                      },
-                      onShareTap: () {
-                        if (store.feed != null)
-                          shareService.share(
-                              postId: store.feed.uuid,
+                    return IgnorePointer(
+                      ignoring: metaStore.postMeta == null,
+                      child: CommentBar(
+                        userProfileImageUrl: _authenticationStore.user.avatar,
+                        commentCountNotifier: store.feed.commentCountNotifier,
+                        likeCountNotifier: store.feed.likeCountNotifier,
+                        likeNotifier: store.feed.likeNotifier,
+                        onCommentTap: () {
+                          navigationService.toCommentsScreen(
+                              context: context,
                               title: store.feed.title,
-                              data: store.feed.link);
-                        metaStore.postShare();
-                      },
+                              postId: store.feed.uuid);
+                        },
+                        onLikeTap: (value) {
+                          store.feed.like = !value;
+                          if (value) {
+                            metaStore.removeLike().catchError(
+                                (onError) => store.feed.like = value);
+                          } else {
+                            metaStore.postLike().catchError(
+                                (onError) => store.feed.like = value);
+                          }
+                        },
+                        onShareTap: () {
+                          if (store.feed != null)
+                            shareService
+                                .share(
+                                    postId: store.feed.uuid,
+                                    title: store.feed.title,
+                                    data: store.feed.link)
+                                .catchError((onError) {});
+                          metaStore.postShare();
+                        },
+                      ),
                     );
                   },
                 );

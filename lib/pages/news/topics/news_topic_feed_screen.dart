@@ -147,22 +147,31 @@ class _NewsTopicFeedScreenState extends State<NewsTopicFeedScreen> {
                   image: AssetImage('assets/images/user.png'),
                   fit: BoxFit.cover,
                 ),
-                isFollowed: store.topic.isFollowed,
-                onFollowTap: (value) {
-                  store.topic.followNotifier.value = value;
-                  if (value)
-                    context
-                        .read<FollowingRepository>()
-                        .followTopic(store.topic)
-                        .catchError((onError) =>
-                            store.topic.followNotifier.value = !value);
-                  else
-                    context
-                        .read<FollowingRepository>()
-                        .unFollowTopic(store.topic)
-                        .catchError((onError) =>
-                            store.topic.followNotifier.value = !value);
-                },
+                followUnFollowButton: ValueListenableBuilder<bool>(
+                  valueListenable: store.topic.followNotifier,
+                  builder: (context, value, child) => RaisedButton(
+                    visualDensity: VisualDensity.compact,
+                    textColor: Colors.white,
+                    color: value ? Colors.grey : Colors.blue,
+                    child: Text(value ? 'Followed' : 'Follow'),
+                    onPressed: () {
+                      final currentValue = value;
+                      store.topic.follow = !value;
+                      if (currentValue)
+                        context
+                            .read<FollowingRepository>()
+                            .unFollowTopic(store.topic)
+                            .catchError(
+                                (onError) => store.topic.follow = currentValue);
+                      else
+                        context
+                            .read<FollowingRepository>()
+                            .followTopic(store.topic)
+                            .catchError(
+                                (onError) => store.topic.follow = currentValue);
+                    },
+                  ),
+                ),
                 onSortByChanged: (value) {
                   store.setSortBy(value);
                 },

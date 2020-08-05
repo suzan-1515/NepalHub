@@ -10,9 +10,8 @@ class NewsFilteringAppBar extends StatelessWidget {
     @required this.child,
     @required this.title,
     @required this.icon,
-    @required this.isFollowed,
     @required this.sources,
-    @required this.onFollowTap,
+    @required this.followUnFollowButton,
     @required this.onSourceChanged,
     @required this.onSortByChanged,
     this.initialSortBy,
@@ -22,9 +21,8 @@ class NewsFilteringAppBar extends StatelessWidget {
   final Widget child;
   final String title;
   final DecorationImage icon;
-  final bool isFollowed;
   final List<NewsSource> sources;
-  final Function(bool) onFollowTap;
+  final Widget followUnFollowButton;
   final Function(NewsSource) onSourceChanged;
   final Function(SortBy) onSortByChanged;
   final SortBy initialSortBy;
@@ -41,14 +39,14 @@ class NewsFilteringAppBar extends StatelessWidget {
             expandedHeight: 210,
             pinned: true,
             floating: true,
+            snap: true,
             forceElevated: true,
             backgroundColor: Theme.of(context).backgroundColor,
             flexibleSpace: FlexibleSpaceBar(
               collapseMode: CollapseMode.pin,
               background: NewsFilterHeader(
                 icon: icon,
-                isFollowed: isFollowed,
-                onFollowTap: onFollowTap,
+                followUnFollowButton: followUnFollowButton,
                 title: title,
               ),
             ),

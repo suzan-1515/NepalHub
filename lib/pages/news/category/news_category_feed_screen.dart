@@ -147,22 +147,31 @@ class _NewsCategoryFeedScreenState extends State<NewsCategoryFeedScreen> {
                   image: AssetImage('assets/images/user.png'),
                   fit: BoxFit.cover,
                 ),
-                isFollowed: store.categoryModel.isFollowed,
-                onFollowTap: (value) {
-                  store.categoryModel.followNotifier.value = value;
-                  if (value)
-                    context
-                        .read<FollowingRepository>()
-                        .followCategory(store.categoryModel)
-                        .catchError((onError) =>
-                            store.categoryModel.followNotifier.value = !value);
-                  else
-                    context
-                        .read<FollowingRepository>()
-                        .unFollowCategory(store.categoryModel)
-                        .catchError((onError) =>
-                            store.categoryModel.followNotifier.value = !value);
-                },
+                followUnFollowButton: ValueListenableBuilder<bool>(
+                  valueListenable: store.categoryModel.followNotifier,
+                  builder: (context, value, child) => RaisedButton(
+                    visualDensity: VisualDensity.compact,
+                    textColor: Colors.white,
+                    color: value ? Colors.grey : Colors.blue,
+                    child: Text(value ? 'Followed' : 'Follow'),
+                    onPressed: () {
+                      final currentValue = value;
+                      store.categoryModel.follow = !value;
+                      if (currentValue)
+                        context
+                            .read<FollowingRepository>()
+                            .unFollowCategory(store.categoryModel)
+                            .catchError((onError) =>
+                                store.categoryModel.follow = currentValue);
+                      else
+                        context
+                            .read<FollowingRepository>()
+                            .followCategory(store.categoryModel)
+                            .catchError((onError) =>
+                                store.categoryModel.follow = currentValue);
+                    },
+                  ),
+                ),
                 onSortByChanged: (value) {
                   store.setSortBy(value);
                 },

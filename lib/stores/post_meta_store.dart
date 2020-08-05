@@ -84,5 +84,4 @@ abstract class _PostMetaStore with Store {
       debugPrint('Error loading meta: ' + onError.toString());
     });
   }
-
 }
