@@ -1,5 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:samachar_hub/util/helper.dart';
+import 'package:samachar_hub/utils/helper.dart';
 import 'package:validators/validators.dart' as Validator;
 
 part 'news_api_response.g.dart';

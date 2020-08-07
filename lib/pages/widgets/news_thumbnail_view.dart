@@ -4,7 +4,7 @@ import 'package:samachar_hub/data/models/models.dart';
 import 'package:samachar_hub/pages/widgets/article_info_widget.dart';
 import 'package:samachar_hub/services/services.dart';
 import 'package:samachar_hub/stores/stores.dart';
-import 'package:samachar_hub/widgets/article_image_widget.dart';
+import 'package:samachar_hub/widgets/cached_image_widget.dart';
 
 class NewsThumbnailView extends StatelessWidget {
   final NewsFeed feed;
@@ -44,7 +44,7 @@ class NewsThumbnailView extends StatelessWidget {
                     borderRadius: BorderRadius.all(
                       Radius.circular(6),
                     ),
-                    child: ArticleImageWidget(feed.image, tag: feed.tag),
+                    child: CachedImage(feed.image, tag: feed.tag),
                   ),
                 ),
                 SizedBox(height: 8),

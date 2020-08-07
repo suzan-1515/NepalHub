@@ -7,8 +7,8 @@ import 'package:mobx/mobx.dart';
 import 'package:provider/provider.dart';
 import 'package:samachar_hub/pages/settings/settings_store.dart';
 import 'package:samachar_hub/pages/settings/widgets/section_heading.dart';
-import 'package:samachar_hub/util/forex_currency.dart';
-import 'package:samachar_hub/util/horoscope_signs.dart';
+import 'package:samachar_hub/utils/forex_currency.dart';
+import 'package:samachar_hub/utils/horoscope_signs.dart';
 
 class SettingsPage extends StatefulWidget {
   @override

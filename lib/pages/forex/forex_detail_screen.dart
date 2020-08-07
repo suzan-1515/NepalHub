@@ -5,14 +5,14 @@ import 'package:provider/provider.dart';
 import 'package:samachar_hub/data/api/api.dart';
 import 'package:samachar_hub/data/models/forex_model.dart';
 import 'package:samachar_hub/data/models/models.dart';
-import 'package:samachar_hub/pages/forex/forex_detail_store.dart';
-import 'package:samachar_hub/pages/widgets/api_error_dialog.dart';
 import 'package:samachar_hub/pages/widgets/empty_data_widget.dart';
 import 'package:samachar_hub/pages/widgets/error_data_widget.dart';
 import 'package:samachar_hub/pages/widgets/progress_widget.dart';
 import 'package:samachar_hub/services/services.dart';
+import 'package:samachar_hub/stores/forex/forex_detail_store.dart';
 import 'package:samachar_hub/stores/stores.dart';
 import 'package:samachar_hub/widgets/comment_bar_widget.dart';
+import 'package:samachar_hub/utils/extensions.dart';
 
 import 'widgets/forex_graph.dart';
 
@@ -29,8 +29,8 @@ class _ForexDetailScreenState extends State<ForexDetailScreen> {
 
   @override
   void initState() {
-    final store = Provider.of<ForexDetailStore>(context, listen: false);
-    final metaStore = Provider.of<PostMetaStore>(context, listen: false);
+    final store = context.read<ForexDetailStore>();
+    final metaStore = context.read<PostMetaStore>();
     _setupObserver(store, metaStore);
     store.loadData();
     metaStore.loadPostMeta();
@@ -51,39 +51,17 @@ class _ForexDetailScreenState extends State<ForexDetailScreen> {
     super.dispose();
   }
 
-  _showMessage(String message) {
-    if (null != message)
-      Scaffold.of(context)
-        ..hideCurrentSnackBar()
-        ..showSnackBar(
-          SnackBar(content: Text(message)),
-        );
-  }
-
-  _showErrorDialog(APIException apiError) {
-    if (null != apiError)
-      showDialog<void>(
-        context: context,
-        barrierDismissible: false, // user must tap button!
-        builder: (BuildContext context) {
-          return ApiErrorDialog(
-            apiError: apiError,
-          );
-        },
-      );
-  }
-
   _setupObserver(store, metaStore) {
     _disposers = [
       // Listens for error message
       autorun((_) {
         final String message = store.error;
-        _showMessage(message);
+        if (message != null) context.showMessage(message);
       }),
       // Listens for API error
       autorun((_) {
         final APIException error = store.apiError;
-        _showErrorDialog(error);
+        if (error != null) context.showErrorDialog(error);
       }),
       autorun((_) {
         final PostMetaModel metaModel = metaStore.postMeta;

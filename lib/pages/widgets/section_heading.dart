@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-class SectionHeadingView extends StatelessWidget {
+class SectionHeading extends StatelessWidget {
   final String title;
   final String subtitle;
   final Function onTap;
-  const SectionHeadingView({
+  const SectionHeading({
     Key key,
     this.title,
     this.subtitle,

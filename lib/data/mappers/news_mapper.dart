@@ -1,8 +1,6 @@
-import 'dart:developer';
-
 import 'package:samachar_hub/data/api/api.dart';
 import 'package:samachar_hub/data/models/models.dart';
-import 'package:samachar_hub/util/news_category.dart';
+import 'package:samachar_hub/utils/news_category.dart';
 
 class NewsMapper {
   static NewsFeed fromBookmarkFeed(BookmarkFirestoreResponse response, likes,

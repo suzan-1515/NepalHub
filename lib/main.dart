@@ -8,20 +8,15 @@ import 'package:samachar_hub/notifier/forex_setting_notifier.dart';
 import 'package:samachar_hub/notifier/horoscope_setting_notifier.dart';
 import 'package:samachar_hub/notifier/news_setting_notifier.dart';
 import 'package:samachar_hub/pages/authentication/login/login_screen.dart';
-import 'package:samachar_hub/pages/category/categories_store.dart';
 import 'package:samachar_hub/pages/corona/corona_api_service.dart';
 import 'package:samachar_hub/pages/corona/corona_repository.dart';
 import 'package:samachar_hub/pages/following/following_store.dart';
-import 'package:samachar_hub/pages/forex/forex_api_service.dart';
-import 'package:samachar_hub/pages/forex/forex_repository.dart';
-import 'package:samachar_hub/pages/home/home_screen_store.dart';
-import 'package:samachar_hub/pages/horoscope/horoscope_api_service.dart';
-import 'package:samachar_hub/pages/horoscope/horoscope_repository.dart';
-import 'package:samachar_hub/pages/more_menu/more_menu_store.dart';
+import 'package:samachar_hub/services/forex_api_service.dart';
+import 'package:samachar_hub/repository/forex_repository.dart';
+import 'package:samachar_hub/services/horoscope_api_service.dart';
+import 'package:samachar_hub/repository/horoscope_repository.dart';
 import 'package:samachar_hub/services/news_api_service.dart';
 import 'package:samachar_hub/repository/news_repository.dart';
-import 'package:samachar_hub/pages/personalised/personalised_store.dart';
-import 'package:samachar_hub/pages/personalised/personalised_store.dart';
 import 'package:samachar_hub/pages/settings/settings_store.dart';
 import 'package:samachar_hub/repository/following_repository.dart';
 import 'package:samachar_hub/repository/post_meta_repository.dart';
@@ -31,8 +26,8 @@ import 'package:samachar_hub/services/services.dart';
 import 'package:samachar_hub/stores/stores.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'common/themes.dart' as Themes;
-import 'pages/bookmark/bookmark_firestore_service.dart';
-import 'pages/bookmark/bookmark_repository.dart';
+import 'services/bookmark_firestore_service.dart';
+import 'repository/bookmark_repository.dart';
 import 'pages/corona/corona_store.dart';
 
 Future<void> main() async {
@@ -139,20 +134,21 @@ class App extends StatelessWidget {
           update: (_, _authenticationRepository, __) =>
               AuthenticationStore(_authenticationRepository),
         ),
-        ProxyProvider<PreferenceService, HomeScreenStore>(
-          update: (_, preferenceService, __) =>
-              HomeScreenStore(preferenceService),
-        ),
         ProxyProvider4<NewsRepository, ForexRepository, HoroscopeRepository,
-            CoronaRepository, PersonalisedFeedStore>(
+            CoronaRepository, HomeStore>(
           update: (_, _newsRepository, _forexRepository, _horoscopeRepository,
                   _coronaRepository, __) =>
-              PersonalisedFeedStore(_newsRepository, _horoscopeRepository,
-                  _forexRepository, _coronaRepository),
+              HomeStore(_newsRepository, _horoscopeRepository, _forexRepository,
+                  _coronaRepository),
+        ),
+        ProxyProvider<NewsRepository, PersonalisedNewsStore>(
+          update: (_, _newsRepository, __) =>
+              PersonalisedNewsStore(_newsRepository),
           dispose: (context, value) => value.dispose(),
         ),
-        ProxyProvider<NewsRepository, CategoriesStore>(
-          update: (_, _newsRepository, __) => CategoriesStore(_newsRepository),
+        ProxyProvider<NewsRepository, NewsCategoryScreenStore>(
+          update: (_, _newsRepository, __) =>
+              NewsCategoryScreenStore(_newsRepository),
           dispose: (context, categoriesStore) => categoriesStore.dispose(),
         ),
 

@@ -5,22 +5,22 @@ import 'package:provider/provider.dart';
 import 'package:samachar_hub/data/api/api.dart';
 import 'package:samachar_hub/data/models/news_model.dart';
 import 'package:samachar_hub/notifier/news_setting_notifier.dart';
-import 'package:samachar_hub/pages/category/categories_store.dart';
-import 'package:samachar_hub/pages/category/category_store.dart';
-import 'package:samachar_hub/pages/category/category_view.dart';
+import 'package:samachar_hub/pages/category/widgets/category_view.dart';
 import 'package:samachar_hub/repository/news_repository.dart';
-import 'package:samachar_hub/pages/widgets/api_error_dialog.dart';
 import 'package:samachar_hub/pages/widgets/content_view_type_menu_widget.dart';
 import 'package:samachar_hub/pages/widgets/empty_data_widget.dart';
 import 'package:samachar_hub/pages/widgets/error_data_widget.dart';
 import 'package:samachar_hub/pages/widgets/progress_widget.dart';
+import 'package:samachar_hub/stores/news/category/category_screen_store.dart';
+import 'package:samachar_hub/stores/news/category/news_category_feed_store.dart';
+import 'package:samachar_hub/utils/extensions.dart';
 
-class CategoriesPage extends StatefulWidget {
+class NewsCategoriesPage extends StatefulWidget {
   @override
-  _CategoriesPageState createState() => _CategoriesPageState();
+  _NewsCategoriesPageState createState() => _NewsCategoriesPageState();
 }
 
-class _CategoriesPageState extends State<CategoriesPage>
+class _NewsCategoriesPageState extends State<NewsCategoriesPage>
     with TickerProviderStateMixin, AutomaticKeepAliveClientMixin {
   // Reaction disposers
   List<ReactionDisposer> _disposers;
@@ -28,7 +28,7 @@ class _CategoriesPageState extends State<CategoriesPage>
 
   @override
   void initState() {
-    final store = context.read<CategoriesStore>();
+    final store = context.read<NewsCategoryScreenStore>();
     _setupObserver(store);
     store.loadData();
 
@@ -51,37 +51,17 @@ class _CategoriesPageState extends State<CategoriesPage>
     super.dispose();
   }
 
-  _showMessage(String message) {
-    if (null != message)
-      Scaffold.of(context)
-        ..hideCurrentSnackBar()
-        ..showSnackBar(
-          SnackBar(content: Text(message)),
-        );
-  }
-
-  _showErrorDialog(APIException apiError) {
-    if (null != apiError)
-      showDialog<void>(
-        context: context,
-        barrierDismissible: false, // user must tap button!
-        builder: (BuildContext context) {
-          return ApiErrorDialog(apiError: apiError);
-        },
-      );
-  }
-
-  _setupObserver(CategoriesStore store) {
+  _setupObserver(store) {
     _disposers = [
       // Listens for error message
       autorun((_) {
         final String message = store.error;
-        _showMessage(message);
+        if (message != null) context.showMessage(message);
       }),
       // Listens for API error
       autorun((_) {
         final APIException error = store.apiError;
-        _showErrorDialog(error);
+        if (error != null) context.showErrorDialog(error);
       }),
     ];
   }
@@ -89,7 +69,7 @@ class _CategoriesPageState extends State<CategoriesPage>
   List<Tab> _buildTabs(List<NewsCategory> data) {
     return data
         .map(
-          (e) => Tab(key: ValueKey<String>(e.code), text: e.name),
+          (e) => Tab(key: ValueKey<NewsCategory>(e), text: e.name),
         )
         .toList();
   }
@@ -103,7 +83,8 @@ class _CategoriesPageState extends State<CategoriesPage>
     );
   }
 
-  Widget _buildContent(CategoriesStore store, NewsRepository newsRepository) {
+  Widget _buildContent(
+      NewsCategoryScreenStore store, NewsRepository newsRepository) {
     return StreamBuilder<List<NewsCategory>>(
       stream: store.dataStream,
       builder:
@@ -140,9 +121,10 @@ class _CategoriesPageState extends State<CategoriesPage>
                 child: TabBarView(
                     controller: _tabController,
                     children: tabs
-                        .map((e) => Provider<CategoryStore>(
-                              create: (_) => CategoryStore(newsRepository,
-                                  (e.key as ValueKey<String>).value),
+                        .map((e) => Provider<NewsCategoryFeedStore>(
+                              create: (_) => NewsCategoryFeedStore(
+                                  newsRepository,
+                                  (e.key as ValueKey<NewsCategory>).value),
                               dispose: (context, value) => value.dispose(),
                               child: NewsCategoryView(),
                             ))
@@ -164,16 +146,15 @@ class _CategoriesPageState extends State<CategoriesPage>
     super.build(context);
     return Container(
       color: Theme.of(context).backgroundColor,
-      padding: EdgeInsets.symmetric(horizontal: 8),
-      child: Consumer2<CategoriesStore, NewsRepository>(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+      child: Consumer2<NewsCategoryScreenStore, NewsRepository>(
         builder: (context, store, newsRepository, child) {
           return Column(
             mainAxisSize: MainAxisSize.max,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
               Padding(
-                padding: const EdgeInsets.only(
-                    top: 16, bottom: 8, left: 16, right: 8),
+                padding: const EdgeInsets.only(top: 8, left: 16, right: 8),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[

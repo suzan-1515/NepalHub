@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-
 class Label extends StatelessWidget {
   final String text;
   final Color color;

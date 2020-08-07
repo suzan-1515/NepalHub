@@ -4,14 +4,13 @@ import 'package:provider/provider.dart';
 import 'package:samachar_hub/data/api/api.dart';
 import 'package:samachar_hub/data/models/horoscope_model.dart';
 import 'package:samachar_hub/data/models/horoscope_type.dart';
-import 'package:samachar_hub/pages/horoscope/horoscope_store.dart';
-import 'package:samachar_hub/pages/horoscope/horoscope_type_view.dart';
-import 'package:samachar_hub/pages/widgets/api_error_dialog.dart';
+import 'package:samachar_hub/pages/horoscope/horoscope_view.dart';
 import 'package:samachar_hub/pages/widgets/empty_data_widget.dart';
 import 'package:samachar_hub/pages/widgets/error_data_widget.dart';
-import 'package:samachar_hub/pages/widgets/page_heading_widget.dart';
 import 'package:samachar_hub/pages/widgets/progress_widget.dart';
 import 'package:samachar_hub/services/services.dart';
+import 'package:samachar_hub/stores/horoscope/horoscope_store.dart';
+import 'package:samachar_hub/utils/extensions.dart';
 
 class HoroscopeScreen extends StatefulWidget {
   @override
@@ -53,37 +52,17 @@ class _HoroscopeScreenState extends State<HoroscopeScreen>
     super.dispose();
   }
 
-  _showMessage(String message) {
-    if (null != message)
-      Scaffold.of(context).showSnackBar(
-        SnackBar(content: Text(message)),
-      );
-  }
-
-  _showErrorDialog(APIException apiError) {
-    if (null != apiError)
-      showDialog<void>(
-        context: context,
-        barrierDismissible: false, // user must tap button!
-        builder: (BuildContext context) {
-          return ApiErrorDialog(
-            apiError: apiError,
-          );
-        },
-      );
-  }
-
   _setupObserver(store) {
     _disposers = [
       // Listens for error message
       autorun((_) {
         final String message = store.error;
-        _showMessage(message);
+        if (message != null) context.showMessage(message);
       }),
       // Listens for API error
       autorun((_) {
         final APIException error = store.apiError;
-        _showErrorDialog(error);
+        if (error != null) context.showErrorDialog(error);
       })
     ];
   }
@@ -141,13 +120,13 @@ class _HoroscopeScreenState extends State<HoroscopeScreen>
                           return TabBarView(
                             controller: _tabController,
                             children: <Widget>[
-                              HoroscopeTypeView(
+                              HoroscopeView(
                                   data: snapshot.data[HoroscopeType.DAILY]),
-                              HoroscopeTypeView(
+                              HoroscopeView(
                                   data: snapshot.data[HoroscopeType.WEEKLY]),
-                              HoroscopeTypeView(
+                              HoroscopeView(
                                   data: snapshot.data[HoroscopeType.MONTHLY]),
-                              HoroscopeTypeView(
+                              HoroscopeView(
                                   data: snapshot.data[HoroscopeType.YEARKY]),
                             ],
                           );

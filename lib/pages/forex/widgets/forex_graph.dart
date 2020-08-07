@@ -156,7 +156,7 @@ class _ForexGraphState extends State<ForexGraph> {
       preventCurveOverShooting: true,
       barWidth: 2,
       isStrokeCapRound: true,
-      dotData: FlDotData(show: true),
+      dotData: FlDotData(show: false),
       colors: [
         color.withOpacity(0.3),
         color.withOpacity(0.7),

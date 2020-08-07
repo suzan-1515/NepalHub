@@ -5,10 +5,11 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:mobx/mobx.dart';
 import 'package:provider/provider.dart';
 import 'package:samachar_hub/data/models/post_meta_model.dart';
-import 'package:samachar_hub/pages/horoscope/horoscope_detail_store.dart';
 import 'package:samachar_hub/services/services.dart';
+import 'package:samachar_hub/stores/horoscope/horoscope_detail_store.dart';
 import 'package:samachar_hub/stores/stores.dart';
 import 'package:samachar_hub/widgets/comment_bar_widget.dart';
+import 'package:samachar_hub/utils/extensions.dart';
 
 class HoroscopeDetailScreen extends StatefulWidget {
   final String sign;
@@ -33,8 +34,8 @@ class _HoroscopeDetailScreenState extends State<HoroscopeDetailScreen> {
 
   @override
   void initState() {
-    final store = Provider.of<HoroscopeDetailStore>(context, listen: false);
-    final metaStore = Provider.of<PostMetaStore>(context, listen: false);
+    final store = context.read<HoroscopeDetailStore>();
+    final metaStore = context.read<PostMetaStore>();
     _setupObserver(store, metaStore);
     metaStore.loadPostMeta();
     metaStore.postView();
@@ -54,21 +55,12 @@ class _HoroscopeDetailScreenState extends State<HoroscopeDetailScreen> {
     super.dispose();
   }
 
-  _showMessage(String message) {
-    if (null != message)
-      Scaffold.of(context)
-        ..hideCurrentSnackBar()
-        ..showSnackBar(
-          SnackBar(content: Text(message)),
-        );
-  }
-
   _setupObserver(store, metaStore) {
     _disposers = [
       // Listens for error message
       autorun((_) {
         final String message = store.message;
-        _showMessage(message);
+        if (message != null) context.showMessage(message);
       }),
       autorun((_) {
         final PostMetaModel metaModel = metaStore.postMeta;
@@ -155,13 +147,14 @@ class _HoroscopeDetailScreenState extends State<HoroscopeDetailScreen> {
               IconButton(
                 icon: Icon(FontAwesomeIcons.shareAlt),
                 onPressed: () {
-                  if (store.horoscopeModel != null)
+                  if (store.horoscopeModel != null) {
                     context.read<ShareService>().share(
                         postId: widget.sign,
                         title: widget.sign,
                         data:
                             '${widget.sign}\n${widget.zodiac}\nLast Updated: ${store.horoscopeModel.todate}');
-                  metaStore.postShare();
+                    metaStore.postShare();
+                  }
                 },
               ),
             ],
@@ -170,13 +163,8 @@ class _HoroscopeDetailScreenState extends State<HoroscopeDetailScreen> {
             child: Padding(
               padding: const EdgeInsets.all(16.0),
               child: SingleChildScrollView(
-                  child: Column(
-                children: <Widget>[
-                  _buildContent(context, store),
-                  SizedBox(height: 16),
-                  _buildAdView(context, store),
-                ],
-              )),
+                child: _buildContent(context, store),
+              ),
             ),
           ),
           bottomNavigationBar: BottomAppBar(

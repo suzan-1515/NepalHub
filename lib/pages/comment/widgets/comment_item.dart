@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:samachar_hub/data/models/models.dart';
-import 'package:samachar_hub/pages/comment/comment_store.dart';
+import 'package:samachar_hub/stores/comment/comment_store.dart';
 
 class CommentListItem extends StatefulWidget {
   const CommentListItem({
@@ -20,16 +20,10 @@ class CommentListItem extends StatefulWidget {
 }
 
 class _CommentListItemState extends State<CommentListItem> {
-  final ValueNotifier<bool> _likeNotifier = ValueNotifier<bool>(false);
-
-  @override
-  void initState() {
-    super.initState();
-  }
-
+  final ValueNotifier<bool> _likeProgressNotifier = ValueNotifier<bool>(false);
   @override
   void dispose() {
-    _likeNotifier.dispose();
+    _likeProgressNotifier.dispose();
     super.dispose();
   }
 
@@ -64,29 +58,38 @@ class _CommentListItemState extends State<CommentListItem> {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
-                IconButton(
-                  icon: Icon(
-                    value
-                        ? FontAwesomeIcons.solidThumbsUp
-                        : FontAwesomeIcons.thumbsUp,
+                ValueListenableBuilder<bool>(
+                  valueListenable: _likeProgressNotifier,
+                  builder: (context, likeInProfress, child) => AbsorbPointer(
+                    absorbing: likeInProfress,
+                    child: IconButton(
+                      icon: Icon(
+                        value
+                            ? FontAwesomeIcons.solidThumbsUp
+                            : FontAwesomeIcons.thumbsUp,
+                      ),
+                      onPressed: () {
+                        _likeProgressNotifier.value = true;
+                        final currentValue = value;
+                        widget.data.like = !value;
+                        if (currentValue) {
+                          widget.store
+                              .unlikeComment(comment: widget.data)
+                              .catchError(
+                                  (onError) => widget.data.like = currentValue)
+                              .whenComplete(
+                                  () => _likeProgressNotifier.value = false);
+                        } else {
+                          widget.store
+                              .likeComment(comment: widget.data)
+                              .catchError(
+                                  (onError) => widget.data.like = currentValue)
+                              .whenComplete(
+                                  () => _likeProgressNotifier.value = false);
+                        }
+                      },
+                    ),
                   ),
-                  onPressed: () {
-                    if (value) {
-                      _likeNotifier.value = false;
-                      widget.store
-                          .unlikeComment(comment: widget.data)
-                          .then((value) {
-                        _likeNotifier.value = !value;
-                      });
-                    } else {
-                      _likeNotifier.value = true;
-                      widget.store
-                          .likeComment(comment: widget.data)
-                          .then((value) {
-                        _likeNotifier.value = value;
-                      });
-                    }
-                  },
                 ),
                 Text(
                   widget.data.likesCount == 0
@@ -97,7 +100,7 @@ class _CommentListItemState extends State<CommentListItem> {
               ],
             );
           },
-          valueListenable: _likeNotifier,
+          valueListenable: widget.data.likeNotifier,
         ),
       ),
     );

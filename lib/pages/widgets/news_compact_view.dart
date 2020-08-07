@@ -4,7 +4,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:samachar_hub/data/models/models.dart';
 import 'package:samachar_hub/services/services.dart';
-import 'package:samachar_hub/widgets/article_image_widget.dart';
+import 'package:samachar_hub/widgets/cached_image_widget.dart';
 
 class NewsCompactView extends StatelessWidget {
   final NewsFeed feed;
@@ -29,7 +29,7 @@ class NewsCompactView extends StatelessWidget {
             child: Stack(
               fit: StackFit.expand,
               children: <Widget>[
-                ArticleImageWidget(feed.image, tag: feed.tag),
+                CachedImage(feed.image, tag: feed.tag),
                 Positioned(
                   bottom: 0,
                   right: 0,

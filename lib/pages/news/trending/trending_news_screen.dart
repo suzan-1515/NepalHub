@@ -3,14 +3,9 @@ import 'package:flutter/widgets.dart';
 import 'package:mobx/mobx.dart';
 import 'package:provider/provider.dart';
 import 'package:samachar_hub/data/api/api.dart';
-import 'package:samachar_hub/data/models/models.dart';
-import 'package:samachar_hub/pages/news/trending/trending_news_store.dart';
-import 'package:samachar_hub/pages/widgets/api_error_dialog.dart';
-import 'package:samachar_hub/pages/widgets/empty_data_widget.dart';
-import 'package:samachar_hub/pages/widgets/error_data_widget.dart';
-import 'package:samachar_hub/pages/widgets/news_list_view.dart';
-import 'package:samachar_hub/pages/widgets/progress_widget.dart';
+import 'package:samachar_hub/pages/news/trending/widgets/trending_news_list.dart';
 import 'package:samachar_hub/stores/stores.dart';
+import 'package:samachar_hub/utils/extensions.dart';
 
 class TrendingNewsScreen extends StatefulWidget {
   const TrendingNewsScreen({Key key}) : super(key: key);
@@ -24,7 +19,7 @@ class _TrendingNewsScreenState extends State<TrendingNewsScreen> {
 
   @override
   void initState() {
-    final store = Provider.of<TrendingNewsStore>(context, listen: false);
+    final store = context.read<TrendingNewsStore>();
     _setupObserver(store);
     store.loadData();
 
@@ -40,82 +35,19 @@ class _TrendingNewsScreenState extends State<TrendingNewsScreen> {
     super.dispose();
   }
 
-  _showMessage(String message) {
-    if (null != message)
-      Scaffold.of(context).showSnackBar(
-        SnackBar(content: Text(message)),
-      );
-  }
-
-  _showErrorDialog(APIException apiError) {
-    if (null != apiError)
-      showDialog<void>(
-        context: context,
-        barrierDismissible: false, // user must tap button!
-        builder: (BuildContext context) {
-          return ApiErrorDialog(
-            apiError: apiError,
-          );
-        },
-      );
-  }
-
   _setupObserver(store) {
     _disposers = [
       // Listens for error message
       autorun((_) {
         final String message = store.error;
-        _showMessage(message);
+        if (message != null) context.showMessage(message);
       }),
       // Listens for API error
       autorun((_) {
         final APIException error = store.apiError;
-        _showErrorDialog(error);
+        if (error != null) context.showErrorDialog(error);
       })
     ];
-  }
-
-  Widget _buildList() {
-    return Consumer2<TrendingNewsStore, AuthenticationStore>(
-      builder: (context, store, authenticationStore, child) {
-        return StreamBuilder<List<NewsFeed>>(
-          stream: store.dataStream,
-          builder:
-              (BuildContext context, AsyncSnapshot<List<NewsFeed>> snapshot) {
-            if (snapshot.hasError) {
-              return Center(
-                child: ErrorDataView(
-                  onRetry: () => store.retry(),
-                ),
-              );
-            }
-            if (snapshot.hasData) {
-              if (snapshot.data.isEmpty) {
-                return Center(
-                  child: EmptyDataView(),
-                );
-              }
-              return RefreshIndicator(
-                onRefresh: () async {
-                  await store.refresh();
-                },
-                child: ListView.builder(
-                  itemCount: snapshot.data.length,
-                  itemBuilder: (_, int index) {
-                    return NewsListView(
-                      feed: snapshot.data[index],
-                      authStore: authenticationStore,
-                    );
-                  },
-                ),
-              );
-            } else {
-              return Center(child: ProgressView());
-            }
-          },
-        );
-      },
-    );
   }
 
   @override
@@ -128,7 +60,7 @@ class _TrendingNewsScreenState extends State<TrendingNewsScreen> {
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(8.0),
-          child: _buildList(),
+          child: TrendingNewsList(),
         ),
       ),
     );

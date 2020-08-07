@@ -4,18 +4,11 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:mobx/mobx.dart';
 import 'package:provider/provider.dart';
 import 'package:samachar_hub/data/api/api.dart';
-import 'package:samachar_hub/data/models/models.dart';
-import 'package:samachar_hub/pages/news/topics/news_topic_feed_store.dart';
+import 'package:samachar_hub/pages/news/topics/widgets/news_topic_list.dart';
 import 'package:samachar_hub/pages/news/widgets/news_filter_appbar.dart';
-import 'package:samachar_hub/pages/widgets/api_error_dialog.dart';
-import 'package:samachar_hub/pages/widgets/empty_data_widget.dart';
-import 'package:samachar_hub/pages/widgets/error_data_widget.dart';
-import 'package:samachar_hub/pages/widgets/news_list_view.dart';
-import 'package:samachar_hub/pages/widgets/news_thumbnail_view.dart';
-import 'package:samachar_hub/pages/widgets/progress_widget.dart';
 import 'package:samachar_hub/repository/following_repository.dart';
 import 'package:samachar_hub/stores/stores.dart';
-import 'package:samachar_hub/widgets/incrementally_loading_listview.dart';
+import 'package:samachar_hub/utils/extensions.dart';
 
 class NewsTopicFeedScreen extends StatefulWidget {
   const NewsTopicFeedScreen({Key key}) : super(key: key);
@@ -45,92 +38,19 @@ class _NewsTopicFeedScreenState extends State<NewsTopicFeedScreen> {
     super.dispose();
   }
 
-  _showMessage(String message) {
-    if (null != message)
-      Scaffold.of(context)
-        ..hideCurrentSnackBar()
-        ..showSnackBar(
-          SnackBar(content: Text(message)),
-        );
-  }
-
-  _showErrorDialog(APIException apiError) {
-    if (null != apiError)
-      showDialog<void>(
-        context: context,
-        barrierDismissible: false, // user must tap button!
-        builder: (BuildContext context) {
-          return ApiErrorDialog(
-            apiError: apiError,
-          );
-        },
-      );
-  }
-
   _setupObserver(store) {
     _disposers = [
       // Listens for error message
       autorun((_) {
         final String message = store.error;
-        _showMessage(message);
+        if (message != null) context.showMessage(message);
       }),
       // Listens for API error
       autorun((_) {
         final APIException error = store.apiError;
-        _showErrorDialog(error);
+        if (error != null) context.showErrorDialog(error);
       })
     ];
-  }
-
-  Widget _buildList(BuildContext context, NewsTopicFeedStore store,
-      AuthenticationStore authStore) {
-    return StreamBuilder<List<NewsFeed>>(
-      stream: store.dataStream,
-      builder: (_, AsyncSnapshot<List<NewsFeed>> snapshot) {
-        if (snapshot.hasError) {
-          return Center(
-            child: ErrorDataView(
-              onRetry: () => store.retry(),
-            ),
-          );
-        }
-        if (snapshot.hasData) {
-          if (snapshot.data.isEmpty) {
-            return Center(
-              child: EmptyDataView(),
-            );
-          }
-          return RefreshIndicator(
-            onRefresh: () async {
-              await store.refresh();
-            },
-            child: IncrementallyLoadingListView(
-              itemCount: () => snapshot.data.length,
-              loadMoreOffsetFromBottom: 2,
-              itemBuilder: (_, int index) {
-                Widget widget;
-                if (index % 5 == 0) {
-                  widget = NewsThumbnailView(
-                    feed: snapshot.data[index],
-                    authStore: authStore,
-                  );
-                } else {
-                  widget = NewsListView(
-                    feed: snapshot.data[index],
-                    authStore: authStore,
-                  );
-                }
-
-                return widget;
-              },
-              hasMore: () => store.hasMore,
-              loadMore: () async => store.loadMoreData(),
-            ),
-          );
-        }
-        return Center(child: ProgressView());
-      },
-    );
   }
 
   @override
@@ -184,7 +104,8 @@ class _NewsTopicFeedScreenState extends State<NewsTopicFeedScreen> {
                 initialSource: store.selectedSource,
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: _buildList(context, store, authStore),
+                  child: NewsTopicList(
+                      context: context, store: store, authStore: authStore),
                 ),
               );
             },

@@ -1,44 +1,25 @@
 import 'package:corona_module/corona.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:samachar_hub/data/models/models.dart';
 import 'package:samachar_hub/pages/authentication/login/login_screen.dart';
 import 'package:samachar_hub/pages/bookmark/bookmark_page.dart';
-import 'package:samachar_hub/pages/bookmark/bookmark_repository.dart';
-import 'package:samachar_hub/pages/bookmark/bookmark_store.dart';
-import 'package:samachar_hub/pages/comment/comment_firestore_service.dart';
-import 'package:samachar_hub/pages/comment/comment_repository.dart';
 import 'package:samachar_hub/pages/comment/comment_screen.dart';
-import 'package:samachar_hub/pages/comment/comment_store.dart';
-import 'package:samachar_hub/pages/following/news/categories_screen.dart';
-import 'package:samachar_hub/pages/following/news/category_store.dart';
-import 'package:samachar_hub/pages/following/news/source_store.dart';
-import 'package:samachar_hub/pages/following/news/sources_screen.dart';
-import 'package:samachar_hub/pages/forex/forex_detail_store.dart';
-import 'package:samachar_hub/pages/forex/forex_repository.dart';
-import 'package:samachar_hub/pages/forex/forex_screen.dart';
 import 'package:samachar_hub/pages/forex/forex_detail_screen.dart';
-import 'package:samachar_hub/pages/forex/forex_store.dart';
+import 'package:samachar_hub/pages/forex/forex_screen.dart';
 import 'package:samachar_hub/pages/home/home_screen.dart';
 import 'package:samachar_hub/pages/horoscope/horoscope_detail_screen.dart';
-import 'package:samachar_hub/pages/horoscope/horoscope_detail_store.dart';
-import 'package:samachar_hub/pages/horoscope/horoscope_repository.dart';
 import 'package:samachar_hub/pages/horoscope/horoscope_screen.dart';
-import 'package:samachar_hub/pages/horoscope/horoscope_store.dart';
+import 'package:samachar_hub/pages/main/main_screen.dart';
+import 'package:samachar_hub/pages/news/category/categories_screen.dart';
 import 'package:samachar_hub/pages/news/category/news_category_feed_screen.dart';
-import 'package:samachar_hub/pages/news/category/news_category_feed_store.dart';
-import 'package:samachar_hub/pages/news/details/news_details.dart';
-import 'package:samachar_hub/repository/news_repository.dart';
+import 'package:samachar_hub/pages/news/details/news_detail_screen.dart';
 import 'package:samachar_hub/pages/news/source/news_source_feed_screen.dart';
-import 'package:samachar_hub/pages/news/source/news_source_feed_store.dart';
+import 'package:samachar_hub/pages/news/source/sources_screen.dart';
 import 'package:samachar_hub/pages/news/topics/news_topic_feed_screen.dart';
-import 'package:samachar_hub/pages/news/topics/news_topic_feed_store.dart';
 import 'package:samachar_hub/pages/news/trending/trending_news_screen.dart';
-import 'package:samachar_hub/pages/news/trending/trending_news_store.dart';
 import 'package:samachar_hub/pages/settings/settings_page.dart';
-import 'package:samachar_hub/repository/following_repository.dart';
-import 'package:samachar_hub/repository/post_meta_repository.dart';
+import 'package:samachar_hub/repository/repositories.dart';
 import 'package:samachar_hub/services/services.dart';
 import 'package:samachar_hub/stores/stores.dart';
 import 'package:samachar_hub/widgets/webview_widget.dart';
@@ -48,7 +29,7 @@ class NavigationService {
     Navigator.pushAndRemoveUntil(
       context,
       MaterialPageRoute(
-        builder: (context) => HomeScreen(),
+        builder: (context) => MainScreen(),
       ),
       (Route<dynamic> route) => false,
     );
@@ -208,15 +189,15 @@ class NavigationService {
           providers: [
             Provider.value(value: Provider.of<FollowingRepository>(context)),
             ProxyProvider2<NewsRepository, FollowingRepository,
-                    FollowNewsSourceStore>(
+                    NewsSourceStore>(
                 update: (BuildContext context,
                         NewsRepository value,
                         FollowingRepository favouritesRepository,
-                        FollowNewsSourceStore previous) =>
-                    FollowNewsSourceStore(value, favouritesRepository),
+                        NewsSourceStore previous) =>
+                    NewsSourceStore(value, favouritesRepository),
                 dispose: (context, value) => value.dispose()),
           ],
-          child: FollowingNewsSourceScreen(),
+          child: NewsSourcesScreen(),
         ),
       ),
     );
@@ -243,23 +224,23 @@ class NavigationService {
           providers: [
             Provider.value(value: Provider.of<FollowingRepository>(context)),
             ProxyProvider2<NewsRepository, FollowingRepository,
-                    FollowNewsCategoryStore>(
+                    NewsCategoriesStore>(
                 update: (BuildContext context,
                         NewsRepository value,
                         FollowingRepository favouritesRepository,
-                        FollowNewsCategoryStore previous) =>
-                    FollowNewsCategoryStore(value, favouritesRepository),
+                        NewsCategoriesStore previous) =>
+                    NewsCategoriesStore(value, favouritesRepository),
                 dispose: (context, value) => value.dispose()),
             // Provider.value(value: Provider.of<FollowingStore>(context)),
             // Provider.value(value: Provider.of<FollowingRepository>(context)),
           ],
-          child: FollowingNewsCategoryScreen(),
+          child: NewsCategoriesScreen(),
         ),
       ),
     );
   }
 
-  onOpenLink(String title, String url, BuildContext context) {
+  toWebViewScreen(String title, String url, BuildContext context) {
     print('open link: $title');
     Navigator.push(
       context,
@@ -297,7 +278,7 @@ class NavigationService {
           builder: (_) => ProxyProvider<NewsRepository, NewsSourceFeedStore>(
             update:
                 (_, NewsRepository newsRepository, NewsSourceFeedStore store) =>
-                    NewsSourceFeedStore(newsRepository, source, sources),
+                    NewsSourceFeedStore(newsRepository, source),
             dispose: (context, value) => value.dispose(),
             child: NewsSourceFeedScreen(),
           ),

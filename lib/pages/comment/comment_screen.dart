@@ -1,20 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:mobx/mobx.dart';
 import 'package:provider/provider.dart';
 import 'package:samachar_hub/data/api/api.dart';
-import 'package:samachar_hub/data/models/comment_model.dart';
-import 'package:samachar_hub/pages/comment/comment_store.dart';
-import 'package:samachar_hub/pages/comment/widgets/comment_item.dart';
-import 'package:samachar_hub/pages/widgets/api_error_dialog.dart';
-import 'package:samachar_hub/pages/widgets/empty_data_widget.dart';
-import 'package:samachar_hub/pages/widgets/error_data_widget.dart';
-import 'package:samachar_hub/pages/widgets/progress_widget.dart';
-import 'package:samachar_hub/services/services.dart';
+import 'package:samachar_hub/pages/comment/widgets/comment_input_bar.dart';
+import 'package:samachar_hub/pages/comment/widgets/comment_list.dart';
+import 'package:samachar_hub/pages/comment/widgets/header.dart';
+import 'package:samachar_hub/pages/comment/widgets/like_comment_stats.dart';
+import 'package:samachar_hub/stores/comment/comment_store.dart';
 import 'package:samachar_hub/stores/stores.dart';
-import 'package:samachar_hub/widgets/incrementally_loading_listview.dart';
+import 'package:samachar_hub/utils/extensions.dart';
 
 class CommentScreen extends StatefulWidget {
   final String postTitle;
@@ -30,17 +25,15 @@ class CommentScreen extends StatefulWidget {
 class _CommentScreenState extends State<CommentScreen> {
   // Reaction disposers
   List<ReactionDisposer> _disposers;
-  final TextEditingController _textEditingController = TextEditingController();
-  final GlobalKey<ScaffoldState> _scaffoldkey = new GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
-    final store = Provider.of<CommentStore>(context, listen: false);
+    final store = context.read<CommentStore>();
     _setupObserver(store);
     store.setPostId(widget.postId);
     store.setPostTitle(widget.postTitle);
     store.loadInitialData();
-    Provider.of<PostMetaStore>(context, listen: false).loadPostMeta();
+    context.read<PostMetaStore>().loadPostMeta();
 
     super.initState();
   }
@@ -51,28 +44,7 @@ class _CommentScreenState extends State<CommentScreen> {
     for (final d in _disposers) {
       d();
     }
-    _textEditingController.dispose();
     super.dispose();
-  }
-
-  _showMessage(String message) {
-    if (null != message)
-      _scaffoldkey.currentState.showSnackBar(
-        SnackBar(content: Text(message)),
-      );
-  }
-
-  _showErrorDialog(APIException apiError) {
-    if (null != apiError)
-      showDialog<void>(
-        context: context,
-        barrierDismissible: false, // user must tap button!
-        builder: (BuildContext context) {
-          return ApiErrorDialog(
-            apiError: apiError,
-          );
-        },
-      );
   }
 
   _setupObserver(store) {
@@ -80,231 +52,46 @@ class _CommentScreenState extends State<CommentScreen> {
       // Listens for error message
       autorun((_) {
         final String message = store.error;
-        _showMessage(message);
+        if (message != null) context.showMessage(message);
       }),
       // Listens for API error
       autorun((_) {
         final APIException error = store.apiError;
-        _showErrorDialog(error);
+        if (error != null) context.showErrorDialog(error);
       })
     ];
   }
 
-  Widget _buildTitle(BuildContext context, CommentStore store) {
-    return Container(
-      margin: const EdgeInsets.all(8),
-      padding: const EdgeInsets.all(8),
-      decoration: BoxDecoration(
-        color: Theme.of(context).cardColor,
-        borderRadius: BorderRadius.all(Radius.circular(6)),
-      ),
-      child: Observer(
-        builder: (_) {
-          return Text(
-            store.postTitle,
-            maxLines: 3,
-            overflow: TextOverflow.ellipsis,
-            style: Theme.of(context).textTheme.bodyText1,
-          );
-        },
-      ),
-    );
-  }
-
-  Widget _buildStatsCount(BuildContext context, CommentStore store) {
-    return Container(
-      margin: const EdgeInsets.all(8),
-      padding: const EdgeInsets.all(8),
-      child: Consumer<PostMetaStore>(
-        builder: (_, PostMetaStore metaStore, Widget child) {
-          return Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: <Widget>[
-              Observer(
-                builder: (BuildContext context) {
-                  return Text(
-                    '${metaStore.postMeta?.commentCount ?? 0} Comments',
-                    style: Theme.of(context).textTheme.bodyText2,
-                  );
-                },
-              ),
-              SizedBox(
-                width: 8,
-              ),
-              Observer(
-                builder: (_) {
-                  return Text(
-                    '${metaStore.postMeta?.likeCount ?? 0} Likes',
-                    style: Theme.of(context).textTheme.bodyText2,
-                  );
-                },
-              ),
-            ],
-          );
-        },
-      ),
-    );
-  }
-
-  Widget _buildCommentList(BuildContext context, CommentStore store) {
-    return StreamBuilder<List<CommentModel>>(
-        stream: store.dataStream,
-        builder: (_, AsyncSnapshot<List<CommentModel>> snapshot) {
-          if (snapshot.hasError) {
-            return Center(
-              child: ErrorDataView(
-                onRetry: () => store.retry(),
-              ),
-            );
-          }
-          if (snapshot.hasData) {
-            if (snapshot.data.isEmpty) {
-              return Center(
-                child: EmptyDataView(),
-              );
-            }
-            return RefreshIndicator(
-              onRefresh: () async {
-                await store.refresh();
-              },
-              child: IncrementallyLoadingListView(
-                loadMoreOffsetFromBottom: 2,
-                hasMore: () => store.hasMoreData,
-                itemBuilder: (_, int index) {
-                  Widget itemWidget = CommentListItem(
-                      context: context,
-                      data: snapshot.data[index],
-                      store: store);
-                  if (index == snapshot.data.length - 1 &&
-                      store.hasMoreData &&
-                      !store.isLoadingMore) {
-                    return Column(
-                      children: <Widget>[
-                        itemWidget,
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: ProgressView(),
-                        ),
-                      ],
-                    );
-                  }
-                  return itemWidget;
-                },
-                itemCount: () => snapshot.data.length,
-                loadMore: () async {
-                  return await store.loadMoreData(after: snapshot.data.last);
-                },
-              ),
-            );
-          } else {
-            return Center(child: ProgressView());
-          }
-        });
-  }
-
-  Widget _buildList(CommentStore store) {
+  Widget _buildBody(CommentStore store) {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 4),
       child: NestedScrollView(
         headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) =>
             [
           SliverToBoxAdapter(
-            child: _buildTitle(context, store),
+            child: Header(
+              context: context,
+              store: store,
+            ),
           ),
           SliverToBoxAdapter(
-            child: _buildStatsCount(context, store),
+            child: LikeAndCommentStats(
+              context: context,
+              store: store,
+            ),
           ),
         ],
-        body: _buildCommentList(context, store),
+        body: CommentList(
+          context: context,
+          store: store,
+        ),
       ),
     );
-  }
-
-  Widget _buildCommentInputBar(BuildContext context, CommentStore store) {
-    return Consumer<AuthenticationStore>(
-      builder: (_, AuthenticationStore authStore, Widget child) {
-        return Container(
-          decoration: BoxDecoration(
-            color: Theme.of(context).backgroundColor,
-            border: Border(
-                top: BorderSide(
-                    color: Theme.of(context).dividerColor, width: 0.5)),
-          ),
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-          child: Observer(
-            builder: (_) {
-              final hasAvatar = authStore.isLoggedIn
-                  ? (authStore.user.avatar?.isNotEmpty ?? false)
-                  : false;
-              return Material(
-                color: Colors.transparent,
-                child: Row(
-                  children: <Widget>[
-                    CircleAvatar(
-                      backgroundColor: Theme.of(context).cardColor,
-                      backgroundImage: hasAvatar
-                          ? NetworkImage(authStore.user.avatar)
-                          : AssetImage('assets/images/user.png'),
-                    ),
-                    SizedBox(
-                      width: 8,
-                    ),
-                    Expanded(
-                        child: Container(
-                      child: TextField(
-                        onSubmitted: (value) {
-                          _submitComment(
-                              context, store, authStore, value.trim());
-                          _textEditingController.clear();
-                          FocusScope.of(context).unfocus();
-                        },
-                        controller: _textEditingController,
-                        decoration: InputDecoration(
-                            border: InputBorder.none,
-                            hintText: 'Write a comment'),
-                        style: Theme.of(context).textTheme.bodyText2,
-                      ),
-                    )),
-                    SizedBox(
-                      width: 8,
-                    ),
-                    IconButton(
-                      icon: Icon(
-                        FontAwesomeIcons.paperPlane,
-                        color: Colors.lightBlue,
-                      ),
-                      onPressed: () {
-                        _submitComment(context, store, authStore,
-                            _textEditingController.value.text.trim());
-                        _textEditingController.clear();
-                        FocusScope.of(context).unfocus();
-                      },
-                    )
-                  ],
-                ),
-              );
-            },
-          ),
-        );
-      },
-    );
-  }
-
-  _submitComment(BuildContext context, CommentStore store,
-      AuthenticationStore authStore, String comment) async {
-    if (comment == null || comment.isEmpty) return;
-    if (authStore.isLoggedIn) {
-      return store.submitComment(comment: comment).then((value) {
-        _showMessage('Comment posted.');
-      });
-    }
-    context.read<NavigationService>().loginRedirect(context);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      key: _scaffoldkey,
       backgroundColor: Theme.of(context).backgroundColor,
       appBar: AppBar(
         title: Text('Comments'),
@@ -320,9 +107,9 @@ class _CommentScreenState extends State<CommentScreen> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: <Widget>[
                   Expanded(
-                    child: _buildList(store),
+                    child: _buildBody(store),
                   ),
-                  _buildCommentInputBar(context, store)
+                  CommentInputBar(store: store),
                 ],
               );
             },

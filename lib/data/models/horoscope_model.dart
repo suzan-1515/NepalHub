@@ -1,5 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/widgets.dart';
+import 'package:intl/intl.dart';
+import 'package:samachar_hub/utils/horoscope_signs.dart';
 
 class HoroscopeModel extends Equatable {
   final String type;
@@ -70,6 +72,18 @@ class HoroscopeModel extends Equatable {
     }
 
     return aries;
+  }
+
+  String get defaultSign {
+    return horoscopeSigns[defaultSignIndex];
+  }
+
+  String get formattedDate {
+    try {
+      return DateFormat('dd MMMM, yyyy').format(DateTime.parse(todate));
+    } catch (e) {
+      return todate;
+    }
   }
 
   @override
