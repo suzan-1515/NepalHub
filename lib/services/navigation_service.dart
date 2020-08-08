@@ -149,8 +149,8 @@ class NavigationService {
 
   toGoldSilverScreen(BuildContext context) {}
 
-  toFeedDetail(NewsFeed article, BuildContext context) {
-    Navigator.push(
+  Future toFeedDetail(NewsFeed article, BuildContext context) {
+    return Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => MultiProvider(
@@ -164,15 +164,11 @@ class NavigationService {
                   PostMetaStore(
                       metaRepository, authenticationStore.user, article.uuid),
             ),
-            ProxyProvider3<ShareService, AuthenticationStore,
-                BookmarkRepository, NewsDetailStore>(
+            ProxyProvider<BookmarkRepository, NewsDetailStore>(
               update: (BuildContext context,
-                      ShareService shareService,
-                      AuthenticationStore authenticationStore,
                       BookmarkRepository bookmarkRepository,
                       NewsDetailStore previous) =>
-                  NewsDetailStore(shareService, authenticationStore.user,
-                      bookmarkRepository, article),
+                  NewsDetailStore(bookmarkRepository, article),
               dispose: (context, value) => value.dispose(),
             ),
           ],
@@ -203,14 +199,13 @@ class NavigationService {
     );
   }
 
-  Future toNewsCategoryFeedScreen(
-      BuildContext context, NewsCategory NewsCategory) {
+  Future toNewsCategoryFeedScreen(BuildContext context, NewsCategory category) {
     return Navigator.push(
         context,
         MaterialPageRoute(
           builder: (_) => ProxyProvider<NewsRepository, NewsCategoryFeedStore>(
             update: (_, NewsRepository value, NewsCategoryFeedStore previous) =>
-                NewsCategoryFeedStore(value, NewsCategory),
+                NewsCategoryFeedStore(value, category),
             dispose: (context, value) => value.dispose(),
             child: NewsCategoryFeedScreen(),
           ),

@@ -30,7 +30,8 @@ class CommentFirestoreService {
           .get(_commentCollectionReference.document(commentId))
           .then((value) {
         if (value.exists) {
-          final List<String> likedUsers = value.data['liked_users'];
+          final List<String> likedUsers =
+              value.data['liked_users'].cast<String>();
           likedUsers.add(userId);
           final data = {
             'liked_users': likedUsers,
@@ -38,7 +39,9 @@ class CommentFirestoreService {
           };
           transaction.update(
               _commentCollectionReference.document(commentId), data);
-        }
+        } else
+          transaction
+              .update(_commentCollectionReference.document(commentId), {});
       });
     });
   }

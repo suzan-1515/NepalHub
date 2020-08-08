@@ -6,8 +6,8 @@ import 'package:samachar_hub/data/api/api.dart';
 import 'package:samachar_hub/data/models/models.dart';
 import 'package:samachar_hub/stores/stores.dart';
 import 'package:samachar_hub/pages/news/details/widgets/article_detail.dart';
-import 'package:samachar_hub/pages/widgets/api_error_dialog.dart';
 import 'package:samachar_hub/services/services.dart';
+import 'package:samachar_hub/utils/extensions.dart';
 import 'package:samachar_hub/widgets/cached_image_widget.dart';
 import 'package:samachar_hub/widgets/comment_bar_widget.dart';
 
@@ -46,12 +46,12 @@ class _NewsDetailScreenState extends State<NewsDetailScreen> {
       // Listens for error message
       autorun((_) {
         final String message = store.error;
-        _showMessage(message);
+        if (message != null) context.showMessage(message);
       }),
       // Listens for API error
       autorun((_) {
         final APIException error = store.apiError;
-        _showErrorDialog(error);
+        if (error != null) context.showErrorDialog(error);
       }),
       autorun((_) {
         final PostMetaModel metaModel = metaStore.postMeta;
@@ -60,34 +60,13 @@ class _NewsDetailScreenState extends State<NewsDetailScreen> {
     ];
   }
 
-  _showMessage(String message) {
-    if (null != message)
-      Scaffold.of(context)
-        ..hideCurrentSnackBar()
-        ..showSnackBar(
-          SnackBar(content: Text(message)),
-        );
-  }
-
-  _showErrorDialog(APIException apiError) {
-    if (null != apiError)
-      showDialog<void>(
-        context: context,
-        barrierDismissible: false, // user must tap button!
-        builder: (BuildContext context) {
-          return ApiErrorDialog(
-            apiError: apiError,
-          );
-        },
-      );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Consumer3<NewsDetailStore, AuthenticationStore, PostMetaStore>(
       builder: (_, NewsDetailStore store,
           AuthenticationStore _authenticationStore, metaStore, Widget child) {
         return Scaffold(
+          backgroundColor: Theme.of(context).backgroundColor,
           body: OrientationBuilder(builder: (_, Orientation orientation) {
             switch (orientation) {
               case Orientation.landscape:
@@ -96,8 +75,11 @@ class _NewsDetailScreenState extends State<NewsDetailScreen> {
                     mainAxisSize: MainAxisSize.max,
                     children: <Widget>[
                       Expanded(
-                          child: CachedImage(store.feed.image,
-                              tag: store.feed.tag)),
+                        child: CachedImage(
+                          store.feed.image,
+                          tag: store.feed.tag,
+                        ),
+                      ),
                       Expanded(
                         child: SingleChildScrollView(
                             child: ArticleDetail(
@@ -116,14 +98,19 @@ class _NewsDetailScreenState extends State<NewsDetailScreen> {
                       pinned: true,
                       expandedHeight: MediaQuery.of(context).size.height * 0.3,
                       flexibleSpace: FlexibleSpaceBar(
-                        background:
-                            CachedImage(store.feed.image, tag: store.feed.tag),
+                        background: CachedImage(
+                          store.feed.image,
+                          tag: store.feed.tag,
+                        ),
                       ),
                     ),
                     SliverFillRemaining(
                       hasScrollBody: false,
                       child: ArticleDetail(
-                          context: context, store: store, metaStore: metaStore),
+                        context: context,
+                        store: store,
+                        metaStore: metaStore,
+                      ),
                     ),
                   ],
                 );
@@ -131,46 +118,44 @@ class _NewsDetailScreenState extends State<NewsDetailScreen> {
             }
           }),
           bottomNavigationBar: BottomAppBar(
-            child: Consumer2<NavigationService, ShareService>(
-              builder: (_, NavigationService navigationService, shareService,
-                  Widget child) {
-                return Observer(
-                  builder: (_) {
-                    return IgnorePointer(
-                      ignoring: metaStore.postMeta == null,
-                      child: CommentBar(
-                        userProfileImageUrl: _authenticationStore.user.avatar,
-                        commentCountNotifier: store.feed.commentCountNotifier,
-                        likeCountNotifier: store.feed.likeCountNotifier,
-                        likeNotifier: store.feed.likeNotifier,
-                        onCommentTap: () {
-                          navigationService.toCommentsScreen(
-                              context: context,
+            child: Observer(
+              builder: (_) {
+                return IgnorePointer(
+                  ignoring: metaStore.postMeta == null,
+                  child: CommentBar(
+                    userProfileImageUrl: _authenticationStore.user.avatar,
+                    commentCountNotifier: store.feed.commentCountNotifier,
+                    likeCountNotifier: store.feed.likeCountNotifier,
+                    likeNotifier: store.feed.likeNotifier,
+                    onCommentTap: () => context
+                        .read<NavigationService>()
+                        .toCommentsScreen(
+                            context: context,
+                            title: store.feed.title,
+                            postId: store.feed.uuid),
+                    onLikeTap: (value) {
+                      store.feed.like = !value;
+                      if (value) {
+                        metaStore
+                            .removeLike()
+                            .catchError((onError) => store.feed.like = value);
+                      } else {
+                        metaStore
+                            .postLike()
+                            .catchError((onError) => store.feed.like = value);
+                      }
+                    },
+                    onShareTap: () {
+                      context
+                          .read<ShareService>()
+                          .share(
+                              postId: store.feed.uuid,
                               title: store.feed.title,
-                              postId: store.feed.uuid);
-                        },
-                        onLikeTap: (value) {
-                          store.feed.like = !value;
-                          if (value) {
-                            metaStore.removeLike().catchError(
-                                (onError) => store.feed.like = value);
-                          } else {
-                            metaStore.postLike().catchError(
-                                (onError) => store.feed.like = value);
-                          }
-                        },
-                        onShareTap: () {
-                          shareService
-                              .share(
-                                  postId: store.feed.uuid,
-                                  title: store.feed.title,
-                                  data: store.feed.link)
-                              .catchError((onError) {});
-                          metaStore.postShare();
-                        },
-                      ),
-                    );
-                  },
+                              data: store.feed.link)
+                          .catchError((onError) {});
+                      metaStore.postShare();
+                    },
+                  ),
                 );
               },
             ),

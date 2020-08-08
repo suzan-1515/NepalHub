@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:provider/provider.dart';
+import 'package:samachar_hub/services/navigation_service.dart';
 import 'package:samachar_hub/stores/stores.dart';
 import 'package:samachar_hub/widgets/cached_image_widget.dart';
 
@@ -54,10 +56,15 @@ class SourceAndBookmark extends StatelessWidget {
                       color: Theme.of(context).accentColor,
                     ),
                     onPressed: () {
+                      final authStore = context.read<AuthenticationStore>();
+                      if (!authStore.isLoggedIn)
+                        return context
+                            .read<NavigationService>()
+                            .loginRedirect(context);
                       if (value) {
-                        store.removeBookmarkedFeed();
+                        store.removeBookmarkedFeed(authStore.user.uId);
                       } else {
-                        store.bookmarkFeed();
+                        store.bookmarkFeed(authStore.user);
                       }
                     },
                   );

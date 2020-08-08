@@ -1,29 +1,30 @@
 import 'package:mobx/mobx.dart';
 import 'package:samachar_hub/data/models/models.dart';
 import 'package:samachar_hub/repository/bookmark_repository.dart';
-import 'package:samachar_hub/services/services.dart';
 
 part 'news_detail_store.g.dart';
 
 class NewsDetailStore = _NewsDetailStore with _$NewsDetailStore;
 
 abstract class _NewsDetailStore with Store {
-  final ShareService shareService;
-  final UserModel user;
   final BookmarkRepository _bookmarkRepository;
-  final NewsFeed feed;
+  final NewsFeed _feed;
 
-  _NewsDetailStore(
-      this.shareService, this.user, this._bookmarkRepository, this.feed);
+  _NewsDetailStore(this._bookmarkRepository, this._feed);
 
   @observable
   String message;
 
+  NewsFeed get feed => _feed;
+  List<NewsFeed> get relatedFeeds => _feed.related;
+
+  bool get hasRelatedFeeds => _feed.related != null && _feed.related.isNotEmpty;
+
   @action
-  bookmarkFeed() {
+  bookmarkFeed(UserModel userModel) {
     feed.bookmark = true;
     _bookmarkRepository
-        .postBookmark(postId: feed.uuid, user: user, bookmarkFeed: feed)
+        .postBookmark(postId: feed.uuid, user: userModel, bookmarkFeed: feed)
         .catchError((onError) {
       message = 'Unable to bookmark';
       feed.bookmark = false;
@@ -31,10 +32,10 @@ abstract class _NewsDetailStore with Store {
   }
 
   @action
-  removeBookmarkedFeed() {
+  removeBookmarkedFeed(String userId) {
     feed.bookmark = false;
     _bookmarkRepository
-        .removeBookmark(postId: feed.uuid, userId: user.uId)
+        .removeBookmark(postId: feed.uuid, userId: userId)
         .catchError((onError) {
       message = 'Unable to remove bookmark';
       feed.bookmark = true;

@@ -30,20 +30,20 @@ mixin _$NewsDetailStore on _NewsDetailStore, Store {
       ActionController(name: '_NewsDetailStore');
 
   @override
-  dynamic bookmarkFeed() {
+  dynamic bookmarkFeed(UserModel userModel) {
     final _$actionInfo = _$_NewsDetailStoreActionController.startAction();
     try {
-      return super.bookmarkFeed();
+      return super.bookmarkFeed(userModel);
     } finally {
       _$_NewsDetailStoreActionController.endAction(_$actionInfo);
     }
   }
 
   @override
-  dynamic removeBookmarkedFeed() {
+  dynamic removeBookmarkedFeed(String userId) {
     final _$actionInfo = _$_NewsDetailStoreActionController.startAction();
     try {
-      return super.removeBookmarkedFeed();
+      return super.removeBookmarkedFeed(userId);
     } finally {
       _$_NewsDetailStoreActionController.endAction(_$actionInfo);
     }

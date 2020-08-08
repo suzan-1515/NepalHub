@@ -169,8 +169,12 @@ class NewsSource extends Equatable {
 
   set follow(bool value) {
     this.followNotifier.value = value;
-    this.followerCountNotifier.value =
-        value ? followerCount + 1 : followerCount - 1;
+    if (value)
+      this.followerCountNotifier.value = followerCount + 1;
+    else {
+      this.followerCountNotifier.value =
+          (followerCount < 1) ? 0 : followerCount - 1;
+    }
   }
 
   Map<String, dynamic> toJson() => {
@@ -228,8 +232,12 @@ class NewsCategory extends Equatable {
 
   set follow(bool value) {
     this.followNotifier.value = value;
-    this.followerCountNotifier.value =
-        value ? followerCount + 1 : followerCount - 1;
+    if (value)
+      this.followerCountNotifier.value = followerCount + 1;
+    else {
+      this.followerCountNotifier.value =
+          (followerCount < 1) ? 0 : followerCount - 1;
+    }
   }
 
   Map<String, dynamic> toJson() => {
@@ -278,8 +286,12 @@ class NewsTopic extends Equatable {
 
   set follow(bool value) {
     this.followNotifier.value = value;
-    this.followerCountNotifier.value =
-        value ? followerCount + 1 : followerCount - 1;
+    if (value)
+      this.followerCountNotifier.value = followerCount + 1;
+    else {
+      this.followerCountNotifier.value =
+          (followerCount < 1) ? 0 : followerCount - 1;
+    }
   }
 
   @override

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:samachar_hub/pages/news/details/widgets/author_and_category.dart';
 import 'package:samachar_hub/pages/news/details/widgets/read_more.dart';
+import 'package:samachar_hub/pages/news/details/widgets/related_feeds.dart';
 import 'package:samachar_hub/pages/news/details/widgets/source_and_bookmark.dart';
 import 'package:samachar_hub/stores/news/detail/news_detail_store.dart';
 import 'package:samachar_hub/stores/stores.dart';
@@ -59,6 +60,10 @@ class ArticleDetail extends StatelessWidget {
           ),
           // _buildAdRow(),
           ReadMore(context: context, store: store),
+          if (store.hasRelatedFeeds)
+            RelatedNews(
+              store: store,
+            ),
         ],
       ),
     );
