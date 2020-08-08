@@ -26,7 +26,7 @@ class NewsMapper {
       bookmarkCount: 0,
       commentCount: 0,
       shareCount: 0,
-      likeCount: 0,
+      likeCount: likes.contains(response.uuid) ? 1 : 0,
       isBookmarked: true,
       viewCount: 0,
       isLiked: likes.contains(response.uuid),
@@ -63,10 +63,10 @@ class NewsMapper {
           ?.map((f) => fromFeedApi(
               f, bookmarks, likes, unFollowedSources, unFollowedCategories))
           ?.toList(),
-      bookmarkCount: 0,
+      bookmarkCount: bookmarks.contains(response.uuid) ? 1 : 0,
       commentCount: 0,
       shareCount: 0,
-      likeCount: 0,
+      likeCount: likes.contains(response.uuid) ? 1 : 0,
       isBookmarked: bookmarks.contains(response.uuid),
       viewCount: 0,
       isLiked: likes.contains(response.uuid),

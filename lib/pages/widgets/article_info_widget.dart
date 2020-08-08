@@ -153,14 +153,18 @@ class _NewsFeedOptionsState extends State<NewsFeedOptions> {
               return ValueListenableBuilder(
                 valueListenable: _likeProgressNotifier,
                 builder: (_, isLikeProgress, Widget child) {
-                  return IgnorePointer(
-                    ignoring: isLikeProgress,
-                    child: IconButton(
+                  return AbsorbPointer(
+                    absorbing: isLikeProgress,
+                    child: FlatButton.icon(
+                      label: Text(
+                        '${(widget.feed.likeCount == null || widget.feed.likeCount < 1) ? '' : widget.feed.likeCount}',
+                        style: Theme.of(context).textTheme.overline,
+                      ),
                       icon: value
                           ? Icon(
                               FontAwesomeIcons.solidThumbsUp,
                               size: 16,
-                              color: Colors.blue,
+                              color: Theme.of(context).accentColor,
                             )
                           : Icon(
                               FontAwesomeIcons.thumbsUp,
@@ -208,33 +212,25 @@ class _NewsFeedOptionsState extends State<NewsFeedOptions> {
           ),
           ValueListenableBuilder<int>(
             valueListenable: widget.feed.commentCountNotifier,
-            builder: (context, value, child) {
-              return (value > 0)
-                  ? IconBadge(
-                      iconData: FontAwesomeIcons.comment,
-                      badgeText: value.toString(),
-                      onTap: () =>
-                          context.read<NavigationService>().toCommentsScreen(
-                                context: context,
-                                title: widget.feed.title,
-                                postId: widget.feed.uuid,
-                              ),
-                    )
-                  : IconButton(
-                      icon: Icon(
-                        FontAwesomeIcons.comment,
-                        size: 16,
+            builder: (context, value, child) => FlatButton.icon(
+              label: Text(
+                '${(value == null || value < 1) ? '' : widget.feed.likeCount}',
+                style: Theme.of(context).textTheme.overline,
+              ),
+              icon: Icon(
+                FontAwesomeIcons.comment,
+                size: 16,
+              ),
+              onPressed: () =>
+                  context.read<NavigationService>().toCommentsScreen(
+                        context: context,
+                        title: widget.feed.title,
+                        postId: widget.feed.uuid,
                       ),
-                      onPressed: () =>
-                          context.read<NavigationService>().toCommentsScreen(
-                                context: context,
-                                title: widget.feed.title,
-                                postId: widget.feed.uuid,
-                              ),
-                    );
-            },
+            ),
           ),
           IconButton(
+            visualDensity: VisualDensity.compact,
             icon: Icon(
               FontAwesomeIcons.shareAlt,
               size: 16,
@@ -252,6 +248,7 @@ class _NewsFeedOptionsState extends State<NewsFeedOptions> {
           ),
           Spacer(),
           IconButton(
+            visualDensity: VisualDensity.compact,
             icon: Icon(
               Icons.more_vert,
             ),
