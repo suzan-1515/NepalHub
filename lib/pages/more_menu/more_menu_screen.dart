@@ -14,7 +14,8 @@ class MoreMenuScreen extends StatefulWidget {
   _MoreMenuScreenState createState() => _MoreMenuScreenState();
 }
 
-class _MoreMenuScreenState extends State<MoreMenuScreen> {
+class _MoreMenuScreenState extends State<MoreMenuScreen>
+    with AutomaticKeepAliveClientMixin {
   List<ReactionDisposer> _disposers;
 
   @override
@@ -55,6 +56,7 @@ class _MoreMenuScreenState extends State<MoreMenuScreen> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Container(
       color: Theme.of(context).backgroundColor,
       child: ListView(
@@ -76,4 +78,7 @@ class _MoreMenuScreenState extends State<MoreMenuScreen> {
       ),
     );
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }

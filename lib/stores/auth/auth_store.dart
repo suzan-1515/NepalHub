@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:mobx/mobx.dart';
 import 'package:samachar_hub/data/models/models.dart';
 import 'package:samachar_hub/repository/repositories.dart';
@@ -65,6 +67,17 @@ abstract class _AuthenticationStore with Store {
       isLoggedIn = value != null;
     }).catchError((onError) {
       isLoggedIn = false;
+    });
+  }
+
+  @action
+  Future logOut() async {
+    return _authenticationRepository.logout().then((value) {
+      user = null;
+      isLoggedIn = false;
+    }).catchError((onError) {
+      log('logout', error: onError);
+      this.error = 'Error logging out.';
     });
   }
 }

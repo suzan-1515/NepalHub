@@ -60,16 +60,17 @@ class NewsCategoryListItem extends StatelessWidget {
                 style: Theme.of(context).textTheme.bodyText2,
               ),
               ActionChip(
+                visualDensity: VisualDensity.compact,
                 backgroundColor:
                     isSubscribed ? Colors.grey : Theme.of(context).accentColor,
-                avatar: isSubscribed ? Icon(Icons.check) : null,
+                avatar: isSubscribed ? Icon(Icons.done) : null,
                 label: Text(
                   isSubscribed ? 'Followed' : 'Follow',
-                  style: Theme.of(context)
-                      .textTheme
-                      .button
-                      .copyWith(color: Colors.white),
                 ),
+                labelStyle: Theme.of(context)
+                    .textTheme
+                    .caption
+                    .copyWith(color: Colors.white),
                 onPressed: onFollowTap,
               ),
             ],

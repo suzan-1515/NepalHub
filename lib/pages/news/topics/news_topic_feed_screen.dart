@@ -5,6 +5,7 @@ import 'package:mobx/mobx.dart';
 import 'package:provider/provider.dart';
 import 'package:samachar_hub/data/api/api.dart';
 import 'package:samachar_hub/pages/news/topics/widgets/news_topic_list.dart';
+import 'package:samachar_hub/pages/news/widgets/follow_unfollow_button.dart';
 import 'package:samachar_hub/pages/news/widgets/news_filter_appbar.dart';
 import 'package:samachar_hub/repository/following_repository.dart';
 import 'package:samachar_hub/stores/stores.dart';
@@ -69,27 +70,24 @@ class _NewsTopicFeedScreenState extends State<NewsTopicFeedScreen> {
                 ),
                 followUnFollowButton: ValueListenableBuilder<bool>(
                   valueListenable: store.topic.followNotifier,
-                  builder: (context, value, child) => RaisedButton(
-                    visualDensity: VisualDensity.compact,
-                    textColor: Colors.white,
-                    color: value ? Colors.grey : Colors.blue,
-                    child: Text(value ? 'Followed' : 'Follow'),
-                    onPressed: () {
-                      final currentValue = value;
-                      store.topic.follow = !value;
-                      if (currentValue)
+                  builder: (context, value, child) => FollowUnFollowButton(
+                    isFollowed: store.topic.isFollowed,
+                    onTap: (isFollowed) {
+                      store.topic.follow = !isFollowed;
+                      if (isFollowed)
                         context
                             .read<FollowingRepository>()
                             .unFollowTopic(store.topic)
                             .catchError(
-                                (onError) => store.topic.follow = currentValue);
+                                (onError) => store.topic.follow = isFollowed);
                       else
                         context
                             .read<FollowingRepository>()
                             .followTopic(store.topic)
                             .catchError(
-                                (onError) => store.topic.follow = currentValue);
+                                (onError) => store.topic.follow = isFollowed);
                     },
+                    followerCount: store.topic.followerCount,
                   ),
                 ),
                 onSortByChanged: (value) {

@@ -35,6 +35,7 @@ abstract class _PostMetaStore with Store {
 
   @action
   Future<bool> postLike() async {
+    if (_user == null) return false;
     return _postMetaRepository
         .postLike(postId: postId, userId: _user.uId)
         .then((value) => true)
@@ -46,6 +47,7 @@ abstract class _PostMetaStore with Store {
 
   @action
   Future<bool> removeLike() async {
+    if (_user == null) return false;
     return _postMetaRepository
         .removeLike(postId: postId, userId: _user.uId)
         .then((value) => true)
@@ -57,6 +59,7 @@ abstract class _PostMetaStore with Store {
 
   @action
   Future<void> postView() async {
+    if (_user == null) return;
     return _postMetaRepository
         .postView(postId: postId, userId: _user.uId)
         .catchError((onError) {
@@ -66,6 +69,7 @@ abstract class _PostMetaStore with Store {
 
   @action
   Future<void> postShare() async {
+    if (_user == null) return;
     return _postMetaRepository
         .postShare(postId: postId, userId: _user.uId)
         .catchError((onError) {
@@ -74,6 +78,7 @@ abstract class _PostMetaStore with Store {
   }
 
   _loadPostMetaAsStream() {
+    if (_user == null) return;
     _postMetaRepository
         .getMetaAsStream(postId: postId, userId: _user.uId)
         .listen((value) {

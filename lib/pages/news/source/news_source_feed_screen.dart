@@ -73,6 +73,7 @@ class _NewsSourceFeedScreenState extends State<NewsSourceFeedScreen> {
             followUnFollowButton: ValueListenableBuilder<bool>(
               valueListenable: store.source.followNotifier,
               builder: (context, value, child) => FollowUnFollowButton(
+                followerCount: store.source.followerCount,
                 isFollowed: value,
                 onTap: (isFollowed) {
                   store.source.follow = !value;

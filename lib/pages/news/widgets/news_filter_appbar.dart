@@ -36,7 +36,7 @@ class NewsFilteringAppBar extends StatelessWidget {
             leading: BackButton(
               color: Theme.of(context).textTheme.button.color,
             ),
-            expandedHeight: 210,
+            expandedHeight: 230,
             pinned: true,
             floating: true,
             snap: true,

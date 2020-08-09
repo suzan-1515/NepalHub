@@ -20,20 +20,23 @@ class _AuthInfoState extends State<AuthInfo> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
-          Container(
-            width: 64,
-            height: 64,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(30),
-              color: Theme.of(context).cardColor,
-              image: (authStore.user?.avatar?.isNotEmpty ?? false)
-                  ? DecorationImage(
-                      image: CachedNetworkImageProvider(
-                        authStore.user.avatar,
-                        errorListener: () {},
-                      ),
-                      fit: BoxFit.cover)
-                  : Image.asset('assets/images/user.png'),
+          Hero(
+            tag: 'profile_pic_tag',
+            child: Container(
+              width: 64,
+              height: 64,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(30),
+                color: Theme.of(context).cardColor,
+                image: (authStore.user?.avatar?.isNotEmpty ?? false)
+                    ? DecorationImage(
+                        image: CachedNetworkImageProvider(
+                          authStore.user.avatar,
+                          errorListener: () {},
+                        ),
+                        fit: BoxFit.cover)
+                    : Image.asset('assets/images/user.png'),
+              ),
             ),
           ),
           SizedBox(
