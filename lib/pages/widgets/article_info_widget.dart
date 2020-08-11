@@ -3,10 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:samachar_hub/data/models/models.dart';
+import 'package:samachar_hub/pages/news/widgets/news_feed_more_option.dart';
 import 'package:samachar_hub/repository/repositories.dart';
 import 'package:samachar_hub/services/services.dart';
 import 'package:samachar_hub/stores/stores.dart';
-import 'package:samachar_hub/widgets/icon_badge_widget.dart';
+import 'package:samachar_hub/utils/extensions.dart';
 
 class NewsFeedCardSourceCategory extends StatelessWidget {
   final String sourceIcon;
@@ -156,6 +157,7 @@ class _NewsFeedOptionsState extends State<NewsFeedOptions> {
                   return AbsorbPointer(
                     absorbing: isLikeProgress,
                     child: FlatButton.icon(
+                      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                       label: Text(
                         '${(widget.feed.likeCount == null || widget.feed.likeCount < 1) ? '' : widget.feed.likeCount}',
                         style: Theme.of(context).textTheme.overline,
@@ -213,6 +215,7 @@ class _NewsFeedOptionsState extends State<NewsFeedOptions> {
           ValueListenableBuilder<int>(
             valueListenable: widget.feed.commentCountNotifier,
             builder: (context, value, child) => FlatButton.icon(
+              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
               label: Text(
                 '${(value == null || value < 1) ? '' : widget.feed.likeCount}',
                 style: Theme.of(context).textTheme.overline,
@@ -229,30 +232,21 @@ class _NewsFeedOptionsState extends State<NewsFeedOptions> {
                       ),
             ),
           ),
-          IconButton(
-            visualDensity: VisualDensity.compact,
-            icon: Icon(
-              FontAwesomeIcons.shareAlt,
-              size: 16,
-            ),
-            onPressed: () {
-              context.read<ShareService>().share(
-                  postId: widget.feed.uuid,
-                  title: widget.feed.title,
-                  data: widget.feed.link);
-              if (widget.authStore.isLoggedIn)
-                context.read<PostMetaRepository>().postShare(
-                    postId: widget.feed.uuid,
-                    userId: widget.authStore.user.uId);
-            },
-          ),
           Spacer(),
           IconButton(
             visualDensity: VisualDensity.compact,
             icon: Icon(
               Icons.more_vert,
             ),
-            onPressed: () {},
+            onPressed: () => context.showBottomSheet(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(12.0),
+                      topRight: Radius.circular(12.0)),
+                ),
+                child: NewsFeedMoreOption(
+                  feed: widget.feed,
+                )),
           ),
         ],
       ),

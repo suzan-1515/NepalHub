@@ -19,3 +19,13 @@ extension APIErrorDialogX on BuildContext {
         },
       );
 }
+
+extension ModalBottonSheetX on BuildContext {
+  showBottomSheet({@required Widget child, ShapeBorder shape}) =>
+      showModalBottomSheet(
+          context: this,
+          shape: shape,
+          builder: (context) {
+            return child;
+          });
+}

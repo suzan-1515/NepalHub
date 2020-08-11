@@ -30,7 +30,6 @@ class CoronaWorldwideModel {
       @required this.testsPerOneMillion,
       @required this.affectedCountries,
       @required this.lastUpdated});
-
 }
 
 class CoronaCountrySpecificModel {
