@@ -138,11 +138,9 @@ class _NewsDetailScreenState extends State<NewsDetailScreen> {
                       if (value) {
                         metaStore
                             .removeLike()
-                            .catchError((onError) => store.feed.like = value);
+                            .then((v) => store.feed.like = !v);
                       } else {
-                        metaStore
-                            .postLike()
-                            .catchError((onError) => store.feed.like = value);
+                        metaStore.postLike().then((v) => store.feed.like = v);
                       }
                     },
                     onShareTap: () {

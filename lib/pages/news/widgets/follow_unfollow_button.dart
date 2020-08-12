@@ -37,7 +37,7 @@ class FollowUnFollowButton extends StatelessWidget {
                       color: Theme.of(context).iconTheme.color.withOpacity(0.7),
                     ),
                     const SizedBox(width: 8.0),
-                    Text('Followed'),
+                    Text('Following'),
                   ],
                 ),
                 textColor: Colors.white,

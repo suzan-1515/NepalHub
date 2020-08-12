@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:samachar_hub/data/models/news_model.dart';
+import 'package:samachar_hub/pages/news/widgets/follow_unfollow_button.dart';
+import 'package:samachar_hub/pages/news/widgets/outline_rounded_button.dart';
 import 'package:samachar_hub/pages/news/widgets/report_article.dart';
 import 'package:samachar_hub/repository/repositories.dart';
 import 'package:samachar_hub/services/services.dart';
@@ -20,6 +22,45 @@ class NewsFeedMoreOption extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: [
+        ListTile(
+          visualDensity: VisualDensity.compact,
+          title: Text(
+            '${feed.source.name}',
+            style: Theme.of(context).textTheme.bodyText2.copyWith(fontSize: 12),
+          ),
+          trailing: OutlineButton.icon(
+            icon: Icon(
+              feed.source.isFollowed ? Icons.check : Icons.add,
+              size: 16,
+            ),
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.horizontal(
+              left: Radius.circular(12),
+              right: Radius.circular(12),
+            )),
+            visualDensity: VisualDensity.compact,
+            onPressed: () {},
+            label: Text(feed.source.isFollowed ? 'Following' : 'Follow'),
+          ),
+          onTap: () {
+            Navigator.pop(context);
+          },
+        ),
+        Divider(),
+        ListTile(
+          visualDensity: VisualDensity.compact,
+          leading: Icon(
+            Icons.save_alt,
+            size: 18,
+          ),
+          title: Text(
+            'Save',
+            style: Theme.of(context).textTheme.bodyText2.copyWith(fontSize: 12),
+          ),
+          onTap: () {
+            Navigator.pop(context);
+          },
+        ),
         ListTile(
           visualDensity: VisualDensity.compact,
           leading: Icon(

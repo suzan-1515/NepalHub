@@ -34,6 +34,7 @@ abstract class _AuthenticationStore with Store {
       }
       isLoggedIn = value != null;
     }).catchError((onError) {
+      log('signInWithGoogle: ', error: onError);
       this.error = 'Error signing in.';
       isLoggedIn = false;
     }).whenComplete(() {
@@ -51,6 +52,7 @@ abstract class _AuthenticationStore with Store {
       }
       isLoggedIn = value != null;
     }).catchError((onError) {
+      log('signInAnonymously: ', error: onError);
       this.error = 'Error signing in.';
       isLoggedIn = false;
     }).whenComplete(() {
@@ -66,6 +68,7 @@ abstract class _AuthenticationStore with Store {
       }
       isLoggedIn = value != null;
     }).catchError((onError) {
+      log('silentSignIn: ', error: onError);
       isLoggedIn = false;
     });
   }

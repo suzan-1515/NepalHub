@@ -188,11 +188,11 @@ class _HoroscopeDetailScreenState extends State<HoroscopeDetailScreen> {
                         onLikeTap: (value) {
                           likeNotifier.value = !value;
                           if (value) {
-                            metaStore.removeLike().catchError((value) {
-                              likeNotifier.value = value;
+                            metaStore.removeLike().then((value) {
+                              likeNotifier.value = !value;
                             });
                           } else {
-                            metaStore.postLike().catchError((value) {
+                            metaStore.postLike().then((value) {
                               likeNotifier.value = value;
                             });
                           }

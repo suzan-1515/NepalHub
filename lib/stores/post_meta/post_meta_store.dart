@@ -15,6 +15,10 @@ abstract class _PostMetaStore with Store {
 
   _PostMetaStore(this._postMetaRepository, this._user, this.postId);
 
+  bool _inProgress = false;
+
+  bool get inProgress => _inProgress;
+
   @observable
   PostMetaModel postMeta;
 
@@ -35,26 +39,28 @@ abstract class _PostMetaStore with Store {
 
   @action
   Future<bool> postLike() async {
-    if (_user == null) return false;
+    if (_user == null || inProgress) return false;
+    _inProgress = true;
     return _postMetaRepository
         .postLike(postId: postId, userId: _user.uId)
         .then((value) => true)
         .catchError((onError) {
       debugPrint('Error posting like: ' + onError.toString());
       return false;
-    });
+    }).whenComplete(() => _inProgress = false);
   }
 
   @action
   Future<bool> removeLike() async {
-    if (_user == null) return false;
+    if (_user == null || inProgress) return false;
+    _inProgress = true;
     return _postMetaRepository
         .removeLike(postId: postId, userId: _user.uId)
         .then((value) => true)
         .catchError((onError) {
       debugPrint('Error removing like: ' + onError.toString());
       return false;
-    });
+    }).whenComplete(() => _inProgress = false);
   }
 
   @action

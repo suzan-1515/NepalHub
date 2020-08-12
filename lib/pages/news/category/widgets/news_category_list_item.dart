@@ -65,7 +65,7 @@ class NewsCategoryListItem extends StatelessWidget {
                     isSubscribed ? Colors.grey : Theme.of(context).accentColor,
                 avatar: isSubscribed ? Icon(Icons.done) : null,
                 label: Text(
-                  isSubscribed ? 'Followed' : 'Follow',
+                  isSubscribed ? 'Following' : 'Follow',
                 ),
                 labelStyle: Theme.of(context)
                     .textTheme

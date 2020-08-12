@@ -28,14 +28,14 @@ class _AuthInfoState extends State<AuthInfo> {
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(30),
                 color: Theme.of(context).cardColor,
-                image: (authStore.user?.avatar?.isNotEmpty ?? false)
-                    ? DecorationImage(
-                        image: CachedNetworkImageProvider(
-                          authStore.user.avatar,
-                          errorListener: () {},
-                        ),
-                        fit: BoxFit.cover)
-                    : Image.asset('assets/images/user.png'),
+                image: DecorationImage(
+                    image: (authStore.user?.avatar?.isNotEmpty ?? false)
+                        ? CachedNetworkImageProvider(
+                            authStore.user.avatar,
+                            errorListener: () {},
+                          )
+                        : AssetImage('assets/images/user.png'),
+                    fit: BoxFit.cover),
               ),
             ),
           ),

@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 import 'package:samachar_hub/pages/widgets/progress_widget.dart';
 import 'package:samachar_hub/services/services.dart';
 import 'package:samachar_hub/stores/stores.dart';
+import 'package:samachar_hub/utils/extensions.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -18,7 +19,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   void initState() {
-    var store = Provider.of<AuthenticationStore>(context, listen: false);
+    var store = context.read<AuthenticationStore>();
     _setupObserver(store);
     store.silentSignIn();
     super.initState();
@@ -38,7 +39,7 @@ class _LoginScreenState extends State<LoginScreen> {
       // Listens for error message
       autorun((_) {
         final String message = store.error;
-        _showMessage(message);
+        if (message != null) context.showMessage(message);
       }),
       autorun((_) {
         final bool isLoggedIn = store.isLoggedIn;
@@ -53,23 +54,85 @@ class _LoginScreenState extends State<LoginScreen> {
           .toHomeScreen(context);
   }
 
-  _showMessage(String message) {
-    if (null != message)
-      Scaffold.of(context)
-        ..hideCurrentSnackBar()
-        ..showSnackBar(
-          SnackBar(content: Text(message)),
-        );
+  Widget _buildHeader() {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Container(
+          width: 100,
+          height: 100,
+          decoration: BoxDecoration(
+            image: DecorationImage(image: AssetImage('assets/icons/logo.png')),
+          ),
+        ),
+        SizedBox(height: 16),
+        Flexible(
+            child: Text(
+          'Create an account to have full access',
+          style: Theme.of(context)
+              .textTheme
+              .headline6
+              .copyWith(fontWeight: FontWeight.w600),
+        )),
+      ],
+    );
+  }
+
+  Widget _buildSignInButtons(AuthenticationStore authStore) {
+    return Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          SignInButton(
+            Buttons.Google,
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.horizontal(
+              left: Radius.circular(16),
+              right: Radius.circular(16),
+            )),
+            text: 'Continue with Google',
+            onPressed: () {
+              authStore.signInWithGoogle();
+            },
+          ),
+          SizedBox(height: 8),
+          SignInButton(
+            Buttons.Facebook,
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.horizontal(
+              left: Radius.circular(16),
+              right: Radius.circular(16),
+            )),
+            text: 'Continue with Facebook',
+            onPressed: () {},
+          ),
+          SizedBox(height: 8),
+          OutlineButton(
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.horizontal(
+              left: Radius.circular(16),
+              right: Radius.circular(16),
+            )),
+            onPressed: () {
+              // authStore.signInAnonymously();
+            },
+            child: Text('Continue as Guest'),
+          ),
+        ]);
   }
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<AuthenticationStore>(
-        builder: (_, AuthenticationStore authStore, Widget child) {
-      return Scaffold(
-        backgroundColor: Theme.of(context).backgroundColor,
-        body: SafeArea(
-          child: Container(
+    return Scaffold(
+      backgroundColor: Theme.of(context).backgroundColor,
+      body: SafeArea(
+        child: Consumer<AuthenticationStore>(
+            builder: (_, AuthenticationStore authStore, Widget child) {
+          return Container(
+            padding: const EdgeInsets.all(32.0),
             color: Theme.of(context).backgroundColor,
             child: Center(
               child: Observer(
@@ -77,33 +140,26 @@ class _LoginScreenState extends State<LoginScreen> {
                   return IgnorePointer(
                     ignoring: authStore.isLoading,
                     child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: <Widget>[
-                        if (authStore.isLoading) ProgressView(),
-                        SignInButton(
-                          Buttons.Google,
-                          text: 'Continue with Google',
-                          onPressed: () {
-                            authStore.signInWithGoogle();
-                          },
+                        Expanded(
+                          child: _buildHeader(),
                         ),
-                        SizedBox(height: 8),
-                        SignInButton(
-                          Buttons.Facebook,
-                          text: 'Continue with Facebook',
-                          onPressed: () {},
+                        SizedBox(height: 16),
+                        if (authStore.isLoading) Center(child: ProgressView()),
+                        Expanded(
+                          child: _buildSignInButtons(authStore),
                         ),
-                        SizedBox(height: 8),
                       ],
                     ),
                   );
                 },
               ),
             ),
-          ),
-        ),
-      );
-    });
+          );
+        }),
+      ),
+    );
   }
 }

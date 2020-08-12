@@ -27,9 +27,4 @@ class UserModel {
         'email': this.email,
         'avatar': this.avatar,
       };
-
-  factory UserModel.anonymous() => UserModel(
-        uId: Uuid().v4(),
-        fullName: 'Anonymous',
-      );
 }

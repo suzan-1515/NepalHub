@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:samachar_hub/pages/news/widgets/report_option_button.dart';
+import 'package:samachar_hub/pages/news/widgets/outline_rounded_button.dart';
 
 class ReportArticle extends StatelessWidget {
   final String articleId;
