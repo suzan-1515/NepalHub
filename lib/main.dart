@@ -11,6 +11,7 @@ import 'package:samachar_hub/pages/authentication/login/login_screen.dart';
 import 'package:samachar_hub/pages/corona/corona_api_service.dart';
 import 'package:samachar_hub/pages/corona/corona_repository.dart';
 import 'package:samachar_hub/pages/following/following_store.dart';
+import 'package:samachar_hub/pages/splash/splash_screen.dart';
 import 'package:samachar_hub/services/forex_api_service.dart';
 import 'package:samachar_hub/repository/forex_repository.dart';
 import 'package:samachar_hub/services/horoscope_api_service.dart';
@@ -176,7 +177,7 @@ class App extends StatelessWidget {
             builder: (_) {
               return MaterialApp(
                 theme: _getTheme(settingStore),
-                home: LoginScreen(),
+                home: SplashScreen(),
                 themeMode: settingStore.themeSetBySystem
                     ? ThemeMode.system
                     : _getThemeMode(settingStore),

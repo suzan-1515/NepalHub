@@ -38,7 +38,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
 
   Widget _buildLogoutButton(BuildContext context, AuthenticationStore store) {
     return IgnorePointer(
-      ignoring: true,
+      ignoring: false,
       child: OutlineButton(
         padding: const EdgeInsets.all(8),
         onPressed: () =>

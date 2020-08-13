@@ -54,6 +54,7 @@ dependencies:
   nepali_utils: ^2.2.1
   flutter_svg: ^0.18.0
   fl_chart: ^0.10.0
+  animate_do: ^1.7.2
 
   flutter_signin_button: ^1.0.0
 
