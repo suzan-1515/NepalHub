@@ -1,3 +1,4 @@
+import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:mobx/mobx.dart';
@@ -168,16 +169,22 @@ class _HomeScreenState extends State<HomeScreen>
           stream: personalisedStore.dataStream,
           builder: (context, snapshot) {
             if (snapshot.hasError) {
-              return Center(
-                child: ErrorDataView(
-                  onRetry: () => personalisedStore.retry(),
+              return FadeInUp(
+                duration: Duration(milliseconds: 200),
+                child: Center(
+                  child: ErrorDataView(
+                    onRetry: () => personalisedStore.retry(),
+                  ),
                 ),
               );
             }
             if (snapshot.hasData) {
               if (snapshot.data.isEmpty) {
-                return Center(
-                  child: EmptyDataView(),
+                return FadeInUp(
+                  duration: Duration(milliseconds: 200),
+                  child: Center(
+                    child: EmptyDataView(),
+                  ),
                 );
               }
 
@@ -204,9 +211,12 @@ class _HomeScreenState extends State<HomeScreen>
                     else
                       SliverFillRemaining(
                         hasScrollBody: false,
-                        child: Center(
-                          child: EmptyDataView(
-                            text: 'News feed is not available at the moment.',
+                        child: FadeInUp(
+                          duration: Duration(milliseconds: 200),
+                          child: Center(
+                            child: EmptyDataView(
+                              text: 'News feed is not available at the moment.',
+                            ),
                           ),
                         ),
                       ),

@@ -1,3 +1,4 @@
+import 'package:animate_do/animate_do.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -15,35 +16,21 @@ class CoronaSection extends StatefulWidget {
 }
 
 class _CoronaSectionState extends State<CoronaSection>
-    with AutomaticKeepAliveClientMixin, TickerProviderStateMixin {
-  AnimationController _controller;
-  Animation<double> _animation;
+    with AutomaticKeepAliveClientMixin {
   @override
   void initState() {
-    _controller = AnimationController(
-      duration: const Duration(milliseconds: 500),
-      vsync: this,
-      value: 0.7,
-    );
-    _animation = CurvedAnimation(
-      parent: _controller,
-      curve: Curves.easeInOut,
-    );
-    _controller.forward();
     super.initState();
   }
 
   @override
   void dispose() {
-    _controller.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return ScaleTransition(
-      scale: _animation,
+    return FadeInUp(
       child: Card(
         color: Colors.indigo,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6.0)),

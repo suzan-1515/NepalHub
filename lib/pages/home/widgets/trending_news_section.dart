@@ -1,3 +1,4 @@
+import 'package:animate_do/animate_do.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -34,57 +35,60 @@ class _TrendingNewsSectionState extends State<TrendingNewsSection>
       (index) => NewsCompactView(feed: widget.feeds[index]),
     );
 
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisSize: MainAxisSize.min,
-      children: <Widget>[
-        SectionHeading(
-          title: 'Trending News',
-          subtitle: 'Current trending stories around you',
-          onTap: () =>
-              context.read<NavigationService>().toTrendingNews(context),
-        ),
-        CarouselSlider(
-            items: widgets,
-            options: CarouselOptions(
-                viewportFraction: 1,
-                initialPage: _currentCarouselIndex.value,
-                enableInfiniteScroll: true,
-                reverse: false,
-                autoPlay: true,
-                autoPlayInterval: Duration(seconds: 10),
-                enlargeCenterPage: false,
-                scrollDirection: Axis.horizontal,
-                onPageChanged: (index, reason) {
-                  _currentCarouselIndex.value = index;
-                })),
-        ValueListenableBuilder(
-          valueListenable: _currentCarouselIndex,
-          builder: (_, int carouselIndex, __) {
-            return Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: List<Widget>.generate(
-                widgets.length,
-                (index) {
-                  return Container(
-                    width: 8.0,
-                    height: 8.0,
-                    margin:
-                        EdgeInsets.symmetric(vertical: 10.0, horizontal: 2.0),
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: carouselIndex == index
-                          ? Color.fromRGBO(0, 0, 0, 0.9)
-                          : Color.fromRGBO(0, 0, 0, 0.4),
-                    ),
-                  );
-                },
-              ),
-            );
-          },
-        ),
-      ],
+    return FadeInUp(
+      duration: Duration(milliseconds: 200),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          SectionHeading(
+            title: 'Trending News',
+            subtitle: 'Current trending stories around you',
+            onTap: () =>
+                context.read<NavigationService>().toTrendingNews(context),
+          ),
+          CarouselSlider(
+              items: widgets,
+              options: CarouselOptions(
+                  viewportFraction: 1,
+                  initialPage: _currentCarouselIndex.value,
+                  enableInfiniteScroll: true,
+                  reverse: false,
+                  autoPlay: true,
+                  autoPlayInterval: Duration(seconds: 10),
+                  enlargeCenterPage: false,
+                  scrollDirection: Axis.horizontal,
+                  onPageChanged: (index, reason) {
+                    _currentCarouselIndex.value = index;
+                  })),
+          ValueListenableBuilder(
+            valueListenable: _currentCarouselIndex,
+            builder: (_, int carouselIndex, __) {
+              return Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: List<Widget>.generate(
+                  widgets.length,
+                  (index) {
+                    return Container(
+                      width: 8.0,
+                      height: 8.0,
+                      margin:
+                          EdgeInsets.symmetric(vertical: 10.0, horizontal: 2.0),
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: carouselIndex == index
+                            ? Color.fromRGBO(0, 0, 0, 0.9)
+                            : Color.fromRGBO(0, 0, 0, 0.4),
+                      ),
+                    );
+                  },
+                ),
+              );
+            },
+          ),
+        ],
+      ),
     );
   }
 

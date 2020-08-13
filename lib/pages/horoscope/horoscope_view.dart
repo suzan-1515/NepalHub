@@ -1,3 +1,4 @@
+import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:samachar_hub/data/models/horoscope_model.dart';
@@ -10,6 +11,9 @@ class HoroscopeView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return HoroscopeList(data: data);
+    return FadeInUp(
+      duration: Duration(milliseconds: 200),
+      child: HoroscopeList(data: data),
+    );
   }
 }

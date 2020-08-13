@@ -1,3 +1,4 @@
+import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
@@ -35,46 +36,49 @@ class SourceAndBookmark extends StatelessWidget {
         ),
         Spacer(),
         SizedBox(width: 8),
-        Container(
-          decoration: BoxDecoration(
-            border: Border(
-              left: BorderSide(color: Theme.of(context).dividerColor),
+        FadeInLeft(
+          duration: const Duration(milliseconds: 200),
+          child: Container(
+            decoration: BoxDecoration(
+              border: Border(
+                left: BorderSide(color: Theme.of(context).dividerColor),
+              ),
             ),
-          ),
-          padding: EdgeInsets.symmetric(horizontal: 16),
-          child: Column(
-            children: <Widget>[
-              ValueListenableBuilder<bool>(
-                valueListenable: store.feed.bookmarkNotifier,
-                builder: (_, value, __) {
-                  return IconButton(
-                    icon: Icon(
-                      value
-                          ? FontAwesomeIcons.solidHeart
-                          : FontAwesomeIcons.heart,
-                      size: 36,
-                      color: Theme.of(context).accentColor,
-                    ),
-                    onPressed: () {
-                      final authStore = context.read<AuthenticationStore>();
-                      if (!authStore.isLoggedIn)
-                        return context
-                            .read<NavigationService>()
-                            .loginRedirect(context);
-                      if (value) {
-                        store.removeBookmarkedFeed(authStore.user.uId);
-                      } else {
-                        store.bookmarkFeed(authStore.user);
-                      }
-                    },
-                  );
-                },
-              ),
-              SizedBox(
-                height: 4,
-              ),
-              Text('Bookmark', textAlign: TextAlign.center)
-            ],
+            padding: EdgeInsets.symmetric(horizontal: 16),
+            child: Column(
+              children: <Widget>[
+                ValueListenableBuilder<bool>(
+                  valueListenable: store.feed.bookmarkNotifier,
+                  builder: (_, value, __) {
+                    return IconButton(
+                      icon: Icon(
+                        value
+                            ? FontAwesomeIcons.solidHeart
+                            : FontAwesomeIcons.heart,
+                        size: 36,
+                        color: Theme.of(context).accentColor,
+                      ),
+                      onPressed: () {
+                        final authStore = context.read<AuthenticationStore>();
+                        if (!authStore.isLoggedIn)
+                          return context
+                              .read<NavigationService>()
+                              .loginRedirect(context);
+                        if (value) {
+                          store.removeBookmarkedFeed(authStore.user.uId);
+                        } else {
+                          store.bookmarkFeed(authStore.user);
+                        }
+                      },
+                    );
+                  },
+                ),
+                SizedBox(
+                  height: 4,
+                ),
+                Text('Bookmark', textAlign: TextAlign.center)
+              ],
+            ),
           ),
         ),
       ],

@@ -1,5 +1,6 @@
 import 'dart:math' as math;
 
+import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 
 import 'package:intl/intl.dart';
@@ -34,32 +35,35 @@ class _ForexGraphState extends State<ForexGraph> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: <Widget>[
-        Flexible(
-          child: Text(
-            widget.timeline?.first?.currency ?? 'Forex',
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-            style: Theme.of(context).textTheme.subtitle1,
+    return FadeInUp(
+      duration: Duration(milliseconds: 200),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: <Widget>[
+          Flexible(
+            child: Text(
+              widget.timeline?.first?.currency ?? 'Forex',
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              style: Theme.of(context).textTheme.subtitle1,
+            ),
           ),
-        ),
-        const SizedBox(height: 8.0),
-        Text(
-          'Updated: ${widget.timeline?.last?.formattedDate(widget.timeline?.last?.date) ?? DateFormat('dd MMM, yyyy').format(DateTime.now())}',
-          style: Theme.of(context).textTheme.caption,
-        ),
-        const SizedBox(height: 20.0),
-        Padding(
-          padding: const EdgeInsets.only(right: 8.0),
-          child: SizedBox(width: double.infinity, child: _buildGraph()),
-        ),
-        _buildLabelRow(),
-        const SizedBox(height: 20.0),
-        const Divider(height: 8.0),
-      ],
+          const SizedBox(height: 8.0),
+          Text(
+            'Updated: ${widget.timeline?.last?.formattedDate(widget.timeline?.last?.date) ?? DateFormat('dd MMM, yyyy').format(DateTime.now())}',
+            style: Theme.of(context).textTheme.caption,
+          ),
+          const SizedBox(height: 20.0),
+          Padding(
+            padding: const EdgeInsets.only(right: 8.0),
+            child: SizedBox(width: double.infinity, child: _buildGraph()),
+          ),
+          _buildLabelRow(),
+          const SizedBox(height: 20.0),
+          const Divider(height: 8.0),
+        ],
+      ),
     );
   }
 

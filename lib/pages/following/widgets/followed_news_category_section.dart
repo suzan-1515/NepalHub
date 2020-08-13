@@ -1,3 +1,4 @@
+import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:samachar_hub/pages/following/following_store.dart';
@@ -18,36 +19,40 @@ class FollowedNewsCategorySection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      color: Theme.of(context).cardColor,
-      elevation: 1,
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            SectionTitle(context: context, title: 'News Categories'),
-            SizedBox(
-              height: 8,
-            ),
-            Flexible(
-                fit: FlexFit.loose,
-                child: FollowedNewsCategoryList(
-                    context: context, favouritesStore: favouritesStore)),
-            SizedBox(
-              height: 8,
-            ),
-            Divider(),
-            ViewAllButton(
-                context: context,
-                onTap: () {
-                  context
-                      .read<NavigationService>()
-                      .toFavouriteNewsCategoryScreen(context)
-                      .whenComplete(() => favouritesStore.retryNewsCategory());
-                }),
-          ],
+    return FadeInUp(
+      duration: Duration(milliseconds: 200),
+      child: Card(
+        color: Theme.of(context).cardColor,
+        elevation: 1,
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              SectionTitle(context: context, title: 'News Categories'),
+              SizedBox(
+                height: 8,
+              ),
+              Flexible(
+                  fit: FlexFit.loose,
+                  child: FollowedNewsCategoryList(
+                      context: context, favouritesStore: favouritesStore)),
+              SizedBox(
+                height: 8,
+              ),
+              Divider(),
+              ViewAllButton(
+                  context: context,
+                  onTap: () {
+                    context
+                        .read<NavigationService>()
+                        .toFavouriteNewsCategoryScreen(context)
+                        .whenComplete(
+                            () => favouritesStore.retryNewsCategory());
+                  }),
+            ],
+          ),
         ),
       ),
     );

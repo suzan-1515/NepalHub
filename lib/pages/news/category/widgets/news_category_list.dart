@@ -1,3 +1,4 @@
+import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
@@ -21,38 +22,41 @@ class NewsCategoryList extends StatelessWidget {
       onRefresh: () async {
         await store.refresh();
       },
-      child: ListView.separated(
-        padding: EdgeInsets.symmetric(vertical: 8),
-        itemCount: data.length,
-        itemBuilder: (context, index) {
-          var categoryModel = data[index];
-          return ValueListenableBuilder<bool>(
-            valueListenable: categoryModel.followNotifier,
-            builder: (context, value, child) => NewsCategoryListItem(
-              title: categoryModel.name,
-              icon: categoryModel.icon,
-              onTap: () {
-                context
-                    .read<NavigationService>()
-                    .toNewsCategoryFeedScreen(context, categoryModel);
-              },
-              onFollowTap: () {
-                final currentValue = value;
-                categoryModel.follow = !categoryModel.isFollowed;
-                if (currentValue) {
-                  store.unFollowedNewsCategory(categoryModel).catchError(
-                      (onError) => categoryModel.follow = currentValue);
-                } else {
-                  store.followedNewsCategory(categoryModel).catchError(
-                      (onError) => categoryModel.follow = currentValue);
-                }
-              },
-              followers: categoryModel.followerCount,
-              isSubscribed: value,
-            ),
-          );
-        },
-        separatorBuilder: (_, int index) => Divider(),
+      child: FadeInUp(
+        duration: Duration(milliseconds: 200),
+        child: ListView.separated(
+          padding: EdgeInsets.symmetric(vertical: 8),
+          itemCount: data.length,
+          itemBuilder: (context, index) {
+            var categoryModel = data[index];
+            return ValueListenableBuilder<bool>(
+              valueListenable: categoryModel.followNotifier,
+              builder: (context, value, child) => NewsCategoryListItem(
+                title: categoryModel.name,
+                icon: categoryModel.icon,
+                onTap: () {
+                  context
+                      .read<NavigationService>()
+                      .toNewsCategoryFeedScreen(context, categoryModel);
+                },
+                onFollowTap: () {
+                  final currentValue = value;
+                  categoryModel.follow = !categoryModel.isFollowed;
+                  if (currentValue) {
+                    store.unFollowedNewsCategory(categoryModel).catchError(
+                        (onError) => categoryModel.follow = currentValue);
+                  } else {
+                    store.followedNewsCategory(categoryModel).catchError(
+                        (onError) => categoryModel.follow = currentValue);
+                  }
+                },
+                followers: categoryModel.followerCount,
+                isSubscribed: value,
+              ),
+            );
+          },
+          separatorBuilder: (_, int index) => Divider(),
+        ),
       ),
     );
   }

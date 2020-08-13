@@ -1,3 +1,4 @@
+import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:samachar_hub/pages/news/details/widgets/author_and_category.dart';
 import 'package:samachar_hub/pages/news/details/widgets/read_more.dart';
@@ -20,51 +21,52 @@ class ArticleDetail extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 24),
-      child: Column(
-        mainAxisSize: MainAxisSize.max,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          SizedBox(
-            height: 16,
-          ),
-          Text(
-            store.feed.title,
-            style: Theme.of(context)
-                .textTheme
-                .headline5
-                .copyWith(fontWeight: FontWeight.w600), //Todo: Use proper style
-          ),
-          SizedBox(
-            height: 16,
-          ),
-          SourceAndBookmark(
-            context: context,
-            store: store,
-            metaStore: metaStore,
-          ),
-          SizedBox(
-            height: 16,
-          ),
-          AuthorAndCategory(
-            store: store,
-            context: context,
-          ),
-          SizedBox(
-            height: 16,
-          ),
-          Text(
-            store.feed.description ?? 'No article content available.',
-            style: Theme.of(context).textTheme.bodyText2,
-          ),
-          // _buildAdRow(),
-          ReadMore(context: context, store: store),
-          if (store.hasRelatedFeeds)
-            RelatedNews(
-              store: store,
+    return FadeInUp(
+      duration: Duration(milliseconds: 200),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 24),
+        child: Column(
+          mainAxisSize: MainAxisSize.max,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            SizedBox(
+              height: 16,
             ),
-        ],
+            Text(
+              store.feed.title,
+              style: Theme.of(context).textTheme.headline5.copyWith(
+                  fontWeight: FontWeight.w600), //Todo: Use proper style
+            ),
+            SizedBox(
+              height: 16,
+            ),
+            SourceAndBookmark(
+              context: context,
+              store: store,
+              metaStore: metaStore,
+            ),
+            SizedBox(
+              height: 16,
+            ),
+            AuthorAndCategory(
+              store: store,
+              context: context,
+            ),
+            SizedBox(
+              height: 16,
+            ),
+            Text(
+              store.feed.description ?? 'No article content available.',
+              style: Theme.of(context).textTheme.bodyText2,
+            ),
+            // _buildAdRow(),
+            ReadMore(context: context, store: store),
+            if (store.hasRelatedFeeds)
+              RelatedNews(
+                store: store,
+              ),
+          ],
+        ),
       ),
     );
   }

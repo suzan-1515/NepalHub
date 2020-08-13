@@ -15,6 +15,9 @@ abstract class _NewsDetailStore with Store {
   @observable
   String message;
 
+  bool _inProgress = false;
+
+  bool get inProgress => _inProgress;
   NewsFeed get feed => _feed;
   List<NewsFeed> get relatedFeeds => _feed.related;
 
@@ -22,24 +25,28 @@ abstract class _NewsDetailStore with Store {
 
   @action
   bookmarkFeed(UserModel userModel) {
+    if (inProgress) return;
+    _inProgress = true;
     feed.bookmark = true;
     _bookmarkRepository
         .postBookmark(postId: feed.uuid, user: userModel, bookmarkFeed: feed)
         .catchError((onError) {
       message = 'Unable to bookmark';
       feed.bookmark = false;
-    });
+    }).whenComplete(() => _inProgress = false);
   }
 
   @action
   removeBookmarkedFeed(String userId) {
+    if (inProgress) return;
+    _inProgress = true;
     feed.bookmark = false;
     _bookmarkRepository
         .removeBookmark(postId: feed.uuid, userId: userId)
         .catchError((onError) {
       message = 'Unable to remove bookmark';
       feed.bookmark = true;
-    });
+    }).whenComplete(() => _inProgress = false);
   }
 
   @action

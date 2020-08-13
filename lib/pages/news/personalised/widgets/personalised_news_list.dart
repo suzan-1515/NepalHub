@@ -1,3 +1,4 @@
+import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:samachar_hub/data/models/models.dart';
@@ -38,25 +39,27 @@ class PersonalisedNewsList extends StatelessWidget {
               onRefresh: () async {
                 await personalisedStore.refresh();
               },
-              child: ListView.builder(
-                itemCount: snapshot.data.length,
-                itemBuilder: (_, index) {
-                  final feed = snapshot.data[index];
-                  Widget feedWidget;
-                  if (index % 3 == 0) {
-                    feedWidget = NewsThumbnailView(
-                      feed: feed,
-                      authStore: authenticationStore,
-                    );
-                  } else {
-                    feedWidget = NewsListView(
-                      feed: feed,
-                      authStore: authenticationStore,
-                    );
-                  }
+              child: FadeInUp(
+                child: ListView.builder(
+                  itemCount: snapshot.data.length,
+                  itemBuilder: (_, index) {
+                    final feed = snapshot.data[index];
+                    Widget feedWidget;
+                    if (index % 3 == 0) {
+                      feedWidget = NewsThumbnailView(
+                        feed: feed,
+                        authStore: authenticationStore,
+                      );
+                    } else {
+                      feedWidget = NewsListView(
+                        feed: feed,
+                        authStore: authenticationStore,
+                      );
+                    }
 
-                  return feedWidget;
-                },
+                    return feedWidget;
+                  },
+                ),
               ),
             );
           }
