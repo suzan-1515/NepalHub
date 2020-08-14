@@ -42,9 +42,7 @@ class _NewsSourceListState extends State<NewsSourceList> {
                 icon: sourceModel.icon,
                 onTap: () {
                   context.read<NavigationService>().toNewsSourceFeedScreen(
-                      context: context,
-                      source: sourceModel,
-                      sources: widget.data);
+                      context: context, source: sourceModel);
                 },
                 onFollowTap: () {
                   final currentValue = value;

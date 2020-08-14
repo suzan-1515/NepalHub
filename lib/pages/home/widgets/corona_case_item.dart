@@ -42,15 +42,15 @@ class CaseItem extends StatelessWidget {
                 .copyWith(color: textColor),
           ),
         ),
+        SizedBox(
+          height: 4,
+        ),
         Text(
           '$cases',
           style: Theme.of(context)
               .textTheme
-              .headline6
+              .subtitle1
               .copyWith(color: higlightColor, fontWeight: FontWeight.w700),
-        ),
-        SizedBox(
-          height: 4,
         ),
         Text(
           label,

@@ -82,7 +82,7 @@ class NewsMapper {
       favicon: response.favicon,
       icon: response.icon,
       priority: response.priority,
-      followerCount: 200,
+      followerCount: isFollowed ? 1 : 0,
       isFollowed: isFollowed,
     );
   }
@@ -95,7 +95,7 @@ class NewsMapper {
       code: response.code,
       icon: newsCategoryIcons[response.code],
       priority: response.priority,
-      followerCount: 0,
+      followerCount: isFollowed ? 1 : 0,
       isFollowed: isFollowed,
     );
   }

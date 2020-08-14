@@ -20,13 +20,7 @@ class MenuList extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         MoreMenuListItem(
-          title: 'Following',
-          icon: FontAwesomeIcons.plusSquare,
-          onTap: () {},
-        ),
-        Divider(),
-        MoreMenuListItem(
-          title: 'Saved',
+          title: 'Bookmarks',
           icon: FontAwesomeIcons.bookmark,
           onTap: () => context
               .read<NavigationService>()

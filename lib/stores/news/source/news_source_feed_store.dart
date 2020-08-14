@@ -26,13 +26,14 @@ abstract class _NewsSourceFeedStore with Store {
   @observable
   ObservableList<NewsSource> sources = ObservableList();
 
+  @computed
+  bool get hasSources => (sources != null && sources.isNotEmpty);
+
   bool _isLoading = false;
   bool _hasMore = false;
 
   bool get isLoading => _isLoading;
   bool get hasMore => _hasMore;
-
-  NewsSource get source => _sourceModel;
 
   @observable
   SortBy sort = SortBy.RELEVANCE;

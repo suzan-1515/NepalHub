@@ -33,7 +33,7 @@ class FollowUnFollowButton extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
                     Icon(
-                      Icons.done,
+                      Icons.check,
                       color: Theme.of(context).iconTheme.color.withOpacity(0.7),
                     ),
                     const SizedBox(width: 8.0),
@@ -47,7 +47,7 @@ class FollowUnFollowButton extends StatelessWidget {
             : RaisedButton(
                 visualDensity: VisualDensity.compact,
                 textColor: Colors.white,
-                color: Colors.grey,
+                color: Colors.blue,
                 child: Text('Follow'),
                 onPressed: () => onTap(isFollowed),
               ),

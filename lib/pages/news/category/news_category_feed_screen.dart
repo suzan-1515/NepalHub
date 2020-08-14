@@ -4,6 +4,7 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:mobx/mobx.dart';
 import 'package:provider/provider.dart';
 import 'package:samachar_hub/data/api/api.dart';
+import 'package:samachar_hub/notifier/news_setting_notifier.dart';
 import 'package:samachar_hub/pages/news/category/widgets/news_category_feed_list.dart';
 import 'package:samachar_hub/pages/news/widgets/follow_unfollow_button.dart';
 import 'package:samachar_hub/pages/news/widgets/news_filter_appbar.dart';
@@ -81,13 +82,19 @@ class _NewsCategoryFeedScreenState extends State<NewsCategoryFeedScreen> {
                             .read<FollowingRepository>()
                             .unFollowCategory(store.categoryModel)
                             .catchError((onError) =>
-                                store.categoryModel.follow = isFollowed);
+                                store.categoryModel.follow = isFollowed)
+                            .whenComplete(() => context
+                                .read<NewsSettingNotifier>()
+                                .notify(NewsSetting.CATEGORY));
                       else
                         context
                             .read<FollowingRepository>()
                             .followCategory(store.categoryModel)
                             .catchError((onError) =>
-                                store.categoryModel.follow = isFollowed);
+                                store.categoryModel.follow = isFollowed)
+                            .whenComplete(() => context
+                                .read<NewsSettingNotifier>()
+                                .notify(NewsSetting.CATEGORY));
                     },
                   ),
                 ),

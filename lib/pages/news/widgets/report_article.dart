@@ -34,10 +34,6 @@ class ReportArticle extends StatelessWidget {
                 onTap: () {},
               ),
               ReportOptionButton(
-                text: 'Fake news',
-                onTap: () {},
-              ),
-              ReportOptionButton(
                 text: 'Clickbait',
                 onTap: () {},
               ),

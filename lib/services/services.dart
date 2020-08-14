@@ -1,6 +1,5 @@
 export 'analytics_service.dart';
 export 'authentication_service.dart';
-export 'cloud_storage_service.dart';
 export 'comment_firestore_service.dart';
 export 'following_firestore_service.dart';
 export 'forex_api_service.dart';

@@ -1,9 +1,11 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:mobx/mobx.dart';
 import 'package:provider/provider.dart';
 import 'package:samachar_hub/data/api/api.dart';
+import 'package:samachar_hub/notifier/news_setting_notifier.dart';
 import 'package:samachar_hub/pages/news/source/widgets/news_source_feed_list.dart';
 import 'package:samachar_hub/pages/news/widgets/follow_unfollow_button.dart';
 import 'package:samachar_hub/pages/news/widgets/news_filter_appbar.dart';
@@ -62,52 +64,60 @@ class _NewsSourceFeedScreenState extends State<NewsSourceFeedScreen> {
       body: SafeArea(
         child: Consumer2<NewsSourceFeedStore, AuthenticationStore>(
             builder: (_, store, authStore, __) {
-          return NewsFilteringAppBar(
-            icon: DecorationImage(
-              image: CachedNetworkImageProvider(
-                store.source.favicon,
-                errorListener: () {},
+          return Observer(
+            builder: (context) => NewsFilteringAppBar(
+              icon: DecorationImage(
+                image: CachedNetworkImageProvider(
+                  store.selectedSource.favicon,
+                  errorListener: () {},
+                ),
+                fit: BoxFit.cover,
               ),
-              fit: BoxFit.cover,
-            ),
-            followUnFollowButton: ValueListenableBuilder<bool>(
-              valueListenable: store.source.followNotifier,
-              builder: (context, value, child) => FollowUnFollowButton(
-                followerCount: store.source.followerCount,
-                isFollowed: value,
-                onTap: (isFollowed) {
-                  store.source.follow = !value;
-                  if (isFollowed)
-                    context
-                        .read<FollowingRepository>()
-                        .unFollowSource(store.source)
-                        .catchError(
-                            (onError) => store.source.follow = isFollowed);
-                  else
-                    context
-                        .read<FollowingRepository>()
-                        .followSource(store.source)
-                        .catchError(
-                            (onError) => store.source.follow = isFollowed);
-                },
+              followUnFollowButton: ValueListenableBuilder<bool>(
+                valueListenable: store.selectedSource.followNotifier,
+                builder: (context, value, child) => FollowUnFollowButton(
+                  followerCount: store.selectedSource.followerCount,
+                  isFollowed: value,
+                  onTap: (isFollowed) {
+                    store.selectedSource.follow = !value;
+                    if (isFollowed)
+                      context
+                          .read<FollowingRepository>()
+                          .unFollowSource(store.selectedSource)
+                          .catchError((onError) =>
+                              store.selectedSource.follow = isFollowed)
+                          .whenComplete(() => context
+                              .read<NewsSettingNotifier>()
+                              .notify(NewsSetting.SOURCE));
+                    else
+                      context
+                          .read<FollowingRepository>()
+                          .followSource(store.selectedSource)
+                          .catchError((onError) =>
+                              store.selectedSource.follow = isFollowed)
+                          .whenComplete(() => context
+                              .read<NewsSettingNotifier>()
+                              .notify(NewsSetting.SOURCE));
+                  },
+                ),
               ),
-            ),
-            onSortByChanged: (value) {
-              store.setSortBy(value);
-            },
-            onSourceChanged: (value) {
-              store.setSource(value);
-            },
-            sources: store.sources,
-            title: store.source.name,
-            initialSortBy: store.sort,
-            initialSource: store.selectedSource,
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: NewsSourceFeedList(
-                context: context,
-                store: store,
-                authStore: authStore,
+              onSortByChanged: (value) {
+                store.setSortBy(value);
+              },
+              onSourceChanged: (value) {
+                store.setSource(value);
+              },
+              sources: store.sources,
+              title: store.selectedSource.name,
+              initialSortBy: store.sort,
+              initialSource: store.hasSources ? store.selectedSource : null,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: NewsSourceFeedList(
+                  context: context,
+                  store: store,
+                  authStore: authStore,
+                ),
               ),
             ),
           );

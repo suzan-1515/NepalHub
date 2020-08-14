@@ -265,9 +265,7 @@ class NavigationService {
   }
 
   Future toNewsSourceFeedScreen(
-      {@required NewsSource source,
-      @required List<NewsSource> sources,
-      @required BuildContext context}) {
+      {@required NewsSource source, @required BuildContext context}) {
     return Navigator.push(
         context,
         MaterialPageRoute(

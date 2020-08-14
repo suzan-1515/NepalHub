@@ -7,7 +7,6 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:samachar_hub/notifier/forex_setting_notifier.dart';
 import 'package:samachar_hub/notifier/horoscope_setting_notifier.dart';
 import 'package:samachar_hub/notifier/news_setting_notifier.dart';
-import 'package:samachar_hub/pages/authentication/login/login_screen.dart';
 import 'package:samachar_hub/pages/corona/corona_api_service.dart';
 import 'package:samachar_hub/pages/corona/corona_repository.dart';
 import 'package:samachar_hub/pages/following/following_store.dart';
@@ -33,7 +32,6 @@ import 'pages/corona/corona_store.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  // FlutterError.onError = Crashlytics.instance.recordFlutterError;
   final SharedPreferences sp = await SharedPreferences.getInstance();
   NepaliUtils(Language.nepali);
   runApp(App(sp));
@@ -68,9 +66,6 @@ class App extends StatelessWidget {
         ),
         Provider<AnalyticsService>(
           create: (_) => AnalyticsService(),
-        ),
-        Provider<CloudStorageService>(
-          create: (_) => CloudStorageService(),
         ),
         ProxyProvider<AnalyticsService, ShareService>(
           update: (_, _analyticsService, __) => ShareService(_analyticsService),

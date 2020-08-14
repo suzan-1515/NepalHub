@@ -160,7 +160,7 @@ class _NewsCategoriesPageState extends State<NewsCategoriesPage>
                   children: <Widget>[
                     Expanded(
                       child: Text(
-                        'Categories',
+                        'Headlines',
                         style: Theme.of(context)
                             .textTheme
                             .headline5

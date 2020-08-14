@@ -29,7 +29,7 @@ abstract class _NewsDetailStore with Store {
     _inProgress = true;
     feed.bookmark = true;
     _bookmarkRepository
-        .postBookmark(postId: feed.uuid, user: userModel, bookmarkFeed: feed)
+        .postBookmark(userId: userModel.uId, feed: feed)
         .catchError((onError) {
       message = 'Unable to bookmark';
       feed.bookmark = false;

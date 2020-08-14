@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:samachar_hub/services/navigation_service.dart';
 import 'package:samachar_hub/stores/auth/auth_store.dart';
 
 class UserProfileScreen extends StatefulWidget {
@@ -41,8 +42,8 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
       ignoring: false,
       child: OutlineButton(
         padding: const EdgeInsets.all(8),
-        onPressed: () =>
-            store.logOut().whenComplete(() => Navigator.pop(context)),
+        onPressed: () => store.logOut().whenComplete(
+            () => context.read<NavigationService>().loginRedirect(context)),
         child: Text('Log out'),
       ),
     );

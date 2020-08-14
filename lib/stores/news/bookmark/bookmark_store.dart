@@ -82,7 +82,7 @@ abstract class _BookmarkStore with Store {
   @action
   Future<bool> addBookmarkedFeed({@required NewsFeed feed}) async {
     return await _bookmarkRepository
-        .postBookmark(postId: feed.uuid, user: userModel, bookmarkFeed: feed)
+        .postBookmark(userId: userModel.uId, feed: feed)
         .then((onValue) => true, onError: (e) {
       error = e.toString();
       return false;

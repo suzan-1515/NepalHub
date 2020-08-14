@@ -53,9 +53,7 @@ class FollowedNewsSourceList extends StatelessWidget {
                     source: sourceModel,
                     onTap: () {
                       context.read<NavigationService>().toNewsSourceFeedScreen(
-                          context: context,
-                          source: sourceModel,
-                          sources: snapshot.data);
+                          context: context, source: sourceModel);
                     });
               },
             ),

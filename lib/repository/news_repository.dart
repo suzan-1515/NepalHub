@@ -22,7 +22,6 @@ class NewsRepository {
         .feeds
         ?.map((f) => NewsMapper.fromFeedApi(
             f, bookmarks, likes, unFollowedSources, unFollowedCategories))
-        ?.where((e) => !unFollowedSources.contains(e.source.code))
         ?.toList());
   }
 
@@ -35,7 +34,6 @@ class NewsRepository {
         (onValue) => onValue.feeds
             ?.map((f) => NewsMapper.fromFeedApi(
                 f, bookmarks, likes, unFollowedSources, unFollowedCategories))
-            ?.where((e) => !unFollowedSources.contains(e.source.code))
             ?.toList());
   }
 
@@ -67,7 +65,6 @@ class NewsRepository {
         .then((onValue) => onValue.feeds
             ?.map((f) => NewsMapper.fromFeedApi(
                 f, bookmarks, likes, unFollowedSources, unFollowedCategories))
-            ?.where((e) => !unFollowedSources.contains(e.source.code))
             ?.toList());
   }
 
@@ -91,7 +88,6 @@ class NewsRepository {
       return onValue.feeds
           ?.map((f) => NewsMapper.fromFeedApi(
               f, bookmarks, likes, unFollowedSources, unFollowedCategories))
-          ?.where((e) => !unFollowedSources.contains(e.source.code))
           ?.toList();
     });
   }

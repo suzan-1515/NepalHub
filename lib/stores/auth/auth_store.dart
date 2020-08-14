@@ -16,7 +16,7 @@ abstract class _AuthenticationStore with Store {
   UserModel user;
 
   @observable
-  bool isLoggedIn = false;
+  bool isLoggedIn;
 
   @observable
   bool isLoading = false;

@@ -6,7 +6,6 @@ import 'package:flutter_signin_button/flutter_signin_button.dart';
 import 'package:mobx/mobx.dart';
 import 'package:provider/provider.dart';
 import 'package:samachar_hub/pages/widgets/progress_widget.dart';
-import 'package:samachar_hub/services/services.dart';
 import 'package:samachar_hub/stores/stores.dart';
 import 'package:samachar_hub/utils/extensions.dart';
 
@@ -22,7 +21,6 @@ class _LoginScreenState extends State<LoginScreen> {
   void initState() {
     var store = context.read<AuthenticationStore>();
     _setupObserver(store);
-    store.silentSignIn();
     super.initState();
   }
 
@@ -42,17 +40,7 @@ class _LoginScreenState extends State<LoginScreen> {
         final String message = store.error;
         if (message != null) context.showMessage(message);
       }),
-      autorun((_) {
-        final bool isLoggedIn = store.isLoggedIn;
-        _navigateToHome(isLoggedIn);
-      }),
     ];
-  }
-
-  _navigateToHome(bool isLoggedIn) {
-    if (isLoggedIn)
-      Provider.of<NavigationService>(context, listen: false)
-          .toHomeScreen(context);
   }
 
   Widget _buildHeader() {

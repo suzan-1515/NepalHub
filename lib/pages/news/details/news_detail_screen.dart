@@ -1,10 +1,10 @@
-import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:mobx/mobx.dart';
 import 'package:provider/provider.dart';
 import 'package:samachar_hub/data/api/api.dart';
 import 'package:samachar_hub/data/models/models.dart';
+import 'package:samachar_hub/pages/news/widgets/news_feed_more_option.dart';
 import 'package:samachar_hub/stores/stores.dart';
 import 'package:samachar_hub/pages/news/details/widgets/article_detail.dart';
 import 'package:samachar_hub/services/services.dart';
@@ -99,11 +99,38 @@ class _NewsDetailScreenState extends State<NewsDetailScreen> {
                       pinned: true,
                       expandedHeight: MediaQuery.of(context).size.height * 0.3,
                       flexibleSpace: FlexibleSpaceBar(
-                        background: CachedImage(
-                          store.feed.image,
-                          tag: store.feed.tag,
+                        background: Stack(
+                          fit: StackFit.expand,
+                          children: [
+                            CachedImage(
+                              store.feed.image,
+                              tag: store.feed.tag,
+                            ),
+                            Container(
+                              decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                  colors: [
+                                    Colors.black45,
+                                    Colors.black12,
+                                    Colors.transparent
+                                  ],
+                                  begin: Alignment.topCenter,
+                                  end: Alignment.bottomCenter,
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
+                      actions: [
+                        IconButton(
+                          visualDensity: VisualDensity.compact,
+                          icon: Icon(Icons.more_vert),
+                          onPressed: () => context.showBottomSheet(
+                            child: NewsFeedMoreOption(feed: store.feed),
+                          ),
+                        ),
+                      ],
                     ),
                     SliverFillRemaining(
                       hasScrollBody: false,

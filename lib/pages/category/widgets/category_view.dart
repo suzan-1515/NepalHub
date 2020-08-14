@@ -32,12 +32,6 @@ class _NewsCategoryViewState extends State<NewsCategoryView> {
     final store = context.read<NewsCategoryFeedStore>();
     _setupObserver(store);
     store.loadInitialData();
-    final newsSettingNotifier = context.read<NewsSettingNotifier>();
-    newsSettingNotifier.addListener(() {
-      if (newsSettingNotifier.setting == NewsSetting.SOURCE) {
-        store.refresh();
-      }
-    });
   }
 
   @override

@@ -40,10 +40,6 @@ class _HomeScreenState extends State<HomeScreen>
     final store = context.read<HomeStore>();
     _setupObserver(store);
     store.loadInitialData();
-    final newsSettingNotifier = context.read<NewsSettingNotifier>();
-    newsSettingNotifier.addListener(() {
-      store.refresh();
-    });
     super.initState();
   }
 

@@ -30,7 +30,8 @@ class _CoronaSectionState extends State<CoronaSection>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return FadeInUp(
+    return ZoomIn(
+      duration: const Duration(milliseconds: 300),
       child: Card(
         color: Colors.indigo,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6.0)),

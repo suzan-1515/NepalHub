@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 final lightTheme = ThemeData(
-  fontFamily: GoogleFonts.lato().fontFamily,
+  fontFamily: GoogleFonts.montserrat().fontFamily,
   // textTheme: _textTheme,
   tabBarTheme: TabBarTheme(
     labelStyle: TextStyle(fontWeight: FontWeight.w700, fontSize: 16),
@@ -34,7 +34,7 @@ final lightTheme = ThemeData(
 );
 
 final darkTheme = ThemeData(
-  fontFamily: GoogleFonts.lato().fontFamily,
+  fontFamily: GoogleFonts.montserrat().fontFamily,
   // textTheme: _textTheme,
   tabBarTheme: TabBarTheme(
     labelStyle: TextStyle(fontWeight: FontWeight.w700, fontSize: 16),
@@ -64,7 +64,7 @@ final darkTheme = ThemeData(
 );
 
 final pitchBlack = ThemeData(
-  fontFamily: GoogleFonts.lato().fontFamily,
+  fontFamily: GoogleFonts.montserrat().fontFamily,
   // textTheme: _textTheme,
   tabBarTheme: TabBarTheme(
     labelStyle: TextStyle(fontWeight: FontWeight.w700, fontSize: 16),

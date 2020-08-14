@@ -19,7 +19,7 @@ class NewsSourceMenuItem extends StatelessWidget {
           side: BorderSide(color: Colors.grey[200]),
           borderRadius: BorderRadius.circular(8)),
       child: InkWell(
-        onTap: () => onTap(source),
+        onTap: onTap,
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Column(

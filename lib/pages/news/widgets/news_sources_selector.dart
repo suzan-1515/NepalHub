@@ -30,6 +30,7 @@ class _NewsSourcesSelectorState extends State<NewsSourcesSelector> {
       child: DropdownButton<String>(
         isExpanded: true,
         value: selectedValue,
+        hint: Text('All Sources'),
         items: widget.options.entries
             .map((e) => DropdownMenuItem<String>(
                   value: e.key,

@@ -53,7 +53,7 @@ abstract class _FollowingStore with Store {
   @action
   Future refresh() async {
     await loadFollowedNewsSourceData();
-    await loadFollowedNewsSourceData();
+    await loadFollowedNewsCategoryData();
     await loadFollowedNewsTopicData();
   }
 
@@ -71,7 +71,6 @@ abstract class _FollowingStore with Store {
 
   @action
   Future<void> loadFollowedNewsCategoryData() {
-    _newsCategoryStreamController.add(null);
     return _newsRepository.getCategories(followedOnly: true).then((value) {
       if (value != null) {
         _newsCategoryStreamController.add(value);

@@ -29,7 +29,8 @@ class NewsCompactView extends StatelessWidget {
             child: Stack(
               fit: StackFit.expand,
               children: <Widget>[
-                CachedImage(feed.image, tag: feed.tag),
+                CachedImage(feed.isValidImage ? feed.image : null,
+                    tag: feed.tag),
                 Positioned(
                   bottom: 0,
                   right: 0,

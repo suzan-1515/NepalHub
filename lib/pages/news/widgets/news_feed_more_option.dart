@@ -25,8 +25,7 @@ class NewsFeedMoreOption extends StatelessWidget {
             visualDensity: VisualDensity.compact,
             title: Text(
               '${feed.source.name}',
-              style:
-                  Theme.of(context).textTheme.bodyText2.copyWith(fontSize: 12),
+              style: Theme.of(context).textTheme.bodyText2,
             ),
             trailing: OutlineButton.icon(
               icon: Icon(
@@ -39,7 +38,21 @@ class NewsFeedMoreOption extends StatelessWidget {
                 right: Radius.circular(12),
               )),
               visualDensity: VisualDensity.compact,
-              onPressed: () {},
+              onPressed: () {
+                final value = feed.source.isFollowed;
+                feed.source.follow = !feed.source.isFollowed;
+                if (value)
+                  context
+                      .read<FollowingRepository>()
+                      .unFollowSource(feed.source)
+                      .catchError((onError) => feed.source.follow = value);
+                else
+                  context
+                      .read<FollowingRepository>()
+                      .followSource(feed.source)
+                      .catchError((onError) => feed.source.follow = value);
+                Navigator.pop(context);
+              },
               label: Text(feed.source.isFollowed ? 'Following' : 'Follow'),
             ),
           ),
@@ -51,11 +64,22 @@ class NewsFeedMoreOption extends StatelessWidget {
               size: 18,
             ),
             title: Text(
-              'Save',
-              style:
-                  Theme.of(context).textTheme.bodyText2.copyWith(fontSize: 12),
+              feed.isBookmarked ? 'Remove bookmark' : 'Bookmark',
+              style: Theme.of(context).textTheme.bodyText2,
             ),
             onTap: () {
+              final value = feed.isBookmarked;
+              final userId = context.read<AuthenticationStore>().user.uId;
+              if (value)
+                context
+                    .read<BookmarkRepository>()
+                    .removeBookmark(postId: feed.uuid, userId: userId)
+                    .catchError((onError) => feed.bookmark = value);
+              else
+                context
+                    .read<BookmarkRepository>()
+                    .postBookmark(userId: userId, feed: feed)
+                    .catchError((onError) => feed.bookmark = value);
               Navigator.pop(context);
             },
           ),
@@ -67,8 +91,7 @@ class NewsFeedMoreOption extends StatelessWidget {
             ),
             title: Text(
               'Share',
-              style:
-                  Theme.of(context).textTheme.bodyText2.copyWith(fontSize: 12),
+              style: Theme.of(context).textTheme.bodyText2,
             ),
             onTap: () {
               final authStore = context.read<AuthenticationStore>();
@@ -90,11 +113,12 @@ class NewsFeedMoreOption extends StatelessWidget {
             ),
             title: Text(
               'Browse ${feed.source.name}',
-              style:
-                  Theme.of(context).textTheme.bodyText2.copyWith(fontSize: 12),
+              style: Theme.of(context).textTheme.bodyText2,
             ),
             onTap: () {
               Navigator.pop(context);
+              context.read<NavigationService>().toNewsSourceFeedScreen(
+                  source: feed.source, context: context);
             },
           ),
           ListTile(
@@ -105,8 +129,7 @@ class NewsFeedMoreOption extends StatelessWidget {
             ),
             title: Text(
               'Block ${feed.source.name}',
-              style:
-                  Theme.of(context).textTheme.bodyText2.copyWith(fontSize: 12),
+              style: Theme.of(context).textTheme.bodyText2,
             ),
             onTap: () {
               Navigator.pop(context);
@@ -120,8 +143,7 @@ class NewsFeedMoreOption extends StatelessWidget {
             ),
             title: Text(
               'Show less of such content',
-              style:
-                  Theme.of(context).textTheme.bodyText2.copyWith(fontSize: 12),
+              style: Theme.of(context).textTheme.bodyText2,
             ),
             onTap: () {
               Navigator.pop(context);
@@ -136,8 +158,7 @@ class NewsFeedMoreOption extends StatelessWidget {
             onExpansionChanged: (value) {},
             title: Text(
               'Report',
-              style:
-                  Theme.of(context).textTheme.bodyText2.copyWith(fontSize: 12),
+              style: Theme.of(context).textTheme.bodyText2,
             ),
             children: [
               ReportArticle(

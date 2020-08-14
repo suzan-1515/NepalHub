@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/widgets.dart';
 import 'package:samachar_hub/data/mappers/mappers.dart';
 import 'package:samachar_hub/data/models/models.dart';
-import 'package:samachar_hub/data/models/user_model.dart';
 import 'package:samachar_hub/services/bookmark_firestore_service.dart';
 import 'package:samachar_hub/repository/post_meta_repository.dart';
 import 'package:samachar_hub/services/services.dart';
@@ -21,25 +20,23 @@ class BookmarkRepository {
   String generateBookmarkId(String postId, String userId) => '$postId:$userId';
 
   Future<void> postBookmark(
-      {@required String postId,
-      @required UserModel user,
-      @required NewsFeed bookmarkFeed}) {
+      {@required String userId, @required NewsFeed feed}) {
     var metaData = {
       'bookmark_count': FieldValue.increment(1),
     };
     var activityId =
-        _postMetaRepository.generateActivityId(postId, user.uId, 'bookmark');
+        _postMetaRepository.generateActivityId(feed.uuid, userId, 'bookmark');
     var metaActivityData = {
       'id': activityId,
       'meta_name': 'bookmark',
-      'post_id': postId,
-      'user_id': user.uId,
+      'post_id': feed.uuid,
+      'user_id': userId,
       'timestamp': DateTime.now().toIso8601String(),
     };
-    var bookmarkId = generateBookmarkId(postId, user.uId);
+    var bookmarkId = generateBookmarkId(feed.uuid, userId);
 
-    var data = bookmarkFeed.toJson();
-    data['user_id'] = user.uId;
+    var data = feed.toJson();
+    data['user_id'] = userId;
     data['timestamp'] = DateTime.now().toString();
     data.remove('related');
     return _bookmarkService
@@ -49,15 +46,15 @@ class BookmarkRepository {
             metaData: metaData,
             bookmarkData: data,
             metaActivityDocumentRef: _postMetaRepository
-                .metaActivityCollectionReference(postId)
+                .metaActivityCollectionReference(feed.uuid)
                 .document(activityId),
             metaDocumentRef:
-                _postMetaRepository.metaCollectionReference.document(postId))
+                _postMetaRepository.metaCollectionReference.document(feed.uuid))
         .then((value) {
       var bookmarks = _preferenceService.bookmarkedFeeds;
-      bookmarks.add(postId);
+      bookmarks.add(feed.uuid);
       _preferenceService.bookmarkedFeeds = bookmarks;
-      _analyticsService.logFeedBookmarkAdded(feedId: postId);
+      _analyticsService.logFeedBookmarkAdded(feedId: feed.uuid);
     });
   }
 

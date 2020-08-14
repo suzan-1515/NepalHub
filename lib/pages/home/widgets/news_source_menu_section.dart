@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
@@ -37,13 +39,12 @@ class NewsSourceMenuSection extends StatelessWidget {
                   primary: false,
                   scrollDirection: Axis.horizontal,
                   itemBuilder: (context, index) {
+                    final source = items[index];
                     return NewsSourceMenuItem(
-                      source: items[index],
-                      onTap: (sourceMenu) =>
-                          navigationService.toNewsSourceFeedScreen(
-                        source: sourceMenu,
+                      source: source,
+                      onTap: () => navigationService.toNewsSourceFeedScreen(
+                        source: source,
                         context: context,
-                        sources: items,
                       ),
                     );
                   }),

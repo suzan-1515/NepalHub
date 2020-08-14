@@ -27,7 +27,7 @@ class NewsFilterView extends StatelessWidget {
   _initSourceOptions() {
     this.sourceOptions.clear();
     this.sourceOptions['all'] = 'All Sources';
-    this.sources?.toSet()?.forEach(
+    this.sources?.forEach(
           (element) => this.sourceOptions[element.code] = element.name,
         );
   }

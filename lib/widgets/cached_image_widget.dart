@@ -14,29 +14,29 @@ class CachedImage extends StatelessWidget {
     return Hero(
       tag: tag ?? UniqueKey(),
       child: CachedNetworkImage(
-        fit: BoxFit.cover,
-        imageUrl: imageURL ?? '',
-        progressIndicatorBuilder: (context, url, downloadProgress) => Center(
-          child: Stack(
-            alignment: Alignment.center,
-            children: [
-              CircularProgressIndicator(
-                value: downloadProgress.progress,
+          fit: BoxFit.cover,
+          imageUrl: imageURL ?? '',
+          progressIndicatorBuilder: (context, url, downloadProgress) => Center(
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    CircularProgressIndicator(
+                      value: downloadProgress.progress,
+                    ),
+                    const Icon(FontAwesomeIcons.image, size: 16),
+                  ],
+                ),
               ),
-              const Icon(FontAwesomeIcons.image, size: 16),
-            ],
-          ),
-        ),
-        errorWidget: (context, url, error) => AnimatedOpacity(
-          opacity: 0.45,
-          duration: const Duration(milliseconds: 200),
-          child: Container(
-            alignment: Alignment.center,
-            color: Colors.grey[500],
-            child: const Icon(FontAwesomeIcons.image, size: 32),
-          ),
-        ),
-      ),
+          errorWidget: (context, url, error) {
+            return Opacity(
+              opacity: 0.45,
+              child: Container(
+                alignment: Alignment.center,
+                color: Colors.grey[500],
+                child: const Icon(FontAwesomeIcons.image, size: 32),
+              ),
+            );
+          }),
     );
   }
 }
