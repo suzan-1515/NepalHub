@@ -1,12 +1,15 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:mobx/mobx.dart';
 import 'package:provider/provider.dart';
+import 'package:samachar_hub/common/notification_channels.dart';
 import 'package:samachar_hub/pages/settings/settings_store.dart';
 import 'package:samachar_hub/pages/settings/widgets/section_heading.dart';
+import 'package:samachar_hub/services/notification_service.dart';
 import 'package:samachar_hub/utils/forex_currency.dart';
 import 'package:samachar_hub/utils/horoscope_signs.dart';
 
@@ -95,7 +98,23 @@ class _SettingsPageState extends State<SettingsPage> {
             ),
             Switch(
               value: settingsStore.showDailyMorningNews,
-              onChanged: settingsStore.setShowDailyMorningNews,
+              onChanged: (value) {
+                settingsStore.setShowDailyMorningNews(value);
+                if (value)
+                  context.read<NotificationService>().scheduleNotificationDaily(
+                      NotificationChannels.kMorningNewsId,
+                      'News Remainder',
+                      'Your personalised morning news is ready.',
+                      NotificationChannels.kMorningNewsChannelId,
+                      NotificationChannels.kMorningNewsChannelName,
+                      NotificationChannels.kMorningNewsChannelDesc,
+                      Time(7, 0, 0));
+                else
+                  context
+                      .read<NotificationService>()
+                      .flutterLocalNotificationsPlugin
+                      .cancel(NotificationChannels.kMorningNewsId);
+              },
               activeColor: Theme.of(context).accentColor,
             ),
           ],

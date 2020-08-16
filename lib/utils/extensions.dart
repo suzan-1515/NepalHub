@@ -10,6 +10,14 @@ extension SnackBarX on BuildContext {
     );
 }
 
+extension SnackBarX2 on ScaffoldState {
+  showMessage(String message) => this
+    ..hideCurrentSnackBar()
+    ..showSnackBar(
+      SnackBar(content: Text(message)),
+    );
+}
+
 extension APIErrorDialogX on BuildContext {
   showErrorDialog(APIException apiError) => showDialog<void>(
         context: this,

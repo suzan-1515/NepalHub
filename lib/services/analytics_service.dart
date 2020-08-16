@@ -12,12 +12,12 @@ class AnalyticsService {
     await _analytics.setUserId(userId);
   }
 
-  Future logLogin() async {
-    return await _analytics.logLogin(loginMethod: 'email');
+  Future logLogin({String method = 'google'}) async {
+    return await _analytics.logLogin(loginMethod: method);
   }
 
-  Future logSignUp() async {
-    return await _analytics.logSignUp(signUpMethod: 'email');
+  Future logSignUp({String method = 'google'}) async {
+    return await _analytics.logSignUp(signUpMethod: method);
   }
 
   Future logLogout() async {

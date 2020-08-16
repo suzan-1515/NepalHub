@@ -1,5 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_facebook_login/flutter_facebook_login.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:nepali_utils/nepali_utils.dart';
 import 'package:provider/provider.dart';
@@ -22,6 +24,7 @@ import 'package:samachar_hub/repository/following_repository.dart';
 import 'package:samachar_hub/repository/post_meta_repository.dart';
 import 'package:samachar_hub/repository/repositories.dart';
 import 'package:samachar_hub/services/following_firestore_service.dart';
+import 'package:samachar_hub/services/notification_service.dart';
 import 'package:samachar_hub/services/services.dart';
 import 'package:samachar_hub/stores/stores.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -61,6 +64,13 @@ class App extends StatelessWidget {
         Provider<PreferenceService>(
           create: (_) => PreferenceService(_sharedPreferences),
         ),
+        Provider<FlutterLocalNotificationsPlugin>(
+          create: (_) => FlutterLocalNotificationsPlugin(),
+        ),
+        ProxyProvider<FlutterLocalNotificationsPlugin, NotificationService>(
+          update: (_, _flutterLocalNotificationsPlugin, __) =>
+              NotificationService(_flutterLocalNotificationsPlugin),
+        ),
         Provider<NavigationService>(
           create: (_) => NavigationService(),
         ),
@@ -83,7 +93,8 @@ class App extends StatelessWidget {
         //repository
         ProxyProvider<AnalyticsService, AuthenticationRepository>(
           update: (_, _analyticsService, __) => AuthenticationRepository(
-              AuthenticationService(FirebaseAuth.instance, GoogleSignIn()),
+              AuthenticationService(
+                  FirebaseAuth.instance, GoogleSignIn(), FacebookLogin()),
               _analyticsService),
         ),
         ProxyProvider2<AnalyticsService, PreferenceService, PostMetaRepository>(

@@ -52,22 +52,42 @@ class AuthenticationRepository {
   Future<UserModel> signInWithGoogle() async {
     return _authenticationService.signInWithGoogle().then((value) {
       if (value != null) {
-        _analyticsService.logLogin();
+        if (value.additionalUserInfo.isNewUser)
+          _analyticsService.logSignUp(method: 'google');
+        else
+          _analyticsService.logLogin(method: 'google');
+      }
+      return UserModel.fromFirebaseUser(value.user);
+    });
+  }
+
+  Future<UserModel> signInWithFacebook() async {
+    return _authenticationService.signInWithFacebook().then((value) {
+      if (value != null) {
+        if (value.additionalUserInfo.isNewUser)
+          _analyticsService.logSignUp(method: 'facebook');
+        else
+          _analyticsService.logLogin(method: 'facebook');
       }
       return UserModel.fromFirebaseUser(value.user);
     });
   }
 
   Future<UserModel> signInAnonymously() async {
-    return _authenticationService
-        .signInAnonymously()
-        .then((value) => UserModel.fromFirebaseUser(value.user));
+    return _authenticationService.signInAnonymously().then((value) {
+      if (value != null) {
+        if (value.additionalUserInfo.isNewUser)
+          _analyticsService.logSignUp(method: 'anonymous');
+        else
+          _analyticsService.logLogin(method: 'anonymous');
+      }
+      return UserModel.fromFirebaseUser(value.user);
+    });
   }
 
   Future<UserModel> getCurrentUser() async {
     return await _authenticationService.getCurrentUser().then((value) {
-      if (value != null && !value.isAnonymous)
-        return UserModel.fromFirebaseUser(value);
+      if (value != null) return UserModel.fromFirebaseUser(value);
       return null;
     });
   }

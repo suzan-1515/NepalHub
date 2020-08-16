@@ -173,13 +173,13 @@ class _NewsFeedOptionsState extends State<NewsFeedOptions> {
                               size: 16,
                             ),
                       onPressed: () {
-                        _likeProgressNotifier.value = true;
                         final authStore = context.read<AuthenticationStore>();
                         if (!authStore.isLoggedIn)
                           return context
                               .read<NavigationService>()
                               .loginRedirect(context);
 
+                        _likeProgressNotifier.value = true;
                         final isLiked = widget.feed.isLiked;
                         widget.feed.like = !value;
                         if (isLiked) {

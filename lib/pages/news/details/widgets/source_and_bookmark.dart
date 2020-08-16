@@ -60,7 +60,7 @@ class SourceAndBookmark extends StatelessWidget {
                       ),
                       onPressed: () {
                         final authStore = context.read<AuthenticationStore>();
-                        if (!authStore.isLoggedIn)
+                        if (!authStore.isLoggedIn || authStore.user.isAnonymous)
                           return context
                               .read<NavigationService>()
                               .loginRedirect(context);

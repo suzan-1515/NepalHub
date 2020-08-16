@@ -57,10 +57,9 @@ class NewsFilterView extends StatelessWidget {
                 onChanged: (value) {
                   final changedSourceModel = sources?.firstWhere(
                     (element) => element.code == value,
-                    orElse: null,
+                    orElse: () => null,
                   );
-                  if (changedSourceModel != null)
-                    onSourceChanged(changedSourceModel);
+                  onSourceChanged(changedSourceModel);
                 },
                 options: this.sourceOptions,
                 selectedValue: initialSource?.code ?? 'all',

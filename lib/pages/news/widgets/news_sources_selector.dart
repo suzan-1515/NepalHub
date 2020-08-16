@@ -18,14 +18,10 @@ class NewsSourcesSelector extends StatefulWidget {
 
 class _NewsSourcesSelectorState extends State<NewsSourcesSelector> {
   String selectedValue;
-  @override
-  void initState() {
-    super.initState();
-    selectedValue = widget.selectedValue;
-  }
 
   @override
   Widget build(BuildContext context) {
+    selectedValue = widget.selectedValue;
     return DropdownButtonHideUnderline(
       child: DropdownButton<String>(
         isExpanded: true,

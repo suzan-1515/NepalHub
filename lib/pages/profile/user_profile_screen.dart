@@ -1,5 +1,5 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_advanced_networkimage/provider.dart';
 import 'package:provider/provider.dart';
 import 'package:samachar_hub/services/navigation_service.dart';
 import 'package:samachar_hub/stores/auth/auth_store.dart';
@@ -20,10 +20,9 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
           borderRadius: BorderRadius.circular(30),
           color: Theme.of(context).cardColor,
           image: DecorationImage(
-              image: CachedNetworkImageProvider(
-                store.user.avatar,
-                errorListener: () {},
-              ),
+              image: (store.user?.avatar?.isNotEmpty ?? false)
+                  ? AdvancedNetworkImage(store.user.avatar, useDiskCache: true)
+                  : AssetImage('assets/images/user.png'),
               fit: BoxFit.cover),
         ),
       ),
@@ -43,7 +42,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
       child: OutlineButton(
         padding: const EdgeInsets.all(8),
         onPressed: () => store.logOut().whenComplete(
-            () => context.read<NavigationService>().loginRedirect(context)),
+            () => context.read<NavigationService>().toLoginScreen(context)),
         child: Text('Log out'),
       ),
     );

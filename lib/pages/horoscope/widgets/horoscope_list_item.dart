@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_advanced_networkimage/provider.dart';
 import 'package:provider/provider.dart';
 import 'package:samachar_hub/data/models/models.dart';
 import 'package:samachar_hub/services/services.dart';
@@ -32,10 +33,7 @@ class HoroscopeListItem extends StatelessWidget {
           tag: sign,
           child: CircleAvatar(
             backgroundColor: Theme.of(context).canvasColor,
-            backgroundImage: CachedNetworkImageProvider(
-              signIcon,
-              errorListener: () {},
-            ),
+            backgroundImage: AdvancedNetworkImage(signIcon, useDiskCache: true),
           ),
         ),
         title: Text(

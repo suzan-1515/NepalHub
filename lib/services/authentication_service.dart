@@ -1,15 +1,19 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:samachar_hub/data/exceptions/exceptions.dart';
 
 class AuthenticationService {
   final FirebaseAuth _firebaseAuth;
   final GoogleSignIn _googleSignIn;
+  final FacebookLogin _facebookLogin;
   final CollectionReference _usersCollectionReference =
       Firestore.instance.collection('users');
 
-  AuthenticationService(this._firebaseAuth, this._googleSignIn);
+  AuthenticationService(
+      this._firebaseAuth, this._googleSignIn, this._facebookLogin);
 
   Future<AuthResult> loginWithEmail({
     @required String email,
@@ -62,31 +66,36 @@ class AuthenticationService {
     return (await _firebaseAuth.signInWithCredential(credential));
   }
 
-  // Future<AuthResult> _signInWithFacebook() async {
-  //   final GoogleSignInAccount googleUser = await _googleSignIn.signIn();
-  //   final GoogleSignInAuthentication googleAuth =
-  //       await googleUser.authentication;
+  Future<AuthResult> signInWithFacebook() async {
+    final result = await _facebookLogin.logIn(['email']);
 
-  //   final AuthCredential credential = GoogleAuthProvider.getCredential(
-  //     accessToken: googleAuth.accessToken,
-  //     idToken: googleAuth.idToken,
-  //   );
+    switch (result.status) {
+      case FacebookLoginStatus.loggedIn:
+        AuthCredential credential = FacebookAuthProvider.getCredential(
+            accessToken: result.accessToken.token);
+        return (await _firebaseAuth.signInWithCredential(credential));
+      case FacebookLoginStatus.cancelledByUser:
+        throw AuthenticationException(message: 'Login canceled.');
+      case FacebookLoginStatus.error:
+        throw AuthenticationException(message: result.errorMessage);
+      default:
+        throw AuthenticationException(
+            message: 'Unable to login at this moment.');
+    }
+  }
 
-  //   return (await _firebaseAuth.signInWithCredential(credential));
-  // }
+  Future<AuthResult> _signInWithTwitter() async {
+    final GoogleSignInAccount googleUser = await _googleSignIn.signIn();
+    final GoogleSignInAuthentication googleAuth =
+        await googleUser.authentication;
 
-  // Future<AuthResult> _signInWithTwitter() async {
-  //   final GoogleSignInAccount googleUser = await _googleSignIn.signIn();
-  //   final GoogleSignInAuthentication googleAuth =
-  //       await googleUser.authentication;
+    final AuthCredential credential = GoogleAuthProvider.getCredential(
+      accessToken: googleAuth.accessToken,
+      idToken: googleAuth.idToken,
+    );
 
-  //   final AuthCredential credential = GoogleAuthProvider.getCredential(
-  //     accessToken: googleAuth.accessToken,
-  //     idToken: googleAuth.idToken,
-  //   );
-
-  //   return (await _firebaseAuth.signInWithCredential(credential));
-  // }
+    return (await _firebaseAuth.signInWithCredential(credential));
+  }
 
   Future<DocumentSnapshot> getUserProfile({@required String uid}) async {
     return await _usersCollectionReference.document(uid).get();

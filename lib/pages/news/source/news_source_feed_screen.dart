@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_advanced_networkimage/provider.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:mobx/mobx.dart';
 import 'package:provider/provider.dart';
@@ -67,10 +68,8 @@ class _NewsSourceFeedScreenState extends State<NewsSourceFeedScreen> {
           return Observer(
             builder: (context) => NewsFilteringAppBar(
               icon: DecorationImage(
-                image: CachedNetworkImageProvider(
-                  store.selectedSource.favicon,
-                  errorListener: () {},
-                ),
+                image: AdvancedNetworkImage(store.selectedSource.favicon,
+                    useDiskCache: true),
                 fit: BoxFit.cover,
               ),
               followUnFollowButton: ValueListenableBuilder<bool>(

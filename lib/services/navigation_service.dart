@@ -36,6 +36,16 @@ class NavigationService {
     );
   }
 
+  Future toLoginScreen(BuildContext context) {
+    return Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(
+        builder: (context) => LoginScreen(),
+      ),
+      (Route<dynamic> route) => false,
+    );
+  }
+
   toTrendingNews(BuildContext context) {
     Navigator.push(
       context,

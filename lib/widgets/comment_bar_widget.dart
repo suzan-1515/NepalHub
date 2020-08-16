@@ -52,8 +52,7 @@ class CommentBar extends StatelessWidget {
                       backgroundImage: (userProfileImageUrl == null ||
                               userProfileImageUrl.isEmpty)
                           ? AssetImage('assets/images/user.png')
-                          : CachedNetworkImageProvider(userProfileImageUrl,
-                              errorListener: () {}),
+                          : CachedNetworkImageProvider(userProfileImageUrl),
                       backgroundColor:
                           Theme.of(context).primaryColor.withOpacity(0.3),
                     ),

@@ -26,7 +26,6 @@ abstract class _NewsSourceFeedStore with Store {
   @observable
   ObservableList<NewsSource> sources = ObservableList();
 
-  @computed
   bool get hasSources => (sources != null && sources.isNotEmpty);
 
   bool _isLoading = false;
@@ -128,6 +127,7 @@ abstract class _NewsSourceFeedStore with Store {
 
   @action
   setSource(NewsSource source) {
+    if (source == null) return;
     this.selectedSource = source;
     refresh();
   }

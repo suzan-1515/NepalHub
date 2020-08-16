@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -6,6 +8,7 @@ import 'package:flutter_signin_button/flutter_signin_button.dart';
 import 'package:mobx/mobx.dart';
 import 'package:provider/provider.dart';
 import 'package:samachar_hub/pages/widgets/progress_widget.dart';
+import 'package:samachar_hub/services/services.dart';
 import 'package:samachar_hub/stores/stores.dart';
 import 'package:samachar_hub/utils/extensions.dart';
 
@@ -16,7 +19,7 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   List<ReactionDisposer> _disposers;
-
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   @override
   void initState() {
     var store = context.read<AuthenticationStore>();
@@ -38,7 +41,13 @@ class _LoginScreenState extends State<LoginScreen> {
       // Listens for error message
       autorun((_) {
         final String message = store.error;
-        if (message != null) context.showMessage(message);
+        if (message != null) _scaffoldKey.currentState.showMessage(message);
+      }),
+      autorun((_) {
+        final bool isLoggedIn = store.isLoggedIn;
+        log('login screen: login state changed');
+        if (isLoggedIn != null && isLoggedIn)
+          context.read<NavigationService>().toHomeScreen(context);
       }),
     ];
   }
@@ -68,6 +77,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 .textTheme
                 .headline6
                 .copyWith(fontWeight: FontWeight.w600),
+            textAlign: TextAlign.center,
           ),
         )),
       ],
@@ -102,20 +112,22 @@ class _LoginScreenState extends State<LoginScreen> {
                 right: Radius.circular(16),
               )),
               text: 'Continue with Facebook',
-              onPressed: () {},
-            ),
-            SizedBox(height: 8),
-            OutlineButton(
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.horizontal(
-                left: Radius.circular(16),
-                right: Radius.circular(16),
-              )),
               onPressed: () {
-                // authStore.signInAnonymously();
+                authStore.signInWithFacebook();
               },
-              child: Text('Continue as Guest'),
             ),
+            // SizedBox(height: 8),
+            // OutlineButton(
+            //   shape: RoundedRectangleBorder(
+            //       borderRadius: BorderRadius.horizontal(
+            //     left: Radius.circular(16),
+            //     right: Radius.circular(16),
+            //   )),
+            //   onPressed: () {
+            //     authStore.signInAnonymously();
+            //   },
+            //   child: Text('Continue as Guest'),
+            // ),
           ]),
     );
   }
@@ -123,6 +135,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       backgroundColor: Theme.of(context).backgroundColor,
       body: SafeArea(
         child: Consumer<AuthenticationStore>(

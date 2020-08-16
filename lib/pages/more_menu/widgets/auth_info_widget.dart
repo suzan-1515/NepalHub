@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_advanced_networkimage/provider.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
@@ -30,10 +31,8 @@ class _AuthInfoState extends State<AuthInfo> {
                 color: Theme.of(context).cardColor,
                 image: DecorationImage(
                     image: (authStore.user?.avatar?.isNotEmpty ?? false)
-                        ? CachedNetworkImageProvider(
-                            authStore.user.avatar,
-                            errorListener: () {},
-                          )
+                        ? AdvancedNetworkImage(authStore.user.avatar,
+                            useDiskCache: true)
                         : AssetImage('assets/images/user.png'),
                     fit: BoxFit.cover),
               ),
@@ -109,7 +108,7 @@ class _AuthInfoState extends State<AuthInfo> {
         builder: (_, AuthenticationStore authStore, Widget child) {
           return Observer(
             builder: (_) {
-              if (authStore.isLoggedIn) {
+              if (authStore.isLoggedIn && !authStore.user.isAnonymous) {
                 return _buildUserInfo(context, authStore);
               }
               return _buildSigninButtons(context, authStore);

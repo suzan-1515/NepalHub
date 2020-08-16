@@ -84,6 +84,14 @@ mixin _$AuthenticationStore on _AuthenticationStore, Store {
     return _$signInWithGoogleAsyncAction.run(() => super.signInWithGoogle());
   }
 
+  final _$signInWithFacebookAsyncAction = AsyncAction('signInWithFacebook');
+
+  @override
+  Future<dynamic> signInWithFacebook() {
+    return _$signInWithFacebookAsyncAction
+        .run(() => super.signInWithFacebook());
+  }
+
   final _$signInAnonymouslyAsyncAction = AsyncAction('signInAnonymously');
 
   @override
@@ -96,6 +104,13 @@ mixin _$AuthenticationStore on _AuthenticationStore, Store {
   @override
   Future<dynamic> silentSignIn() {
     return _$silentSignInAsyncAction.run(() => super.silentSignIn());
+  }
+
+  final _$logOutAsyncAction = AsyncAction('logOut');
+
+  @override
+  Future<dynamic> logOut() {
+    return _$logOutAsyncAction.run(() => super.logOut());
   }
 
   @override

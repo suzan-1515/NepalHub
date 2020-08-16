@@ -43,6 +43,24 @@ abstract class _AuthenticationStore with Store {
   }
 
   @action
+  Future signInWithFacebook() async {
+    if (isLoading) return false;
+    isLoading = true;
+    return _authenticationRepository.signInWithFacebook().then((value) {
+      if (value != null) {
+        user = value;
+      }
+      isLoggedIn = value != null;
+    }).catchError((onError) {
+      log('signInWithFacebook: ', error: onError);
+      this.error = 'Error signing in.';
+      isLoggedIn = false;
+    }).whenComplete(() {
+      isLoading = false;
+    });
+  }
+
+  @action
   Future signInAnonymously() async {
     if (isLoading) return false;
     isLoading = true;
@@ -81,6 +99,7 @@ abstract class _AuthenticationStore with Store {
     }).catchError((onError) {
       log('logout', error: onError);
       this.error = 'Error logging out.';
+      isLoggedIn = false;
     });
   }
 }

@@ -29,7 +29,7 @@ class _CommentInputBarState extends State<CommentInputBar> {
   _submitComment(BuildContext context, AuthenticationStore authStore,
       String comment) async {
     if (comment == null || comment.isEmpty) return;
-    if (authStore.isLoggedIn) {
+    if (authStore.isLoggedIn && !authStore.user.isAnonymous) {
       return widget.store.submitComment(comment: comment).then((value) {
         context.showMessage('Comment posted.');
       });

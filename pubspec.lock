@@ -142,7 +142,7 @@ packages:
     source: hosted
     version: "7.0.9"
   cached_network_image:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: cached_network_image
       url: "https://pub.dartlang.org"
@@ -370,6 +370,13 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_advanced_networkimage:
+    dependency: "direct main"
+    description:
+      name: flutter_advanced_networkimage
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.7.0"
   flutter_bloc:
     dependency: transitive
     description:
@@ -384,6 +391,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.4.0"
+  flutter_facebook_login:
+    dependency: "direct main"
+    description:
+      name: flutter_facebook_login
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "3.0.0"
   flutter_image:
     dependency: transitive
     description:
@@ -391,6 +405,20 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "3.0.0"
+  flutter_local_notifications:
+    dependency: "direct main"
+    description:
+      name: flutter_local_notifications
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.4.4+3"
+  flutter_local_notifications_platform_interface:
+    dependency: transitive
+    description:
+      name: flutter_local_notifications_platform_interface
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.1"
   flutter_map:
     dependency: transitive
     description:
@@ -413,7 +441,7 @@ packages:
     source: hosted
     version: "1.0.0"
   flutter_svg:
-    dependency: "direct main"
+    dependency: "direct overridden"
     description:
       name: flutter_svg
       url: "https://pub.dartlang.org"
@@ -1094,4 +1122,4 @@ packages:
     version: "2.2.0"
 sdks:
   dart: ">=2.9.0-14.0.dev <3.0.0"
-  flutter: ">=1.18.0-6.0.pre <2.0.0"
+  flutter: ">=1.16.0 <2.0.0"

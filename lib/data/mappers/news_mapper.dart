@@ -47,9 +47,9 @@ class NewsMapper {
     return NewsFeed(
       id: response.id,
       source: fromSourceApi(
-          response.source, !unFollowedSources.contains(response.uuid)),
-      category: fromCategoryApi(
-          response.category, !unFollowedCategories.contains(response.uuid)),
+          response.source, !unFollowedSources.contains(response.source.code)),
+      category: fromCategoryApi(response.category,
+          !unFollowedCategories.contains(response.category.code)),
       author: response.formatedAuthor,
       title: response.title,
       description: response.description,
