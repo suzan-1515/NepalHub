@@ -50,7 +50,7 @@ class NewsCategoryList extends StatelessWidget {
                         (onError) => categoryModel.follow = currentValue);
                   }
                 },
-                followers: categoryModel.followerCount,
+                followers: categoryModel.followerCountFormatted,
                 isSubscribed: value,
               ),
             );

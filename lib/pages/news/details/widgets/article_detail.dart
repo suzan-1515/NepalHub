@@ -1,6 +1,7 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:samachar_hub/pages/news/details/widgets/author_and_category.dart';
+import 'package:samachar_hub/pages/news/details/widgets/disclaimer.dart';
 import 'package:samachar_hub/pages/news/details/widgets/read_more.dart';
 import 'package:samachar_hub/pages/news/details/widgets/related_feeds.dart';
 import 'package:samachar_hub/pages/news/details/widgets/source_and_bookmark.dart';
@@ -26,7 +27,7 @@ class ArticleDetail extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 24),
         child: Column(
-          mainAxisSize: MainAxisSize.max,
+          mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             SizedBox(
@@ -57,10 +58,12 @@ class ArticleDetail extends StatelessWidget {
             ),
             Text(
               store.feed.description ?? 'No article content available.',
-              style: Theme.of(context).textTheme.bodyText2,
+              style:
+                  Theme.of(context).textTheme.subtitle2.copyWith(height: 1.5),
             ),
             // _buildAdRow(),
             ReadMore(context: context, store: store),
+            Disclaimer(store: store),
             if (store.hasRelatedFeeds)
               RelatedNews(
                 store: store,

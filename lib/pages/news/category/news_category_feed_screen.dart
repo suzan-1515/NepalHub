@@ -73,7 +73,7 @@ class _NewsCategoryFeedScreenState extends State<NewsCategoryFeedScreen> {
                 followUnFollowButton: ValueListenableBuilder<bool>(
                   valueListenable: store.categoryModel.followNotifier,
                   builder: (context, value, child) => FollowUnFollowButton(
-                    followerCount: store.categoryModel.followerCount,
+                    followerCount: store.categoryModel.followerCountFormatted,
                     isFollowed: value,
                     onTap: (isFollowed) {
                       store.categoryModel.follow = !value;

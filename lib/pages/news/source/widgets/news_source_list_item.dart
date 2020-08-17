@@ -15,7 +15,7 @@ class NewsSourceListItem extends StatelessWidget {
 
   final String title;
   final String icon;
-  final int followers;
+  final String followers;
   final bool isSubscribed;
   final Function onTap;
   final Function onFollowTap;

@@ -32,15 +32,24 @@ class _SortBySelectorState extends State<SortBySelector> {
         items: <DropdownMenuItem<SortBy>>[
           DropdownMenuItem(
             value: SortBy.RECENT,
-            child: Text('Recent'),
+            child: Text(
+              'Recent',
+              style: Theme.of(context).textTheme.caption,
+            ),
           ),
           DropdownMenuItem(
             value: SortBy.RELEVANCE,
-            child: Text('Relevance'),
+            child: Text(
+              'Relevance',
+              style: Theme.of(context).textTheme.caption,
+            ),
           ),
           DropdownMenuItem(
             value: SortBy.POPULAR,
-            child: Text('Popular'),
+            child: Text(
+              'Popular',
+              style: Theme.of(context).textTheme.caption,
+            ),
           ),
         ],
         onChanged: (SortBy value) {

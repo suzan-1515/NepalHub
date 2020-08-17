@@ -55,7 +55,7 @@ class _NewsSourceListState extends State<NewsSourceList> {
                         (onError) => sourceModel.follow = currentValue);
                   }
                 },
-                followers: sourceModel.followerCount,
+                followers: sourceModel.followerCountFormatted,
                 isSubscribed: sourceModel.isFollowed,
               ),
             );

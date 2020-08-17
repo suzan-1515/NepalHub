@@ -2,11 +2,12 @@ import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:samachar_hub/repository/repositories.dart';
 import 'package:samachar_hub/services/navigation_service.dart';
 import 'package:samachar_hub/stores/stores.dart';
 import 'package:samachar_hub/widgets/cached_image_widget.dart';
 
-class SourceAndBookmark extends StatelessWidget {
+class SourceAndBookmark extends StatefulWidget {
   const SourceAndBookmark({
     Key key,
     @required this.context,
@@ -19,65 +20,104 @@ class SourceAndBookmark extends StatelessWidget {
   final PostMetaStore metaStore;
 
   @override
+  _SourceAndBookmarkState createState() => _SourceAndBookmarkState();
+}
+
+class _SourceAndBookmarkState extends State<SourceAndBookmark> {
+  final ValueNotifier<bool> _sourceFollowProgressNotifier =
+      ValueNotifier<bool>(false);
+
+  @override
+  void dispose() {
+    _sourceFollowProgressNotifier.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.max,
       children: <Widget>[
         SizedBox(
-          height: 48,
-          width: 48,
-          child: CachedImage(store.feed.source.favicon),
+          height: 42,
+          width: 42,
+          child: CachedImage(widget.store.feed.source.favicon),
         ),
         SizedBox(width: 8),
-        Text(
-          'Article\nPublished on\n${store.feed.source.name}',
-          overflow: TextOverflow.ellipsis,
+        ValueListenableBuilder<int>(
+          valueListenable: widget.store.feed.source.followerCountNotifier,
+          builder: (context, value, child) => RichText(
+            text: TextSpan(
+                text: '${widget.store.feed.source.name}',
+                style: Theme.of(context).textTheme.subtitle2,
+                children: [
+                  TextSpan(text: '\n'),
+                  TextSpan(
+                      text:
+                          '${widget.store.feed.source.followerCountFormatted} followers',
+                      style: Theme.of(context).textTheme.caption),
+                ]),
+            overflow: TextOverflow.ellipsis,
+          ),
         ),
+        SizedBox(width: 4),
         Spacer(),
-        SizedBox(width: 8),
-        FadeInLeft(
-          duration: const Duration(milliseconds: 200),
-          child: Container(
-            decoration: BoxDecoration(
-              border: Border(
-                left: BorderSide(color: Theme.of(context).dividerColor),
+        ValueListenableBuilder<bool>(
+          valueListenable: widget.store.feed.source.followNotifier,
+          builder: (context, value, child) => ValueListenableBuilder<bool>(
+            valueListenable: _sourceFollowProgressNotifier,
+            builder: (context, inProgress, child) => IgnorePointer(
+              ignoring: inProgress,
+              child: FlatButton(
+                visualDensity: VisualDensity.compact,
+                color: value ? Colors.blue : null,
+                shape: RoundedRectangleBorder(
+                    side: BorderSide(color: Colors.blue),
+                    borderRadius: BorderRadius.horizontal(
+                      left: Radius.circular(6),
+                      right: Radius.circular(6),
+                    )),
+                onPressed: () {
+                  _sourceFollowProgressNotifier.value = true;
+                  final isFollowed = value;
+                  widget.store.feed.source.follow = !value;
+                  if (isFollowed)
+                    context
+                        .read<FollowingRepository>()
+                        .unFollowSource(widget.store.feed.source)
+                        .catchError((onError) =>
+                            widget.store.feed.source.follow = isFollowed)
+                        .whenComplete(
+                            () => _sourceFollowProgressNotifier.value = false);
+                  else
+                    context
+                        .read<FollowingRepository>()
+                        .followSource(widget.store.feed.source)
+                        .catchError((onError) =>
+                            widget.store.feed.source.follow = isFollowed)
+                        .whenComplete(
+                            () => _sourceFollowProgressNotifier.value = false);
+                },
+                child: Row(
+                  children: [
+                    Icon(
+                      value ? Icons.star : Icons.star_border,
+                      color: value ? Colors.white : Colors.blue,
+                      size: 14,
+                    ),
+                    SizedBox(width: 4),
+                    Text(
+                      value ? 'Following' : 'Follow',
+                      style: Theme.of(context)
+                          .textTheme
+                          .caption
+                          .copyWith(color: value ? Colors.white : Colors.blue),
+                    ),
+                  ],
+                ),
               ),
-            ),
-            padding: EdgeInsets.symmetric(horizontal: 16),
-            child: Column(
-              children: <Widget>[
-                ValueListenableBuilder<bool>(
-                  valueListenable: store.feed.bookmarkNotifier,
-                  builder: (_, value, __) {
-                    return IconButton(
-                      icon: Icon(
-                        value
-                            ? FontAwesomeIcons.solidHeart
-                            : FontAwesomeIcons.heart,
-                        size: 36,
-                        color: Theme.of(context).accentColor,
-                      ),
-                      onPressed: () {
-                        final authStore = context.read<AuthenticationStore>();
-                        if (!authStore.isLoggedIn || authStore.user.isAnonymous)
-                          return context
-                              .read<NavigationService>()
-                              .loginRedirect(context);
-                        if (value) {
-                          store.removeBookmarkedFeed(authStore.user.uId);
-                        } else {
-                          store.bookmarkFeed(authStore.user);
-                        }
-                      },
-                    );
-                  },
-                ),
-                SizedBox(
-                  height: 4,
-                ),
-                Text('Bookmark', textAlign: TextAlign.center)
-              ],
             ),
           ),
         ),

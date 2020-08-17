@@ -26,11 +26,17 @@ class _NewsSourcesSelectorState extends State<NewsSourcesSelector> {
       child: DropdownButton<String>(
         isExpanded: true,
         value: selectedValue,
-        hint: Text('All Sources'),
+        hint: Text(
+          'All Sources',
+          style: Theme.of(context).textTheme.caption,
+        ),
         items: widget.options.entries
             .map((e) => DropdownMenuItem<String>(
                   value: e.key,
-                  child: Text(e.value),
+                  child: Text(
+                    e.value,
+                    style: Theme.of(context).textTheme.caption,
+                  ),
                 ))
             .toList(),
         onChanged: (String value) {

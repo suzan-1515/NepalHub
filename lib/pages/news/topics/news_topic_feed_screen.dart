@@ -87,7 +87,7 @@ class _NewsTopicFeedScreenState extends State<NewsTopicFeedScreen> {
                             .catchError(
                                 (onError) => store.topic.follow = isFollowed);
                     },
-                    followerCount: store.topic.followerCount,
+                    followerCount: store.topic.followerCountFormatted,
                   ),
                 ),
                 onSortByChanged: (value) {

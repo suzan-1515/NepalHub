@@ -14,7 +14,7 @@ class NewsCategoryListItem extends StatelessWidget {
 
   final String title;
   final IconData icon;
-  final int followers;
+  final String followers;
   final bool isSubscribed;
   final Function onTap;
   final Function onFollowTap;

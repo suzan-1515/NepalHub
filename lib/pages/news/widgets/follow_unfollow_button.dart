@@ -11,7 +11,7 @@ class FollowUnFollowButton extends StatelessWidget {
         super(key: key);
 
   final bool isFollowed;
-  final int followerCount;
+  final String followerCount;
   final Function(bool) onTap;
 
   @override
@@ -23,34 +23,38 @@ class FollowUnFollowButton extends StatelessWidget {
       children: <Widget>[
         Text(
           '$followerCount followers',
-          style: Theme.of(context).textTheme.bodyText2,
+          style: Theme.of(context).textTheme.caption,
         ),
         SizedBox(height: 4),
-        isFollowed
-            ? RaisedButton(
-                visualDensity: VisualDensity.compact,
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    Icon(
-                      Icons.check,
-                      color: Theme.of(context).iconTheme.color.withOpacity(0.7),
-                    ),
-                    const SizedBox(width: 8.0),
-                    Text('Following'),
-                  ],
-                ),
-                textColor: Colors.white,
-                color: Colors.grey,
-                onPressed: () => onTap(isFollowed),
-              )
-            : RaisedButton(
-                visualDensity: VisualDensity.compact,
-                textColor: Colors.white,
-                color: Colors.blue,
-                child: Text('Follow'),
-                onPressed: () => onTap(isFollowed),
+        FlatButton(
+          visualDensity: VisualDensity.compact,
+          color: isFollowed ? Colors.blue : null,
+          shape: RoundedRectangleBorder(
+              side: BorderSide(color: Colors.blue),
+              borderRadius: BorderRadius.horizontal(
+                left: Radius.circular(6),
+                right: Radius.circular(6),
+              )),
+          onPressed: () => onTap(isFollowed),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                isFollowed ? Icons.star : Icons.star_border,
+                color: isFollowed ? Colors.white : Colors.blue,
+                size: 14,
               ),
+              SizedBox(width: 4),
+              Text(
+                isFollowed ? 'Following' : 'Follow',
+                style: Theme.of(context)
+                    .textTheme
+                    .caption
+                    .copyWith(color: isFollowed ? Colors.white : Colors.blue),
+              ),
+            ],
+          ),
+        ),
       ],
     );
   }

@@ -135,7 +135,7 @@ class OtherMenuSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return LimitedBox(
-      maxHeight: 100,
+      maxHeight: 120,
       child: IntrinsicHeight(
         child: Row(
           mainAxisAlignment: MainAxisAlignment.start,

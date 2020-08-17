@@ -102,9 +102,11 @@ class NewsFeedCardTitleDescription extends StatelessWidget {
         ),
         Text(
           description ?? '',
-          maxLines: 2,
+          maxLines: MediaQuery.of(context).orientation == Orientation.portrait
+              ? 2
+              : 4,
           overflow: TextOverflow.ellipsis,
-          style: Theme.of(context).textTheme.bodyText2,
+          style: Theme.of(context).textTheme.subtitle2.copyWith(height: 1.5),
         ),
       ],
     );
@@ -159,7 +161,7 @@ class _NewsFeedOptionsState extends State<NewsFeedOptions> {
                     child: FlatButton.icon(
                       materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                       label: Text(
-                        '${(widget.feed.likeCount == null || widget.feed.likeCount < 1) ? '' : widget.feed.likeCount}',
+                        '${widget.feed.likeCountFormatted}',
                         style: Theme.of(context).textTheme.overline,
                       ),
                       icon: value
@@ -217,7 +219,7 @@ class _NewsFeedOptionsState extends State<NewsFeedOptions> {
             builder: (context, value, child) => FlatButton.icon(
               materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
               label: Text(
-                '${(value == null || value < 1) ? '' : widget.feed.likeCount}',
+                '${widget.feed.commentCountFormatted}',
                 style: Theme.of(context).textTheme.overline,
               ),
               icon: Icon(

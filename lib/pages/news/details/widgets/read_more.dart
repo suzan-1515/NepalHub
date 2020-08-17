@@ -25,31 +25,26 @@ class ReadMore extends StatelessWidget {
       padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: Row(
         mainAxisSize: MainAxisSize.max,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
-          Expanded(
-            flex: 2,
+          Flexible(
             child: Text(
-              'To read the complete article, you can use external web browser or default inbuilt browser. You change change from settings.',
-              style: Theme.of(context).textTheme.caption,
+              'To read the complete article, you can use external web browser or default inbuilt browser. You can change from settings.',
+              style: Theme.of(context).textTheme.caption.copyWith(fontSize: 11),
             ),
           ),
-          SizedBox(
-            width: 8,
-          ),
-          Expanded(
-            child: Align(
-              alignment: Alignment.centerRight,
-              child: OutlineButton.icon(
-                onPressed: () {
-                  context.read<NavigationService>().toWebViewScreen(
-                        store.feed.title,
-                        store.feed.link,
-                        context,
-                      );
-                },
-                icon: Icon(FontAwesomeIcons.link),
-                label: Text('Read'),
-              ),
+          Align(
+            alignment: Alignment.centerRight,
+            child: OutlineButton.icon(
+              onPressed: () {
+                context.read<NavigationService>().toWebViewScreen(
+                      store.feed.title,
+                      store.feed.link,
+                      context,
+                    );
+              },
+              icon: Icon(FontAwesomeIcons.link),
+              label: Text('Read'),
             ),
           ),
         ],

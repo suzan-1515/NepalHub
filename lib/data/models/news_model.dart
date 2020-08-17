@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:uuid/uuid.dart';
 import 'package:validators/validators.dart' as Validator;
 
@@ -66,11 +67,22 @@ class NewsFeed extends Equatable {
   bool get isValidImage => Validator.isURL(image);
   bool get isBookmarked => bookmarkNotifier.value;
   bool get isLiked => likeNotifier.value;
+
   int get likeCount => likeCountNotifier.value;
+  String get likeCountFormatted =>
+      NumberFormat.compact().format(likeCountNotifier.value);
   int get commentCount => commentCountNotifier.value;
+  String get commentCountFormatted =>
+      NumberFormat.compact().format(commentCountNotifier.value);
   int get shareCount => shareCountNotifier.value;
+  String get shareCountFormatted =>
+      NumberFormat.compact().format(shareCountNotifier.value);
   int get viewCount => viewCountNotifier.value;
+  String get viewCountFormatted =>
+      NumberFormat.compact().format(viewCountNotifier.value);
   int get bookmarkCount => bookmarkCountNotifier.value;
+  String get bookmarkCountFormatted =>
+      NumberFormat.compact().format(bookmarkCountNotifier.value);
 
   set like(bool value) {
     this.likeNotifier.value = value;
@@ -166,6 +178,8 @@ class NewsSource extends Equatable {
   bool get isValidFavIcon => Validator.isURL(favicon);
   bool get isFollowed => followNotifier.value;
   int get followerCount => followerCountNotifier.value;
+  String get followerCountFormatted =>
+      NumberFormat.compact().format(followerCountNotifier.value);
 
   set follow(bool value) {
     this.followNotifier.value = value;
@@ -229,6 +243,8 @@ class NewsCategory extends Equatable {
 
   bool get isFollowed => followNotifier.value;
   int get followerCount => followerCountNotifier.value;
+  String get followerCountFormatted =>
+      NumberFormat.compact().format(followerCountNotifier.value);
 
   set follow(bool value) {
     this.followNotifier.value = value;
@@ -283,6 +299,8 @@ class NewsTopic extends Equatable {
   bool get isValidIcon => Validator.isURL(icon);
   bool get isFollowed => followNotifier.value;
   int get followerCount => followerCountNotifier.value;
+  String get followerCountFormatted =>
+      NumberFormat.compact().format(followerCountNotifier.value);
 
   set follow(bool value) {
     this.followNotifier.value = value;
@@ -360,10 +378,22 @@ class BookmarkedNewsFeed extends Equatable {
   bool get isValidImage => Validator.isURL(image);
   bool get isBookmarked => bookmarkNotifier.value;
   bool get isLiked => likeNotifier.value;
+
   int get likeCount => likeCountNotifier.value;
+  String get likeCountFormatted =>
+      NumberFormat.compact().format(likeCountNotifier.value);
   int get commentCount => commentCountNotifier.value;
+  String get commentCountFormatted =>
+      NumberFormat.compact().format(commentCountNotifier.value);
   int get shareCount => shareCountNotifier.value;
+  String get shareCountFormatted =>
+      NumberFormat.compact().format(shareCountNotifier.value);
   int get viewCount => viewCountNotifier.value;
+  String get viewCountFormatted =>
+      NumberFormat.compact().format(viewCountNotifier.value);
+  int get bookmarkCount => bookmarkCountNotifier.value;
+  String get bookmarkCountFormatted =>
+      NumberFormat.compact().format(bookmarkCountNotifier.value);
 
   Map<String, dynamic> toJson() => {
         'id': this.id,

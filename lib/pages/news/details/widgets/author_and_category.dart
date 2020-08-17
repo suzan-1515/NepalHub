@@ -21,9 +21,8 @@ class AuthorAndCategory extends StatelessWidget {
         RichText(
           text: TextSpan(
               text: 'By ${store.feed.author}',
-              style: Theme.of(context).textTheme.bodyText2.copyWith(
-                    color: Theme.of(context).accentColor,
-                  ),
+              style:
+                  Theme.of(context).textTheme.bodyText2.copyWith(fontSize: 13),
               children: <TextSpan>[
                 TextSpan(
                   text: '\n${store.feed.momentPublishedDate}',

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:samachar_hub/data/models/user_model.dart';
 
 class CommentModel {
@@ -21,6 +22,10 @@ class CommentModel {
 
   int get likesCount => likeCountNotifier.value;
   bool get isLiked => likeNotifier.value;
+
+  int get likeCount => likeCountNotifier.value;
+  String get likeCountFormatted =>
+      NumberFormat.compact().format(likeCountNotifier.value);
 
   set like(bool value) {
     this.likeNotifier.value = value;

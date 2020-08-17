@@ -18,10 +18,9 @@ class RelatedNews extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-              Divider(),
               RelatedFeedHeading(),
               SizedBox(
-                height: 4,
+                height: 8,
               ),
             ] +
             List<Widget>.generate((store.relatedFeeds.length * 2) - 1, (index) {

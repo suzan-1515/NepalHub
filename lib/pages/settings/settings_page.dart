@@ -10,8 +10,10 @@ import 'package:samachar_hub/common/notification_channels.dart';
 import 'package:samachar_hub/pages/settings/settings_store.dart';
 import 'package:samachar_hub/pages/settings/widgets/section_heading.dart';
 import 'package:samachar_hub/services/notification_service.dart';
+import 'package:samachar_hub/stores/auth/auth_store.dart';
 import 'package:samachar_hub/utils/forex_currency.dart';
 import 'package:samachar_hub/utils/horoscope_signs.dart';
+import 'package:samachar_hub/utils/extensions.dart';
 
 class SettingsPage extends StatefulWidget {
   @override
@@ -41,20 +43,10 @@ class _SettingsPageState extends State<SettingsPage> {
     _disposers = [
       // Listens for error message
       autorun((_) {
-        final String message =
-            Provider.of<SettingsStore>(context, listen: false).message;
-        _showMessage(message);
+        final String message = context.read<SettingsStore>().message;
+        if (message != null) context.showMessage(message);
       }),
     ];
-  }
-
-  _showMessage(String message) {
-    if (message != null)
-      Scaffold.of(context)
-        ..hideCurrentSnackBar()
-        ..showSnackBar(
-          SnackBar(content: Text(message)),
-        );
   }
 
   Widget _buildGeneralSettings(
@@ -100,16 +92,21 @@ class _SettingsPageState extends State<SettingsPage> {
               value: settingsStore.showDailyMorningNews,
               onChanged: (value) {
                 settingsStore.setShowDailyMorningNews(value);
-                if (value)
+                if (value) {
+                  var user = '';
+                  final authStore = context.read<AuthenticationStore>();
+                  if (authStore.isLoggedIn && !authStore.user.isAnonymous) {
+                    user = '${authStore.user.fullName} 🌅';
+                  }
                   context.read<NotificationService>().scheduleNotificationDaily(
                       NotificationChannels.kMorningNewsId,
-                      'News Remainder',
-                      'Your personalised morning news is ready.',
+                      'Good Morning $user 🌅',
+                      'Your personalised daily news is ready. Click to read. 📰',
                       NotificationChannels.kMorningNewsChannelId,
                       NotificationChannels.kMorningNewsChannelName,
                       NotificationChannels.kMorningNewsChannelDesc,
                       Time(7, 0, 0));
-                else
+                } else
                   context
                       .read<NotificationService>()
                       .flutterLocalNotificationsPlugin

@@ -35,7 +35,7 @@ class NewsMapper {
 
   static NewsTopic fromTopicApi(String tag, bool isFollowed) {
     return NewsTopic(
-      followerCount: 0,
+      followerCount: 100000,
       icon: null,
       isFollowed: isFollowed,
       title: tag,
@@ -82,7 +82,7 @@ class NewsMapper {
       favicon: response.favicon,
       icon: response.icon,
       priority: response.priority,
-      followerCount: isFollowed ? 1 : 0,
+      followerCount: 1000,
       isFollowed: isFollowed,
     );
   }
@@ -95,7 +95,7 @@ class NewsMapper {
       code: response.code,
       icon: newsCategoryIcons[response.code],
       priority: response.priority,
-      followerCount: isFollowed ? 1 : 0,
+      followerCount: 10000001,
       isFollowed: isFollowed,
     );
   }

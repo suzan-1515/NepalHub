@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:intl/intl.dart';
 import 'package:samachar_hub/widgets/icon_badge_widget.dart';
 
 class CommentBar extends StatelessWidget {
@@ -62,7 +63,7 @@ class CommentBar extends StatelessWidget {
                     ValueListenableBuilder<int>(
                       valueListenable: commentCountNotifier,
                       builder: (context, value, child) => Text(
-                        '$value Comments',
+                        '${NumberFormat.compact().format(value)} Comments',
                         style: Theme.of(context).textTheme.caption,
                       ),
                     ),
@@ -84,7 +85,8 @@ class CommentBar extends StatelessWidget {
               iconData: value
                   ? FontAwesomeIcons.solidThumbsUp
                   : FontAwesomeIcons.thumbsUp,
-              badgeText: likeCountNotifier.value?.toString() ?? '0',
+              badgeText:
+                  '${NumberFormat.compact().format(likeCountNotifier.value)}',
               onTap: () => onLikeTap(value),
             ),
           ),
