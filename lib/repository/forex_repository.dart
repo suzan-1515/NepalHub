@@ -34,9 +34,6 @@ class ForexRepository {
       return onValue
           .map((e) => ForexMapper.fromApi(e, defaultCurrency))
           .toList();
-    }).then((value) {
-      _analyticsService.logForexFetched(currency: currencyCode);
-      return value;
     });
   }
 }

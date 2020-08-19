@@ -6,34 +6,33 @@ part of 'bookmark_store.dart';
 // StoreGenerator
 // **************************************************************************
 
-// ignore_for_file: non_constant_identifier_names, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
+// ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
 
 mixin _$BookmarkStore on _BookmarkStore, Store {
   final _$errorAtom = Atom(name: '_BookmarkStore.error');
 
   @override
   String get error {
-    _$errorAtom.context.enforceReadPolicy(_$errorAtom);
-    _$errorAtom.reportObserved();
+    _$errorAtom.reportRead();
     return super.error;
   }
 
   @override
   set error(String value) {
-    _$errorAtom.context.conditionallyRunInAction(() {
+    _$errorAtom.reportWrite(value, super.error, () {
       super.error = value;
-      _$errorAtom.reportChanged();
-    }, _$errorAtom, name: '${_$errorAtom.name}_set');
+    });
   }
 
-  final _$loadInitialDataAsyncAction = AsyncAction('loadInitialData');
+  final _$loadInitialDataAsyncAction =
+      AsyncAction('_BookmarkStore.loadInitialData');
 
   @override
   Future<void> loadInitialData() {
     return _$loadInitialDataAsyncAction.run(() => super.loadInitialData());
   }
 
-  final _$loadMoreDataAsyncAction = AsyncAction('loadMoreData');
+  final _$loadMoreDataAsyncAction = AsyncAction('_BookmarkStore.loadMoreData');
 
   @override
   Future<void> loadMoreData({String after}) {
@@ -41,7 +40,8 @@ mixin _$BookmarkStore on _BookmarkStore, Store {
         .run(() => super.loadMoreData(after: after));
   }
 
-  final _$addBookmarkedFeedAsyncAction = AsyncAction('addBookmarkedFeed');
+  final _$addBookmarkedFeedAsyncAction =
+      AsyncAction('_BookmarkStore.addBookmarkedFeed');
 
   @override
   Future<bool> addBookmarkedFeed({@required NewsFeed feed}) {
@@ -49,7 +49,8 @@ mixin _$BookmarkStore on _BookmarkStore, Store {
         .run(() => super.addBookmarkedFeed(feed: feed));
   }
 
-  final _$removeBookmarkedFeedAsyncAction = AsyncAction('removeBookmarkedFeed');
+  final _$removeBookmarkedFeedAsyncAction =
+      AsyncAction('_BookmarkStore.removeBookmarkedFeed');
 
   @override
   Future<bool> removeBookmarkedFeed({@required NewsFeed feed}) {
@@ -57,7 +58,8 @@ mixin _$BookmarkStore on _BookmarkStore, Store {
         .run(() => super.removeBookmarkedFeed(feed: feed));
   }
 
-  final _$isBookmarkedFeedAsyncAction = AsyncAction('isBookmarkedFeed');
+  final _$isBookmarkedFeedAsyncAction =
+      AsyncAction('_BookmarkStore.isBookmarkedFeed');
 
   @override
   Future<bool> isBookmarkedFeed({@required NewsFeed feed}) {
@@ -65,7 +67,7 @@ mixin _$BookmarkStore on _BookmarkStore, Store {
         .run(() => super.isBookmarkedFeed(feed: feed));
   }
 
-  final _$refreshAsyncAction = AsyncAction('refresh');
+  final _$refreshAsyncAction = AsyncAction('_BookmarkStore.refresh');
 
   @override
   Future<void> refresh() {
@@ -77,7 +79,8 @@ mixin _$BookmarkStore on _BookmarkStore, Store {
 
   @override
   Future<dynamic> _loadFirstPageData() {
-    final _$actionInfo = _$_BookmarkStoreActionController.startAction();
+    final _$actionInfo = _$_BookmarkStoreActionController.startAction(
+        name: '_BookmarkStore._loadFirstPageData');
     try {
       return super._loadFirstPageData();
     } finally {
@@ -87,7 +90,8 @@ mixin _$BookmarkStore on _BookmarkStore, Store {
 
   @override
   void retry() {
-    final _$actionInfo = _$_BookmarkStoreActionController.startAction();
+    final _$actionInfo = _$_BookmarkStoreActionController.startAction(
+        name: '_BookmarkStore.retry');
     try {
       return super.retry();
     } finally {
@@ -97,7 +101,8 @@ mixin _$BookmarkStore on _BookmarkStore, Store {
 
   @override
   String toString() {
-    final string = 'error: ${error.toString()}';
-    return '{$string}';
+    return '''
+error: ${error}
+    ''';
   }
 }

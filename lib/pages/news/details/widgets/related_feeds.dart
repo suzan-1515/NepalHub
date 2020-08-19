@@ -1,7 +1,7 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:samachar_hub/pages/news/details/widgets/related_feed_heading.dart';
+import 'package:samachar_hub/pages/news/details/widgets/heading.dart';
 import 'package:samachar_hub/pages/news/related_news/widgets/related_list_item.dart';
 import 'package:samachar_hub/services/navigation_service.dart';
 import 'package:samachar_hub/stores/stores.dart';
@@ -18,7 +18,9 @@ class RelatedNews extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-              RelatedFeedHeading(),
+              Heading(
+                title: 'Related news',
+              ),
               SizedBox(
                 height: 8,
               ),

@@ -1,4 +1,3 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_advanced_networkimage/provider.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -147,12 +146,15 @@ class _HoroscopeDetailScreenState extends State<HoroscopeDetailScreen> {
                 icon: Icon(FontAwesomeIcons.shareAlt),
                 onPressed: () {
                   if (store.horoscopeModel != null) {
-                    context.read<ShareService>().share(
-                        postId: widget.sign,
-                        title: widget.sign,
-                        data:
-                            '${widget.sign}\n${widget.zodiac}\nLast Updated: ${store.horoscopeModel.todate}');
-                    metaStore.postShare();
+                    context
+                        .read<ShareService>()
+                        .share(
+                          postId: widget.sign,
+                          contentType: 'horoscope',
+                          data:
+                              '${widget.sign}\n${widget.zodiac}\nLast Updated: ${store.horoscopeModel.todate}',
+                        )
+                        .then((value) => metaStore.postShare());
                   }
                 },
               ),
@@ -198,12 +200,14 @@ class _HoroscopeDetailScreenState extends State<HoroscopeDetailScreen> {
                         },
                         onShareTap: () {
                           if (store.horoscopeModel != null)
-                            context.read<ShareService>().share(
-                                postId: widget.sign,
-                                title: widget.sign,
-                                data:
-                                    '${widget.sign}${widget.zodiac}\nLast Updated: ${store.horoscopeModel.todate}');
-                          metaStore.postShare();
+                            context
+                                .read<ShareService>()
+                                .share(
+                                    postId: widget.sign,
+                                    contentType: 'horoscope',
+                                    data:
+                                        '${widget.sign}${widget.zodiac}\nLast Updated: ${store.horoscopeModel.todate}')
+                                .then((value) => metaStore.postShare());
                         },
                       ),
                     );

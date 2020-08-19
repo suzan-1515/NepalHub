@@ -1,6 +1,7 @@
 import 'package:mobx/mobx.dart';
 import 'package:samachar_hub/data/models/models.dart';
 import 'package:samachar_hub/repository/bookmark_repository.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 part 'news_detail_store.g.dart';
 
@@ -47,6 +48,16 @@ abstract class _NewsDetailStore with Store {
       message = 'Unable to remove bookmark';
       feed.bookmark = true;
     }).whenComplete(() => _inProgress = false);
+  }
+
+  @action
+  openLink(String url) async {
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      this.message =
+          'Cannot open this link in external browser. Change news read mode to summary mode in settings and try again.';
+    }
   }
 
   @action

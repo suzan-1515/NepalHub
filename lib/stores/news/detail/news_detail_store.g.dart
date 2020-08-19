@@ -6,24 +6,29 @@ part of 'news_detail_store.dart';
 // StoreGenerator
 // **************************************************************************
 
-// ignore_for_file: non_constant_identifier_names, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
+// ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
 
 mixin _$NewsDetailStore on _NewsDetailStore, Store {
   final _$messageAtom = Atom(name: '_NewsDetailStore.message');
 
   @override
   String get message {
-    _$messageAtom.context.enforceReadPolicy(_$messageAtom);
-    _$messageAtom.reportObserved();
+    _$messageAtom.reportRead();
     return super.message;
   }
 
   @override
   set message(String value) {
-    _$messageAtom.context.conditionallyRunInAction(() {
+    _$messageAtom.reportWrite(value, super.message, () {
       super.message = value;
-      _$messageAtom.reportChanged();
-    }, _$messageAtom, name: '${_$messageAtom.name}_set');
+    });
+  }
+
+  final _$openLinkAsyncAction = AsyncAction('_NewsDetailStore.openLink');
+
+  @override
+  Future openLink(String url) {
+    return _$openLinkAsyncAction.run(() => super.openLink(url));
   }
 
   final _$_NewsDetailStoreActionController =
@@ -31,7 +36,8 @@ mixin _$NewsDetailStore on _NewsDetailStore, Store {
 
   @override
   dynamic bookmarkFeed(UserModel userModel) {
-    final _$actionInfo = _$_NewsDetailStoreActionController.startAction();
+    final _$actionInfo = _$_NewsDetailStoreActionController.startAction(
+        name: '_NewsDetailStore.bookmarkFeed');
     try {
       return super.bookmarkFeed(userModel);
     } finally {
@@ -41,7 +47,8 @@ mixin _$NewsDetailStore on _NewsDetailStore, Store {
 
   @override
   dynamic removeBookmarkedFeed(String userId) {
-    final _$actionInfo = _$_NewsDetailStoreActionController.startAction();
+    final _$actionInfo = _$_NewsDetailStoreActionController.startAction(
+        name: '_NewsDetailStore.removeBookmarkedFeed');
     try {
       return super.removeBookmarkedFeed(userId);
     } finally {
@@ -51,7 +58,8 @@ mixin _$NewsDetailStore on _NewsDetailStore, Store {
 
   @override
   dynamic updateMeta(PostMetaModel metaModel) {
-    final _$actionInfo = _$_NewsDetailStoreActionController.startAction();
+    final _$actionInfo = _$_NewsDetailStoreActionController.startAction(
+        name: '_NewsDetailStore.updateMeta');
     try {
       return super.updateMeta(metaModel);
     } finally {
@@ -61,7 +69,8 @@ mixin _$NewsDetailStore on _NewsDetailStore, Store {
 
   @override
   String toString() {
-    final string = 'message: ${message.toString()}';
-    return '{$string}';
+    return '''
+message: ${message}
+    ''';
   }
 }

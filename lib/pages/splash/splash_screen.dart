@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:mobx/mobx.dart';
@@ -41,10 +39,8 @@ class _SplashScreenState extends State<SplashScreen> {
         if (message != null) context.showMessage(message);
       }),
       autorun((_) {
-        final bool isLoggedIn = store.isLoggedIn;
-        log('spalsh screen: login state changed');
-        if (isLoggedIn != null)
-          isLoggedIn
+        if (store.isLoggedIn != null)
+          (store.isLoggedIn)
               ? context.read<NavigationService>().toHomeScreen(context)
               : context.read<NavigationService>().toLoginScreen(context);
       }),

@@ -6,51 +6,48 @@ part of 'forex_detail_store.dart';
 // StoreGenerator
 // **************************************************************************
 
-// ignore_for_file: non_constant_identifier_names, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
+// ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
 
 mixin _$ForexDetailStore on _ForexDetailStore, Store {
   final _$apiErrorAtom = Atom(name: '_ForexDetailStore.apiError');
 
   @override
   APIException get apiError {
-    _$apiErrorAtom.context.enforceReadPolicy(_$apiErrorAtom);
-    _$apiErrorAtom.reportObserved();
+    _$apiErrorAtom.reportRead();
     return super.apiError;
   }
 
   @override
   set apiError(APIException value) {
-    _$apiErrorAtom.context.conditionallyRunInAction(() {
+    _$apiErrorAtom.reportWrite(value, super.apiError, () {
       super.apiError = value;
-      _$apiErrorAtom.reportChanged();
-    }, _$apiErrorAtom, name: '${_$apiErrorAtom.name}_set');
+    });
   }
 
   final _$errorAtom = Atom(name: '_ForexDetailStore.error');
 
   @override
   String get error {
-    _$errorAtom.context.enforceReadPolicy(_$errorAtom);
-    _$errorAtom.reportObserved();
+    _$errorAtom.reportRead();
     return super.error;
   }
 
   @override
   set error(String value) {
-    _$errorAtom.context.conditionallyRunInAction(() {
+    _$errorAtom.reportWrite(value, super.error, () {
       super.error = value;
-      _$errorAtom.reportChanged();
-    }, _$errorAtom, name: '${_$errorAtom.name}_set');
+    });
   }
 
-  final _$refreshAsyncAction = AsyncAction('refresh');
+  final _$refreshAsyncAction = AsyncAction('_ForexDetailStore.refresh');
 
   @override
   Future<void> refresh() {
     return _$refreshAsyncAction.run(() => super.refresh());
   }
 
-  final _$_loadCurrencyDataAsyncAction = AsyncAction('_loadCurrencyData');
+  final _$_loadCurrencyDataAsyncAction =
+      AsyncAction('_ForexDetailStore._loadCurrencyData');
 
   @override
   Future<dynamic> _loadCurrencyData() {
@@ -62,7 +59,8 @@ mixin _$ForexDetailStore on _ForexDetailStore, Store {
 
   @override
   void retry() {
-    final _$actionInfo = _$_ForexDetailStoreActionController.startAction();
+    final _$actionInfo = _$_ForexDetailStoreActionController.startAction(
+        name: '_ForexDetailStore.retry');
     try {
       return super.retry();
     } finally {
@@ -72,7 +70,8 @@ mixin _$ForexDetailStore on _ForexDetailStore, Store {
 
   @override
   dynamic loadData() {
-    final _$actionInfo = _$_ForexDetailStoreActionController.startAction();
+    final _$actionInfo = _$_ForexDetailStoreActionController.startAction(
+        name: '_ForexDetailStore.loadData');
     try {
       return super.loadData();
     } finally {
@@ -82,8 +81,9 @@ mixin _$ForexDetailStore on _ForexDetailStore, Store {
 
   @override
   String toString() {
-    final string =
-        'apiError: ${apiError.toString()},error: ${error.toString()}';
-    return '{$string}';
+    return '''
+apiError: ${apiError},
+error: ${error}
+    ''';
   }
 }

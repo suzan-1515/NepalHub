@@ -1,114 +1,99 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter_facebook_login/flutter_facebook_login.dart';
+import 'package:flutter_twitter/flutter_twitter.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:samachar_hub/data/exceptions/exceptions.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
+import 'package:samachar_hub/data/models/user_model.dart';
 
 class AuthenticationService {
   final FirebaseAuth _firebaseAuth;
   final GoogleSignIn _googleSignIn;
-  final FacebookLogin _facebookLogin;
+  final FacebookAuth _facebookAuth;
   final CollectionReference _usersCollectionReference =
-      Firestore.instance.collection('users');
+      FirebaseFirestore.instance.collection('users');
 
   AuthenticationService(
-      this._firebaseAuth, this._googleSignIn, this._facebookLogin);
+      this._firebaseAuth, this._googleSignIn, this._facebookAuth);
 
-  Future<AuthResult> loginWithEmail({
+  Future<UserCredential> loginWithEmail({
     @required String email,
     @required String password,
-  }) async {
-    return await _firebaseAuth.signInWithEmailAndPassword(
+  }) {
+    return _firebaseAuth.signInWithEmailAndPassword(
       email: email,
       password: password,
     );
   }
 
-  Future<AuthResult> signUpWithEmail({
-    @required String email,
-    @required String password,
-    @required String fullName,
-    @required String avatar,
-  }) async {
-    return await _firebaseAuth
-        .createUserWithEmailAndPassword(
+  Future<UserCredential> signUpWithEmail(
+      {@required String email, @required String password}) {
+    return _firebaseAuth.createUserWithEmailAndPassword(
       email: email,
       password: password,
-    )
-        .then((auth) {
-      if (auth != null) {
-        return _usersCollectionReference.document(auth.user.uid).setData({
-          'id': auth.user.uid,
-          'full_name': fullName,
-          'email': email,
-          'avatar': avatar
-        }, merge: true).then((onValue) => auth);
-      }
-      return auth;
-    });
+    );
   }
 
-  Future<AuthResult> signInAnonymously() async {
-    return (await _firebaseAuth.signInAnonymously());
+  Future<UserCredential> signInAnonymously() {
+    return (_firebaseAuth.signInAnonymously());
   }
 
-  Future<AuthResult> signInWithGoogle() async {
+  Future<UserCredential> signInWithGoogle() async {
     final GoogleSignInAccount googleUser = await _googleSignIn.signIn();
     final GoogleSignInAuthentication googleAuth =
         await googleUser.authentication;
 
-    final AuthCredential credential = GoogleAuthProvider.getCredential(
+    final GoogleAuthCredential credential = GoogleAuthProvider.credential(
       accessToken: googleAuth.accessToken,
       idToken: googleAuth.idToken,
     );
 
-    return (await _firebaseAuth.signInWithCredential(credential));
+    return (_firebaseAuth.signInWithCredential(credential));
   }
 
-  Future<AuthResult> signInWithFacebook() async {
-    final result = await _facebookLogin.logIn(['email']);
+  Future<UserCredential> signInWithFacebook() async {
+    final LoginResult result = await _facebookAuth.login();
 
-    switch (result.status) {
-      case FacebookLoginStatus.loggedIn:
-        AuthCredential credential = FacebookAuthProvider.getCredential(
-            accessToken: result.accessToken.token);
-        return (await _firebaseAuth.signInWithCredential(credential));
-      case FacebookLoginStatus.cancelledByUser:
-        throw AuthenticationException(message: 'Login canceled.');
-      case FacebookLoginStatus.error:
-        throw AuthenticationException(message: result.errorMessage);
-      default:
-        throw AuthenticationException(
-            message: 'Unable to login at this moment.');
-    }
+    final FacebookAuthCredential facebookAuthCredential =
+        FacebookAuthProvider.credential(result.accessToken.token);
+
+    return _firebaseAuth.signInWithCredential(facebookAuthCredential);
   }
 
-  Future<AuthResult> _signInWithTwitter() async {
-    final GoogleSignInAccount googleUser = await _googleSignIn.signIn();
-    final GoogleSignInAuthentication googleAuth =
-        await googleUser.authentication;
+  Future<UserCredential> signInWithTwitter() async {
+    // Create a TwitterLogin instance
+    final TwitterLogin twitterLogin =
+        new TwitterLogin(consumerKey: '', consumerSecret: '');
 
-    final AuthCredential credential = GoogleAuthProvider.getCredential(
-      accessToken: googleAuth.accessToken,
-      idToken: googleAuth.idToken,
-    );
+    // Trigger the sign-in flow
+    final TwitterLoginResult loginResult = await twitterLogin.authorize();
 
-    return (await _firebaseAuth.signInWithCredential(credential));
+    // Get the Logged In session
+    final TwitterSession twitterSession = loginResult.session;
+
+    // Create a credential from the access token
+    final AuthCredential twitterAuthCredential = TwitterAuthProvider.credential(
+        accessToken: twitterSession.token, secret: twitterSession.secret);
+
+    // Once signed in, return the UserCredential
+    return _firebaseAuth.signInWithCredential(twitterAuthCredential);
   }
 
-  Future<DocumentSnapshot> getUserProfile({@required String uid}) async {
-    return await _usersCollectionReference.document(uid).get();
+  Future<void> saveUserProfile({@required UserModel user}) async {
+    return _usersCollectionReference.doc(user.uId).set(user.toJson());
   }
 
-  Future<FirebaseUser> getCurrentUser() async {
-    return await _firebaseAuth.currentUser();
+  Future<DocumentSnapshot> getUserProfile({@required String uid}) {
+    return _usersCollectionReference.doc(uid).get();
   }
+
+  Future<User> currentUser() {
+    return Future.value(_firebaseAuth.currentUser);
+  }
+
+  Stream<User> authStateChanges() => _firebaseAuth.authStateChanges();
 
   Future<void> logout() async {
-    return await _firebaseAuth.signOut();
+    return _firebaseAuth.signOut();
   }
-
-  DocumentReference getUserDocumentReference({@required String userId}) =>
-      _usersCollectionReference.document(userId);
 }

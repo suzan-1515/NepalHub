@@ -6,7 +6,6 @@ import 'dart:math' as math;
 import 'package:provider/provider.dart';
 import 'package:samachar_hub/data/api/api.dart';
 import 'package:samachar_hub/data/models/models.dart';
-import 'package:samachar_hub/notifier/news_setting_notifier.dart';
 import 'package:samachar_hub/pages/home/widgets/corona_section.dart';
 import 'package:samachar_hub/pages/home/widgets/date_weather_section.dart';
 import 'package:samachar_hub/pages/home/widgets/news_category_menu_section.dart';

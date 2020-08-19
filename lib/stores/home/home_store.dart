@@ -85,10 +85,18 @@ abstract class _HomeStore with Store {
         _loadHoroscopeData(),
       ],
     ).catchError((onError) {
-      this.apiError = onError;
-      _dataStreamController.addError(onError);
+      log('[HomeStore] _buildData', error: onError);
+      if (!_data.containsKey(MixedDataType.LATEST_NEWS)) {
+        this.error =
+            'Error loading data. Make sure you are connected to Internet.';
+        _dataStreamController.addError(onError);
+      }
     }, test: (e) => e is APIException).catchError((onError) {
-      this.error = onError.toString();
+      log('[HomeStore] _buildData APIException', error: onError);
+      if (!_data.containsKey(MixedDataType.LATEST_NEWS)) {
+        this.error =
+            'Error loading data. Make sure you are connected to Internet.';
+      }
     });
 
     _dataStreamController.add(_data);
@@ -144,7 +152,6 @@ abstract class _HomeStore with Store {
       }
       return false;
     }).catchError((onError) {
-      log('Trending news section data error', stackTrace: onError);
       return false;
     });
   }
@@ -167,7 +174,6 @@ abstract class _HomeStore with Store {
       }
       return false;
     }).catchError((onError) {
-      log('Corona section data error', stackTrace: onError);
       return false;
     });
   }

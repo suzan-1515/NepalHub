@@ -6,41 +6,37 @@ part of 'news_source_feed_store.dart';
 // StoreGenerator
 // **************************************************************************
 
-// ignore_for_file: non_constant_identifier_names, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
+// ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
 
 mixin _$NewsSourceFeedStore on _NewsSourceFeedStore, Store {
   final _$sourcesAtom = Atom(name: '_NewsSourceFeedStore.sources');
 
   @override
   ObservableList<NewsSource> get sources {
-    _$sourcesAtom.context.enforceReadPolicy(_$sourcesAtom);
-    _$sourcesAtom.reportObserved();
+    _$sourcesAtom.reportRead();
     return super.sources;
   }
 
   @override
   set sources(ObservableList<NewsSource> value) {
-    _$sourcesAtom.context.conditionallyRunInAction(() {
+    _$sourcesAtom.reportWrite(value, super.sources, () {
       super.sources = value;
-      _$sourcesAtom.reportChanged();
-    }, _$sourcesAtom, name: '${_$sourcesAtom.name}_set');
+    });
   }
 
   final _$sortAtom = Atom(name: '_NewsSourceFeedStore.sort');
 
   @override
   SortBy get sort {
-    _$sortAtom.context.enforceReadPolicy(_$sortAtom);
-    _$sortAtom.reportObserved();
+    _$sortAtom.reportRead();
     return super.sort;
   }
 
   @override
   set sort(SortBy value) {
-    _$sortAtom.context.conditionallyRunInAction(() {
+    _$sortAtom.reportWrite(value, super.sort, () {
       super.sort = value;
-      _$sortAtom.reportChanged();
-    }, _$sortAtom, name: '${_$sortAtom.name}_set');
+    });
   }
 
   final _$selectedSourceAtom =
@@ -48,54 +44,49 @@ mixin _$NewsSourceFeedStore on _NewsSourceFeedStore, Store {
 
   @override
   NewsSource get selectedSource {
-    _$selectedSourceAtom.context.enforceReadPolicy(_$selectedSourceAtom);
-    _$selectedSourceAtom.reportObserved();
+    _$selectedSourceAtom.reportRead();
     return super.selectedSource;
   }
 
   @override
   set selectedSource(NewsSource value) {
-    _$selectedSourceAtom.context.conditionallyRunInAction(() {
+    _$selectedSourceAtom.reportWrite(value, super.selectedSource, () {
       super.selectedSource = value;
-      _$selectedSourceAtom.reportChanged();
-    }, _$selectedSourceAtom, name: '${_$selectedSourceAtom.name}_set');
+    });
   }
 
   final _$apiErrorAtom = Atom(name: '_NewsSourceFeedStore.apiError');
 
   @override
   APIException get apiError {
-    _$apiErrorAtom.context.enforceReadPolicy(_$apiErrorAtom);
-    _$apiErrorAtom.reportObserved();
+    _$apiErrorAtom.reportRead();
     return super.apiError;
   }
 
   @override
   set apiError(APIException value) {
-    _$apiErrorAtom.context.conditionallyRunInAction(() {
+    _$apiErrorAtom.reportWrite(value, super.apiError, () {
       super.apiError = value;
-      _$apiErrorAtom.reportChanged();
-    }, _$apiErrorAtom, name: '${_$apiErrorAtom.name}_set');
+    });
   }
 
   final _$errorAtom = Atom(name: '_NewsSourceFeedStore.error');
 
   @override
   String get error {
-    _$errorAtom.context.enforceReadPolicy(_$errorAtom);
-    _$errorAtom.reportObserved();
+    _$errorAtom.reportRead();
     return super.error;
   }
 
   @override
   set error(String value) {
-    _$errorAtom.context.conditionallyRunInAction(() {
+    _$errorAtom.reportWrite(value, super.error, () {
       super.error = value;
-      _$errorAtom.reportChanged();
-    }, _$errorAtom, name: '${_$errorAtom.name}_set');
+    });
   }
 
-  final _$_loadFirstPageDataAsyncAction = AsyncAction('_loadFirstPageData');
+  final _$_loadFirstPageDataAsyncAction =
+      AsyncAction('_NewsSourceFeedStore._loadFirstPageData');
 
   @override
   Future<dynamic> _loadFirstPageData() {
@@ -103,7 +94,8 @@ mixin _$NewsSourceFeedStore on _NewsSourceFeedStore, Store {
         .run(() => super._loadFirstPageData());
   }
 
-  final _$loadMoreDataAsyncAction = AsyncAction('loadMoreData');
+  final _$loadMoreDataAsyncAction =
+      AsyncAction('_NewsSourceFeedStore.loadMoreData');
 
   @override
   Future<dynamic> loadMoreData() {
@@ -115,7 +107,8 @@ mixin _$NewsSourceFeedStore on _NewsSourceFeedStore, Store {
 
   @override
   void loadInitialData() {
-    final _$actionInfo = _$_NewsSourceFeedStoreActionController.startAction();
+    final _$actionInfo = _$_NewsSourceFeedStoreActionController.startAction(
+        name: '_NewsSourceFeedStore.loadInitialData');
     try {
       return super.loadInitialData();
     } finally {
@@ -125,7 +118,8 @@ mixin _$NewsSourceFeedStore on _NewsSourceFeedStore, Store {
 
   @override
   void retry() {
-    final _$actionInfo = _$_NewsSourceFeedStoreActionController.startAction();
+    final _$actionInfo = _$_NewsSourceFeedStoreActionController.startAction(
+        name: '_NewsSourceFeedStore.retry');
     try {
       return super.retry();
     } finally {
@@ -135,7 +129,8 @@ mixin _$NewsSourceFeedStore on _NewsSourceFeedStore, Store {
 
   @override
   Future<dynamic> refresh() {
-    final _$actionInfo = _$_NewsSourceFeedStoreActionController.startAction();
+    final _$actionInfo = _$_NewsSourceFeedStoreActionController.startAction(
+        name: '_NewsSourceFeedStore.refresh');
     try {
       return super.refresh();
     } finally {
@@ -145,7 +140,8 @@ mixin _$NewsSourceFeedStore on _NewsSourceFeedStore, Store {
 
   @override
   Future<dynamic> loadNewsSources() {
-    final _$actionInfo = _$_NewsSourceFeedStoreActionController.startAction();
+    final _$actionInfo = _$_NewsSourceFeedStoreActionController.startAction(
+        name: '_NewsSourceFeedStore.loadNewsSources');
     try {
       return super.loadNewsSources();
     } finally {
@@ -155,7 +151,8 @@ mixin _$NewsSourceFeedStore on _NewsSourceFeedStore, Store {
 
   @override
   dynamic setSortBy(SortBy value) {
-    final _$actionInfo = _$_NewsSourceFeedStoreActionController.startAction();
+    final _$actionInfo = _$_NewsSourceFeedStoreActionController.startAction(
+        name: '_NewsSourceFeedStore.setSortBy');
     try {
       return super.setSortBy(value);
     } finally {
@@ -165,7 +162,8 @@ mixin _$NewsSourceFeedStore on _NewsSourceFeedStore, Store {
 
   @override
   dynamic setSource(NewsSource source) {
-    final _$actionInfo = _$_NewsSourceFeedStoreActionController.startAction();
+    final _$actionInfo = _$_NewsSourceFeedStoreActionController.startAction(
+        name: '_NewsSourceFeedStore.setSource');
     try {
       return super.setSource(source);
     } finally {
@@ -175,8 +173,12 @@ mixin _$NewsSourceFeedStore on _NewsSourceFeedStore, Store {
 
   @override
   String toString() {
-    final string =
-        'sources: ${sources.toString()},sort: ${sort.toString()},selectedSource: ${selectedSource.toString()},apiError: ${apiError.toString()},error: ${error.toString()}';
-    return '{$string}';
+    return '''
+sources: ${sources},
+sort: ${sort},
+selectedSource: ${selectedSource},
+apiError: ${apiError},
+error: ${error}
+    ''';
   }
 }

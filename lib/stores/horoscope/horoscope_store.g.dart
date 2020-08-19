@@ -6,78 +6,70 @@ part of 'horoscope_store.dart';
 // StoreGenerator
 // **************************************************************************
 
-// ignore_for_file: non_constant_identifier_names, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
+// ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
 
 mixin _$HoroscopeStore on _HoroscopeStore, Store {
   final _$defaultZodiacAtom = Atom(name: '_HoroscopeStore.defaultZodiac');
 
   @override
   int get defaultZodiac {
-    _$defaultZodiacAtom.context.enforceReadPolicy(_$defaultZodiacAtom);
-    _$defaultZodiacAtom.reportObserved();
+    _$defaultZodiacAtom.reportRead();
     return super.defaultZodiac;
   }
 
   @override
   set defaultZodiac(int value) {
-    _$defaultZodiacAtom.context.conditionallyRunInAction(() {
+    _$defaultZodiacAtom.reportWrite(value, super.defaultZodiac, () {
       super.defaultZodiac = value;
-      _$defaultZodiacAtom.reportChanged();
-    }, _$defaultZodiacAtom, name: '${_$defaultZodiacAtom.name}_set');
+    });
   }
 
   final _$activeTabIndexAtom = Atom(name: '_HoroscopeStore.activeTabIndex');
 
   @override
   int get activeTabIndex {
-    _$activeTabIndexAtom.context.enforceReadPolicy(_$activeTabIndexAtom);
-    _$activeTabIndexAtom.reportObserved();
+    _$activeTabIndexAtom.reportRead();
     return super.activeTabIndex;
   }
 
   @override
   set activeTabIndex(int value) {
-    _$activeTabIndexAtom.context.conditionallyRunInAction(() {
+    _$activeTabIndexAtom.reportWrite(value, super.activeTabIndex, () {
       super.activeTabIndex = value;
-      _$activeTabIndexAtom.reportChanged();
-    }, _$activeTabIndexAtom, name: '${_$activeTabIndexAtom.name}_set');
+    });
   }
 
   final _$apiErrorAtom = Atom(name: '_HoroscopeStore.apiError');
 
   @override
   APIException get apiError {
-    _$apiErrorAtom.context.enforceReadPolicy(_$apiErrorAtom);
-    _$apiErrorAtom.reportObserved();
+    _$apiErrorAtom.reportRead();
     return super.apiError;
   }
 
   @override
   set apiError(APIException value) {
-    _$apiErrorAtom.context.conditionallyRunInAction(() {
+    _$apiErrorAtom.reportWrite(value, super.apiError, () {
       super.apiError = value;
-      _$apiErrorAtom.reportChanged();
-    }, _$apiErrorAtom, name: '${_$apiErrorAtom.name}_set');
+    });
   }
 
   final _$errorAtom = Atom(name: '_HoroscopeStore.error');
 
   @override
   String get error {
-    _$errorAtom.context.enforceReadPolicy(_$errorAtom);
-    _$errorAtom.reportObserved();
+    _$errorAtom.reportRead();
     return super.error;
   }
 
   @override
   set error(String value) {
-    _$errorAtom.context.conditionallyRunInAction(() {
+    _$errorAtom.reportWrite(value, super.error, () {
       super.error = value;
-      _$errorAtom.reportChanged();
-    }, _$errorAtom, name: '${_$errorAtom.name}_set');
+    });
   }
 
-  final _$_loadDataAsyncAction = AsyncAction('_loadData');
+  final _$_loadDataAsyncAction = AsyncAction('_HoroscopeStore._loadData');
 
   @override
   Future<dynamic> _loadData() {
@@ -89,7 +81,8 @@ mixin _$HoroscopeStore on _HoroscopeStore, Store {
 
   @override
   void retry() {
-    final _$actionInfo = _$_HoroscopeStoreActionController.startAction();
+    final _$actionInfo = _$_HoroscopeStoreActionController.startAction(
+        name: '_HoroscopeStore.retry');
     try {
       return super.retry();
     } finally {
@@ -99,7 +92,8 @@ mixin _$HoroscopeStore on _HoroscopeStore, Store {
 
   @override
   dynamic loadData() {
-    final _$actionInfo = _$_HoroscopeStoreActionController.startAction();
+    final _$actionInfo = _$_HoroscopeStoreActionController.startAction(
+        name: '_HoroscopeStore.loadData');
     try {
       return super.loadData();
     } finally {
@@ -109,8 +103,11 @@ mixin _$HoroscopeStore on _HoroscopeStore, Store {
 
   @override
   String toString() {
-    final string =
-        'defaultZodiac: ${defaultZodiac.toString()},activeTabIndex: ${activeTabIndex.toString()},apiError: ${apiError.toString()},error: ${error.toString()}';
-    return '{$string}';
+    return '''
+defaultZodiac: ${defaultZodiac},
+activeTabIndex: ${activeTabIndex},
+apiError: ${apiError},
+error: ${error}
+    ''';
   }
 }

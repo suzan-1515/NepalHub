@@ -78,8 +78,7 @@ class BookmarkListItem extends StatelessWidget {
                   onPressed: () {
                     context.read<ShareService>().share(
                           postId: feed.uuid,
-                          title: feed.title,
-                          data: feed.link,
+                          data: '${feed.title}\n${feed.link}',
                         );
                     final authStore = context.read<AuthenticationStore>();
                     if (authStore.isLoggedIn)

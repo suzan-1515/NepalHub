@@ -6,85 +6,77 @@ part of 'home_store.dart';
 // StoreGenerator
 // **************************************************************************
 
-// ignore_for_file: non_constant_identifier_names, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
+// ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
 
 mixin _$HomeStore on _HomeStore, Store {
   final _$apiErrorAtom = Atom(name: '_HomeStore.apiError');
 
   @override
   APIException get apiError {
-    _$apiErrorAtom.context.enforceReadPolicy(_$apiErrorAtom);
-    _$apiErrorAtom.reportObserved();
+    _$apiErrorAtom.reportRead();
     return super.apiError;
   }
 
   @override
   set apiError(APIException value) {
-    _$apiErrorAtom.context.conditionallyRunInAction(() {
+    _$apiErrorAtom.reportWrite(value, super.apiError, () {
       super.apiError = value;
-      _$apiErrorAtom.reportChanged();
-    }, _$apiErrorAtom, name: '${_$apiErrorAtom.name}_set');
+    });
   }
 
   final _$errorAtom = Atom(name: '_HomeStore.error');
 
   @override
   String get error {
-    _$errorAtom.context.enforceReadPolicy(_$errorAtom);
-    _$errorAtom.reportObserved();
+    _$errorAtom.reportRead();
     return super.error;
   }
 
   @override
   set error(String value) {
-    _$errorAtom.context.conditionallyRunInAction(() {
+    _$errorAtom.reportWrite(value, super.error, () {
       super.error = value;
-      _$errorAtom.reportChanged();
-    }, _$errorAtom, name: '${_$errorAtom.name}_set');
+    });
   }
 
   final _$viewAtom = Atom(name: '_HomeStore.view');
 
   @override
   ContentViewStyle get view {
-    _$viewAtom.context.enforceReadPolicy(_$viewAtom);
-    _$viewAtom.reportObserved();
+    _$viewAtom.reportRead();
     return super.view;
   }
 
   @override
   set view(ContentViewStyle value) {
-    _$viewAtom.context.conditionallyRunInAction(() {
+    _$viewAtom.reportWrite(value, super.view, () {
       super.view = value;
-      _$viewAtom.reportChanged();
-    }, _$viewAtom, name: '${_$viewAtom.name}_set');
+    });
   }
 
   final _$selectedPageAtom = Atom(name: '_HomeStore.selectedPage');
 
   @override
   int get selectedPage {
-    _$selectedPageAtom.context.enforceReadPolicy(_$selectedPageAtom);
-    _$selectedPageAtom.reportObserved();
+    _$selectedPageAtom.reportRead();
     return super.selectedPage;
   }
 
   @override
   set selectedPage(int value) {
-    _$selectedPageAtom.context.conditionallyRunInAction(() {
+    _$selectedPageAtom.reportWrite(value, super.selectedPage, () {
       super.selectedPage = value;
-      _$selectedPageAtom.reportChanged();
-    }, _$selectedPageAtom, name: '${_$selectedPageAtom.name}_set');
+    });
   }
 
-  final _$refreshAsyncAction = AsyncAction('refresh');
+  final _$refreshAsyncAction = AsyncAction('_HomeStore.refresh');
 
   @override
   Future<void> refresh() {
     return _$refreshAsyncAction.run(() => super.refresh());
   }
 
-  final _$_buildDataAsyncAction = AsyncAction('_buildData');
+  final _$_buildDataAsyncAction = AsyncAction('_HomeStore._buildData');
 
   @override
   Future<dynamic> _buildData() {
@@ -95,7 +87,8 @@ mixin _$HomeStore on _HomeStore, Store {
 
   @override
   dynamic setPage(int pageIndex) {
-    final _$actionInfo = _$_HomeStoreActionController.startAction();
+    final _$actionInfo =
+        _$_HomeStoreActionController.startAction(name: '_HomeStore.setPage');
     try {
       return super.setPage(pageIndex);
     } finally {
@@ -105,7 +98,8 @@ mixin _$HomeStore on _HomeStore, Store {
 
   @override
   void loadInitialData() {
-    final _$actionInfo = _$_HomeStoreActionController.startAction();
+    final _$actionInfo = _$_HomeStoreActionController.startAction(
+        name: '_HomeStore.loadInitialData');
     try {
       return super.loadInitialData();
     } finally {
@@ -115,7 +109,8 @@ mixin _$HomeStore on _HomeStore, Store {
 
   @override
   void retry() {
-    final _$actionInfo = _$_HomeStoreActionController.startAction();
+    final _$actionInfo =
+        _$_HomeStoreActionController.startAction(name: '_HomeStore.retry');
     try {
       return super.retry();
     } finally {
@@ -125,7 +120,8 @@ mixin _$HomeStore on _HomeStore, Store {
 
   @override
   dynamic setView(ContentViewStyle value) {
-    final _$actionInfo = _$_HomeStoreActionController.startAction();
+    final _$actionInfo =
+        _$_HomeStoreActionController.startAction(name: '_HomeStore.setView');
     try {
       return super.setView(value);
     } finally {
@@ -135,7 +131,8 @@ mixin _$HomeStore on _HomeStore, Store {
 
   @override
   Future<dynamic> loadMoreData() {
-    final _$actionInfo = _$_HomeStoreActionController.startAction();
+    final _$actionInfo = _$_HomeStoreActionController.startAction(
+        name: '_HomeStore.loadMoreData');
     try {
       return super.loadMoreData();
     } finally {
@@ -145,8 +142,11 @@ mixin _$HomeStore on _HomeStore, Store {
 
   @override
   String toString() {
-    final string =
-        'apiError: ${apiError.toString()},error: ${error.toString()},view: ${view.toString()},selectedPage: ${selectedPage.toString()}';
-    return '{$string}';
+    return '''
+apiError: ${apiError},
+error: ${error},
+view: ${view},
+selectedPage: ${selectedPage}
+    ''';
   }
 }

@@ -6,41 +6,37 @@ part of 'category_store.dart';
 // StoreGenerator
 // **************************************************************************
 
-// ignore_for_file: non_constant_identifier_names, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
+// ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
 
 mixin _$NewsCategoriesStore on _NewsCategoriesStore, Store {
   final _$apiErrorAtom = Atom(name: '_NewsCategoriesStore.apiError');
 
   @override
   APIException get apiError {
-    _$apiErrorAtom.context.enforceReadPolicy(_$apiErrorAtom);
-    _$apiErrorAtom.reportObserved();
+    _$apiErrorAtom.reportRead();
     return super.apiError;
   }
 
   @override
   set apiError(APIException value) {
-    _$apiErrorAtom.context.conditionallyRunInAction(() {
+    _$apiErrorAtom.reportWrite(value, super.apiError, () {
       super.apiError = value;
-      _$apiErrorAtom.reportChanged();
-    }, _$apiErrorAtom, name: '${_$apiErrorAtom.name}_set');
+    });
   }
 
   final _$errorAtom = Atom(name: '_NewsCategoriesStore.error');
 
   @override
   String get error {
-    _$errorAtom.context.enforceReadPolicy(_$errorAtom);
-    _$errorAtom.reportObserved();
+    _$errorAtom.reportRead();
     return super.error;
   }
 
   @override
   set error(String value) {
-    _$errorAtom.context.conditionallyRunInAction(() {
+    _$errorAtom.reportWrite(value, super.error, () {
       super.error = value;
-      _$errorAtom.reportChanged();
-    }, _$errorAtom, name: '${_$errorAtom.name}_set');
+    });
   }
 
   final _$_NewsCategoriesStoreActionController =
@@ -48,7 +44,8 @@ mixin _$NewsCategoriesStore on _NewsCategoriesStore, Store {
 
   @override
   void loadInitialData() {
-    final _$actionInfo = _$_NewsCategoriesStoreActionController.startAction();
+    final _$actionInfo = _$_NewsCategoriesStoreActionController.startAction(
+        name: '_NewsCategoriesStore.loadInitialData');
     try {
       return super.loadInitialData();
     } finally {
@@ -58,7 +55,8 @@ mixin _$NewsCategoriesStore on _NewsCategoriesStore, Store {
 
   @override
   void retry() {
-    final _$actionInfo = _$_NewsCategoriesStoreActionController.startAction();
+    final _$actionInfo = _$_NewsCategoriesStoreActionController.startAction(
+        name: '_NewsCategoriesStore.retry');
     try {
       return super.retry();
     } finally {
@@ -68,7 +66,8 @@ mixin _$NewsCategoriesStore on _NewsCategoriesStore, Store {
 
   @override
   Future<dynamic> refresh() {
-    final _$actionInfo = _$_NewsCategoriesStoreActionController.startAction();
+    final _$actionInfo = _$_NewsCategoriesStoreActionController.startAction(
+        name: '_NewsCategoriesStore.refresh');
     try {
       return super.refresh();
     } finally {
@@ -78,7 +77,8 @@ mixin _$NewsCategoriesStore on _NewsCategoriesStore, Store {
 
   @override
   Future<void> followedNewsCategory(NewsCategory categoryModel) {
-    final _$actionInfo = _$_NewsCategoriesStoreActionController.startAction();
+    final _$actionInfo = _$_NewsCategoriesStoreActionController.startAction(
+        name: '_NewsCategoriesStore.followedNewsCategory');
     try {
       return super.followedNewsCategory(categoryModel);
     } finally {
@@ -88,7 +88,8 @@ mixin _$NewsCategoriesStore on _NewsCategoriesStore, Store {
 
   @override
   Future<void> unFollowedNewsCategory(NewsCategory categoryModel) {
-    final _$actionInfo = _$_NewsCategoriesStoreActionController.startAction();
+    final _$actionInfo = _$_NewsCategoriesStoreActionController.startAction(
+        name: '_NewsCategoriesStore.unFollowedNewsCategory');
     try {
       return super.unFollowedNewsCategory(categoryModel);
     } finally {
@@ -98,8 +99,9 @@ mixin _$NewsCategoriesStore on _NewsCategoriesStore, Store {
 
   @override
   String toString() {
-    final string =
-        'apiError: ${apiError.toString()},error: ${error.toString()}';
-    return '{$string}';
+    return '''
+apiError: ${apiError},
+error: ${error}
+    ''';
   }
 }

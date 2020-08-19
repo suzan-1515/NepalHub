@@ -1,11 +1,13 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_facebook_login/flutter_facebook_login.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:nepali_utils/nepali_utils.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:samachar_hub/notification/notification_handler.dart';
 import 'package:samachar_hub/notifier/forex_setting_notifier.dart';
 import 'package:samachar_hub/notifier/horoscope_setting_notifier.dart';
 import 'package:samachar_hub/notifier/news_setting_notifier.dart';
@@ -13,6 +15,7 @@ import 'package:samachar_hub/pages/corona/corona_api_service.dart';
 import 'package:samachar_hub/pages/corona/corona_repository.dart';
 import 'package:samachar_hub/pages/following/following_store.dart';
 import 'package:samachar_hub/pages/splash/splash_screen.dart';
+import 'package:samachar_hub/services/crash_analytics_service.dart';
 import 'package:samachar_hub/services/forex_api_service.dart';
 import 'package:samachar_hub/repository/forex_repository.dart';
 import 'package:samachar_hub/services/horoscope_api_service.dart';
@@ -35,8 +38,10 @@ import 'pages/corona/corona_store.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  // FlutterError.onError = Crashlytics.instance.recordFlutterError;
   final SharedPreferences sp = await SharedPreferences.getInstance();
   NepaliUtils(Language.nepali);
+  await Firebase.initializeApp();
   runApp(App(sp));
 }
 
@@ -67,10 +72,6 @@ class App extends StatelessWidget {
         Provider<FlutterLocalNotificationsPlugin>(
           create: (_) => FlutterLocalNotificationsPlugin(),
         ),
-        ProxyProvider<FlutterLocalNotificationsPlugin, NotificationService>(
-          update: (_, _flutterLocalNotificationsPlugin, __) =>
-              NotificationService(_flutterLocalNotificationsPlugin),
-        ),
         Provider<NavigationService>(
           create: (_) => NavigationService(),
         ),
@@ -94,7 +95,7 @@ class App extends StatelessWidget {
         ProxyProvider<AnalyticsService, AuthenticationRepository>(
           update: (_, _analyticsService, __) => AuthenticationRepository(
               AuthenticationService(
-                  FirebaseAuth.instance, GoogleSignIn(), FacebookLogin()),
+                  FirebaseAuth.instance, GoogleSignIn(), FacebookAuth.instance),
               _analyticsService),
         ),
         ProxyProvider2<AnalyticsService, PreferenceService, PostMetaRepository>(
@@ -128,12 +129,11 @@ class App extends StatelessWidget {
               FollowingRepository(FollowingFirestoreService(),
                   _analyticsService, _preferenceService),
         ),
-        ProxyProvider3<AnalyticsService, PreferenceService, PostMetaRepository,
+        ProxyProvider2<PreferenceService, PostMetaRepository,
             BookmarkRepository>(
-          update: (_, _analyticsService, _preferenceService,
-                  _postMetaRepository, __) =>
+          update: (_, _preferenceService, _postMetaRepository, __) =>
               BookmarkRepository(BookmarkFirestoreService(),
-                  _postMetaRepository, _analyticsService, _preferenceService),
+                  _postMetaRepository, _preferenceService),
         ),
 
         //store
@@ -175,6 +175,30 @@ class App extends StatelessWidget {
         ProxyProvider<PreferenceService, MoreMenuStore>(
           update: (_, preferenceService, __) =>
               MoreMenuStore(preferenceService),
+        ),
+
+        //Notification
+        ProxyProvider2<FlutterLocalNotificationsPlugin,
+            AuthenticationRepository, NotificationService>(
+          lazy: false,
+          update: (_, _flutterLocalNotificationsPlugin,
+                  _authenticationRepository, __) =>
+              NotificationService(
+                  _flutterLocalNotificationsPlugin, _authenticationRepository),
+          dispose: (context, value) => value.dispose(),
+        ),
+        ProxyProvider2<NotificationService, PreferenceService,
+            NotificationHandler>(
+          lazy: false,
+          update: (_, _notificationService, _preferenceService, __) =>
+              NotificationHandler(_notificationService, _preferenceService),
+          dispose: (context, value) => value.dispose(),
+        ),
+
+        ProxyProvider<AuthenticationRepository, CrashAnalyticsService>(
+          lazy: false,
+          update: (_, _authenticationRepository, __) =>
+              CrashAnalyticsService(_authenticationRepository),
         ),
       ],
       child: Consumer2<SettingsStore, AnalyticsService>(

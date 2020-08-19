@@ -41,12 +41,11 @@ class _LoginScreenState extends State<LoginScreen> {
       // Listens for error message
       autorun((_) {
         final String message = store.error;
-        if (message != null) _scaffoldKey.currentState.showMessage(message);
+        if (message != null) context.showMessage(message);
       }),
       autorun((_) {
-        final bool isLoggedIn = store.isLoggedIn;
-        log('login screen: login state changed');
-        if (isLoggedIn != null && isLoggedIn)
+        log('[LoginScreen] loing state changed: ${store.isLoggedIn} ${store.user != null}');
+        if (store.isLoggedIn)
           context.read<NavigationService>().toHomeScreen(context);
       }),
     ];
@@ -116,6 +115,19 @@ class _LoginScreenState extends State<LoginScreen> {
                 authStore.signInWithFacebook();
               },
             ),
+            SizedBox(height: 8),
+            SignInButton(
+              Buttons.Twitter,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.horizontal(
+                left: Radius.circular(16),
+                right: Radius.circular(16),
+              )),
+              text: 'Continue with Twitter',
+              onPressed: () {
+                authStore.signInWithTwitter();
+              },
+            ),
             // SizedBox(height: 8),
             // OutlineButton(
             //   shape: RoundedRectangleBorder(
@@ -151,6 +163,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.stretch,
+                      mainAxisSize: MainAxisSize.min,
                       children: <Widget>[
                         Expanded(
                           child: _buildHeader(),

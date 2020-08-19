@@ -6,71 +6,65 @@ part of 'forex_store.dart';
 // StoreGenerator
 // **************************************************************************
 
-// ignore_for_file: non_constant_identifier_names, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
+// ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
 
 mixin _$ForexStore on _ForexStore, Store {
   Computed<ForexModel> _$defaultForexComputed;
 
   @override
-  ForexModel get defaultForex => (_$defaultForexComputed ??=
-          Computed<ForexModel>(() => super.defaultForex))
-      .value;
+  ForexModel get defaultForex =>
+      (_$defaultForexComputed ??= Computed<ForexModel>(() => super.defaultForex,
+              name: '_ForexStore.defaultForex'))
+          .value;
 
   final _$defaultForexTimelineAtom =
       Atom(name: '_ForexStore.defaultForexTimeline');
 
   @override
   ObservableList<ForexModel> get defaultForexTimeline {
-    _$defaultForexTimelineAtom.context
-        .enforceReadPolicy(_$defaultForexTimelineAtom);
-    _$defaultForexTimelineAtom.reportObserved();
+    _$defaultForexTimelineAtom.reportRead();
     return super.defaultForexTimeline;
   }
 
   @override
   set defaultForexTimeline(ObservableList<ForexModel> value) {
-    _$defaultForexTimelineAtom.context.conditionallyRunInAction(() {
+    _$defaultForexTimelineAtom.reportWrite(value, super.defaultForexTimeline,
+        () {
       super.defaultForexTimeline = value;
-      _$defaultForexTimelineAtom.reportChanged();
-    }, _$defaultForexTimelineAtom,
-        name: '${_$defaultForexTimelineAtom.name}_set');
+    });
   }
 
   final _$apiErrorAtom = Atom(name: '_ForexStore.apiError');
 
   @override
   APIException get apiError {
-    _$apiErrorAtom.context.enforceReadPolicy(_$apiErrorAtom);
-    _$apiErrorAtom.reportObserved();
+    _$apiErrorAtom.reportRead();
     return super.apiError;
   }
 
   @override
   set apiError(APIException value) {
-    _$apiErrorAtom.context.conditionallyRunInAction(() {
+    _$apiErrorAtom.reportWrite(value, super.apiError, () {
       super.apiError = value;
-      _$apiErrorAtom.reportChanged();
-    }, _$apiErrorAtom, name: '${_$apiErrorAtom.name}_set');
+    });
   }
 
   final _$errorAtom = Atom(name: '_ForexStore.error');
 
   @override
   String get error {
-    _$errorAtom.context.enforceReadPolicy(_$errorAtom);
-    _$errorAtom.reportObserved();
+    _$errorAtom.reportRead();
     return super.error;
   }
 
   @override
   set error(String value) {
-    _$errorAtom.context.conditionallyRunInAction(() {
+    _$errorAtom.reportWrite(value, super.error, () {
       super.error = value;
-      _$errorAtom.reportChanged();
-    }, _$errorAtom, name: '${_$errorAtom.name}_set');
+    });
   }
 
-  final _$_loadTodayDataAsyncAction = AsyncAction('_loadTodayData');
+  final _$_loadTodayDataAsyncAction = AsyncAction('_ForexStore._loadTodayData');
 
   @override
   Future<dynamic> _loadTodayData() {
@@ -78,7 +72,7 @@ mixin _$ForexStore on _ForexStore, Store {
   }
 
   final _$_loadDefaultCurrencyTimelineDataAsyncAction =
-      AsyncAction('_loadDefaultCurrencyTimelineData');
+      AsyncAction('_ForexStore._loadDefaultCurrencyTimelineData');
 
   @override
   Future<dynamic> _loadDefaultCurrencyTimelineData() {
@@ -90,7 +84,8 @@ mixin _$ForexStore on _ForexStore, Store {
 
   @override
   void retry() {
-    final _$actionInfo = _$_ForexStoreActionController.startAction();
+    final _$actionInfo =
+        _$_ForexStoreActionController.startAction(name: '_ForexStore.retry');
     try {
       return super.retry();
     } finally {
@@ -100,7 +95,8 @@ mixin _$ForexStore on _ForexStore, Store {
 
   @override
   dynamic loadData() {
-    final _$actionInfo = _$_ForexStoreActionController.startAction();
+    final _$actionInfo =
+        _$_ForexStoreActionController.startAction(name: '_ForexStore.loadData');
     try {
       return super.loadData();
     } finally {
@@ -110,8 +106,11 @@ mixin _$ForexStore on _ForexStore, Store {
 
   @override
   String toString() {
-    final string =
-        'defaultForexTimeline: ${defaultForexTimeline.toString()},apiError: ${apiError.toString()},error: ${error.toString()},defaultForex: ${defaultForex.toString()}';
-    return '{$string}';
+    return '''
+defaultForexTimeline: ${defaultForexTimeline},
+apiError: ${apiError},
+error: ${error},
+defaultForex: ${defaultForex}
+    ''';
   }
 }

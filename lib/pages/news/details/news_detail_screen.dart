@@ -176,8 +176,8 @@ class _NewsDetailScreenState extends State<NewsDetailScreen> {
                           .read<ShareService>()
                           .share(
                               postId: store.feed.uuid,
-                              title: store.feed.title,
-                              data: store.feed.link)
+                              data: '${store.feed.title}\n${store.feed.link}',
+                              contentType: 'news')
                           .catchError((onError) {});
                       metaStore.postShare();
                     },

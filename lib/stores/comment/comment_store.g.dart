@@ -6,92 +6,85 @@ part of 'comment_store.dart';
 // StoreGenerator
 // **************************************************************************
 
-// ignore_for_file: non_constant_identifier_names, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
+// ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
 
 mixin _$CommentStore on _CommentStore, Store {
   final _$postIdAtom = Atom(name: '_CommentStore.postId');
 
   @override
   String get postId {
-    _$postIdAtom.context.enforceReadPolicy(_$postIdAtom);
-    _$postIdAtom.reportObserved();
+    _$postIdAtom.reportRead();
     return super.postId;
   }
 
   @override
   set postId(String value) {
-    _$postIdAtom.context.conditionallyRunInAction(() {
+    _$postIdAtom.reportWrite(value, super.postId, () {
       super.postId = value;
-      _$postIdAtom.reportChanged();
-    }, _$postIdAtom, name: '${_$postIdAtom.name}_set');
+    });
   }
 
   final _$postTitleAtom = Atom(name: '_CommentStore.postTitle');
 
   @override
   String get postTitle {
-    _$postTitleAtom.context.enforceReadPolicy(_$postTitleAtom);
-    _$postTitleAtom.reportObserved();
+    _$postTitleAtom.reportRead();
     return super.postTitle;
   }
 
   @override
   set postTitle(String value) {
-    _$postTitleAtom.context.conditionallyRunInAction(() {
+    _$postTitleAtom.reportWrite(value, super.postTitle, () {
       super.postTitle = value;
-      _$postTitleAtom.reportChanged();
-    }, _$postTitleAtom, name: '${_$postTitleAtom.name}_set');
+    });
   }
 
   final _$apiErrorAtom = Atom(name: '_CommentStore.apiError');
 
   @override
   APIException get apiError {
-    _$apiErrorAtom.context.enforceReadPolicy(_$apiErrorAtom);
-    _$apiErrorAtom.reportObserved();
+    _$apiErrorAtom.reportRead();
     return super.apiError;
   }
 
   @override
   set apiError(APIException value) {
-    _$apiErrorAtom.context.conditionallyRunInAction(() {
+    _$apiErrorAtom.reportWrite(value, super.apiError, () {
       super.apiError = value;
-      _$apiErrorAtom.reportChanged();
-    }, _$apiErrorAtom, name: '${_$apiErrorAtom.name}_set');
+    });
   }
 
   final _$errorAtom = Atom(name: '_CommentStore.error');
 
   @override
   String get error {
-    _$errorAtom.context.enforceReadPolicy(_$errorAtom);
-    _$errorAtom.reportObserved();
+    _$errorAtom.reportRead();
     return super.error;
   }
 
   @override
   set error(String value) {
-    _$errorAtom.context.conditionallyRunInAction(() {
+    _$errorAtom.reportWrite(value, super.error, () {
       super.error = value;
-      _$errorAtom.reportChanged();
-    }, _$errorAtom, name: '${_$errorAtom.name}_set');
+    });
   }
 
-  final _$refreshAsyncAction = AsyncAction('refresh');
+  final _$refreshAsyncAction = AsyncAction('_CommentStore.refresh');
 
   @override
   Future<void> refresh() {
     return _$refreshAsyncAction.run(() => super.refresh());
   }
 
-  final _$loadInitialDataAsyncAction = AsyncAction('loadInitialData');
+  final _$loadInitialDataAsyncAction =
+      AsyncAction('_CommentStore.loadInitialData');
 
   @override
   Future<void> loadInitialData() {
     return _$loadInitialDataAsyncAction.run(() => super.loadInitialData());
   }
 
-  final _$loadMoreDataAsyncAction = AsyncAction('loadMoreData');
+  final _$loadMoreDataAsyncAction = AsyncAction('_CommentStore.loadMoreData');
 
   @override
   Future<dynamic> loadMoreData({@required CommentModel after}) {
@@ -104,7 +97,8 @@ mixin _$CommentStore on _CommentStore, Store {
 
   @override
   dynamic setPostId(String postId) {
-    final _$actionInfo = _$_CommentStoreActionController.startAction();
+    final _$actionInfo = _$_CommentStoreActionController.startAction(
+        name: '_CommentStore.setPostId');
     try {
       return super.setPostId(postId);
     } finally {
@@ -114,7 +108,8 @@ mixin _$CommentStore on _CommentStore, Store {
 
   @override
   dynamic setPostTitle(String postTitle) {
-    final _$actionInfo = _$_CommentStoreActionController.startAction();
+    final _$actionInfo = _$_CommentStoreActionController.startAction(
+        name: '_CommentStore.setPostTitle');
     try {
       return super.setPostTitle(postTitle);
     } finally {
@@ -124,7 +119,8 @@ mixin _$CommentStore on _CommentStore, Store {
 
   @override
   void retry() {
-    final _$actionInfo = _$_CommentStoreActionController.startAction();
+    final _$actionInfo = _$_CommentStoreActionController.startAction(
+        name: '_CommentStore.retry');
     try {
       return super.retry();
     } finally {
@@ -134,7 +130,8 @@ mixin _$CommentStore on _CommentStore, Store {
 
   @override
   Future<void> submitComment({@required String comment}) {
-    final _$actionInfo = _$_CommentStoreActionController.startAction();
+    final _$actionInfo = _$_CommentStoreActionController.startAction(
+        name: '_CommentStore.submitComment');
     try {
       return super.submitComment(comment: comment);
     } finally {
@@ -144,7 +141,8 @@ mixin _$CommentStore on _CommentStore, Store {
 
   @override
   Future<bool> likeComment({@required CommentModel comment}) {
-    final _$actionInfo = _$_CommentStoreActionController.startAction();
+    final _$actionInfo = _$_CommentStoreActionController.startAction(
+        name: '_CommentStore.likeComment');
     try {
       return super.likeComment(comment: comment);
     } finally {
@@ -154,7 +152,8 @@ mixin _$CommentStore on _CommentStore, Store {
 
   @override
   Future<bool> unlikeComment({@required CommentModel comment}) {
-    final _$actionInfo = _$_CommentStoreActionController.startAction();
+    final _$actionInfo = _$_CommentStoreActionController.startAction(
+        name: '_CommentStore.unlikeComment');
     try {
       return super.unlikeComment(comment: comment);
     } finally {
@@ -164,7 +163,8 @@ mixin _$CommentStore on _CommentStore, Store {
 
   @override
   Future<dynamic> _loadFirstPageData() {
-    final _$actionInfo = _$_CommentStoreActionController.startAction();
+    final _$actionInfo = _$_CommentStoreActionController.startAction(
+        name: '_CommentStore._loadFirstPageData');
     try {
       return super._loadFirstPageData();
     } finally {
@@ -174,8 +174,11 @@ mixin _$CommentStore on _CommentStore, Store {
 
   @override
   String toString() {
-    final string =
-        'postId: ${postId.toString()},postTitle: ${postTitle.toString()},apiError: ${apiError.toString()},error: ${error.toString()}';
-    return '{$string}';
+    return '''
+postId: ${postId},
+postTitle: ${postTitle},
+apiError: ${apiError},
+error: ${error}
+    ''';
   }
 }

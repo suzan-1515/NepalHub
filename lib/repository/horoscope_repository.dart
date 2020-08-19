@@ -21,10 +21,6 @@ class HoroscopeRepository {
               horoscopes[f.type.parseAsHoroscopeType()] =
                   HoroscopeMapper.fromHoroscopeApi(f, defaultZodiac);
             }))
-        .then((onValue) => horoscopes)
-        .then((value) {
-      _analyticsService.logHoroscopeFetched();
-      return value;
-    });
+        .then((onValue) => horoscopes);
   }
 }

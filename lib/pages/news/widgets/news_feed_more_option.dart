@@ -95,13 +95,15 @@ class NewsFeedMoreOption extends StatelessWidget {
             ),
             onTap: () {
               final authStore = context.read<AuthenticationStore>();
-              context
-                  .read<ShareService>()
-                  .share(postId: feed.uuid, title: feed.title, data: feed.link);
+              context.read<ShareService>().share(
+                  postId: feed.uuid,
+                  data: '${feed.title}\n${feed.link}',
+                  contentType: 'news');
               if (authStore.isLoggedIn)
                 context
                     .read<PostMetaRepository>()
-                    .postShare(postId: feed.uuid, userId: authStore.user.uId);
+                    .postShare(postId: feed.uuid, userId: authStore.user.uId)
+                    .catchError((onError) {});
               Navigator.pop(context);
             },
           ),

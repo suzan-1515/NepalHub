@@ -1,47 +1,39 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/widgets.dart';
-import 'package:samachar_hub/data/api/response/comments_firestore_response.dart';
+import 'package:samachar_hub/data/api/api.dart';
 
 class CommentFirestoreService {
   final CollectionReference _commentCollectionReference =
-      Firestore.instance.collection('comments');
+      FirebaseFirestore.instance.collection('comments');
 
   Future<void> saveComment(
       {@required String commentId,
-      @required Map<String, dynamic> metaActivityData,
-      @required Map<String, dynamic> metaData,
-      @required Map<String, dynamic> commentData,
-      @required DocumentReference metaActivityDocumentRef,
-      @required DocumentReference metaDocumentRef}) async {
-    var batch = Firestore.instance.batch();
-    batch.setData(_commentCollectionReference.document(commentId), commentData,
-        merge: true);
-    batch.setData(metaActivityDocumentRef, metaActivityData, merge: true);
-    batch.setData(metaDocumentRef, metaData, merge: true);
-    return batch.commit();
+      @required Map<String, dynamic> commentData}) async {
+    return _commentCollectionReference
+        .doc(commentId)
+        .set(commentData, SetOptions(merge: true));
   }
 
   Future<void> addCommentLike({
     @required String commentId,
     @required String userId,
   }) async {
-    return Firestore.instance.runTransaction((transaction) async {
-      return await transaction
-          .get(_commentCollectionReference.document(commentId))
+    return FirebaseFirestore.instance.runTransaction((transaction) {
+      return transaction
+          .get(_commentCollectionReference.doc(commentId))
           .then((value) {
         if (value.exists) {
           final List<String> likedUsers =
-              value.data['liked_users'].cast<String>();
+              value.data()['liked_users'].cast<String>();
+          if (likedUsers.contains(userId)) return;
           likedUsers.add(userId);
           final data = {
             'liked_users': likedUsers,
             'like_count': FieldValue.increment(1),
           };
-          transaction.update(
-              _commentCollectionReference.document(commentId), data);
+          transaction.update(_commentCollectionReference.doc(commentId), data);
         } else
-          transaction
-              .update(_commentCollectionReference.document(commentId), {});
+          transaction.update(_commentCollectionReference.doc(commentId), {});
       });
     });
   }
@@ -50,21 +42,21 @@ class CommentFirestoreService {
     @required String commentId,
     @required String userId,
   }) async {
-    return Firestore.instance.runTransaction((transaction) async {
+    return FirebaseFirestore.instance.runTransaction((transaction) async {
       return await transaction
-          .get(_commentCollectionReference.document(commentId))
+          .get(_commentCollectionReference.doc(commentId))
           .then((value) {
         if (value.exists) {
-          final List<String> likedUsers = value.data['liked_users'];
+          final List<String> likedUsers = value.data()['liked_users'];
+          if (!likedUsers.contains(userId)) return;
           likedUsers.remove(userId);
           final data = {
             'liked_users': likedUsers,
             'like_count': FieldValue.increment(-1),
           };
-          int likeCount = value.data['like_count'];
+          int likeCount = value.data()['like_count'];
           if (likeCount < 0) data['like_count'] = 0;
-          transaction.update(
-              _commentCollectionReference.document(commentId), data);
+          transaction.update(_commentCollectionReference.doc(commentId), data);
         }
       });
     });
@@ -76,14 +68,14 @@ class CommentFirestoreService {
     @required DocumentReference metaActivityDocumentRef,
     @required Map<String, dynamic> metaData,
   }) async {
-    return Firestore.instance.runTransaction((transaction) async {
+    return FirebaseFirestore.instance.runTransaction((transaction) async {
       return await transaction
-          .get(_commentCollectionReference.document(commentId))
+          .get(_commentCollectionReference.doc(commentId))
           .then((value) {
         if (value.exists) {
           transaction.delete(metaActivityDocumentRef);
           transaction.update(metaDocumentRef, metaData);
-          transaction.delete(_commentCollectionReference.document(commentId));
+          transaction.delete(_commentCollectionReference.doc(commentId));
         }
       });
     });
@@ -91,7 +83,7 @@ class CommentFirestoreService {
 
   Future<bool> doesCommentExist({@required String commentId}) async {
     return await _commentCollectionReference
-        .document(commentId)
+        .doc(commentId)
         .get()
         .then((onValue) => onValue.exists);
   }
@@ -104,9 +96,9 @@ class CommentFirestoreService {
         .limit(limit);
 
     return pageQuery.snapshots().map((value) {
-      return value.documents
+      return value.docs
           .where((snapshot) => snapshot != null && snapshot.exists)
-          .map((snapshot) => CommentFirestoreResponse.fromJson(snapshot.data))
+          .map((snapshot) => CommentFirestoreResponse.fromJson(snapshot.data()))
           .toList();
     });
   }
@@ -122,10 +114,10 @@ class CommentFirestoreService {
       pageQuery = pageQuery.startAfter([after]);
     }
 
-    return pageQuery.getDocuments().then((value) {
-      return value.documents
+    return pageQuery.get().then((value) {
+      return value.docs
           .where((snapshot) => snapshot != null && snapshot.exists)
-          .map((snapshot) => CommentFirestoreResponse.fromJson(snapshot.data))
+          .map((snapshot) => CommentFirestoreResponse.fromJson(snapshot.data()))
           .toList();
     });
   }

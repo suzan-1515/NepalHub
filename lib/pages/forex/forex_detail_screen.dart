@@ -173,12 +173,14 @@ class _ForexDetailScreenState extends State<ForexDetailScreen> {
                         },
                         onShareTap: () {
                           if (store.forex != null)
-                            context.read<ShareService>().share(
-                                postId: store.forex.code,
-                                title: store.forex.currency,
-                                data:
-                                    'Currency:${store.forex.currency}\nBuy: ${store.forex.buying}\nSell: ${store.forex.selling}\nLast updated: ${store.forex.addedDate}');
-                          metaStore.postShare();
+                            context
+                                .read<ShareService>()
+                                .share(
+                                    postId: store.forex.code,
+                                    contentType: 'forex',
+                                    data:
+                                        'Currency:${store.forex.currency}\nBuy: ${store.forex.buying}\nSell: ${store.forex.selling}\nLast updated: ${store.forex.addedDate}')
+                                .then((value) => metaStore.postShare());
                         },
                       ),
                     );

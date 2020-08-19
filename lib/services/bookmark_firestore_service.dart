@@ -4,40 +4,25 @@ import 'package:samachar_hub/data/api/api.dart';
 
 class BookmarkFirestoreService {
   final CollectionReference _bookmarkCollectionReference =
-      Firestore.instance.collection('bookmarks');
+      FirebaseFirestore.instance.collection('bookmarks');
 
   Future<void> addBookmark(
       {@required String bookmarkId,
-      @required Map<String, dynamic> metaActivityData,
-      @required Map<String, dynamic> metaData,
-      @required Map<String, dynamic> bookmarkData,
-      @required DocumentReference metaActivityDocumentRef,
-      @required DocumentReference metaDocumentRef}) async {
-    var batch = Firestore.instance.batch();
-    batch.setData(
-        _bookmarkCollectionReference.document(bookmarkId), bookmarkData,
-        merge: true);
-    batch.setData(metaActivityDocumentRef, metaActivityData, merge: true);
-    batch.setData(metaDocumentRef, metaData, merge: true);
-    return batch.commit();
+      @required Map<String, dynamic> bookmarkData}) async {
+    return _bookmarkCollectionReference
+        .doc(bookmarkId)
+        .set(bookmarkData, SetOptions(merge: true));
   }
 
   Future<void> removeBookmark({
     @required String bookmarkId,
-    @required DocumentReference metaDocumentRef,
-    @required DocumentReference metaActivityDocumentRef,
-    @required Map<String, dynamic> metaData,
   }) async {
-    var batch = Firestore.instance.batch();
-    batch.delete(_bookmarkCollectionReference.document(bookmarkId));
-    batch.delete(metaActivityDocumentRef);
-    batch.updateData(metaDocumentRef, metaData);
-    return batch.commit();
+    return _bookmarkCollectionReference.doc(bookmarkId).delete();
   }
 
   Future<bool> doesBookmarkExist({@required String bookmarkId}) async {
     return await _bookmarkCollectionReference
-        .document(bookmarkId)
+        .doc(bookmarkId)
         .get()
         .then((onValue) => onValue.exists);
   }
@@ -50,9 +35,10 @@ class BookmarkFirestoreService {
         .limit(limit);
 
     return pageQuery.snapshots().map((value) {
-      return value.documents
+      return value.docs
           .where((snapshot) => snapshot != null && snapshot.exists)
-          .map((snapshot) => BookmarkFirestoreResponse.fromJson(snapshot.data))
+          .map(
+              (snapshot) => BookmarkFirestoreResponse.fromJson(snapshot.data()))
           .toList();
     });
   }
@@ -68,10 +54,11 @@ class BookmarkFirestoreService {
       pageQuery = pageQuery.startAfter([after]);
     }
 
-    return pageQuery.getDocuments().then((value) {
-      return value.documents
+    return pageQuery.get().then((value) {
+      return value.docs
           .where((snapshot) => snapshot != null && snapshot.exists)
-          .map((snapshot) => BookmarkFirestoreResponse.fromJson(snapshot.data))
+          .map(
+              (snapshot) => BookmarkFirestoreResponse.fromJson(snapshot.data()))
           .toList();
     });
   }

@@ -1,10 +1,11 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
-import 'package:samachar_hub/pages/news/details/widgets/author_and_category.dart';
+import 'package:samachar_hub/pages/news/details/widgets/author_and_bookmark.dart';
 import 'package:samachar_hub/pages/news/details/widgets/disclaimer.dart';
 import 'package:samachar_hub/pages/news/details/widgets/read_more.dart';
 import 'package:samachar_hub/pages/news/details/widgets/related_feeds.dart';
-import 'package:samachar_hub/pages/news/details/widgets/source_and_bookmark.dart';
+import 'package:samachar_hub/pages/news/details/widgets/share.dart';
+import 'package:samachar_hub/pages/news/details/widgets/source.dart';
 import 'package:samachar_hub/stores/news/detail/news_detail_store.dart';
 import 'package:samachar_hub/stores/stores.dart';
 
@@ -41,7 +42,7 @@ class ArticleDetail extends StatelessWidget {
             SizedBox(
               height: 16,
             ),
-            SourceAndBookmark(
+            Source(
               context: context,
               store: store,
               metaStore: metaStore,
@@ -49,7 +50,7 @@ class ArticleDetail extends StatelessWidget {
             SizedBox(
               height: 16,
             ),
-            AuthorAndCategory(
+            AuthorAndBookmark(
               store: store,
               context: context,
             ),
@@ -59,10 +60,14 @@ class ArticleDetail extends StatelessWidget {
             Text(
               store.feed.description ?? 'No article content available.',
               style:
-                  Theme.of(context).textTheme.subtitle2.copyWith(height: 1.5),
+                  Theme.of(context).textTheme.subtitle1.copyWith(height: 1.5),
             ),
             // _buildAdRow(),
             ReadMore(context: context, store: store),
+            SizedBox(height: 8),
+            Divider(),
+            Share(store: store, metaStore: metaStore),
+            SizedBox(height: 16),
             Disclaimer(store: store),
             if (store.hasRelatedFeeds)
               RelatedNews(

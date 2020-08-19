@@ -22,19 +22,6 @@ class CommentRepository {
       {@required String postId,
       @required UserModel user,
       @required String comment}) {
-    var metaData = {
-      'comment_count': FieldValue.increment(1),
-    };
-    var activityId =
-        _postMetaRepository.generateActivityId(postId, user.uId, 'comment');
-    var metaActivityData = {
-      'id': activityId,
-      'meta_name': 'comment',
-      'post_id': postId,
-      'user_id': user.uId,
-      'timestamp': DateTime.now().toIso8601String(),
-    };
-
     var commentId = Uuid().v4();
 
     var data = {
@@ -44,21 +31,12 @@ class CommentRepository {
       'comment': comment,
       'like_count': 0,
       'liked_users': List<String>(),
-      'timestamp': DateTime.now().toString(),
+      'timestamp': DateTime.now().toIso8601String(),
     };
     return _commentService
-        .saveComment(
-            commentId: commentId,
-            metaActivityData: metaActivityData,
-            metaData: metaData,
-            commentData: data,
-            metaActivityDocumentRef: _postMetaRepository
-                .metaActivityCollectionReference(postId)
-                .document(activityId),
-            metaDocumentRef:
-                _postMetaRepository.metaCollectionReference.document(postId))
+        .saveComment(commentId: commentId, commentData: data)
         .then((value) {
-      _analyticsService.logCommentPosted(postId: postId);
+      return _postMetaRepository.postComment(postId: postId, userId: user.uId);
     });
   }
 
@@ -102,9 +80,6 @@ class CommentRepository {
             .toList();
       }
       return List<CommentModel>();
-    }).map((value) {
-      _analyticsService.logCommentFetched(postId: postId);
-      return value;
     });
   }
 
@@ -120,9 +95,6 @@ class CommentRepository {
             .toList();
       }
       return List<CommentModel>();
-    }).then((value) {
-      _analyticsService.logCommentFetched(postId: postId);
-      return value;
     });
   }
 }

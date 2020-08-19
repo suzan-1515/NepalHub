@@ -20,9 +20,9 @@ class AnalyticsService {
     return await _analytics.logSignUp(signUpMethod: method);
   }
 
-  Future logLogout() async {
+  Future logLogout({String method = 'google'}) async {
     return await _analytics
-        .logEvent(name: "logout", parameters: {'logout_method': 'email'});
+        .logEvent(name: "logout", parameters: {'logout_method': method});
   }
 
   Future logFeedAdded({String userId, String feedId}) async {
@@ -150,11 +150,12 @@ class AnalyticsService {
     );
   }
 
-  Future logShare({String postId}) async {
+  Future logShare(
+      {String postId, String method, String contentType = 'feed'}) async {
     await _analytics.logShare(
-      contentType: 'feed',
+      contentType: contentType,
       itemId: postId,
-      method: 'open',
+      method: method,
     );
   }
 }

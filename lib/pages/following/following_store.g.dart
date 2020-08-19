@@ -6,44 +6,40 @@ part of 'following_store.dart';
 // StoreGenerator
 // **************************************************************************
 
-// ignore_for_file: non_constant_identifier_names, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
+// ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
 
 mixin _$FollowingStore on _FollowingStore, Store {
   final _$errorAtom = Atom(name: '_FollowingStore.error');
 
   @override
   String get error {
-    _$errorAtom.context.enforceReadPolicy(_$errorAtom);
-    _$errorAtom.reportObserved();
+    _$errorAtom.reportRead();
     return super.error;
   }
 
   @override
   set error(String value) {
-    _$errorAtom.context.conditionallyRunInAction(() {
+    _$errorAtom.reportWrite(value, super.error, () {
       super.error = value;
-      _$errorAtom.reportChanged();
-    }, _$errorAtom, name: '${_$errorAtom.name}_set');
+    });
   }
 
   final _$messageAtom = Atom(name: '_FollowingStore.message');
 
   @override
   String get message {
-    _$messageAtom.context.enforceReadPolicy(_$messageAtom);
-    _$messageAtom.reportObserved();
+    _$messageAtom.reportRead();
     return super.message;
   }
 
   @override
   set message(String value) {
-    _$messageAtom.context.conditionallyRunInAction(() {
+    _$messageAtom.reportWrite(value, super.message, () {
       super.message = value;
-      _$messageAtom.reportChanged();
-    }, _$messageAtom, name: '${_$messageAtom.name}_set');
+    });
   }
 
-  final _$refreshAsyncAction = AsyncAction('refresh');
+  final _$refreshAsyncAction = AsyncAction('_FollowingStore.refresh');
 
   @override
   Future<dynamic> refresh() {
@@ -55,7 +51,8 @@ mixin _$FollowingStore on _FollowingStore, Store {
 
   @override
   dynamic retryNewsSources() {
-    final _$actionInfo = _$_FollowingStoreActionController.startAction();
+    final _$actionInfo = _$_FollowingStoreActionController.startAction(
+        name: '_FollowingStore.retryNewsSources');
     try {
       return super.retryNewsSources();
     } finally {
@@ -65,7 +62,8 @@ mixin _$FollowingStore on _FollowingStore, Store {
 
   @override
   dynamic retryNewsCategory() {
-    final _$actionInfo = _$_FollowingStoreActionController.startAction();
+    final _$actionInfo = _$_FollowingStoreActionController.startAction(
+        name: '_FollowingStore.retryNewsCategory');
     try {
       return super.retryNewsCategory();
     } finally {
@@ -75,7 +73,8 @@ mixin _$FollowingStore on _FollowingStore, Store {
 
   @override
   dynamic retryNewsTopic() {
-    final _$actionInfo = _$_FollowingStoreActionController.startAction();
+    final _$actionInfo = _$_FollowingStoreActionController.startAction(
+        name: '_FollowingStore.retryNewsTopic');
     try {
       return super.retryNewsTopic();
     } finally {
@@ -85,7 +84,8 @@ mixin _$FollowingStore on _FollowingStore, Store {
 
   @override
   Future<void> loadFollowedNewsSourceData() {
-    final _$actionInfo = _$_FollowingStoreActionController.startAction();
+    final _$actionInfo = _$_FollowingStoreActionController.startAction(
+        name: '_FollowingStore.loadFollowedNewsSourceData');
     try {
       return super.loadFollowedNewsSourceData();
     } finally {
@@ -95,7 +95,8 @@ mixin _$FollowingStore on _FollowingStore, Store {
 
   @override
   Future<void> loadFollowedNewsCategoryData() {
-    final _$actionInfo = _$_FollowingStoreActionController.startAction();
+    final _$actionInfo = _$_FollowingStoreActionController.startAction(
+        name: '_FollowingStore.loadFollowedNewsCategoryData');
     try {
       return super.loadFollowedNewsCategoryData();
     } finally {
@@ -105,7 +106,8 @@ mixin _$FollowingStore on _FollowingStore, Store {
 
   @override
   Future<void> loadFollowedNewsTopicData() {
-    final _$actionInfo = _$_FollowingStoreActionController.startAction();
+    final _$actionInfo = _$_FollowingStoreActionController.startAction(
+        name: '_FollowingStore.loadFollowedNewsTopicData');
     try {
       return super.loadFollowedNewsTopicData();
     } finally {
@@ -115,7 +117,9 @@ mixin _$FollowingStore on _FollowingStore, Store {
 
   @override
   String toString() {
-    final string = 'error: ${error.toString()},message: ${message.toString()}';
-    return '{$string}';
+    return '''
+error: ${error},
+message: ${message}
+    ''';
   }
 }

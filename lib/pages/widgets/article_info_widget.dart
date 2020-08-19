@@ -106,7 +106,7 @@ class NewsFeedCardTitleDescription extends StatelessWidget {
               ? 2
               : 4,
           overflow: TextOverflow.ellipsis,
-          style: Theme.of(context).textTheme.subtitle2.copyWith(height: 1.5),
+          style: Theme.of(context).textTheme.subtitle1.copyWith(height: 1.5),
         ),
       ],
     );
@@ -150,8 +150,8 @@ class _NewsFeedOptionsState extends State<NewsFeedOptions> {
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
-          ValueListenableBuilder(
-            valueListenable: widget.feed.likeNotifier,
+          ValueListenableBuilder<int>(
+            valueListenable: widget.feed.likeCountNotifier,
             builder: (_, value, Widget child) {
               return ValueListenableBuilder(
                 valueListenable: _likeProgressNotifier,
@@ -161,10 +161,12 @@ class _NewsFeedOptionsState extends State<NewsFeedOptions> {
                     child: FlatButton.icon(
                       materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                       label: Text(
-                        '${widget.feed.likeCountFormatted}',
+                        value == 0
+                            ? 'Like'
+                            : '${widget.feed.likeCountFormatted}',
                         style: Theme.of(context).textTheme.overline,
                       ),
-                      icon: value
+                      icon: widget.feed.isLiked
                           ? Icon(
                               FontAwesomeIcons.solidThumbsUp,
                               size: 16,
@@ -183,7 +185,7 @@ class _NewsFeedOptionsState extends State<NewsFeedOptions> {
 
                         _likeProgressNotifier.value = true;
                         final isLiked = widget.feed.isLiked;
-                        widget.feed.like = !value;
+                        widget.feed.like = !isLiked;
                         if (isLiked) {
                           context
                               .read<PostMetaRepository>()
@@ -219,7 +221,7 @@ class _NewsFeedOptionsState extends State<NewsFeedOptions> {
             builder: (context, value, child) => FlatButton.icon(
               materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
               label: Text(
-                '${widget.feed.commentCountFormatted}',
+                value == 0 ? 'Comment' : '${widget.feed.commentCountFormatted}',
                 style: Theme.of(context).textTheme.overline,
               ),
               icon: Icon(

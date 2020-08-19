@@ -8,6 +8,7 @@ import 'package:mobx/mobx.dart';
 import 'package:provider/provider.dart';
 import 'package:samachar_hub/common/notification_channels.dart';
 import 'package:samachar_hub/pages/settings/settings_store.dart';
+import 'package:samachar_hub/pages/settings/widgets/news_read_mode.dart';
 import 'package:samachar_hub/pages/settings/widgets/section_heading.dart';
 import 'package:samachar_hub/services/notification_service.dart';
 import 'package:samachar_hub/stores/auth/auth_store.dart';
@@ -52,7 +53,7 @@ class _SettingsPageState extends State<SettingsPage> {
   Widget _buildGeneralSettings(
       BuildContext context, SettingsStore settingsStore) {
     return Padding(
-      padding: const EdgeInsets.only(left: 4, top: 4),
+      padding: const EdgeInsets.only(left: 4, top: 16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
@@ -60,11 +61,16 @@ class _SettingsPageState extends State<SettingsPage> {
           ListTile(
             dense: true,
             onTap: () {
-              context.read<SettingsStore>().message = 'Comming soon!';
+              context.showBottomSheet(
+                child: NewsReadMode(
+                  store: settingsStore,
+                ),
+              );
             },
             title: Text(
               'Default news read mode',
-              style: Theme.of(context).textTheme.bodyText1,
+              style:
+                  Theme.of(context).textTheme.bodyText1.copyWith(height: 1.5),
             ),
             subtitle: Text(
               'Switches between summark view or detail view when opening a particular news.',
@@ -81,38 +87,80 @@ class _SettingsPageState extends State<SettingsPage> {
     return Observer(
       builder: (_) => Padding(
         padding: const EdgeInsets.only(left: 16.0, top: 16.0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: <Widget>[
-            Text(
-              'Show daily news at 7 am',
-              style: Theme.of(context).textTheme.bodyText1,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Text(
+                  'Notify for daily news at 7 am',
+                  style: Theme.of(context).textTheme.bodyText1,
+                ),
+                Switch(
+                  value: settingsStore.showDailyMorningNews,
+                  onChanged: (value) {
+                    settingsStore.setShowDailyMorningNews(value);
+                    if (value) {
+                      var user = '';
+                      final authStore = context.read<AuthenticationStore>();
+                      if (authStore.isLoggedIn && !authStore.user.isAnonymous) {
+                        user = '${authStore.user.fullName}';
+                      }
+                      context.read<NotificationService>().scheduleNotificationDaily(
+                          NotificationChannels.kMorningNewsId,
+                          'Good Morning $user 🌅',
+                          'Your personalised daily news is ready. Click to read. 📰',
+                          NotificationChannels.kMorningNewsChannelId,
+                          NotificationChannels.kMorningNewsChannelName,
+                          NotificationChannels.kMorningNewsChannelDesc,
+                          Time(7, 0, 0));
+                    } else
+                      context
+                          .read<NotificationService>()
+                          .flutterLocalNotificationsPlugin
+                          .cancel(NotificationChannels.kMorningNewsId);
+                  },
+                  activeColor: Theme.of(context).accentColor,
+                ),
+              ],
             ),
-            Switch(
-              value: settingsStore.showDailyMorningNews,
-              onChanged: (value) {
-                settingsStore.setShowDailyMorningNews(value);
-                if (value) {
-                  var user = '';
-                  final authStore = context.read<AuthenticationStore>();
-                  if (authStore.isLoggedIn && !authStore.user.isAnonymous) {
-                    user = '${authStore.user.fullName} 🌅';
-                  }
-                  context.read<NotificationService>().scheduleNotificationDaily(
-                      NotificationChannels.kMorningNewsId,
-                      'Good Morning $user 🌅',
-                      'Your personalised daily news is ready. Click to read. 📰',
-                      NotificationChannels.kMorningNewsChannelId,
-                      NotificationChannels.kMorningNewsChannelName,
-                      NotificationChannels.kMorningNewsChannelDesc,
-                      Time(7, 0, 0));
-                } else
-                  context
-                      .read<NotificationService>()
-                      .flutterLocalNotificationsPlugin
-                      .cancel(NotificationChannels.kMorningNewsId);
-              },
-              activeColor: Theme.of(context).accentColor,
+            SizedBox(height: 8),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Flexible(
+                  child: RichText(
+                    text: TextSpan(
+                      text: 'News notifications',
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyText1
+                          .copyWith(height: 1.5),
+                      children: [
+                        TextSpan(
+                            text:
+                                '\nReceive personalised, breaking, trending etc news notification.',
+                            style: Theme.of(context).textTheme.caption),
+                      ],
+                    ),
+                  ),
+                ),
+                Switch(
+                  value: settingsStore.otherNotifications,
+                  onChanged: (value) {
+                    settingsStore.setOtherNotifications(value);
+                    if (value) {
+                      context.read<NotificationService>().subscribe(
+                          NotificationChannels.kNewsNotifications, 1);
+                    } else
+                      context
+                          .read<NotificationService>()
+                          .unSubscribe(NotificationChannels.kNewsNotifications);
+                  },
+                  activeColor: Theme.of(context).accentColor,
+                ),
+              ],
             ),
           ],
         ),
@@ -139,7 +187,10 @@ class _SettingsPageState extends State<SettingsPage> {
                   .map(
                     (entry) => DropdownMenuItem<String>(
                       value: entry.key,
-                      child: Text(entry.value),
+                      child: Text(
+                        entry.value,
+                        style: Theme.of(context).textTheme.caption,
+                      ),
                     ),
                   )
                   .toList(),
@@ -155,24 +206,71 @@ class _SettingsPageState extends State<SettingsPage> {
     return Observer(
       builder: (_) => Padding(
         padding: const EdgeInsets.only(left: 16.0, top: 16.0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: <Widget>[
-            Text(
-              'Default Horoscope',
-              style: Theme.of(context).textTheme.bodyText1,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Text(
+                  'Your Horoscope',
+                  style: Theme.of(context).textTheme.bodyText1,
+                ),
+                DropdownButton<int>(
+                    value: settingsStore.defaultHoroscopeSign,
+                    onChanged: settingsStore.setdefaultHoroscopeSign,
+                    items: horoscopeSigns
+                        .map(
+                          (e) => DropdownMenuItem<int>(
+                            value: horoscopeSigns.indexOf(e),
+                            child: Text(
+                              e,
+                              style: Theme.of(context).textTheme.caption,
+                            ),
+                          ),
+                        )
+                        .toList()),
+              ],
             ),
-            DropdownButton<int>(
-                value: settingsStore.defaultHoroscopeSign,
-                onChanged: settingsStore.setdefaultHoroscopeSign,
-                items: horoscopeSigns
-                    .map(
-                      (e) => DropdownMenuItem<int>(
-                        value: horoscopeSigns.indexOf(e),
-                        child: Text(e),
-                      ),
-                    )
-                    .toList()),
+            SizedBox(height: 8),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Text(
+                  'Notify daily horoscope at 7 am',
+                  style: Theme.of(context).textTheme.bodyText1,
+                ),
+                Switch(
+                  value: settingsStore.showDailyMorningHoroscope,
+                  onChanged: (value) {
+                    settingsStore.setShowDailyMorningHoroscope(value);
+                    if (value) {
+                      var user = '';
+                      final authStore = context.read<AuthenticationStore>();
+                      if (authStore.isLoggedIn && !authStore.user.isAnonymous) {
+                        user = '${authStore.user.fullName}';
+                      }
+                      context
+                          .read<NotificationService>()
+                          .scheduleNotificationDaily(
+                              NotificationChannels.kMorningHoroscopeId,
+                              'Good Morning $user 🌅',
+                              'Your daily horoscope is here. Click to read. 📰',
+                              NotificationChannels.kMorningHoroscopeChannelId,
+                              NotificationChannels.kMorningHoroscopeChannelName,
+                              NotificationChannels.kMorningHoroscopeChannelDesc,
+                              Time(7, 0, 0));
+                    } else
+                      context
+                          .read<NotificationService>()
+                          .flutterLocalNotificationsPlugin
+                          .cancel(NotificationChannels.kMorningHoroscopeId);
+                  },
+                  activeColor: Theme.of(context).accentColor,
+                ),
+              ],
+            ),
+            SizedBox(height: 8),
           ],
         ),
       ),
@@ -207,82 +305,236 @@ class _SettingsPageState extends State<SettingsPage> {
                 ),
               ),
             ),
+            SizedBox(height: 8),
             IgnorePointer(
               ignoring: !settingsStore.useDarkMode,
               child: Opacity(
                 opacity: !settingsStore.useDarkMode ? 0.45 : 1.0,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 8),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      Expanded(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: <Widget>[
-                            Padding(
-                              padding: const EdgeInsets.only(bottom: 4),
-                              child: Text(
-                                'Use pitch black theme',
-                                style: Theme.of(context).textTheme.bodyText1,
-                              ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Expanded(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: <Widget>[
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: 4),
+                            child: Text(
+                              'Use pitch black theme',
+                              style: Theme.of(context).textTheme.bodyText1,
                             ),
-                            Text(
-                              'Only applies when dark mode is on',
-                              style: Theme.of(context).textTheme.caption,
-                            ),
-                          ],
-                        ),
+                          ),
+                          Text(
+                            'Only applies when dark mode is on',
+                            style: Theme.of(context).textTheme.caption,
+                          ),
+                        ],
                       ),
-                      Checkbox(
-                        value: settingsStore.usePitchBlack,
-                        onChanged: settingsStore.setPitchBlack,
-                        activeColor: Theme.of(context).accentColor,
-                      )
-                    ],
-                  ),
+                    ),
+                    Checkbox(
+                      value: settingsStore.usePitchBlack,
+                      onChanged: settingsStore.setPitchBlack,
+                      activeColor: Theme.of(context).accentColor,
+                    )
+                  ],
                 ),
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 8),
-              child: AbsorbPointer(
-                absorbing: settingsStore.useDarkMode,
-                child: Opacity(
-                  opacity: settingsStore.useDarkMode ? 0.45 : 1.0,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      Expanded(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: <Widget>[
-                            Padding(
-                              padding: const EdgeInsets.only(bottom: 4),
-                              child: Text(
-                                'Theme set by system',
-                                style: Theme.of(context).textTheme.bodyText1,
-                              ),
+            SizedBox(height: 8),
+            AbsorbPointer(
+              absorbing: settingsStore.useDarkMode,
+              child: Opacity(
+                opacity: settingsStore.useDarkMode ? 0.45 : 1.0,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Expanded(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: <Widget>[
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: 4),
+                            child: Text(
+                              'Theme set by system',
+                              style: Theme.of(context).textTheme.bodyText1,
                             ),
-                            Text(
-                              'Requires minimum OS version ${Platform.isAndroid ? 'Android 10' : 'IOS 13'}',
-                              style: Theme.of(context).textTheme.caption,
-                            ),
-                          ],
-                        ),
+                          ),
+                          Text(
+                            'Requires minimum OS version ${Platform.isAndroid ? 'Android 10' : 'IOS 13'}',
+                            style: Theme.of(context).textTheme.caption,
+                          ),
+                        ],
                       ),
-                      Checkbox(
-                        value: settingsStore.themeSetBySystem,
-                        onChanged: settingsStore.setSystemTheme,
-                        activeColor: Theme.of(context).accentColor,
-                      )
-                    ],
-                  ),
+                    ),
+                    Checkbox(
+                      value: settingsStore.themeSetBySystem,
+                      onChanged: settingsStore.setSystemTheme,
+                      activeColor: Theme.of(context).accentColor,
+                    )
+                  ],
                 ),
               ),
-            )
+            ),
+            SizedBox(height: 8),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildNotificationSettings(
+      BuildContext context, SettingsStore settingsStore) {
+    return Observer(
+      builder: (_) => Padding(
+        padding: const EdgeInsets.only(left: 16.0, top: 16.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Flexible(
+                  child: RichText(
+                    text: TextSpan(
+                      text: 'Trending notifications',
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyText1
+                          .copyWith(height: 1.5),
+                      children: [
+                        TextSpan(
+                            text: '\nReceive all trending notifications',
+                            style: Theme.of(context).textTheme.caption),
+                      ],
+                    ),
+                  ),
+                ),
+                Switch(
+                  value: settingsStore.trendingNotifications,
+                  onChanged: (value) {
+                    settingsStore.setTrendingNotifications(value);
+                    if (value) {
+                      context.read<NotificationService>().subscribe(
+                          NotificationChannels.kTrendingNotifications, 1);
+                    } else
+                      context.read<NotificationService>().unSubscribe(
+                          NotificationChannels.kTrendingNotifications);
+                  },
+                  activeColor: Theme.of(context).accentColor,
+                ),
+              ],
+            ),
+            SizedBox(height: 8),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Flexible(
+                  child: RichText(
+                    text: TextSpan(
+                      text: 'Comments',
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyText1
+                          .copyWith(height: 1.5),
+                      children: [
+                        TextSpan(
+                            text:
+                                '\nGet notified when someone replied to your comments.',
+                            style: Theme.of(context).textTheme.caption),
+                      ],
+                    ),
+                  ),
+                ),
+                Switch(
+                  value: settingsStore.commentNotifications,
+                  onChanged: (value) {
+                    settingsStore.setCommentNotifications(value);
+                    if (value) {
+                      context.read<NotificationService>().subscribe(
+                          NotificationChannels.kCommentNotifications, 1);
+                    } else
+                      context.read<NotificationService>().unSubscribe(
+                          NotificationChannels.kCommentNotifications);
+                  },
+                  activeColor: Theme.of(context).accentColor,
+                ),
+              ],
+            ),
+            SizedBox(height: 8),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Flexible(
+                  child: RichText(
+                    text: TextSpan(
+                      text: 'Messages',
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyText1
+                          .copyWith(height: 1.5),
+                      children: [
+                        TextSpan(
+                            text:
+                                '\nGet notified when someone sent you a message.',
+                            style: Theme.of(context).textTheme.caption),
+                      ],
+                    ),
+                  ),
+                ),
+                Switch(
+                  value: settingsStore.messageNotifications,
+                  onChanged: (value) {
+                    settingsStore.setMessageNotifications(value);
+                    if (value) {
+                      context.read<NotificationService>().subscribe(
+                          NotificationChannels.kMessageNotifications, 1);
+                    } else
+                      context.read<NotificationService>().unSubscribe(
+                          NotificationChannels.kMessageNotifications);
+                  },
+                  activeColor: Theme.of(context).accentColor,
+                ),
+              ],
+            ),
+            SizedBox(height: 8),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Flexible(
+                  child: RichText(
+                    text: TextSpan(
+                      text: 'Other notifications',
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyText1
+                          .copyWith(height: 1.5),
+                      children: [
+                        TextSpan(
+                            text:
+                                '\nGet notified for weather,corona, app updates, etc...',
+                            style: Theme.of(context).textTheme.caption),
+                      ],
+                    ),
+                  ),
+                ),
+                Switch(
+                  value: settingsStore.otherNotifications,
+                  onChanged: (value) {
+                    settingsStore.setOtherNotifications(value);
+                    if (value) {
+                      context.read<NotificationService>().subscribe(
+                          NotificationChannels.kOtherNotifications, 1);
+                    } else
+                      context.read<NotificationService>().unSubscribe(
+                          NotificationChannels.kOtherNotifications);
+                  },
+                  activeColor: Theme.of(context).accentColor,
+                ),
+              ],
+            ),
+            SizedBox(height: 8),
           ],
         ),
       ),
@@ -376,6 +628,12 @@ class _SettingsPageState extends State<SettingsPage> {
                     icon: FontAwesomeIcons.adjust,
                   ),
                   _buildAppThemeSettings(settingsStore, context),
+                  SizedBox(height: 16),
+                  SectionHeading(
+                    title: 'Notification',
+                    icon: FontAwesomeIcons.bell,
+                  ),
+                  _buildNotificationSettings(context, settingsStore),
                   SizedBox(height: 16),
                   SectionHeading(
                     title: 'About',

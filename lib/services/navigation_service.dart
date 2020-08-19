@@ -7,7 +7,6 @@ import 'package:samachar_hub/pages/bookmark/bookmark_page.dart';
 import 'package:samachar_hub/pages/comment/comment_screen.dart';
 import 'package:samachar_hub/pages/forex/forex_detail_screen.dart';
 import 'package:samachar_hub/pages/forex/forex_screen.dart';
-import 'package:samachar_hub/pages/home/home_screen.dart';
 import 'package:samachar_hub/pages/horoscope/horoscope_detail_screen.dart';
 import 'package:samachar_hub/pages/horoscope/horoscope_screen.dart';
 import 'package:samachar_hub/pages/main/main_screen.dart';

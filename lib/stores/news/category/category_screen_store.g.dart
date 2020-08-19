@@ -6,41 +6,37 @@ part of 'category_screen_store.dart';
 // StoreGenerator
 // **************************************************************************
 
-// ignore_for_file: non_constant_identifier_names, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
+// ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
 
 mixin _$NewsCategoryScreenStore on _NewsCategoryScreenStore, Store {
   final _$errorAtom = Atom(name: '_NewsCategoryScreenStore.error');
 
   @override
   String get error {
-    _$errorAtom.context.enforceReadPolicy(_$errorAtom);
-    _$errorAtom.reportObserved();
+    _$errorAtom.reportRead();
     return super.error;
   }
 
   @override
   set error(String value) {
-    _$errorAtom.context.conditionallyRunInAction(() {
+    _$errorAtom.reportWrite(value, super.error, () {
       super.error = value;
-      _$errorAtom.reportChanged();
-    }, _$errorAtom, name: '${_$errorAtom.name}_set');
+    });
   }
 
   final _$apiErrorAtom = Atom(name: '_NewsCategoryScreenStore.apiError');
 
   @override
   APIException get apiError {
-    _$apiErrorAtom.context.enforceReadPolicy(_$apiErrorAtom);
-    _$apiErrorAtom.reportObserved();
+    _$apiErrorAtom.reportRead();
     return super.apiError;
   }
 
   @override
   set apiError(APIException value) {
-    _$apiErrorAtom.context.conditionallyRunInAction(() {
+    _$apiErrorAtom.reportWrite(value, super.apiError, () {
       super.apiError = value;
-      _$apiErrorAtom.reportChanged();
-    }, _$apiErrorAtom, name: '${_$apiErrorAtom.name}_set');
+    });
   }
 
   final _$activeCategoryTabAtom =
@@ -48,44 +44,41 @@ mixin _$NewsCategoryScreenStore on _NewsCategoryScreenStore, Store {
 
   @override
   String get activeCategoryTab {
-    _$activeCategoryTabAtom.context.enforceReadPolicy(_$activeCategoryTabAtom);
-    _$activeCategoryTabAtom.reportObserved();
+    _$activeCategoryTabAtom.reportRead();
     return super.activeCategoryTab;
   }
 
   @override
   set activeCategoryTab(String value) {
-    _$activeCategoryTabAtom.context.conditionallyRunInAction(() {
+    _$activeCategoryTabAtom.reportWrite(value, super.activeCategoryTab, () {
       super.activeCategoryTab = value;
-      _$activeCategoryTabAtom.reportChanged();
-    }, _$activeCategoryTabAtom, name: '${_$activeCategoryTabAtom.name}_set');
+    });
   }
 
   final _$viewAtom = Atom(name: '_NewsCategoryScreenStore.view');
 
   @override
   ContentViewStyle get view {
-    _$viewAtom.context.enforceReadPolicy(_$viewAtom);
-    _$viewAtom.reportObserved();
+    _$viewAtom.reportRead();
     return super.view;
   }
 
   @override
   set view(ContentViewStyle value) {
-    _$viewAtom.context.conditionallyRunInAction(() {
+    _$viewAtom.reportWrite(value, super.view, () {
       super.view = value;
-      _$viewAtom.reportChanged();
-    }, _$viewAtom, name: '${_$viewAtom.name}_set');
+    });
   }
 
-  final _$refreshAsyncAction = AsyncAction('refresh');
+  final _$refreshAsyncAction = AsyncAction('_NewsCategoryScreenStore.refresh');
 
   @override
   Future<void> refresh() {
     return _$refreshAsyncAction.run(() => super.refresh());
   }
 
-  final _$_loadCategoriesAsyncAction = AsyncAction('_loadCategories');
+  final _$_loadCategoriesAsyncAction =
+      AsyncAction('_NewsCategoryScreenStore._loadCategories');
 
   @override
   Future<void> _loadCategories() {
@@ -97,8 +90,8 @@ mixin _$NewsCategoryScreenStore on _NewsCategoryScreenStore, Store {
 
   @override
   void loadData() {
-    final _$actionInfo =
-        _$_NewsCategoryScreenStoreActionController.startAction();
+    final _$actionInfo = _$_NewsCategoryScreenStoreActionController.startAction(
+        name: '_NewsCategoryScreenStore.loadData');
     try {
       return super.loadData();
     } finally {
@@ -108,8 +101,8 @@ mixin _$NewsCategoryScreenStore on _NewsCategoryScreenStore, Store {
 
   @override
   void retry() {
-    final _$actionInfo =
-        _$_NewsCategoryScreenStoreActionController.startAction();
+    final _$actionInfo = _$_NewsCategoryScreenStoreActionController.startAction(
+        name: '_NewsCategoryScreenStore.retry');
     try {
       return super.retry();
     } finally {
@@ -119,8 +112,8 @@ mixin _$NewsCategoryScreenStore on _NewsCategoryScreenStore, Store {
 
   @override
   dynamic setActiveCategoryTab(String categoryCode) {
-    final _$actionInfo =
-        _$_NewsCategoryScreenStoreActionController.startAction();
+    final _$actionInfo = _$_NewsCategoryScreenStoreActionController.startAction(
+        name: '_NewsCategoryScreenStore.setActiveCategoryTab');
     try {
       return super.setActiveCategoryTab(categoryCode);
     } finally {
@@ -130,8 +123,8 @@ mixin _$NewsCategoryScreenStore on _NewsCategoryScreenStore, Store {
 
   @override
   dynamic setView(ContentViewStyle value) {
-    final _$actionInfo =
-        _$_NewsCategoryScreenStoreActionController.startAction();
+    final _$actionInfo = _$_NewsCategoryScreenStoreActionController.startAction(
+        name: '_NewsCategoryScreenStore.setView');
     try {
       return super.setView(value);
     } finally {
@@ -141,8 +134,11 @@ mixin _$NewsCategoryScreenStore on _NewsCategoryScreenStore, Store {
 
   @override
   String toString() {
-    final string =
-        'error: ${error.toString()},apiError: ${apiError.toString()},activeCategoryTab: ${activeCategoryTab.toString()},view: ${view.toString()}';
-    return '{$string}';
+    return '''
+error: ${error},
+apiError: ${apiError},
+activeCategoryTab: ${activeCategoryTab},
+view: ${view}
+    ''';
   }
 }

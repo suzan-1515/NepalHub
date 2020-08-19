@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -61,6 +60,84 @@ class PostMetaRepository {
       var likes = _preferenceService.likedFeeds;
       likes.remove(postId);
       _preferenceService.likedFeeds = likes;
+      return _analyticsService.logPostMeta(postId: postId, metaName: 'unlike');
+    });
+  }
+
+  Future<void> postBookmark(
+      {@required String postId, @required String userId}) async {
+    var metaData = {
+      'bookmark_count': FieldValue.increment(1),
+    };
+    var activityId = generateActivityId(postId, userId, 'bookmark');
+    var metaActivityData = {
+      'id': activityId,
+      'meta_name': 'bookmark',
+      'post_id': postId,
+      'user_id': userId,
+      'timestamp': DateTime.now().toIso8601String(),
+    };
+    return _postMetaService
+        .addMeta(
+            postId: postId,
+            metaData: metaData,
+            activityId: activityId,
+            activityData: metaActivityData)
+        .then((onValue) {
+      return _analyticsService.logPostMeta(
+          postId: postId, metaName: 'bookmark');
+    });
+  }
+
+  Future<void> removeBookmark(
+      {@required String postId, @required String userId}) {
+    var activityId = generateActivityId(postId, userId, 'bookmark');
+    var metaData = {
+      'bookmark_count': FieldValue.increment(-1),
+    };
+    return _postMetaService
+        .removeMeta(postId: postId, metaData: metaData, activityId: activityId)
+        .then((value) {
+      return _analyticsService.logPostMeta(
+          postId: postId, metaName: 'unbookmark');
+    });
+  }
+
+  Future<void> postComment(
+      {@required String postId, @required String userId}) async {
+    var metaData = {
+      'comment_count': FieldValue.increment(1),
+    };
+    var activityId = generateActivityId(postId, userId, 'comment');
+    var metaActivityData = {
+      'id': activityId,
+      'meta_name': 'comment',
+      'post_id': postId,
+      'user_id': userId,
+      'timestamp': DateTime.now().toIso8601String(),
+    };
+    return _postMetaService
+        .addMeta(
+            postId: postId,
+            metaData: metaData,
+            activityId: activityId,
+            activityData: metaActivityData)
+        .then((onValue) {
+      return _analyticsService.logPostMeta(postId: postId, metaName: 'comment');
+    });
+  }
+
+  Future<void> removeComment(
+      {@required String postId, @required String userId}) {
+    var activityId = generateActivityId(postId, userId, 'comment');
+    var metaData = {
+      'comment_count': FieldValue.increment(-1),
+    };
+    return _postMetaService
+        .removeMeta(postId: postId, metaData: metaData, activityId: activityId)
+        .then((value) {
+      return _analyticsService.logPostMeta(
+          postId: postId, metaName: 'uncomment');
     });
   }
 

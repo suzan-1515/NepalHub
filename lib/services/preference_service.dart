@@ -5,7 +5,14 @@ class PreferenceService {
   final String _pitchBlackKey = 'pitchBlack';
   final String _themeSetBySystemKey = 'themeSetBySystem';
   final String _openInAppKey = 'openInApp';
+  final String _newsReadModeKey = 'newsReadMode';
   final String _showDailyMorningNewsKey = 'showDailyMorningNews';
+  final String _showDailyMorningHoroscopeKey = 'showDailyMorningHoroscope';
+  final String _newsNotificationsKey = 'newsNotificationsKey';
+  final String _trendingNotificationsKey = 'trendingNotifications';
+  final String _commentNotificationsKey = 'commentNotifications';
+  final String _messageNotificationsKey = 'messageNotifications';
+  final String _otherNotificationsKey = 'otherNotifications';
 
   final String _bookmarkedFeedsKey = 'bookmarked_feeds';
   final String _likedFeedsKey = 'liked_feeds';
@@ -41,8 +48,36 @@ class PreferenceService {
     _sharedPreferences.setBool(_openInAppKey, openInApp);
   }
 
+  set newsReadMode(int value) {
+    _sharedPreferences.setInt(_newsReadModeKey, value);
+  }
+
   set showDailyMorningNews(bool value) {
     _sharedPreferences.setBool(_showDailyMorningNewsKey, value);
+  }
+
+  set showDailyMorningHoroscope(bool value) {
+    _sharedPreferences.setBool(_showDailyMorningHoroscopeKey, value);
+  }
+
+  set trendingNotifications(bool value) {
+    _sharedPreferences.setBool(_trendingNotificationsKey, value);
+  }
+
+  set commentNotifications(bool value) {
+    _sharedPreferences.setBool(_commentNotificationsKey, value);
+  }
+
+  set messageNotifications(bool value) {
+    _sharedPreferences.setBool(_messageNotificationsKey, value);
+  }
+
+  set otherNotifications(bool value) {
+    _sharedPreferences.setBool(_otherNotificationsKey, value);
+  }
+
+  set newsNotifications(bool value) {
+    _sharedPreferences.setBool(_newsNotificationsKey, value);
   }
 
   set bookmarkedFeeds(List<String> favourites) {
@@ -87,8 +122,27 @@ class PreferenceService {
   bool get usePitchBlack => _sharedPreferences.getBool(_pitchBlackKey) ?? false;
 
   bool get openInApp => _sharedPreferences.getBool(_openInAppKey) ?? true;
+  int get newsReadMode => _sharedPreferences.getInt(_newsReadModeKey) ?? 0;
   bool get showDailyMorningNews =>
-      _sharedPreferences.getBool(_showDailyMorningNewsKey) ?? false;
+      _sharedPreferences.getBool(_showDailyMorningNewsKey) ?? true;
+
+  bool get showDailyMorningHoroscope =>
+      _sharedPreferences.getBool(_showDailyMorningHoroscopeKey) ?? true;
+
+  bool get trendingNotifications =>
+      _sharedPreferences.getBool(_trendingNotificationsKey) ?? true;
+
+  bool get commentNotifications =>
+      _sharedPreferences.getBool(_commentNotificationsKey) ?? true;
+
+  bool get messageNotifications =>
+      _sharedPreferences.getBool(_messageNotificationsKey) ?? true;
+
+  bool get otherNotifications =>
+      _sharedPreferences.getBool(_otherNotificationsKey) ?? true;
+
+  bool get newsNotifications =>
+      _sharedPreferences.getBool(_newsNotificationsKey) ?? true;
 
   List<String> get bookmarkedFeeds =>
       _sharedPreferences.getStringList(_bookmarkedFeedsKey) ?? List<String>();

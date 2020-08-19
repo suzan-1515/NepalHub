@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:samachar_hub/pages/settings/settings_store.dart';
 import 'package:samachar_hub/stores/stores.dart';
 import 'package:samachar_hub/services/services.dart';
 
@@ -37,6 +38,9 @@ class ReadMore extends StatelessWidget {
             alignment: Alignment.centerRight,
             child: OutlineButton.icon(
               onPressed: () {
+                final int newsReadMode =
+                    context.read<SettingsStore>().newsReadMode;
+                if (newsReadMode == 2) return store.openLink(store.feed.link);
                 context.read<NavigationService>().toWebViewScreen(
                       store.feed.title,
                       store.feed.link,
