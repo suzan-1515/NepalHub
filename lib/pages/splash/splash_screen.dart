@@ -1,11 +1,11 @@
-import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:mobx/mobx.dart';
 import 'package:provider/provider.dart';
-import 'package:samachar_hub/pages/widgets/progress_widget.dart';
 import 'package:samachar_hub/services/navigation_service.dart';
 import 'package:samachar_hub/stores/stores.dart';
 import 'package:samachar_hub/utils/extensions.dart';
+
+import 'widgets/splash_view.dart';
 
 class SplashScreen extends StatefulWidget {
   @override
@@ -49,40 +49,6 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Theme.of(context).backgroundColor,
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            children: [
-              Expanded(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    FadeInUp(
-                      child: Container(
-                        width: 100,
-                        height: 100,
-                        decoration: BoxDecoration(
-                          image: DecorationImage(
-                              image: AssetImage('assets/icons/logo.png')),
-                        ),
-                      ),
-                    ),
-                    SizedBox(height: 16),
-                  ],
-                ),
-              ),
-              SizedBox(height: 16),
-              Expanded(
-                child: Center(child: ProgressView()),
-              ),
-              SizedBox(height: 16),
-            ],
-          ),
-        ),
-      ),
-    );
+    return SplashView();
   }
 }

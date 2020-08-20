@@ -1,4 +1,4 @@
-package com.example.samachar_hub
+package com.cognota.nepalhub
 
 import androidx.annotation.NonNull;
 import io.flutter.embedding.android.FlutterActivity

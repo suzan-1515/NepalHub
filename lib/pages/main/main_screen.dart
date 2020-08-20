@@ -7,6 +7,8 @@ import 'package:samachar_hub/pages/category/categories_page.dart';
 import 'package:samachar_hub/pages/following/following_screen.dart';
 import 'package:samachar_hub/pages/home/home_screen.dart';
 import 'package:samachar_hub/pages/more_menu/more_menu_screen.dart';
+import 'package:samachar_hub/services/in_app_messaging_service.dart';
+import 'package:samachar_hub/services/preference_service.dart';
 import 'package:samachar_hub/stores/stores.dart';
 
 class MainScreen extends StatefulWidget {
@@ -25,6 +27,11 @@ class _MainScreenState extends State<MainScreen> {
     final store = context.read<HomeStore>();
     _setupObserver(store);
     super.initState();
+    final preference = context.read<PreferenceService>();
+    if (preference.isFirstOpen) {
+      preference.isFirstOpen = false;
+      context.read<InAppMessagingService>().trigger('first_load');
+    }
   }
 
   _setupObserver(HomeStore store) {
