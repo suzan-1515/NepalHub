@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:samachar_hub/pages/news/widgets/report_article.dart';
 import 'package:samachar_hub/stores/stores.dart';
+import 'package:samachar_hub/utils/extensions.dart';
 
 class Disclaimer extends StatelessWidget {
   final NewsDetailStore store;
@@ -23,7 +25,12 @@ class Disclaimer extends StatelessWidget {
               ),
               FlatButton(
                 visualDensity: VisualDensity.compact,
-                onPressed: () {},
+                onPressed: () => context.showBottomSheet(
+                  child: ReportArticle(
+                    articleId: store.feed.uuid,
+                    articleType: 'news',
+                  ),
+                ),
                 child: Row(
                   children: [
                     Icon(

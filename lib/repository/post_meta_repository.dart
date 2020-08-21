@@ -45,7 +45,7 @@ class PostMetaRepository {
       var likes = _preferenceService.likedFeeds;
       likes.add(postId);
       _preferenceService.likedFeeds = likes;
-      return _analyticsService.logPostMeta(postId: postId, metaName: 'like');
+      return _analyticsService.logPostLike(postId: postId);
     });
   }
 
@@ -60,7 +60,7 @@ class PostMetaRepository {
       var likes = _preferenceService.likedFeeds;
       likes.remove(postId);
       _preferenceService.likedFeeds = likes;
-      return _analyticsService.logPostMeta(postId: postId, metaName: 'unlike');
+      return _analyticsService.logPostUnLike(postId: postId);
     });
   }
 
@@ -84,8 +84,7 @@ class PostMetaRepository {
             activityId: activityId,
             activityData: metaActivityData)
         .then((onValue) {
-      return _analyticsService.logPostMeta(
-          postId: postId, metaName: 'bookmark');
+      return _analyticsService.logPostBookmark(postId: postId);
     });
   }
 
@@ -98,8 +97,7 @@ class PostMetaRepository {
     return _postMetaService
         .removeMeta(postId: postId, metaData: metaData, activityId: activityId)
         .then((value) {
-      return _analyticsService.logPostMeta(
-          postId: postId, metaName: 'unbookmark');
+      return _analyticsService.logPostBookmarkRemoved(postId: postId);
     });
   }
 
@@ -123,7 +121,7 @@ class PostMetaRepository {
             activityId: activityId,
             activityData: metaActivityData)
         .then((onValue) {
-      return _analyticsService.logPostMeta(postId: postId, metaName: 'comment');
+      return _analyticsService.logPostComment(postId: postId);
     });
   }
 
@@ -136,8 +134,7 @@ class PostMetaRepository {
     return _postMetaService
         .removeMeta(postId: postId, metaData: metaData, activityId: activityId)
         .then((value) {
-      return _analyticsService.logPostMeta(
-          postId: postId, metaName: 'uncomment');
+      return _analyticsService.logPostCommentDelete(postId: postId);
     });
   }
 
@@ -160,7 +157,7 @@ class PostMetaRepository {
             activityId: activityId,
             activityData: metaActivityData)
         .then((onValue) {
-      return _analyticsService.logPostMeta(postId: postId, metaName: 'view');
+      return _analyticsService.logPostView(postId: postId);
     });
   }
 
@@ -183,7 +180,7 @@ class PostMetaRepository {
             activityId: activityId,
             activityData: metaActivityData)
         .then((onValue) {
-      return _analyticsService.logPostMeta(postId: postId, metaName: 'share');
+      return _analyticsService.logPostShare(postId: postId);
     });
   }
 

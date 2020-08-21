@@ -31,7 +31,15 @@ extension APIErrorDialogX on BuildContext {
 }
 
 extension ModalBottonSheetX on BuildContext {
-  showBottomSheet({@required Widget child, ShapeBorder shape}) =>
+  showBottomSheet({
+    @required Widget child,
+    ShapeBorder shape = const RoundedRectangleBorder(
+      borderRadius: BorderRadius.only(
+        topLeft: Radius.circular(12.0),
+        topRight: Radius.circular(12.0),
+      ),
+    ),
+  }) =>
       showModalBottomSheet(
           context: this,
           shape: shape,

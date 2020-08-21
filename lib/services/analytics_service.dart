@@ -39,32 +39,66 @@ class AnalyticsService {
     );
   }
 
-  Future logPostMeta(
-      {@required String postId, @required String metaName}) async {
+  Future logPostLike({@required String postId}) async {
     return await _analytics.logEvent(
-      name: 'post_meta',
-      parameters: {'post_id': postId, 'meta': metaName},
+      name: 'post_like',
+      parameters: {'post_id': postId},
     );
   }
 
-  Future logFeedBookmarkAdded({String feedId}) async {
+  Future logPostUnLike({@required String postId}) async {
     return await _analytics.logEvent(
-      name: 'bookmarked_feed',
-      parameters: {'feed_id': feedId, 'action': 'added'},
+      name: 'post_unlike',
+      parameters: {'post_id': postId},
     );
   }
 
-  Future logFeedBookmarkRemoved({String feedId}) async {
+  Future logPostView({@required String postId}) async {
     return await _analytics.logEvent(
-      name: 'bookmarked_feed',
-      parameters: {'feed_id': feedId, 'action': 'removed'},
+      name: 'post_view',
+      parameters: {'post_id': postId},
+    );
+  }
+
+  Future logPostShare({@required String postId}) async {
+    return await _analytics.logEvent(
+      name: 'post_share',
+      parameters: {'post_id': postId},
+    );
+  }
+
+  Future logPostComment({@required String postId}) async {
+    return await _analytics.logEvent(
+      name: 'post_comment',
+      parameters: {'post_id': postId},
+    );
+  }
+
+  Future logPostCommentDelete({@required String postId}) async {
+    return await _analytics.logEvent(
+      name: 'post_comment_delete',
+      parameters: {'post_id': postId},
+    );
+  }
+
+  Future logPostBookmark({@required String postId}) async {
+    return await _analytics.logEvent(
+      name: 'post_bookmark',
+      parameters: {'post_id': postId},
+    );
+  }
+
+  Future logPostBookmarkRemoved({@required String postId}) async {
+    return await _analytics.logEvent(
+      name: 'post_bookmark_removed',
+      parameters: {'post_id': postId},
     );
   }
 
   Future logFeedBookmarkFetched({String page}) async =>
       await _analytics.logEvent(
-        name: 'bookmarked_feed',
-        parameters: {'feed_page': page, 'action': 'fetched'},
+        name: 'bookmark_fetched',
+        parameters: {'page': page},
       );
 
   Future logCommentPosted({String postId}) async {

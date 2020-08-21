@@ -51,6 +51,10 @@ class NewsThumbnailView extends StatelessWidget {
                 NewsFeedCardTitleDescription(
                   description: feed.description,
                   title: feed.title,
+                  descriptionMaxLines:
+                      MediaQuery.of(context).orientation == Orientation.portrait
+                          ? 2
+                          : 4,
                 ),
                 SizedBox(height: 8),
                 Divider(),

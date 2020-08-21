@@ -120,7 +120,10 @@ class NewsCompactView extends StatelessWidget {
                         ),
                         Text(
                           feed.title,
-                          maxLines: 2,
+                          maxLines: MediaQuery.of(context).orientation ==
+                                  Orientation.portrait
+                              ? 2
+                              : 4,
                           overflow: TextOverflow.ellipsis,
                           style: Theme.of(context).textTheme.subtitle1.copyWith(
                               fontWeight: FontWeight.w600, color: Colors.white),

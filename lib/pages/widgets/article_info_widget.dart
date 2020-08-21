@@ -77,10 +77,12 @@ class NewsFeedCardSourceCategory extends StatelessWidget {
 class NewsFeedCardTitleDescription extends StatelessWidget {
   final String title;
   final String description;
+  final int descriptionMaxLines;
 
   const NewsFeedCardTitleDescription({
     @required this.title,
     @required this.description,
+    this.descriptionMaxLines = 2,
   });
   @override
   Widget build(BuildContext context) {
@@ -102,11 +104,9 @@ class NewsFeedCardTitleDescription extends StatelessWidget {
         ),
         Text(
           description ?? '',
-          maxLines: MediaQuery.of(context).orientation == Orientation.portrait
-              ? 2
-              : 4,
+          maxLines: descriptionMaxLines,
           overflow: TextOverflow.ellipsis,
-          style: Theme.of(context).textTheme.subtitle1.copyWith(height: 1.5),
+          style: Theme.of(context).textTheme.subtitle1.copyWith(height: 1.3),
         ),
       ],
     );
@@ -243,14 +243,9 @@ class _NewsFeedOptionsState extends State<NewsFeedOptions> {
               Icons.more_vert,
             ),
             onPressed: () => context.showBottomSheet(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(12.0),
-                      topRight: Radius.circular(12.0)),
-                ),
                 child: NewsFeedMoreOption(
-                  feed: widget.feed,
-                )),
+              feed: widget.feed,
+            )),
           ),
         ],
       ),

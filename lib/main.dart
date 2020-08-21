@@ -7,7 +7,8 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:nepali_utils/nepali_utils.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:samachar_hub/notification/notification_handler.dart';
+import 'package:samachar_hub/handlers/dynamic_link_handler.dart';
+import 'package:samachar_hub/handlers/notification_handler.dart';
 import 'package:samachar_hub/notifier/forex_setting_notifier.dart';
 import 'package:samachar_hub/notifier/horoscope_setting_notifier.dart';
 import 'package:samachar_hub/notifier/news_setting_notifier.dart';
@@ -16,6 +17,7 @@ import 'package:samachar_hub/pages/corona/corona_repository.dart';
 import 'package:samachar_hub/pages/following/following_store.dart';
 import 'package:samachar_hub/pages/splash/splash_screen.dart';
 import 'package:samachar_hub/services/crash_analytics_service.dart';
+import 'package:samachar_hub/services/dynamic_link_service.dart';
 import 'package:samachar_hub/services/forex_api_service.dart';
 import 'package:samachar_hub/repository/forex_repository.dart';
 import 'package:samachar_hub/services/horoscope_api_service.dart';
@@ -83,6 +85,15 @@ class App extends StatelessWidget {
         ),
         ProxyProvider<AnalyticsService, ShareService>(
           update: (_, _analyticsService, __) => ShareService(_analyticsService),
+        ),
+        Provider<DynamicLinkService>(
+          create: (_) => DynamicLinkService(),
+          dispose: (context, value) => value.dispose(),
+        ),
+        ProxyProvider<DynamicLinkService, DynamicLinkHandler>(
+          lazy: false,
+          update: (_, _dynamicLinkService, __) =>
+              DynamicLinkHandler(_dynamicLinkService),
         ),
         ChangeNotifierProvider(
           create: (_) => NewsSettingNotifier(),
@@ -183,7 +194,6 @@ class App extends StatelessWidget {
         //Notification
         ProxyProvider2<FlutterLocalNotificationsPlugin,
             AuthenticationRepository, NotificationService>(
-          lazy: false,
           update: (_, _flutterLocalNotificationsPlugin,
                   _authenticationRepository, __) =>
               NotificationService(

@@ -5,6 +5,7 @@ import 'package:samachar_hub/pages/news/widgets/report_article.dart';
 import 'package:samachar_hub/repository/repositories.dart';
 import 'package:samachar_hub/services/services.dart';
 import 'package:samachar_hub/stores/auth/auth_store.dart';
+import 'package:samachar_hub/utils/extensions.dart';
 
 class NewsFeedMoreOption extends StatelessWidget {
   final NewsFeed feed;
@@ -151,23 +152,25 @@ class NewsFeedMoreOption extends StatelessWidget {
               Navigator.pop(context);
             },
           ),
-          ExpansionTile(
-            leading: Icon(Icons.report),
-            trailing: Icon(
-              Icons.chevron_right,
+          ListTile(
+            visualDensity: VisualDensity.compact,
+            leading: Icon(
+              Icons.report,
               size: 18,
             ),
-            onExpansionChanged: (value) {},
             title: Text(
               'Report',
               style: Theme.of(context).textTheme.bodyText2,
             ),
-            children: [
-              ReportArticle(
-                articleId: feed.uuid,
-                articleType: 'news',
-              ),
-            ],
+            onTap: () {
+              // Navigator.pop(context);
+              context.showBottomSheet(
+                child: ReportArticle(
+                  articleId: feed.uuid,
+                  articleType: 'news',
+                ),
+              );
+            },
           ),
         ],
       ),

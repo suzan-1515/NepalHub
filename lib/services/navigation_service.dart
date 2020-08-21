@@ -19,6 +19,7 @@ import 'package:samachar_hub/pages/news/topics/news_topic_feed_screen.dart';
 import 'package:samachar_hub/pages/news/trending/trending_news_screen.dart';
 import 'package:samachar_hub/pages/profile/user_profile_screen.dart';
 import 'package:samachar_hub/pages/settings/settings_page.dart';
+import 'package:samachar_hub/pages/settings/settings_store.dart';
 import 'package:samachar_hub/repository/repositories.dart';
 import 'package:samachar_hub/services/services.dart';
 import 'package:samachar_hub/stores/stores.dart';
@@ -160,6 +161,9 @@ class NavigationService {
   toGoldSilverScreen(BuildContext context) {}
 
   Future toFeedDetail(NewsFeed article, BuildContext context) {
+    if (context.read<SettingsStore>().newsReadMode == 2) {
+      return toWebViewScreen(article.title, article.link, context);
+    }
     return Navigator.push(
       context,
       MaterialPageRoute(

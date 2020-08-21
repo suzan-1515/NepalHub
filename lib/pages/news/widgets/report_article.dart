@@ -19,6 +19,17 @@ class ReportArticle extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisSize: MainAxisSize.min,
         children: [
+          SizedBox(
+            height: 4,
+          ),
+          Text(
+            'Report',
+            style: Theme.of(context).textTheme.subtitle1,
+          ),
+          SizedBox(
+            height: 4,
+          ),
+          Divider(),
           Text(
             'You can report this article with a reason below',
             style: Theme.of(context).textTheme.caption,

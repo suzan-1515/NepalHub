@@ -49,6 +49,11 @@ class NewsListView extends StatelessWidget {
                       child: NewsFeedCardTitleDescription(
                         description: feed.description,
                         title: feed.title,
+                        descriptionMaxLines:
+                            MediaQuery.of(context).orientation ==
+                                    Orientation.portrait
+                                ? 2
+                                : 4,
                       ),
                     ),
                     SizedBox(
