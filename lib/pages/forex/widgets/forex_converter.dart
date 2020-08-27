@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_advanced_networkimage/provider.dart';
 import 'package:flutter_advanced_networkimage/transition.dart';
@@ -7,7 +5,6 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:samachar_hub/data/models/models.dart';
 import 'package:samachar_hub/pages/forex/widgets/forex_converter_item.dart';
 import 'package:samachar_hub/stores/stores.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
 class ForexConverter extends StatefulWidget {
   const ForexConverter({
@@ -56,11 +53,9 @@ class _ForexConverterState extends State<ForexConverter> {
 
   _convertToNepali() {
     if (!_shouldFromTextChnage) {
-      debugPrint('From should change false');
       _shouldFromTextChnage = true;
       return;
     }
-    debugPrint('From should change true');
     final fromText = _fromController.text;
     if (fromText != null && fromText.isNotEmpty) {
       double from = double.parse(fromText);
@@ -72,11 +67,9 @@ class _ForexConverterState extends State<ForexConverter> {
 
   _convertFromNepali() {
     if (!_shouldToTextChnage) {
-      debugPrint('To should change false');
       _shouldToTextChnage = true;
       return;
     }
-    debugPrint('To should change true');
     final fromText = _toController.text;
     if (fromText != null && fromText.isNotEmpty) {
       double from = double.parse(fromText);
