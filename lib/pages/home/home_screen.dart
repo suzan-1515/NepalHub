@@ -8,6 +8,7 @@ import 'package:samachar_hub/data/api/api.dart';
 import 'package:samachar_hub/data/models/models.dart';
 import 'package:samachar_hub/pages/home/widgets/corona_section.dart';
 import 'package:samachar_hub/pages/home/widgets/date_weather_section.dart';
+import 'package:samachar_hub/pages/home/widgets/horoscope.dart';
 import 'package:samachar_hub/pages/home/widgets/news_category_menu_section.dart';
 import 'package:samachar_hub/pages/home/widgets/news_source_menu_section.dart';
 import 'package:samachar_hub/pages/home/widgets/news_topics_section.dart';
@@ -17,12 +18,12 @@ import 'package:samachar_hub/pages/widgets/empty_data_widget.dart';
 import 'package:samachar_hub/pages/widgets/error_data_widget.dart';
 import 'package:samachar_hub/pages/widgets/news_list_view.dart';
 import 'package:samachar_hub/pages/widgets/news_thumbnail_view.dart';
-import 'package:samachar_hub/pages/widgets/page_heading_widget.dart';
 import 'package:samachar_hub/pages/widgets/progress_widget.dart';
 import 'package:samachar_hub/pages/widgets/section_heading.dart';
 import 'package:samachar_hub/services/services.dart';
 import 'package:samachar_hub/stores/stores.dart';
 import 'package:samachar_hub/utils/extensions.dart';
+import 'package:samachar_hub/utils/date_time.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -189,12 +190,43 @@ class _HomeScreenState extends State<HomeScreen>
                 },
                 child: CustomScrollView(
                   slivers: <Widget>[
+                    SliverPadding(
+                      padding: const EdgeInsets.only(top: 12, bottom: 12),
+                      sliver: SliverAppBar(
+                        elevation: 0,
+                        forceElevated: false,
+                        backgroundColor: Theme.of(context).backgroundColor,
+                        title: RichText(
+                            text: TextSpan(
+                          text: 'Nepal Hub',
+                          style: Theme.of(context)
+                              .textTheme
+                              .headline5
+                              .copyWith(fontWeight: FontWeight.w800),
+                          children: [
+                            if (authenticationStore.isLoggedIn &&
+                                !authenticationStore.user.isAnonymous)
+                              TextSpan(
+                                  text:
+                                      '\nGood ${timeContextGreeting()} ${authenticationStore.user.firstName}',
+                                  style: Theme.of(context).textTheme.caption),
+                          ],
+                        )),
+                        pinned: false,
+                        floating: true,
+                      ),
+                    ),
                     if (snapshot.data.containsKey(MixedDataType.DATE_INFO))
                       SliverToBoxAdapter(child: DateWeatherSection()),
                     if (snapshot.data.containsKey(MixedDataType.CORONA))
                       SliverToBoxAdapter(
                           child: CoronaSection(
                               data: snapshot.data[MixedDataType.CORONA])),
+                    if (isEarlyMorning() &&
+                        snapshot.data.containsKey(MixedDataType.HOROSCOPE))
+                      SliverToBoxAdapter(
+                          child: DailyHoroscope(
+                              data: snapshot.data[MixedDataType.HOROSCOPE])),
                     if (snapshot.data.containsKey(MixedDataType.TRENDING_NEWS))
                       SliverToBoxAdapter(
                           child: TrendingNewsSection(
@@ -227,21 +259,13 @@ class _HomeScreenState extends State<HomeScreen>
   @override
   Widget build(BuildContext context) {
     super.build(context);
+    var size = MediaQuery.of(context).size;
     return Container(
+      width: size.width,
+      height: size.height,
       color: Theme.of(context).backgroundColor,
       padding: EdgeInsets.symmetric(horizontal: 8),
-      child: Column(
-        mainAxisSize: MainAxisSize.max,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: <Widget>[
-          PageHeading(
-            title: 'Top Stories',
-          ),
-          Expanded(
-            child: _buildList(),
-          ),
-        ],
-      ),
+      child: _buildList(),
     );
   }
 

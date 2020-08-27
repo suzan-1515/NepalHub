@@ -63,6 +63,7 @@ dependencies:
   flutter_signin_button: ^1.0.0
   flutter_share_me: ^0.9.1
   flushbar: ^1.10.4
+  launch_review: ^2.0.0
 
   corona_module:
     path: ./corona_module

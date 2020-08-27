@@ -96,9 +96,33 @@ class _ForexGraphState extends State<ForexGraph> {
         lineTouchData: LineTouchData(
           handleBuiltInTouches: true,
           touchTooltipData: LineTouchTooltipData(
-            tooltipBgColor: Theme.of(context).cardColor,
-            fitInsideHorizontally: true,
-          ),
+              getTooltipItems: (touchedSpots) {
+                return touchedSpots
+                    .asMap()
+                    .map((index, LineBarSpot touchedSpot) {
+                      if (touchedSpot == null) {
+                        return null;
+                      }
+                      final TextStyle textStyle = TextStyle(
+                        color: touchedSpot.bar.colors[0].withOpacity(1),
+                        fontWeight: FontWeight.bold,
+                        fontSize: 12,
+                      );
+                      return MapEntry(
+                        index,
+                        LineTooltipItem(
+                            (index == (touchedSpots.length - 1))
+                                ? '${touchedSpot.y.toString()}\n${_getXTitle(touchedSpot.x)}'
+                                : touchedSpot.y.toString(),
+                            textStyle),
+                      );
+                    })
+                    .values
+                    .toList();
+              },
+              tooltipBgColor: Theme.of(context).cardColor,
+              fitInsideHorizontally: true,
+              fitInsideVertically: true),
         ),
         minX: 0,
         maxX: maxX,

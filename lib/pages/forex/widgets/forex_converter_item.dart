@@ -38,32 +38,35 @@ class ForexConverterItem extends StatelessWidget {
             height: 24,
           ),
         ),
-        SizedBox(
-          width: 8,
-        ),
         Expanded(
           flex: 3,
-          child: Text(
-            '$currency',
-            style: Theme.of(context).textTheme.bodyText1,
+          child: DropdownButtonHideUnderline(
+            child: DropdownButton<String>(
+              // icon: Icon(FontAwesomeIcons.sortDown),
+              value: currencyCode,
+              isExpanded: true,
+              onChanged: onChanged,
+              items: items
+                  .map(
+                    (entry) => DropdownMenuItem<String>(
+                      value: entry.code,
+                      child: Text(
+                        entry.currency,
+                        style: Theme.of(context).textTheme.bodyText1,
+                      ),
+                    ),
+                  )
+                  .toList(),
+            ),
           ),
         ),
         SizedBox(
-          width: 8,
-        ),
-        Expanded(
-            flex: 1,
-            child: IconButton(
-              icon: Icon(FontAwesomeIcons.sortDown),
-              iconSize: 18,
-              onPressed: () {},
-            )),
-        SizedBox(
-          width: 8,
+          width: 16,
         ),
         Expanded(
           flex: 2,
           child: TextField(
+            keyboardType: TextInputType.number,
             controller: controller,
             style: Theme.of(context).textTheme.bodyText2,
           ),

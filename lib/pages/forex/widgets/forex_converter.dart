@@ -1,7 +1,13 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_advanced_networkimage/provider.dart';
+import 'package:flutter_advanced_networkimage/transition.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:samachar_hub/data/models/models.dart';
 import 'package:samachar_hub/pages/forex/widgets/forex_converter_item.dart';
 import 'package:samachar_hub/stores/stores.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class ForexConverter extends StatefulWidget {
   const ForexConverter({
@@ -24,6 +30,8 @@ class _ForexConverterState extends State<ForexConverter> {
   final TextEditingController _toController = TextEditingController();
   ForexModel _selectedFromForex;
   ForexModel _selectedToForex;
+  bool _shouldFromTextChnage = true;
+  bool _shouldToTextChnage = true;
 
   @override
   void initState() {
@@ -31,17 +39,10 @@ class _ForexConverterState extends State<ForexConverter> {
     _selectedToForex = widget.items.first;
 
     _fromController.addListener(() {
-      final fromText = _fromController.text;
-      if (fromText != null && fromText.isNotEmpty) {
-        double from = double.parse(fromText);
-        double toNp =
-            (from * _selectedFromForex.buying) / _selectedFromForex.unit;
-        double toAmount =
-            ((_selectedToForex.unit / _selectedToForex.buying) * toNp);
-        _toController.text = '${toAmount.toStringAsFixed(2)}';
-      }
+      _convertToNepali();
     });
-    _fromController.text = '1.0';
+
+    _fromController.text = _selectedFromForex.unit.toString();
 
     super.initState();
   }
@@ -51,6 +52,39 @@ class _ForexConverterState extends State<ForexConverter> {
     _fromController.dispose();
     _toController.dispose();
     super.dispose();
+  }
+
+  _convertToNepali() {
+    if (!_shouldFromTextChnage) {
+      debugPrint('From should change false');
+      _shouldFromTextChnage = true;
+      return;
+    }
+    debugPrint('From should change true');
+    final fromText = _fromController.text;
+    if (fromText != null && fromText.isNotEmpty) {
+      double from = double.parse(fromText);
+      double to = (from * _selectedFromForex.selling) / _selectedFromForex.unit;
+      _shouldToTextChnage = false;
+      _toController.text = '${to.toStringAsFixed(2)}';
+    }
+  }
+
+  _convertFromNepali() {
+    if (!_shouldToTextChnage) {
+      debugPrint('To should change false');
+      _shouldToTextChnage = true;
+      return;
+    }
+    debugPrint('To should change true');
+    final fromText = _toController.text;
+    if (fromText != null && fromText.isNotEmpty) {
+      double from = double.parse(fromText);
+      double to =
+          ((from * _selectedFromForex.unit) / _selectedFromForex.selling);
+      _shouldFromTextChnage = false;
+      _fromController.text = '${to.toStringAsFixed(2)}';
+    }
   }
 
   @override
@@ -79,22 +113,50 @@ class _ForexConverterState extends State<ForexConverter> {
               setState(() {
                 _selectedFromForex =
                     widget.items.firstWhere((element) => element.code == value);
-                _fromController.text = '1.0';
+                _fromController.text = _selectedFromForex.unit.toString();
+                _convertToNepali();
               });
             },
           ),
-          ForexConverterItem(
-            controller: _toController,
-            currency: _selectedToForex.currency,
-            currencyCode: _selectedToForex.code,
-            items: widget.items,
-            onChanged: (value) {
-              setState(() {
-                _selectedToForex =
-                    widget.items.firstWhere((element) => element.code == value);
-                _toController.text = '1.0';
-              });
-            },
+          Row(
+            children: <Widget>[
+              Expanded(
+                flex: 1,
+                child: TransitionToImage(
+                  width: 24,
+                  height: 24,
+                  image: AdvancedNetworkImage(
+                    'https://www.countryflags.io/np/flat/48.png',
+                    useDiskCache: true,
+                    cacheRule: CacheRule(maxAge: const Duration(days: 3)),
+                  ),
+                  fit: BoxFit.contain,
+                  loadingWidgetBuilder: (context, progress, imageData) =>
+                      Icon(FontAwesomeIcons.image),
+                  placeholderBuilder: (context, reloadImage) =>
+                      Icon(FontAwesomeIcons.image),
+                ),
+              ),
+              Expanded(
+                flex: 3,
+                child: Text(
+                  'Nepali Rupee',
+                  style: Theme.of(context).textTheme.bodyText1,
+                ),
+              ),
+              SizedBox(
+                width: 16,
+              ),
+              Expanded(
+                flex: 2,
+                child: TextField(
+                  keyboardType: TextInputType.number,
+                  controller: _toController,
+                  onChanged: (value) => _convertFromNepali(),
+                  style: Theme.of(context).textTheme.bodyText2,
+                ),
+              ),
+            ],
           ),
         ],
       ),

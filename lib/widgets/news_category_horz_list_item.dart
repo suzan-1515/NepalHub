@@ -18,7 +18,7 @@ class NewsCategoryHorzListItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      elevation: 1,
+      clipBehavior: Clip.hardEdge,
       color: Theme.of(context).cardColor,
       shape: RoundedRectangleBorder(
         side: BorderSide(color: Colors.grey[200]),

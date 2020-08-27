@@ -20,6 +20,8 @@ class UserModel {
       this.phoneNumber,
       this.createdAt});
 
+  String get firstName => fullName?.split(' ')[0];
+
   factory UserModel.fromFirebaseUser(UserCredential user) => UserModel(
       uId: user.user.uid,
       fullName: user.user.displayName,

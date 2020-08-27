@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:samachar_hub/pages/settings/settings_store.dart';
+import 'package:samachar_hub/services/analytics_service.dart';
 
 class NewsReadMode extends StatelessWidget {
   final SettingsStore store;
@@ -30,6 +32,7 @@ class NewsReadMode extends StatelessWidget {
           dense: true,
           onChanged: (bool value) {
             store.newsReadMode = 0;
+            context.read<AnalyticsService>().logNewsReadMode(mode: 'default');
             Navigator.pop(context);
           },
           value: store.newsReadMode == 0,
@@ -39,6 +42,7 @@ class NewsReadMode extends StatelessWidget {
           dense: true,
           onChanged: (bool value) {
             store.newsReadMode = 1;
+            context.read<AnalyticsService>().logNewsReadMode(mode: 'summary');
             Navigator.pop(context);
           },
           value: store.newsReadMode == 1,
@@ -48,6 +52,7 @@ class NewsReadMode extends StatelessWidget {
           dense: true,
           onChanged: (bool value) {
             store.newsReadMode = 2;
+            context.read<AnalyticsService>().logNewsReadMode(mode: 'full');
             Navigator.pop(context);
           },
           value: store.newsReadMode == 2,

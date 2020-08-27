@@ -184,6 +184,12 @@ class AnalyticsService {
     );
   }
 
+  Future logNewsReadMode({@required String mode}) async {
+    await _analytics.logEvent(
+      name: 'news_read_mode_$mode',
+    );
+  }
+
   Future logShare(
       {String postId, String method, String contentType = 'feed'}) async {
     await _analytics.logShare(

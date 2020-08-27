@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:launch_review/launch_review.dart';
 import 'package:mobx/mobx.dart';
 import 'package:provider/provider.dart';
 import 'package:samachar_hub/common/notification_channels.dart';
@@ -562,7 +563,7 @@ class _SettingsPageState extends State<SettingsPage> {
           ListTile(
             dense: true,
             onTap: () {
-              context.read<SettingsStore>().message = 'Comming soon!';
+              LaunchReview.launch(androidAppId: "com.cognota.nepalhub");
             },
             title: Text(
               'Rate us',
