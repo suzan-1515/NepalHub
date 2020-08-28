@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mobx/mobx.dart';
 import 'package:provider/provider.dart';
+import 'package:samachar_hub/handlers/dynamic_link_handler.dart';
 import 'package:samachar_hub/services/navigation_service.dart';
 import 'package:samachar_hub/services/preference_service.dart';
 import 'package:samachar_hub/stores/stores.dart';
@@ -42,10 +43,10 @@ class _SplashScreenState extends State<SplashScreen> {
         if (message != null) context.showMessage(message);
       }),
       autorun((_) {
-        if (store.isLoggedIn != null)
-          (store.isLoggedIn)
-              ? context.read<NavigationService>().toHomeScreen(context)
-              : context.read<NavigationService>().toLoginScreen(context);
+        if (store.isLoggedIn != null) if (store.isLoggedIn) {
+          context.read<NavigationService>().toHomeScreen(context);
+        } else
+          context.read<NavigationService>().toLoginScreen(context);
       }),
     ];
   }

@@ -92,9 +92,8 @@ class App extends StatelessWidget {
           dispose: (context, value) => value.dispose(),
         ),
         ProxyProvider<DynamicLinkService, DynamicLinkHandler>(
-          lazy: false,
           update: (_, _dynamicLinkService, __) =>
-              DynamicLinkHandler(_dynamicLinkService, context),
+              DynamicLinkHandler(_dynamicLinkService),
         ),
         ChangeNotifierProvider(
           create: (_) => NewsSettingNotifier(),

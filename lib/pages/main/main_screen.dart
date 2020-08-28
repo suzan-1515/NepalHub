@@ -3,6 +3,7 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:mobx/mobx.dart';
 import 'package:provider/provider.dart';
+import 'package:samachar_hub/handlers/dynamic_link_handler.dart';
 import 'package:samachar_hub/pages/category/categories_page.dart';
 import 'package:samachar_hub/pages/following/following_screen.dart';
 import 'package:samachar_hub/pages/home/home_screen.dart';
@@ -26,6 +27,7 @@ class _MainScreenState extends State<MainScreen> {
     store.selectedPage = 0;
     _setupObserver(store);
     super.initState();
+    context.read<DynamicLinkHandler>().init(context);
   }
 
   _setupObserver(MainStore store) {
