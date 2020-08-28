@@ -54,21 +54,6 @@ mixin _$HomeStore on _HomeStore, Store {
     });
   }
 
-  final _$selectedPageAtom = Atom(name: '_HomeStore.selectedPage');
-
-  @override
-  int get selectedPage {
-    _$selectedPageAtom.reportRead();
-    return super.selectedPage;
-  }
-
-  @override
-  set selectedPage(int value) {
-    _$selectedPageAtom.reportWrite(value, super.selectedPage, () {
-      super.selectedPage = value;
-    });
-  }
-
   final _$refreshAsyncAction = AsyncAction('_HomeStore.refresh');
 
   @override
@@ -84,17 +69,6 @@ mixin _$HomeStore on _HomeStore, Store {
   }
 
   final _$_HomeStoreActionController = ActionController(name: '_HomeStore');
-
-  @override
-  dynamic setPage(int pageIndex) {
-    final _$actionInfo =
-        _$_HomeStoreActionController.startAction(name: '_HomeStore.setPage');
-    try {
-      return super.setPage(pageIndex);
-    } finally {
-      _$_HomeStoreActionController.endAction(_$actionInfo);
-    }
-  }
 
   @override
   void loadInitialData() {
@@ -145,8 +119,7 @@ mixin _$HomeStore on _HomeStore, Store {
     return '''
 apiError: ${apiError},
 error: ${error},
-view: ${view},
-selectedPage: ${selectedPage}
+view: ${view}
     ''';
   }
 }

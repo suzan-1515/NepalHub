@@ -21,6 +21,7 @@ import 'package:samachar_hub/pages/widgets/news_thumbnail_view.dart';
 import 'package:samachar_hub/pages/widgets/progress_widget.dart';
 import 'package:samachar_hub/pages/widgets/section_heading.dart';
 import 'package:samachar_hub/services/services.dart';
+import 'package:samachar_hub/stores/main/main_store.dart';
 import 'package:samachar_hub/stores/stores.dart';
 import 'package:samachar_hub/utils/extensions.dart';
 import 'package:samachar_hub/utils/date_time.dart';
@@ -34,6 +35,8 @@ class _HomeScreenState extends State<HomeScreen>
     with AutomaticKeepAliveClientMixin {
 // Reaction disposers
   List<ReactionDisposer> _disposers;
+
+  final ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
@@ -49,10 +52,12 @@ class _HomeScreenState extends State<HomeScreen>
     for (final d in _disposers) {
       d();
     }
+    _scrollController?.dispose();
     super.dispose();
   }
 
   _setupObserver(store) {
+    final mainStore = context.read<MainStore>();
     _disposers = [
       // Listens for error message
       autorun((_) {
@@ -63,8 +68,21 @@ class _HomeScreenState extends State<HomeScreen>
       autorun((_) {
         final APIException error = store.apiError;
         if (error != null) context.showErrorDialog(error);
+      }),
+      autorun((_) {
+        if (mainStore.selectedPage == 0 &&
+            mainStore.selectedPage == mainStore.lastSelectedPage)
+          _scrollToTop(store);
       })
     ];
+  }
+
+  _scrollToTop(HomeStore store) {
+    _scrollController.animateTo(
+      0.0,
+      curve: Curves.easeOut,
+      duration: const Duration(milliseconds: 300),
+    );
   }
 
   Widget _buildMixedSection(int index, Map<MixedDataType, dynamic> data,
@@ -189,6 +207,7 @@ class _HomeScreenState extends State<HomeScreen>
                   await personalisedStore.refresh();
                 },
                 child: CustomScrollView(
+                  controller: _scrollController,
                   slivers: <Widget>[
                     SliverPadding(
                       padding: const EdgeInsets.only(top: 12, bottom: 12),

@@ -7,7 +7,7 @@ import 'package:samachar_hub/pages/category/categories_page.dart';
 import 'package:samachar_hub/pages/following/following_screen.dart';
 import 'package:samachar_hub/pages/home/home_screen.dart';
 import 'package:samachar_hub/pages/more_menu/more_menu_screen.dart';
-import 'package:samachar_hub/stores/stores.dart';
+import 'package:samachar_hub/stores/main/main_store.dart';
 
 class MainScreen extends StatefulWidget {
   @override
@@ -22,13 +22,13 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   void initState() {
-    final store = context.read<HomeStore>();
+    final store = context.read<MainStore>();
     store.selectedPage = 0;
     _setupObserver(store);
     super.initState();
   }
 
-  _setupObserver(HomeStore store) {
+  _setupObserver(MainStore store) {
     _disposers = [
       autorun((_) {
         _pageController.jumpToPage(store.selectedPage);
@@ -38,8 +38,8 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<HomeStore>(
-      builder: (_, HomeStore homeStore, Widget child) {
+    return Consumer<MainStore>(
+      builder: (_, MainStore homeStore, Widget child) {
         return Scaffold(
           backgroundColor: Theme.of(context).backgroundColor,
           body: SafeArea(

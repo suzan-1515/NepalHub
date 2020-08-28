@@ -32,6 +32,7 @@ import 'package:samachar_hub/repository/repositories.dart';
 import 'package:samachar_hub/services/following_firestore_service.dart';
 import 'package:samachar_hub/services/notification_service.dart';
 import 'package:samachar_hub/services/services.dart';
+import 'package:samachar_hub/stores/main/main_store.dart';
 import 'package:samachar_hub/stores/stores.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'common/themes.dart' as Themes;
@@ -171,6 +172,10 @@ class App extends StatelessWidget {
         ProxyProvider<AuthenticationRepository, AuthenticationStore>(
           update: (_, _authenticationRepository, __) =>
               AuthenticationStore(_authenticationRepository),
+        ),
+        Provider<MainStore>(
+          create: (_) => MainStore(),
+          dispose: (context, value) => value.dispose(),
         ),
         ProxyProvider4<NewsRepository, ForexRepository, HoroscopeRepository,
             CoronaRepository, HomeStore>(

@@ -43,14 +43,6 @@ abstract class _HomeStore with Store {
 
   bool _isBuilding = false;
 
-  @observable
-  int selectedPage = 0;
-
-  @action
-  setPage(int pageIndex) {
-    selectedPage = pageIndex;
-  }
-
   @action
   void loadInitialData() {
     _buildData();
