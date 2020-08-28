@@ -105,12 +105,29 @@ class App extends StatelessWidget {
           create: (_) => HoroscopeSettingNotifier(),
         ),
 
+        //Notification
+        ProxyProvider<FlutterLocalNotificationsPlugin, NotificationService>(
+          update: (_, _flutterLocalNotificationsPlugin, __) =>
+              NotificationService(_flutterLocalNotificationsPlugin),
+          dispose: (context, value) => value.dispose(),
+        ),
+        ProxyProvider2<NotificationService, PreferenceService,
+            NotificationHandler>(
+          lazy: false,
+          update: (_, _notificationService, _preferenceService, __) =>
+              NotificationHandler(_notificationService, _preferenceService),
+          dispose: (context, value) => value.dispose(),
+        ),
+
         //repository
-        ProxyProvider<AnalyticsService, AuthenticationRepository>(
-          update: (_, _analyticsService, __) => AuthenticationRepository(
-              AuthenticationService(
-                  FirebaseAuth.instance, GoogleSignIn(), FacebookAuth.instance),
-              _analyticsService),
+        ProxyProvider2<AnalyticsService, NotificationService,
+            AuthenticationRepository>(
+          update: (_, _analyticsService, _notificationService, __) =>
+              AuthenticationRepository(
+                  AuthenticationService(FirebaseAuth.instance, GoogleSignIn(),
+                      FacebookAuth.instance),
+                  _analyticsService,
+                  _notificationService),
         ),
         ProxyProvider2<AnalyticsService, PreferenceService, PostMetaRepository>(
           update: (_, _analyticsService, _preferenceService, __) =>
@@ -189,23 +206,6 @@ class App extends StatelessWidget {
         ProxyProvider<PreferenceService, MoreMenuStore>(
           update: (_, preferenceService, __) =>
               MoreMenuStore(preferenceService),
-        ),
-
-        //Notification
-        ProxyProvider2<FlutterLocalNotificationsPlugin,
-            AuthenticationRepository, NotificationService>(
-          update: (_, _flutterLocalNotificationsPlugin,
-                  _authenticationRepository, __) =>
-              NotificationService(
-                  _flutterLocalNotificationsPlugin, _authenticationRepository),
-          dispose: (context, value) => value.dispose(),
-        ),
-        ProxyProvider2<NotificationService, PreferenceService,
-            NotificationHandler>(
-          lazy: false,
-          update: (_, _notificationService, _preferenceService, __) =>
-              NotificationHandler(_notificationService, _preferenceService),
-          dispose: (context, value) => value.dispose(),
         ),
 
         ProxyProvider<AuthenticationRepository, CrashAnalyticsService>(

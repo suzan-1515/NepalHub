@@ -42,7 +42,6 @@ class NotificationHandler {
       if (!changes.from.subscribed && changes.to.subscribed) {
         log('[NotificationHandler] Onesignal first time subscription ');
         _initFirstTimeSubscribtion();
-        _initFirstTimeLocalSubscription();
       }
     });
 
@@ -92,6 +91,10 @@ class NotificationHandler {
     _notificationService.selectNotificationStream.listen((event) {
       log('Local notification received: $event');
     }, cancelOnError: true);
+
+    if (_preferenceService.isFirstOpen) {
+      _initFirstTimeLocalSubscription();
+    }
   }
 
   dispose() {}

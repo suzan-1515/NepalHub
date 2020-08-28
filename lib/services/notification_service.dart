@@ -4,11 +4,9 @@ import 'dart:developer';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:samachar_hub/common/api_keys.dart';
-import 'package:samachar_hub/repository/repositories.dart';
 
 class NotificationService {
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
-  final AuthenticationRepository _authenticationRepository;
 
   final SelectNotificationCallback selectNotificationCallback;
   final Future<dynamic> Function(int, String, String, String)
@@ -20,8 +18,7 @@ class NotificationService {
   Stream<String> get selectNotificationStream =>
       _selectNotificationController.stream;
 
-  NotificationService(
-      this.flutterLocalNotificationsPlugin, this._authenticationRepository,
+  NotificationService(this.flutterLocalNotificationsPlugin,
       {this.selectNotificationCallback, this.onDidReceiveLocalNotification}) {
     _initLocal();
     _initOneSignal();
@@ -63,15 +60,6 @@ class NotificationService {
 // The promptForPushNotificationsWithUserResponse function will show the iOS push notification prompt. We recommend removing the following code and instead using an In-App Message to prompt for notification permission
     await OneSignal.shared
         .promptUserForPushNotificationPermission(fallbackToSettings: true);
-
-    _authenticationRepository.authStateChanges().listen((event) {
-      if (event != null && !event.isAnonymous) {
-        log('[NotificationService] setEmail');
-        OneSignal.shared.setEmail(email: event.email).catchError((onError) {
-          log('[NotificationService] setEmail', error: onError);
-        });
-      }
-    });
   }
 
   Future<void> show(
@@ -178,6 +166,12 @@ class NotificationService {
 
   Future<void> unSubscribeAll(List<String> tags) async {
     return OneSignal.shared.deleteTags(tags);
+  }
+
+  Future<void> setEmail(String email) {
+    return OneSignal.shared.setEmail(email: email).catchError((onError) {
+      log('[NotificationService] setEmail', error: onError);
+    });
   }
 
   dispose() {

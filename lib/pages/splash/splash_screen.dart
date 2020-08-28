@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mobx/mobx.dart';
 import 'package:provider/provider.dart';
 import 'package:samachar_hub/services/navigation_service.dart';
+import 'package:samachar_hub/services/preference_service.dart';
 import 'package:samachar_hub/stores/stores.dart';
 import 'package:samachar_hub/utils/extensions.dart';
 
@@ -19,6 +20,8 @@ class _SplashScreenState extends State<SplashScreen> {
     var store = context.read<AuthenticationStore>();
     _setupObserver(store);
     super.initState();
+    final prefs = context.read<PreferenceService>();
+    if (prefs.isFirstOpen) prefs.isFirstOpen = false;
     Future.delayed(Duration(seconds: 3), () => store.silentSignIn());
   }
 

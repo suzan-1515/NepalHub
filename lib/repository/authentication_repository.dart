@@ -1,17 +1,18 @@
-import 'dart:developer';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:samachar_hub/data/models/user_model.dart';
+import 'package:samachar_hub/services/notification_service.dart';
 import 'package:samachar_hub/services/services.dart';
 
 class AuthenticationRepository {
   final AuthenticationService _authenticationService;
   final AnalyticsService _analyticsService;
+  final NotificationService _notificationService;
 
   AuthenticationRepository(
     this._authenticationService,
     this._analyticsService,
+    this._notificationService,
   );
 
   Future<UserModel> loginWithEmail({
@@ -54,6 +55,7 @@ class AuthenticationRepository {
           createdAt: auth.user.metadata.creationTime);
       return _authenticationService.saveUserProfile(user: user).then((_) {
         _analyticsService.logSignUp(method: auth.credential.signInMethod);
+        _notificationService.setEmail(email);
         return _authenticationService
             .getUserProfile(uid: auth.user.uid)
             .then((data) {
@@ -76,6 +78,7 @@ class AuthenticationRepository {
             .saveUserProfile(user: UserModel.fromFirebaseUser(value))
             .then((_) {
           _analyticsService.logSignUp(method: value.credential.signInMethod);
+          _notificationService.setEmail(value.user.email);
           return _authenticationService
               .getUserProfile(uid: value.user.uid)
               .then((data) {
@@ -110,6 +113,7 @@ class AuthenticationRepository {
             .saveUserProfile(user: UserModel.fromFirebaseUser(value))
             .then((_) {
           _analyticsService.logSignUp(method: value.credential.signInMethod);
+          _notificationService.setEmail(value.user.email);
           return _authenticationService
               .getUserProfile(uid: value.user.uid)
               .then((data) {
@@ -144,6 +148,7 @@ class AuthenticationRepository {
             .saveUserProfile(user: UserModel.fromFirebaseUser(value))
             .then((_) {
           _analyticsService.logSignUp(method: value.credential.signInMethod);
+          _notificationService.setEmail(value.user.email);
           return _authenticationService
               .getUserProfile(uid: value.user.uid)
               .then((data) {
