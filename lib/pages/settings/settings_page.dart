@@ -13,9 +13,11 @@ import 'package:samachar_hub/pages/settings/widgets/news_read_mode.dart';
 import 'package:samachar_hub/pages/settings/widgets/section_heading.dart';
 import 'package:samachar_hub/services/notification_service.dart';
 import 'package:samachar_hub/stores/auth/auth_store.dart';
+import 'package:samachar_hub/utils/desclaimer.dart';
 import 'package:samachar_hub/utils/forex_currency.dart';
 import 'package:samachar_hub/utils/horoscope_signs.dart';
 import 'package:samachar_hub/utils/extensions.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 
 class SettingsPage extends StatefulWidget {
   @override
@@ -553,7 +555,19 @@ class _SettingsPageState extends State<SettingsPage> {
           ListTile(
             dense: true,
             onTap: () {
-              context.read<SettingsStore>().message = 'Comming soon!';
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => Scaffold(
+                      appBar: AppBar(
+                        title: Text('Privacy Policy'),
+                      ),
+                      body: WebView(
+                        initialUrl:
+                            'https://github.com/suzan-1515/Samachar-Hub/blob/privacy-policy.html',
+                      ),
+                    ),
+                  ));
             },
             title: Text(
               'Privacy Policy',
@@ -573,7 +587,55 @@ class _SettingsPageState extends State<SettingsPage> {
           ListTile(
             dense: true,
             onTap: () {
-              context.read<SettingsStore>().message = 'Comming soon!';
+              showAboutDialog(
+                  context: context,
+                  applicationName: 'Nepal Hub',
+                  applicationVersion: '1.0.0',
+                  applicationLegalese: kDesclaimer,
+                  applicationIcon: Image.asset(
+                    'assets/icons/logo.png',
+                    width: 32,
+                    height: 32,
+                  ),
+                  children: [
+                    SizedBox(
+                      height: 8,
+                    ),
+                    Divider(),
+                    SizedBox(
+                      height: 8,
+                    ),
+                    Text(
+                      'Developed by:',
+                      textAlign: TextAlign.center,
+                      style: Theme.of(context)
+                          .textTheme
+                          .headline6
+                          .copyWith(fontWeight: FontWeight.w600),
+                    ),
+                    SizedBox(
+                      height: 8,
+                    ),
+                    Text(
+                      'Sujan Parajuli',
+                      textAlign: TextAlign.center,
+                      style: Theme.of(context)
+                          .textTheme
+                          .subtitle1
+                          .copyWith(fontWeight: FontWeight.w600),
+                    ),
+                    SizedBox(
+                      height: 4,
+                    ),
+                    SelectableText(
+                      'Email: suzanparajuli@gmail.com',
+                      textAlign: TextAlign.center,
+                      style: Theme.of(context).textTheme.bodyText2,
+                    ),
+                    SizedBox(
+                      height: 8,
+                    ),
+                  ]);
             },
             title: Text(
               'About',
