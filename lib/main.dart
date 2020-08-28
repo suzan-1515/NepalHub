@@ -93,7 +93,7 @@ class App extends StatelessWidget {
         ProxyProvider<DynamicLinkService, DynamicLinkHandler>(
           lazy: false,
           update: (_, _dynamicLinkService, __) =>
-              DynamicLinkHandler(_dynamicLinkService),
+              DynamicLinkHandler(_dynamicLinkService, context),
         ),
         ChangeNotifierProvider(
           create: (_) => NewsSettingNotifier(),

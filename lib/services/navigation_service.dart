@@ -186,7 +186,7 @@ class NavigationService {
               dispose: (context, value) => value.dispose(),
             ),
           ],
-          child: NewsDetailScreen(feed: article),
+          child: NewsDetailScreen(),
         ),
       ),
     );

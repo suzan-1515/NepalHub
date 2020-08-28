@@ -13,9 +13,6 @@ import 'package:samachar_hub/widgets/cached_image_widget.dart';
 import 'package:samachar_hub/widgets/comment_bar_widget.dart';
 
 class NewsDetailScreen extends StatefulWidget {
-  final NewsFeed feed;
-  NewsDetailScreen({this.feed});
-
   @override
   _NewsDetailScreenState createState() => _NewsDetailScreenState();
 }
