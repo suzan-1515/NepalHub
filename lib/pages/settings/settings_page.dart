@@ -11,6 +11,7 @@ import 'package:samachar_hub/common/notification_channels.dart';
 import 'package:samachar_hub/pages/settings/settings_store.dart';
 import 'package:samachar_hub/pages/settings/widgets/news_read_mode.dart';
 import 'package:samachar_hub/pages/settings/widgets/section_heading.dart';
+import 'package:samachar_hub/services/navigation_service.dart';
 import 'package:samachar_hub/services/notification_service.dart';
 import 'package:samachar_hub/stores/auth/auth_store.dart';
 import 'package:samachar_hub/utils/desclaimer.dart';
@@ -554,21 +555,10 @@ class _SettingsPageState extends State<SettingsPage> {
           SizedBox(height: 8),
           ListTile(
             dense: true,
-            onTap: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => Scaffold(
-                      appBar: AppBar(
-                        title: Text('Privacy Policy'),
-                      ),
-                      body: WebView(
-                        initialUrl:
-                            'https://github.com/suzan-1515/Samachar-Hub/blob/privacy-policy.html',
-                      ),
-                    ),
-                  ));
-            },
+            onTap: () => context.read<NavigationService>().toWebViewScreen(
+                'Privacy Policy',
+                'https://github.com/suzan-1515/Samachar-Hub/blob/master/privacy-policy.html',
+                context),
             title: Text(
               'Privacy Policy',
               style: Theme.of(context).textTheme.bodyText1,
