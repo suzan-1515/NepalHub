@@ -557,7 +557,7 @@ class _SettingsPageState extends State<SettingsPage> {
             dense: true,
             onTap: () => context.read<NavigationService>().toWebViewScreen(
                 'Privacy Policy',
-                'https://github.com/suzan-1515/Samachar-Hub/blob/master/privacy-policy.html',
+                'https://suzan-1515.github.io/Samachar-Hub/privacy-policy.html',
                 context),
             title: Text(
               'Privacy Policy',
