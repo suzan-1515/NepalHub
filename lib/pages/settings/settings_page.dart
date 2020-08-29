@@ -11,6 +11,7 @@ import 'package:samachar_hub/common/notification_channels.dart';
 import 'package:samachar_hub/pages/settings/settings_store.dart';
 import 'package:samachar_hub/pages/settings/widgets/news_read_mode.dart';
 import 'package:samachar_hub/pages/settings/widgets/section_heading.dart';
+import 'package:samachar_hub/services/analytics_service.dart';
 import 'package:samachar_hub/services/navigation_service.dart';
 import 'package:samachar_hub/services/notification_service.dart';
 import 'package:samachar_hub/stores/auth/auth_store.dart';
@@ -18,7 +19,6 @@ import 'package:samachar_hub/utils/desclaimer.dart';
 import 'package:samachar_hub/utils/forex_currency.dart';
 import 'package:samachar_hub/utils/horoscope_signs.dart';
 import 'package:samachar_hub/utils/extensions.dart';
-import 'package:webview_flutter/webview_flutter.dart';
 
 class SettingsPage extends StatefulWidget {
   @override
@@ -119,11 +119,18 @@ class _SettingsPageState extends State<SettingsPage> {
                           NotificationChannels.kMorningNewsChannelName,
                           NotificationChannels.kMorningNewsChannelDesc,
                           Time(7, 0, 0));
-                    } else
+                      context
+                          .read<AnalyticsService>()
+                          .logNewsDailyMorningNotificatoon(notify: true);
+                    } else {
                       context
                           .read<NotificationService>()
                           .flutterLocalNotificationsPlugin
                           .cancel(NotificationChannels.kMorningNewsId);
+                      context
+                          .read<AnalyticsService>()
+                          .logNewsDailyMorningNotificatoon(notify: false);
+                    }
                   },
                   activeColor: Theme.of(context).accentColor,
                 ),
@@ -151,16 +158,22 @@ class _SettingsPageState extends State<SettingsPage> {
                   ),
                 ),
                 Switch(
-                  value: settingsStore.otherNotifications,
+                  value: settingsStore.newsNotifications,
                   onChanged: (value) {
-                    settingsStore.setOtherNotifications(value);
+                    settingsStore.setNewsNotifications(value);
                     if (value) {
                       context.read<NotificationService>().subscribe(
                           NotificationChannels.kNewsNotifications, 1);
+                      context
+                          .read<AnalyticsService>()
+                          .logNewsNotificatoon(notify: true);
                     } else
                       context
                           .read<NotificationService>()
                           .unSubscribe(NotificationChannels.kNewsNotifications);
+                    context
+                        .read<AnalyticsService>()
+                        .logNewsNotificatoon(notify: false);
                   },
                   activeColor: Theme.of(context).accentColor,
                 ),
@@ -264,11 +277,18 @@ class _SettingsPageState extends State<SettingsPage> {
                               NotificationChannels.kMorningHoroscopeChannelName,
                               NotificationChannels.kMorningHoroscopeChannelDesc,
                               Time(7, 0, 0));
-                    } else
+                      context
+                          .read<AnalyticsService>()
+                          .logHoroscopeDailyMorningNotificatoon(notify: true);
+                    } else {
                       context
                           .read<NotificationService>()
                           .flutterLocalNotificationsPlugin
                           .cancel(NotificationChannels.kMorningHoroscopeId);
+                      context
+                          .read<AnalyticsService>()
+                          .logHoroscopeDailyMorningNotificatoon(notify: false);
+                    }
                   },
                   activeColor: Theme.of(context).accentColor,
                 ),
@@ -422,9 +442,15 @@ class _SettingsPageState extends State<SettingsPage> {
                     if (value) {
                       context.read<NotificationService>().subscribe(
                           NotificationChannels.kTrendingNotifications, 1);
+                      context
+                          .read<AnalyticsService>()
+                          .logTrendingNotificatoon(notify: true);
                     } else
                       context.read<NotificationService>().unSubscribe(
                           NotificationChannels.kTrendingNotifications);
+                    context
+                        .read<AnalyticsService>()
+                        .logTrendingNotificatoon(notify: false);
                   },
                   activeColor: Theme.of(context).accentColor,
                 ),
@@ -458,9 +484,15 @@ class _SettingsPageState extends State<SettingsPage> {
                     if (value) {
                       context.read<NotificationService>().subscribe(
                           NotificationChannels.kCommentNotifications, 1);
+                      context
+                          .read<AnalyticsService>()
+                          .logCommentNotificatoon(notify: true);
                     } else
                       context.read<NotificationService>().unSubscribe(
                           NotificationChannels.kCommentNotifications);
+                    context
+                        .read<AnalyticsService>()
+                        .logCommentNotificatoon(notify: false);
                   },
                   activeColor: Theme.of(context).accentColor,
                 ),
@@ -494,9 +526,15 @@ class _SettingsPageState extends State<SettingsPage> {
                     if (value) {
                       context.read<NotificationService>().subscribe(
                           NotificationChannels.kMessageNotifications, 1);
+                      context
+                          .read<AnalyticsService>()
+                          .logMessageNotificatoon(notify: true);
                     } else
                       context.read<NotificationService>().unSubscribe(
                           NotificationChannels.kMessageNotifications);
+                    context
+                        .read<AnalyticsService>()
+                        .logMessageNotificatoon(notify: false);
                   },
                   activeColor: Theme.of(context).accentColor,
                 ),
@@ -530,9 +568,15 @@ class _SettingsPageState extends State<SettingsPage> {
                     if (value) {
                       context.read<NotificationService>().subscribe(
                           NotificationChannels.kOtherNotifications, 1);
+                      context
+                          .read<AnalyticsService>()
+                          .logOtherNotificatoon(notify: true);
                     } else
                       context.read<NotificationService>().unSubscribe(
                           NotificationChannels.kOtherNotifications);
+                    context
+                        .read<AnalyticsService>()
+                        .logOtherNotificatoon(notify: false);
                   },
                   activeColor: Theme.of(context).accentColor,
                 ),

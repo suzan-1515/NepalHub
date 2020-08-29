@@ -4,6 +4,7 @@ import 'dart:developer';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:samachar_hub/common/api_keys.dart';
+import 'package:samachar_hub/common/notification_channels.dart';
 
 class NotificationService {
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
@@ -172,6 +173,36 @@ class NotificationService {
     return OneSignal.shared.setEmail(email: email).catchError((onError) {
       log('[NotificationService] setEmail', error: onError);
     });
+  }
+
+  setDefaultLocalNotification() {
+    log('[NotificationService] setDefaultLocalNotification');
+    this.scheduleNotificationDaily(
+        NotificationChannels.kMorningNewsId,
+        'Good Morning 🌅',
+        'Your personalised daily news is ready. Click to read. 📰',
+        NotificationChannels.kMorningNewsChannelId,
+        NotificationChannels.kMorningNewsChannelName,
+        NotificationChannels.kMorningNewsChannelDesc,
+        Time(7, 0, 0));
+
+    // this.scheduleNotificationDaily(
+    //     NotificationChannels.kMorningHoroscopeId,
+    //     'Good Morning 🌅',
+    //     'Your daily horoscope is here. Click to read. 📰',
+    //     NotificationChannels.kMorningHoroscopeChannelId,
+    //     NotificationChannels.kMorningHoroscopeChannelName,
+    //     NotificationChannels.kMorningHoroscopeChannelDesc,
+    //     Time(7, 0, 0));
+  }
+
+  setDefaultRemoteNotification() {
+    log('[NotificationService] setDefaultRemoteNotification');
+    this.subscribe(NotificationChannels.kNewsNotifications, 1);
+    this.subscribe(NotificationChannels.kTrendingNotifications, 1);
+    this.subscribe(NotificationChannels.kCommentNotifications, 1);
+    this.subscribe(NotificationChannels.kMessageNotifications, 1);
+    this.subscribe(NotificationChannels.kOtherNotifications, 1);
   }
 
   dispose() {

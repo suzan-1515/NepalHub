@@ -190,6 +190,41 @@ class AnalyticsService {
     );
   }
 
+  Future logNewsDailyMorningNotificatoon({@required bool notify}) async {
+    await _analytics.logEvent(
+        name: 'news_morning_notification', parameters: {'notify': notify});
+  }
+
+  Future logNewsNotificatoon({@required bool notify}) async {
+    await _analytics
+        .logEvent(name: 'news_notification', parameters: {'notify': notify});
+  }
+
+  Future logHoroscopeDailyMorningNotificatoon({@required bool notify}) async {
+    await _analytics.logEvent(
+        name: 'horoscope_morning_notification', parameters: {'notify': notify});
+  }
+
+  Future logTrendingNotificatoon({@required bool notify}) async {
+    await _analytics.logEvent(
+        name: 'trending_notification', parameters: {'notify': notify});
+  }
+
+  Future logCommentNotificatoon({@required bool notify}) async {
+    await _analytics
+        .logEvent(name: 'comment_notification', parameters: {'notify': notify});
+  }
+
+  Future logMessageNotificatoon({@required bool notify}) async {
+    await _analytics
+        .logEvent(name: 'message_notification', parameters: {'notify': notify});
+  }
+
+  Future logOtherNotificatoon({@required bool notify}) async {
+    await _analytics
+        .logEvent(name: 'other_notification', parameters: {'notify': notify});
+  }
+
   Future logShare(
       {String postId, String method, String contentType = 'feed'}) async {
     await _analytics.logShare(

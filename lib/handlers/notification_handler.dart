@@ -1,8 +1,6 @@
 import 'dart:developer';
 
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
-import 'package:samachar_hub/common/notification_channels.dart';
 import 'package:samachar_hub/services/notification_service.dart';
 import 'package:samachar_hub/services/preference_service.dart';
 
@@ -41,7 +39,7 @@ class NotificationHandler {
       log('[NotificationHandler] Onesignal subscription changed: ${changes.jsonRepresentation()}');
       if (!changes.from.subscribed && changes.to.subscribed) {
         log('[NotificationHandler] Onesignal first time subscription ');
-        _initFirstTimeSubscribtion();
+        _notificationService.setDefaultRemoteNotification();
       }
     });
 
@@ -53,47 +51,14 @@ class NotificationHandler {
     });
   }
 
-  _initFirstTimeSubscribtion() {
-    log('[NotificationHandler] _initFirstTimeSubscribtion');
-    _notificationService.subscribe(NotificationChannels.kNewsNotifications, 1);
-    _notificationService.subscribe(
-        NotificationChannels.kTrendingNotifications, 1);
-    _notificationService.subscribe(
-        NotificationChannels.kCommentNotifications, 1);
-    _notificationService.subscribe(
-        NotificationChannels.kMessageNotifications, 1);
-    _notificationService.subscribe(NotificationChannels.kOtherNotifications, 1);
-  }
-
-  _initFirstTimeLocalSubscription() {
-    log('[NotificationHandler] _initFirstTimeLocalSubscription');
-    _notificationService.scheduleNotificationDaily(
-        NotificationChannels.kMorningNewsId,
-        'Good Morning 🌅',
-        'Your personalised daily news is ready. Click to read. 📰',
-        NotificationChannels.kMorningNewsChannelId,
-        NotificationChannels.kMorningNewsChannelName,
-        NotificationChannels.kMorningNewsChannelDesc,
-        Time(7, 0, 0));
-
-    _notificationService.scheduleNotificationDaily(
-        NotificationChannels.kMorningHoroscopeId,
-        'Good Morning 🌅',
-        'Your daily horoscope is here. Click to read. 📰',
-        NotificationChannels.kMorningHoroscopeChannelId,
-        NotificationChannels.kMorningHoroscopeChannelName,
-        NotificationChannels.kMorningHoroscopeChannelDesc,
-        Time(7, 0, 0));
-  }
-
   _handleLocal() {
     log('[NotificationHandler] _handleLocal');
     _notificationService.selectNotificationStream.listen((event) {
       log('Local notification received: $event');
     }, cancelOnError: true);
-
-    if (_preferenceService.isFirstOpen) {
-      _initFirstTimeLocalSubscription();
+    if (!_preferenceService.defaultLocalNotifications) {
+      _preferenceService.defaultLocalNotifications = true;
+      _notificationService.setDefaultLocalNotification();
     }
   }
 

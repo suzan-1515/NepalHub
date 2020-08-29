@@ -6,6 +6,7 @@ class PreferenceService {
   final String _themeSetBySystemKey = 'themeSetBySystem';
   final String _openInAppKey = 'openInApp';
   final String _newsReadModeKey = 'newsReadMode';
+  final String _defaultLocalNotificationKey = 'defaultLocalNotification';
   final String _showDailyMorningNewsKey = 'showDailyMorningNews';
   final String _showDailyMorningHoroscopeKey = 'showDailyMorningHoroscope';
   final String _newsNotificationsKey = 'newsNotificationsKey';
@@ -50,6 +51,10 @@ class PreferenceService {
 
   set newsReadMode(int value) {
     _sharedPreferences.setInt(_newsReadModeKey, value);
+  }
+
+  set defaultLocalNotifications(bool value) {
+    _sharedPreferences.setBool(_defaultLocalNotificationKey, value);
   }
 
   set showDailyMorningNews(bool value) {
@@ -123,6 +128,10 @@ class PreferenceService {
 
   bool get openInApp => _sharedPreferences.getBool(_openInAppKey) ?? true;
   int get newsReadMode => _sharedPreferences.getInt(_newsReadModeKey) ?? 0;
+
+  bool get defaultLocalNotifications =>
+      _sharedPreferences.getBool(_defaultLocalNotificationKey) ?? false;
+
   bool get showDailyMorningNews =>
       _sharedPreferences.getBool(_showDailyMorningNewsKey) ?? true;
 
