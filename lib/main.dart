@@ -9,9 +9,11 @@ import 'package:provider/provider.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:samachar_hub/handlers/dynamic_link_handler.dart';
 import 'package:samachar_hub/handlers/notification_handler.dart';
+import 'package:samachar_hub/notifier/news_setting_notifier.dart';
 import 'package:samachar_hub/pages/splash/splash_screen.dart';
 import 'package:samachar_hub/pages/settings/settings_store.dart';
 import 'package:samachar_hub/pages/splash/widgets/splash_view.dart';
+import 'package:samachar_hub/repository/repositories.dart';
 import 'package:samachar_hub/services/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'common/themes.dart' as Themes;
@@ -52,9 +54,10 @@ class App extends StatelessWidget {
         if (snapshot.hasError) {
           return MaterialApp(
             home: Container(
+              color: Colors.white,
               child: Center(
                 child: Text(
-                    'Oops something went run.\nPlease restart application.'),
+                    'Oops something went run. Please restart application.'),
               ),
             ),
           );
@@ -74,6 +77,19 @@ class App extends StatelessWidget {
               Provider<NavigationService>(
                 create: (_) => NavigationService(),
               ),
+              Provider<InAppMessagingService>(
+                create: (_) => InAppMessagingService(),
+              ),
+              ProxyProvider<AnalyticsService, ShareService>(
+                update: (_, _analyticsService, __) =>
+                    ShareService(_analyticsService),
+              ),
+
+              //Notifier
+              ChangeNotifierProvider(
+                create: (_) => NewsSettingNotifier(),
+              ),
+
               //Notification
               Provider<FlutterLocalNotificationsPlugin>(
                 create: (_) => FlutterLocalNotificationsPlugin(),
@@ -110,6 +126,45 @@ class App extends StatelessWidget {
                             GoogleSignIn(), FacebookAuth.instance),
                         _analyticsService,
                         _notificationService),
+              ),
+              ProxyProvider2<AnalyticsService, PreferenceService,
+                  PostMetaRepository>(
+                update: (_, _analyticsService, _preferenceService, __) =>
+                    PostMetaRepository(PostMetaFirestoreService(),
+                        _analyticsService, _preferenceService),
+              ),
+
+              ProxyProvider<PreferenceService, NewsRepository>(
+                update: (_, _preferenceService, __) =>
+                    NewsRepository(NewsApiService(), _preferenceService),
+              ),
+              Provider<CoronaRepository>(
+                create: (_) => CoronaRepository(CoronaApiService()),
+              ),
+              ProxyProvider2<PreferenceService, AnalyticsService,
+                  ForexRepository>(
+                update: (_, preferenceService, analyticsService, __) =>
+                    ForexRepository(
+                        preferenceService, ForexApiService(), analyticsService),
+              ),
+              ProxyProvider2<PreferenceService, AnalyticsService,
+                  HoroscopeRepository>(
+                update: (_, preferenceService, analyticsService, __) =>
+                    HoroscopeRepository(preferenceService,
+                        HoroscopeApiService(), analyticsService),
+              ),
+
+              ProxyProvider2<AnalyticsService, PreferenceService,
+                  FollowingRepository>(
+                update: (_, _analyticsService, _preferenceService, __) =>
+                    FollowingRepository(FollowingFirestoreService(),
+                        _analyticsService, _preferenceService),
+              ),
+              ProxyProvider2<PreferenceService, PostMetaRepository,
+                  BookmarkRepository>(
+                update: (_, _preferenceService, _postMetaRepository, __) =>
+                    BookmarkRepository(BookmarkFirestoreService(),
+                        _postMetaRepository, _preferenceService),
               ),
 
               //store

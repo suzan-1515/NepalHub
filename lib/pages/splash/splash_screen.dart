@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mobx/mobx.dart';
 import 'package:provider/provider.dart';
-import 'package:samachar_hub/services/in_app_messaging_service.dart';
 import 'package:samachar_hub/services/navigation_service.dart';
 import 'package:samachar_hub/services/preference_service.dart';
 import 'package:samachar_hub/services/services.dart';
@@ -56,16 +55,6 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [
-        Provider<InAppMessagingService>(
-          create: (_) => InAppMessagingService(),
-        ),
-        ProxyProvider<AnalyticsService, ShareService>(
-          update: (_, _analyticsService, __) => ShareService(_analyticsService),
-        ),
-      ],
-      child: SplashView(),
-    );
+    return SplashView();
   }
 }

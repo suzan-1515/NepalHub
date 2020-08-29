@@ -1,7 +1,7 @@
 import 'package:samachar_hub/data/api/api_provider.dart' as Api;
 import 'package:samachar_hub/data/mappers/mappers.dart';
 import 'package:samachar_hub/data/models/models.dart';
-import 'package:samachar_hub/pages/corona/corona_api_service.dart';
+import 'package:samachar_hub/services/corona_api_service.dart';
 
 class CoronaRepository {
   final CoronaApiService coronaApiService;
@@ -13,7 +13,8 @@ class CoronaRepository {
         .then((onValue) => CoronaMapper.fromWorldwideApi(onValue));
   }
 
-  Future<CoronaCountrySpecificModel> getByCountry({String country = 'nepal'}) async {
+  Future<CoronaCountrySpecificModel> getByCountry(
+      {String country = 'nepal'}) async {
     return await Api.fetchCoronaStatByCountry(country: country)
         .then((onValue) => CoronaMapper.fromCountryApi(onValue));
   }

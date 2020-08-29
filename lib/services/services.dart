@@ -11,3 +11,6 @@ export 'news_detail_service.dart';
 export 'post_meta_firestore_service.dart';
 export 'navigation_service.dart';
 export 'share_service.dart';
+export 'corona_api_service.dart';
+export 'bookmark_firestore_service.dart';
+export 'in_app_messaging_service.dart';

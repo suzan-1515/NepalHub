@@ -8,8 +8,8 @@ import 'package:provider/provider.dart';
 import 'package:samachar_hub/handlers/dynamic_link_handler.dart';
 import 'package:samachar_hub/notifier/news_setting_notifier.dart';
 import 'package:samachar_hub/pages/category/categories_page.dart';
-import 'package:samachar_hub/pages/corona/corona_api_service.dart';
-import 'package:samachar_hub/pages/corona/corona_repository.dart';
+import 'package:samachar_hub/services/corona_api_service.dart';
+import 'package:samachar_hub/repository/corona_repository.dart';
 import 'package:samachar_hub/pages/following/following_screen.dart';
 import 'package:samachar_hub/pages/home/home_screen.dart';
 import 'package:samachar_hub/pages/more_menu/more_menu_screen.dart';
@@ -51,50 +51,6 @@ class _MainScreenState extends State<MainScreen> {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        //Notifier
-        ChangeNotifierProvider(
-          create: (_) => NewsSettingNotifier(),
-        ),
-
-        //Repository
-        ProxyProvider2<AnalyticsService, PreferenceService, PostMetaRepository>(
-          update: (_, _analyticsService, _preferenceService, __) =>
-              PostMetaRepository(PostMetaFirestoreService(), _analyticsService,
-                  _preferenceService),
-        ),
-
-        ProxyProvider<PreferenceService, NewsRepository>(
-          update: (_, _preferenceService, __) =>
-              NewsRepository(NewsApiService(), _preferenceService),
-        ),
-        Provider<CoronaRepository>(
-          create: (_) => CoronaRepository(CoronaApiService()),
-        ),
-        ProxyProvider2<PreferenceService, AnalyticsService, ForexRepository>(
-          update: (_, preferenceService, analyticsService, __) =>
-              ForexRepository(
-                  preferenceService, ForexApiService(), analyticsService),
-        ),
-        ProxyProvider2<PreferenceService, AnalyticsService,
-            HoroscopeRepository>(
-          update: (_, preferenceService, analyticsService, __) =>
-              HoroscopeRepository(
-                  preferenceService, HoroscopeApiService(), analyticsService),
-        ),
-
-        ProxyProvider2<AnalyticsService, PreferenceService,
-            FollowingRepository>(
-          update: (_, _analyticsService, _preferenceService, __) =>
-              FollowingRepository(FollowingFirestoreService(),
-                  _analyticsService, _preferenceService),
-        ),
-        ProxyProvider2<PreferenceService, PostMetaRepository,
-            BookmarkRepository>(
-          update: (_, _preferenceService, _postMetaRepository, __) =>
-              BookmarkRepository(BookmarkFirestoreService(),
-                  _postMetaRepository, _preferenceService),
-        ),
-
         //Store
         ProxyProvider4<NewsRepository, ForexRepository, HoroscopeRepository,
             CoronaRepository, HomeStore>(

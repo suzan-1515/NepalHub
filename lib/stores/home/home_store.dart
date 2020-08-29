@@ -4,7 +4,7 @@ import 'dart:developer';
 import 'package:mobx/mobx.dart';
 import 'package:samachar_hub/data/api/api.dart';
 import 'package:samachar_hub/data/models/horoscope_type.dart';
-import 'package:samachar_hub/pages/corona/corona_repository.dart';
+import 'package:samachar_hub/repository/corona_repository.dart';
 import 'package:samachar_hub/pages/home/home_screen.dart';
 import 'package:samachar_hub/repository/forex_repository.dart';
 import 'package:samachar_hub/repository/horoscope_repository.dart';

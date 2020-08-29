@@ -120,13 +120,13 @@ abstract class _CommentStore with Store {
         .listen((onData) {
       data.clear();
       data.addAll(onData);
-      _dataStreamController.sink.add(data);
+      _dataStreamController?.add(data);
       _hasMoreData = onData.length == CommentRepository.DATA_LIMIT;
     }, onError: (e) {
       log(e.toString());
       this.error = e.toString();
-      _dataStreamController.addError(e);
-    });
+      _dataStreamController?.addError(e);
+    }, onDone: () => {}, cancelOnError: true);
   }
 
   @action
@@ -144,20 +144,21 @@ abstract class _CommentStore with Store {
         _hasMoreData = false;
       }
 
-      _dataStreamController.add(data);
+      _dataStreamController?.add(data);
     }).catchError((onError) {
       this.apiError = onError;
       _isLoadingMore = false;
-      _dataStreamController.addError(error);
+      _dataStreamController?.addError(error);
     }, test: (e) => e is APIException).catchError((onError) {
       this.error = onError.toString();
       _isLoadingMore = false;
-      _dataStreamController.addError(error);
+      _dataStreamController?.addError(error);
     });
   }
 
   dispose() {
     _dataStreamController.close();
+    _dataStreamController = null;
     data.clear();
   }
 }

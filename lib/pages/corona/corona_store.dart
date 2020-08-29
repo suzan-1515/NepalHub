@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:mobx/mobx.dart';
 import 'package:samachar_hub/data/api/api.dart';
 import 'package:samachar_hub/data/models/models.dart';
-import 'package:samachar_hub/pages/corona/corona_repository.dart';
+import 'package:samachar_hub/repository/corona_repository.dart';
 
 part 'corona_store.g.dart';
 
