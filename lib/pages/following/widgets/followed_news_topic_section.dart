@@ -1,6 +1,6 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
-import 'package:samachar_hub/pages/following/following_store.dart';
+import 'package:samachar_hub/stores/stores.dart';
 import 'package:samachar_hub/pages/following/widgets/followed_news_topic_list.dart';
 import 'package:samachar_hub/pages/following/widgets/section_title.dart';
 

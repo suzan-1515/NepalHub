@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:mobx/mobx.dart';
 import 'package:provider/provider.dart';
-import 'package:samachar_hub/handlers/dynamic_link_handler.dart';
+import 'package:samachar_hub/services/in_app_messaging_service.dart';
 import 'package:samachar_hub/services/navigation_service.dart';
 import 'package:samachar_hub/services/preference_service.dart';
+import 'package:samachar_hub/services/services.dart';
 import 'package:samachar_hub/stores/stores.dart';
 import 'package:samachar_hub/utils/extensions.dart';
 
@@ -16,6 +17,7 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen> {
   List<ReactionDisposer> _disposers;
+
   @override
   void initState() {
     var store = context.read<AuthenticationStore>();
@@ -23,7 +25,7 @@ class _SplashScreenState extends State<SplashScreen> {
     super.initState();
     final prefs = context.read<PreferenceService>();
     if (prefs.isFirstOpen) prefs.isFirstOpen = false;
-    Future.delayed(Duration(seconds: 3), () => store.silentSignIn());
+    Future.delayed(Duration(seconds: 2), () => store.silentSignIn());
   }
 
   @override
@@ -44,15 +46,26 @@ class _SplashScreenState extends State<SplashScreen> {
       }),
       autorun((_) {
         if (store.isLoggedIn != null) if (store.isLoggedIn) {
-          context.read<NavigationService>().toHomeScreen(context);
-        } else
-          context.read<NavigationService>().toLoginScreen(context);
+          this.context.read<NavigationService>().toHomeScreen(context);
+        } else {
+          this.context.read<NavigationService>().toLoginScreen(context);
+        }
       }),
     ];
   }
 
   @override
   Widget build(BuildContext context) {
-    return SplashView();
+    return MultiProvider(
+      providers: [
+        Provider<InAppMessagingService>(
+          create: (_) => InAppMessagingService(),
+        ),
+        ProxyProvider<AnalyticsService, ShareService>(
+          update: (_, _analyticsService, __) => ShareService(_analyticsService),
+        ),
+      ],
+      child: SplashView(),
+    );
   }
 }

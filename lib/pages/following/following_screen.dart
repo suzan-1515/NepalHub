@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:mobx/mobx.dart';
 import 'package:provider/provider.dart';
-import 'package:samachar_hub/pages/following/following_store.dart';
 import 'package:samachar_hub/pages/following/widgets/followed_news_category_section.dart';
 import 'package:samachar_hub/pages/following/widgets/followed_news_source_section.dart';
 import 'package:samachar_hub/pages/following/widgets/followed_news_topic_section.dart';
 import 'package:samachar_hub/pages/widgets/page_heading_widget.dart';
+import 'package:samachar_hub/stores/stores.dart';
 import 'package:samachar_hub/utils/extensions.dart';
 
 class FollowingPage extends StatefulWidget {

@@ -17,3 +17,4 @@ export 'news/trending/trending_news_store.dart';
 export 'post_meta/post_meta_store.dart';
 export 'news/personalised/personalised_store.dart';
 export 'home/home_store.dart';
+export 'following/following_store.dart';

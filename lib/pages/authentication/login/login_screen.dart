@@ -44,7 +44,6 @@ class _LoginScreenState extends State<LoginScreen> {
         if (message != null) context.showMessage(message);
       }),
       autorun((_) {
-        log('[LoginScreen] loing state changed: ${store.isLoggedIn} ${store.user != null}');
         if (store.isLoggedIn)
           context.read<NavigationService>().toHomeScreen(context);
       }),
