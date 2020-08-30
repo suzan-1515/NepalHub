@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
@@ -5,16 +6,13 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:mobx/mobx.dart';
 import 'package:provider/provider.dart';
-import 'package:samachar_hub/handlers/dynamic_link_handler.dart';
-import 'package:samachar_hub/notifier/news_setting_notifier.dart';
 import 'package:samachar_hub/pages/category/categories_page.dart';
-import 'package:samachar_hub/services/corona_api_service.dart';
 import 'package:samachar_hub/repository/corona_repository.dart';
 import 'package:samachar_hub/pages/following/following_screen.dart';
 import 'package:samachar_hub/pages/home/home_screen.dart';
 import 'package:samachar_hub/pages/more_menu/more_menu_screen.dart';
 import 'package:samachar_hub/repository/repositories.dart';
-import 'package:samachar_hub/services/bookmark_firestore_service.dart';
+import 'package:samachar_hub/services/dynamic_link_service.dart';
 import 'package:samachar_hub/services/services.dart';
 import 'package:samachar_hub/stores/main/main_store.dart';
 import 'package:samachar_hub/stores/stores.dart';
@@ -29,6 +27,7 @@ class _MainScreenState extends State<MainScreen> {
 
 // Reaction disposers
   List<ReactionDisposer> _disposers;
+  StreamSubscription _dynamicLinkSubscription;
 
   @override
   void initState() {
@@ -36,7 +35,7 @@ class _MainScreenState extends State<MainScreen> {
     store.selectedPage = 0;
     _setupObserver(store);
     super.initState();
-    context.read<DynamicLinkHandler>().init(context);
+    _initDynamicLinks();
   }
 
   _setupObserver(MainStore store) {
@@ -45,6 +44,22 @@ class _MainScreenState extends State<MainScreen> {
         _pageController.jumpToPage(store.selectedPage);
       }),
     ];
+  }
+
+  _initDynamicLinks() {
+    _dynamicLinkSubscription =
+        context.read<DynamicLinkService>().linkStream.listen((event) {
+      log('[MainScreen] dybamic link received: ${event.path}');
+      if (event.path.contains('horoscope')) {
+        log('[MainScreen] Navigate to horocope screen');
+        context.read<NavigationService>().toHoroscopeScreen(context);
+      } else if (event.path.contains('forex')) {
+        log('[MainScreen] Navigate to forex screen');
+        context.read<NavigationService>().toForexScreen(context);
+      }
+    }, onError: (e) {
+      log('[MainScreen] already subscribed');
+    }, cancelOnError: false);
   }
 
   @override
@@ -134,6 +149,7 @@ class _MainScreenState extends State<MainScreen> {
     for (final d in _disposers) {
       d();
     }
+    _dynamicLinkSubscription?.cancel();
     super.dispose();
   }
 }

@@ -15,6 +15,7 @@ class CommentStore = _CommentStore with _$CommentStore;
 abstract class _CommentStore with Store {
   final CommentRepository _commentRepository;
   final UserModel _user;
+  StreamSubscription _streamSubscription;
   _CommentStore(
       {@required CommentRepository commentRepository, @required UserModel user})
       : this._commentRepository = commentRepository,
@@ -114,7 +115,7 @@ abstract class _CommentStore with Store {
 
   @action
   Future<void> loadInitialData() async {
-    _commentRepository
+    _streamSubscription = _commentRepository
         .getCommentsAsStream(postId: postId, userId: _user.uId)
         .where((data) => data != null)
         .listen((onData) {
@@ -159,6 +160,7 @@ abstract class _CommentStore with Store {
   dispose() {
     _dataStreamController.close();
     _dataStreamController = null;
+    _streamSubscription?.cancel();
     data.clear();
   }
 }

@@ -7,7 +7,6 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:nepali_utils/nepali_utils.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:samachar_hub/handlers/dynamic_link_handler.dart';
 import 'package:samachar_hub/handlers/notification_handler.dart';
 import 'package:samachar_hub/notifier/news_setting_notifier.dart';
 import 'package:samachar_hub/pages/splash/splash_screen.dart';
@@ -111,10 +110,6 @@ class App extends StatelessWidget {
               Provider<DynamicLinkService>(
                 create: (_) => DynamicLinkService(),
                 dispose: (context, value) => value.dispose(),
-              ),
-              ProxyProvider<DynamicLinkService, DynamicLinkHandler>(
-                update: (_, _dynamicLinkService, __) =>
-                    DynamicLinkHandler(_dynamicLinkService),
               ),
 
               //repository
