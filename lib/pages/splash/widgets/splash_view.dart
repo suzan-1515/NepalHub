@@ -1,6 +1,6 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
-import 'package:samachar_hub/pages/widgets/progress_widget.dart';
+import 'package:samachar_hub/core/widgets/progress_widget.dart';
 
 class SplashView extends StatelessWidget {
   const SplashView({

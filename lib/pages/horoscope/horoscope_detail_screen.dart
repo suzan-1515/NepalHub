@@ -8,7 +8,7 @@ import 'package:samachar_hub/data/models/post_meta_model.dart';
 import 'package:samachar_hub/services/services.dart';
 import 'package:samachar_hub/stores/horoscope/horoscope_detail_store.dart';
 import 'package:samachar_hub/stores/stores.dart';
-import 'package:samachar_hub/widgets/comment_bar_widget.dart';
+import 'package:samachar_hub/core/widgets/comment_bar_widget.dart';
 import 'package:samachar_hub/utils/extensions.dart';
 
 class HoroscopeDetailScreen extends StatefulWidget {

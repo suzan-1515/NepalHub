@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:samachar_hub/data/models/models.dart';
-import 'package:samachar_hub/pages/widgets/news_compact_view.dart';
+import 'package:samachar_hub/feature_news/presentation/ui/widgets/news_compact_view.dart';
 import 'package:samachar_hub/pages/widgets/section_heading.dart';
 import 'package:samachar_hub/services/navigation_service.dart';
 
@@ -32,7 +32,7 @@ class _TrendingNewsSectionState extends State<TrendingNewsSection>
 
     List<Widget> widgets = List<Widget>.generate(
       widget.feeds.length,
-      (index) => NewsCompactView(feed: widget.feeds[index]),
+      (index) => NewsCompactView(feedUIModel: widget.feeds[index]),
     );
 
     return FadeInUp(

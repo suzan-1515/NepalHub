@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:samachar_hub/data/models/horoscope_model.dart';
 import 'package:samachar_hub/services/services.dart';
 import 'package:samachar_hub/utils/horoscope_signs.dart';
-import 'package:samachar_hub/widgets/cached_image_widget.dart';
+import 'package:samachar_hub/core/widgets/cached_image_widget.dart';
 
 class DailyHoroscope extends StatelessWidget {
   final HoroscopeModel data;

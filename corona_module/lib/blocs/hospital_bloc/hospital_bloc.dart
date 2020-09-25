@@ -9,7 +9,6 @@ import '../../core/models/app_error.dart';
 import '../../core/models/hospital.dart';
 import '../../core/services/nepal_api_service.dart';
 
-
 part 'hospital_event.dart';
 part 'hospital_state.dart';
 
@@ -19,7 +18,8 @@ class HospitalBloc extends Bloc<HospitalEvent, HospitalState> {
 
   HospitalBloc({
     @required this.apiService,
-  }) : assert(apiService != null);
+  })  : assert(apiService != null),
+        super(InitialHospitalState());
 
   @override
   Stream<Transition<HospitalEvent, HospitalState>> transformEvents(
@@ -33,9 +33,6 @@ class HospitalBloc extends Bloc<HospitalEvent, HospitalState> {
       transitionFn,
     );
   }
-
-  @override
-  HospitalState get initialState => InitialHospitalState();
 
   @override
   Stream<HospitalState> mapEventToState(
@@ -61,14 +58,16 @@ class HospitalBloc extends Bloc<HospitalEvent, HospitalState> {
     }
   }
 
-  Stream<HospitalState> _mapSearchHospitalToState(SearchHospitalEvent event) async* {
+  Stream<HospitalState> _mapSearchHospitalToState(
+      SearchHospitalEvent event) async* {
     if (event.searchTerm.isEmpty) {
       yield LoadedHospitalState(hospitals: _hospitals);
     }
     yield LoadingHospitalState();
 
     final List<Hospital> searchedHospitals = _hospitals
-        .where((h) => h.name.toLowerCase().contains(event.searchTerm.toLowerCase()))
+        .where((h) =>
+            h.name.toLowerCase().contains(event.searchTerm.toLowerCase()))
         .toList();
 
     if (searchedHospitals.isEmpty) {

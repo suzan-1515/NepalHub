@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:samachar_hub/data/models/models.dart';
-import 'package:samachar_hub/pages/widgets/news_tag_item.dart';
+import 'package:samachar_hub/feature_news/presentation/ui/widgets/news_tag_item.dart';
 import 'package:samachar_hub/pages/widgets/section_heading.dart';
 
 class NewsTopicsSection extends StatelessWidget {

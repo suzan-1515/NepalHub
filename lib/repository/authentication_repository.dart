@@ -1,8 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
+import 'package:samachar_hub/core/services/services.dart';
 import 'package:samachar_hub/data/models/user_model.dart';
-import 'package:samachar_hub/services/notification_service.dart';
-import 'package:samachar_hub/services/services.dart';
+import 'package:samachar_hub/services/authentication_service.dart';
 
 class AuthenticationRepository {
   final AuthenticationService _authenticationService;

@@ -5,8 +5,8 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_signin_button/flutter_signin_button.dart';
 import 'package:mobx/mobx.dart';
 import 'package:provider/provider.dart';
-import 'package:samachar_hub/pages/widgets/progress_widget.dart';
-import 'package:samachar_hub/services/services.dart';
+import 'package:samachar_hub/core/services/services.dart';
+import 'package:samachar_hub/core/widgets/progress_widget.dart';
 import 'package:samachar_hub/stores/stores.dart';
 import 'package:samachar_hub/utils/extensions.dart';
 

@@ -14,11 +14,11 @@ import 'package:samachar_hub/pages/home/widgets/news_source_menu_section.dart';
 import 'package:samachar_hub/pages/home/widgets/news_topics_section.dart';
 import 'package:samachar_hub/pages/home/widgets/other_menu_section.dart';
 import 'package:samachar_hub/pages/home/widgets/trending_news_section.dart';
-import 'package:samachar_hub/pages/widgets/empty_data_widget.dart';
-import 'package:samachar_hub/pages/widgets/error_data_widget.dart';
-import 'package:samachar_hub/pages/widgets/news_list_view.dart';
-import 'package:samachar_hub/pages/widgets/news_thumbnail_view.dart';
-import 'package:samachar_hub/pages/widgets/progress_widget.dart';
+import 'package:samachar_hub/core/widgets/empty_data_widget.dart';
+import 'package:samachar_hub/core/widgets/error_data_widget.dart';
+import 'package:samachar_hub/feature_news/presentation/ui/widgets/news_list_view.dart';
+import 'package:samachar_hub/feature_news/presentation/ui/widgets/news_thumbnail_view.dart';
+import 'package:samachar_hub/core/widgets/progress_widget.dart';
 import 'package:samachar_hub/pages/widgets/section_heading.dart';
 import 'package:samachar_hub/services/services.dart';
 import 'package:samachar_hub/stores/main/main_store.dart';
@@ -128,12 +128,12 @@ class _HomeScreenState extends State<HomeScreen>
     Widget feedWidget;
     if (index % 4 == 0) {
       feedWidget = NewsThumbnailView(
-        feed: feed,
+        feedUIModel: feed,
         authStore: authenticationStore,
       );
     } else {
       feedWidget = NewsListView(
-        feed: feed,
+        feedUIModel: feed,
         authStore: authenticationStore,
       );
     }

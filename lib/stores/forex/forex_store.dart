@@ -2,10 +2,10 @@ import 'dart:async';
 
 import 'package:intl/intl.dart';
 import 'package:mobx/mobx.dart';
+import 'package:samachar_hub/core/services/services.dart';
 import 'package:samachar_hub/data/api/api.dart';
 import 'package:samachar_hub/data/models/forex_model.dart';
 import 'package:samachar_hub/repository/forex_repository.dart';
-import 'package:samachar_hub/services/preference_service.dart';
 
 part 'forex_store.g.dart';
 

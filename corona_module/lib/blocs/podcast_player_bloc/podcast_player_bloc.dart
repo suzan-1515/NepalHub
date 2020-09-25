@@ -16,10 +16,8 @@ class PodcastPlayerBloc extends Bloc<PodcastPlayerEvent, PodcastPlayerState> {
 
   PodcastPlayerBloc({
     @required this.podcastPlayerService,
-  }) : assert(podcastPlayerService != null);
-
-  @override
-  PodcastPlayerState get initialState => InitialPodcastPlayerState();
+  })  : assert(podcastPlayerService != null),
+        super(InitialPodcastPlayerState());
 
   @override
   Stream<PodcastPlayerState> mapEventToState(

@@ -21,7 +21,8 @@ class CountryBloc extends Bloc<CountryEvent, CountryState> {
 
   CountryBloc({
     @required this.apiService,
-  }) : assert(apiService != null);
+  })  : assert(apiService != null),
+        super(InitialCountryState());
 
   @override
   Stream<Transition<CountryEvent, CountryState>> transformEvents(
@@ -37,15 +38,13 @@ class CountryBloc extends Bloc<CountryEvent, CountryState> {
   }
 
   @override
-  CountryState get initialState => InitialCountryState();
-
-  @override
   Stream<CountryState> mapEventToState(
     CountryEvent event,
   ) async* {
     if (event is GetCountryEvent) yield* _mapGetCountryToState();
     if (event is SearchCountryEvent) yield* _mapSearchCountryToState(event);
-    if (event is FilterCountryEvent) yield* _mapFilterCountryToState(event.filterType);
+    if (event is FilterCountryEvent)
+      yield* _mapFilterCountryToState(event.filterType);
   }
 
   Stream<CountryState> _mapGetCountryToState() async* {
@@ -64,7 +63,8 @@ class CountryBloc extends Bloc<CountryEvent, CountryState> {
     }
   }
 
-  Stream<CountryState> _mapSearchCountryToState(SearchCountryEvent event) async* {
+  Stream<CountryState> _mapSearchCountryToState(
+      SearchCountryEvent event) async* {
     if (event.searchTerm.isEmpty) {
       yield LoadedCountryState(
         filterType: _filterType,
@@ -75,7 +75,8 @@ class CountryBloc extends Bloc<CountryEvent, CountryState> {
     }
 
     final List<Country> searchedCountries = _countries
-        .where((c) => c.name.toLowerCase().contains(event.searchTerm.toLowerCase()))
+        .where((c) =>
+            c.name.toLowerCase().contains(event.searchTerm.toLowerCase()))
         .toList();
 
     if (searchedCountries.isEmpty) {
@@ -92,7 +93,8 @@ class CountryBloc extends Bloc<CountryEvent, CountryState> {
     );
   }
 
-  Stream<CountryState> _mapFilterCountryToState(CountryFilterType filterType) async* {
+  Stream<CountryState> _mapFilterCountryToState(
+      CountryFilterType filterType) async* {
     _filterType = filterType;
     yield LoadedCountryState(
       filterType: _filterType,

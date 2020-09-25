@@ -1,0 +1,71 @@
+import 'package:flutter/material.dart';
+import 'package:samachar_hub/feature_news/presentation/models/news_feed.dart';
+import 'package:samachar_hub/feature_news/presentation/ui/widgets/report_article.dart';
+import 'package:samachar_hub/core/extensions/view.dart';
+
+class Disclaimer extends StatelessWidget {
+  final NewsFeedUIModel feedUIModel;
+
+  const Disclaimer({Key key, this.feedUIModel}) : super(key: key);
+  @override
+  Widget build(BuildContext context) {
+    final fontStyle =
+        Theme.of(context).textTheme.caption.copyWith(fontSize: 11, height: 2);
+    return Container(
+      margin: const EdgeInsets.all(8.0),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'Nepal Hub',
+                style: fontStyle,
+              ),
+              FlatButton(
+                visualDensity: VisualDensity.compact,
+                onPressed: () => context.showBottomSheet(
+                  child: ReportArticle(
+                    articleId: feedUIModel.feed.id,
+                    articleType: 'news_feed',
+                  ),
+                ),
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.flag,
+                      color: fontStyle.color,
+                    ),
+                    SizedBox(width: 2),
+                    Text(
+                      'Report',
+                      style: fontStyle,
+                    ),
+                  ],
+                ),
+              )
+            ],
+          ),
+          Divider(),
+          Flexible(
+            child: RichText(
+              softWrap: true,
+              text: TextSpan(
+                text: 'Disclaimer: ',
+                style: fontStyle.copyWith(fontStyle: FontStyle.italic),
+                children: [
+                  TextSpan(
+                      text:
+                          'This story is auto-aggregated by a computer program and has not been created or edited by Nepal Hub.\nPublisher: ${feedUIModel.feed.source.title}',
+                      style: fontStyle.copyWith(fontStyle: FontStyle.normal)),
+                ],
+              ),
+            ),
+          ),
+          Divider(),
+        ],
+      ),
+    );
+  }
+}

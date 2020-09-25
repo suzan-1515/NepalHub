@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:samachar_hub/data/models/models.dart';
-import 'package:samachar_hub/pages/widgets/news_source_menu_item.dart';
+import 'package:samachar_hub/feature_news/presentation/ui/widgets/news_menu_item.dart';
 import 'package:samachar_hub/pages/widgets/section_heading.dart';
 import 'package:samachar_hub/services/services.dart';
 import 'package:samachar_hub/stores/stores.dart';
@@ -27,7 +27,7 @@ class NewsSourceMenuSection extends StatelessWidget {
           SectionHeading(
             title: 'News Sources',
             subtitle: 'Explore news from your favourite news sources',
-            onTap: () => navigationService.toFavouriteNewsSourceScreen(context),
+            onTap: () => navigationService.toFollowedNewsSourceScreen(context),
           ),
           LimitedBox(
             maxHeight: 100,
@@ -40,7 +40,7 @@ class NewsSourceMenuSection extends StatelessWidget {
                   scrollDirection: Axis.horizontal,
                   itemBuilder: (context, index) {
                     final source = items[index];
-                    return NewsSourceMenuItem(
+                    return NewsMenuItem(
                       source: source,
                       onTap: () => navigationService.toNewsSourceFeedScreen(
                         source: source,

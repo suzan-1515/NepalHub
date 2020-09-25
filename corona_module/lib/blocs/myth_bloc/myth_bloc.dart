@@ -15,10 +15,8 @@ class MythBloc extends Bloc<MythEvent, MythState> {
 
   MythBloc({
     @required this.apiService,
-  }) : assert(apiService != null);
-
-  @override
-  MythState get initialState => InitialMythState();
+  })  : assert(apiService != null),
+        super(InitialMythState());
 
   @override
   Stream<MythState> mapEventToState(

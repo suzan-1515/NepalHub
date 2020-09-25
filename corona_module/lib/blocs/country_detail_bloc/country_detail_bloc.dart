@@ -8,7 +8,6 @@ import '../../core/models/country.dart';
 import '../../core/models/timeline_data.dart';
 import '../../core/services/global_api_service.dart';
 
-
 part 'country_detail_event.dart';
 part 'country_detail_state.dart';
 
@@ -18,10 +17,8 @@ class CountryDetailBloc extends Bloc<CountryDetailEvent, CountryDetailState> {
 
   CountryDetailBloc({
     @required this.apiService,
-  }) : assert(apiService != null);
-
-  @override
-  CountryDetailState get initialState => InitialCountryDetailState();
+  })  : assert(apiService != null),
+        super(InitialCountryDetailState());
 
   @override
   Stream<CountryDetailState> mapEventToState(
@@ -29,14 +26,15 @@ class CountryDetailBloc extends Bloc<CountryDetailEvent, CountryDetailState> {
   ) async* {
     if (event is GetCountryDetailEvent) {
       if (_countriesCache.containsKey(event.country.code)) {
-        yield LoadedCountryDetailState(country: _countriesCache[event.country.code]);
+        yield LoadedCountryDetailState(
+            country: _countriesCache[event.country.code]);
         return;
       }
 
       yield LoadingCountryDetailState();
       try {
-        final List<TimelineData> timeline =
-            await apiService.fetchCountryTimeline(countryISOMapping[event.country.code]);
+        final List<TimelineData> timeline = await apiService
+            .fetchCountryTimeline(countryISOMapping[event.country.code]);
         final Country country = event.country.copyWith(timeline: timeline);
         _countriesCache[country.code] = country;
         yield LoadedCountryDetailState(country: country);

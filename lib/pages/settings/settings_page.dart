@@ -7,7 +7,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:launch_review/launch_review.dart';
 import 'package:mobx/mobx.dart';
 import 'package:provider/provider.dart';
-import 'package:samachar_hub/common/notification_channels.dart';
+import 'package:samachar_hub/core/constants/notification_channels.dart';
 import 'package:samachar_hub/pages/settings/settings_store.dart';
 import 'package:samachar_hub/pages/settings/widgets/news_read_mode.dart';
 import 'package:samachar_hub/pages/settings/widgets/section_heading.dart';

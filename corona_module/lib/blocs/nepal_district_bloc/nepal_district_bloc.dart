@@ -19,7 +19,8 @@ class NepalDistrictBloc extends Bloc<NepalDistrictEvent, NepalDistrictState> {
 
   NepalDistrictBloc({
     @required this.apiService,
-  }) : assert(apiService != null);
+  })  : assert(apiService != null),
+        super(InitialDistrictState());
 
   @override
   Stream<Transition<NepalDistrictEvent, NepalDistrictState>> transformEvents(
@@ -33,9 +34,6 @@ class NepalDistrictBloc extends Bloc<NepalDistrictEvent, NepalDistrictState> {
       transitionFn,
     );
   }
-
-  @override
-  NepalDistrictState get initialState => InitialDistrictState();
 
   @override
   Stream<NepalDistrictState> mapEventToState(
@@ -63,7 +61,8 @@ class NepalDistrictBloc extends Bloc<NepalDistrictEvent, NepalDistrictState> {
     }
   }
 
-  Stream<NepalDistrictState> _mapSearchDistrictToState(SearchDistrictEvent event) async* {
+  Stream<NepalDistrictState> _mapSearchDistrictToState(
+      SearchDistrictEvent event) async* {
     if (event.searchTerm.isEmpty) {
       yield LoadedDistrictState(
         allDistricts: _districts,
@@ -73,7 +72,8 @@ class NepalDistrictBloc extends Bloc<NepalDistrictEvent, NepalDistrictState> {
     }
 
     final List<District> searchedDistricts = _districts
-        .where((d) => d.title.toLowerCase().contains(event.searchTerm.toLowerCase()))
+        .where((d) =>
+            d.title.toLowerCase().contains(event.searchTerm.toLowerCase()))
         .toList();
 
     if (searchedDistricts.isEmpty) {

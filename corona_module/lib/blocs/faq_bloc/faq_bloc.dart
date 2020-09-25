@@ -15,10 +15,8 @@ class FaqBloc extends Bloc<FaqEvent, FaqState> {
 
   FaqBloc({
     @required this.apiService,
-  }) : assert(apiService != null);
-
-  @override
-  FaqState get initialState => InitialFaqState();
+  })  : assert(apiService != null),
+        super(InitialFaqState());
 
   @override
   Stream<FaqState> mapEventToState(

@@ -15,10 +15,8 @@ class PodcastBloc extends Bloc<PodcastEvent, PodcastState> {
 
   PodcastBloc({
     @required this.apiService,
-  }) : assert(apiService != null);
-
-  @override
-  PodcastState get initialState => InitialPodcastState();
+  })  : assert(apiService != null),
+        super(InitialPodcastState());
 
   @override
   Stream<PodcastState> mapEventToState(

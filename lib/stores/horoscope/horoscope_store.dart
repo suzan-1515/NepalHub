@@ -1,10 +1,10 @@
 import 'dart:async';
 
 import 'package:mobx/mobx.dart';
+import 'package:samachar_hub/core/services/services.dart';
 import 'package:samachar_hub/data/api/api.dart';
 import 'package:samachar_hub/data/models/models.dart';
 import 'package:samachar_hub/repository/horoscope_repository.dart';
-import 'package:samachar_hub/services/preference_service.dart';
 
 part 'horoscope_store.g.dart';
 

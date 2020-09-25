@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:samachar_hub/data/models/models.dart';
 import 'package:samachar_hub/pages/widgets/section_heading.dart';
 import 'package:samachar_hub/services/services.dart';
-import 'package:samachar_hub/widgets/news_category_horz_list_item.dart';
+import 'package:samachar_hub/core/widgets/news_category_horz_list_item.dart';
 
 class NewsCategoryMenuSection extends StatelessWidget {
   final List<NewsCategory> items;
@@ -24,7 +24,7 @@ class NewsCategoryMenuSection extends StatelessWidget {
           subtitle: 'Get the latest news on your favourite category',
           onTap: () => context
               .read<NavigationService>()
-              .toFavouriteNewsCategoryScreen(context),
+              .toFollowedNewsCategoryScreen(context),
         ),
         LimitedBox(
           maxHeight: 100,

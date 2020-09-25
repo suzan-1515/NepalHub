@@ -64,6 +64,8 @@ dependencies:
   flutter_share_me: ^0.9.1
   flushbar: ^1.10.4
   launch_review: ^2.0.0
+  data_connection_checker: ^0.3.4
+  shimmer: ^1.1.1
 
   corona_module:
     path: ./corona_module
@@ -74,6 +76,8 @@ dependency_overrides:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  test: ^1.15.0
+  bloc_test: ^7.0.4
   build_runner: ^1.10.1
   mobx_codegen: ^1.1.0+1
   json_serializable: ^3.4.0
