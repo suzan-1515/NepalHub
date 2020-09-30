@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:mobx/mobx.dart';
-import 'package:provider/provider.dart';
-import 'package:samachar_hub/data/api/api.dart';
-import 'package:samachar_hub/pages/forex/widgets/forex_list.dart';
-import 'package:samachar_hub/services/navigation_service.dart';
-import 'package:samachar_hub/stores/stores.dart';
-import 'package:samachar_hub/utils/extensions.dart';
-
-import '../../../pages/forex/widgets/forex_graph.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:samachar_hub/core/services/services.dart';
+import 'package:samachar_hub/core/widgets/progress_widget.dart';
+import 'package:samachar_hub/feature_forex/domain/usecases/get_forex_timeline_use_case.dart';
+import 'package:samachar_hub/feature_forex/domain/usecases/get_latest_forex_use_case.dart';
+import 'package:samachar_hub/feature_forex/presentation/blocs/latest/latest_forex_bloc.dart';
+import 'package:samachar_hub/feature_forex/presentation/blocs/timeline/forex_timeline_bloc.dart';
+import 'package:samachar_hub/feature_forex/presentation/ui/widgets/forex_graph.dart';
+import 'package:samachar_hub/feature_forex/presentation/ui/widgets/forex_list.dart';
 
 class ForexScreen extends StatefulWidget {
   @override
@@ -16,94 +15,67 @@ class ForexScreen extends StatefulWidget {
 }
 
 class _ForexScreenState extends State<ForexScreen> {
-  List<ReactionDisposer> _disposers;
-
-  @override
-  void initState() {
-    final store = context.read<ForexStore>();
-    _setupObserver(store);
-    store.loadData();
-
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    // Dispose reactions
-    for (final d in _disposers) {
-      d();
-    }
-    super.dispose();
-  }
-
-  _setupObserver(store) {
-    _disposers = [
-      // Listens for error message
-      autorun((_) {
-        final String message = store.error;
-        if (message != null) context.showMessage(message);
-      }),
-      // Listens for API error
-      autorun((_) {
-        final APIException error = store.apiError;
-        if (error != null) context.showErrorDialog(error);
-      })
-    ];
-  }
-
-  Widget _buildDefaultCurrencyStat(BuildContext context, ForexStore store) {
-    return Observer(
-      builder: (_) {
-        if (store.defaultForexTimeline != null &&
-            store.defaultForexTimeline.isNotEmpty) {
+  Widget _buildDefaultCurrencyStat(BuildContext context) {
+    return BlocBuilder<ForexTimelineBloc, ForexTimelineState>(
+      cubit: ForexTimelineBloc(
+        getForexTimelineUseCase: context.repository<GetForexTimelineUseCase>(),
+        currencyId:
+            context.repository<PreferenceService>().defaultForexCurrency,
+      ),
+      builder: (context, state) {
+        if (state is ForexTimelineLoadSuccessState) {
           return ForexGraph(
-            timeline: store.defaultForexTimeline,
+            timeline: state.forexList,
           );
+        } else if (state is ForexTimeLineLoadingState) {
+          return Center(child: ProgressView());
         }
         return SizedBox.shrink();
       },
     );
   }
 
-  Widget _buildContent(BuildContext context, ForexStore store) {
+  Widget _buildContent(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: NestedScrollView(
         headerSliverBuilder: (_, __) => [
           SliverToBoxAdapter(
-            child: _buildDefaultCurrencyStat(context, store),
+            child: _buildDefaultCurrencyStat(context),
           ),
         ],
-        body: ForexList(context: context, store: store),
+        body: ForexList(),
       ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<ForexStore>(
-      builder: (_, ForexStore store, __) {
-        return Scaffold(
-          backgroundColor: Theme.of(context).backgroundColor,
-          appBar: AppBar(
-            title: Text('Forex'),
-            actions: <Widget>[
-              IconButton(
-                icon: Icon(Icons.settings),
-                onPressed: () {
-                  context
-                      .read<NavigationService>()
-                      .toSettingsScreen(context: context)
-                      .whenComplete(() => store.retry());
-                },
-              ),
-            ],
-          ),
-          body: SafeArea(
-            child: _buildContent(context, store),
-          ),
-        );
-      },
+    return BlocProvider<ForexBloc>(
+      create: (context) => ForexBloc(
+        getLatestForexUseCase: context.repository<GetLatestForexUseCase>(),
+      )..add(GetLatestForexEvent(
+          defaultCurrencyId:
+              context.repository<PreferenceService>().defaultForexCurrency)),
+      child: Scaffold(
+        backgroundColor: Theme.of(context).backgroundColor,
+        appBar: AppBar(
+          title: Text('Forex'),
+          actions: <Widget>[
+            IconButton(
+              icon: Icon(Icons.settings),
+              onPressed: () {
+                context
+                    .repository<NavigationService>()
+                    .toSettingsScreen(context: context);
+              },
+            ),
+          ],
+        ),
+        body: SafeArea(
+          child: _buildContent(context),
+        ),
+      ),
     );
   }
 }

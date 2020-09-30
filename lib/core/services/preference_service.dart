@@ -161,7 +161,7 @@ class PreferenceService {
   String get userId => _sharedPreferences.getString(_userId) ?? null;
 
   String get defaultForexCurrency =>
-      _sharedPreferences.getString(_defaultForexCurrencyKey) ?? 'USD';
+      _sharedPreferences.getString(_defaultForexCurrencyKey) ?? '23';
 
   int get defaultZodiac => _sharedPreferences.getInt(_defaultZodiacKey) ?? 0;
 

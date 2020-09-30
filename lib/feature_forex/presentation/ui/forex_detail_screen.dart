@@ -1,188 +1,179 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:mobx/mobx.dart';
-import 'package:provider/provider.dart';
-import 'package:samachar_hub/data/api/api.dart';
-import 'package:samachar_hub/data/models/forex_model.dart';
-import 'package:samachar_hub/data/models/models.dart';
-import 'package:samachar_hub/core/widgets/empty_data_widget.dart';
-import 'package:samachar_hub/core/widgets/error_data_widget.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:samachar_hub/core/services/services.dart';
+import 'package:samachar_hub/core/widgets/comment_bar_placeholder_widget.dart';
 import 'package:samachar_hub/core/widgets/progress_widget.dart';
-import 'package:samachar_hub/stores/forex/forex_detail_store.dart';
-import 'package:samachar_hub/stores/stores.dart';
 import 'package:samachar_hub/core/widgets/comment_bar_widget.dart';
-import 'package:samachar_hub/utils/extensions.dart';
-
-import '../../../pages/forex/widgets/forex_graph.dart';
+import 'package:samachar_hub/feature_forex/domain/entities/forex_entity.dart';
+import 'package:samachar_hub/feature_forex/domain/usecases/dislike_forex_use_case.dart';
+import 'package:samachar_hub/feature_forex/domain/usecases/get_forex_timeline_use_case.dart';
+import 'package:samachar_hub/feature_forex/domain/usecases/like_forex_use_case.dart';
+import 'package:samachar_hub/feature_forex/domain/usecases/share_forex_use_case.dart';
+import 'package:samachar_hub/feature_forex/domain/usecases/undislike_forex_use_case.dart';
+import 'package:samachar_hub/feature_forex/domain/usecases/unlike_forex_use_case.dart';
+import 'package:samachar_hub/feature_forex/domain/usecases/view_forex_use_case.dart';
+import 'package:samachar_hub/feature_forex/presentation/blocs/dislike/dislike_bloc.dart';
+import 'package:samachar_hub/feature_forex/presentation/blocs/like_unlike/like_unlike_bloc.dart';
+import 'package:samachar_hub/feature_forex/presentation/blocs/share/share_bloc.dart';
+import 'package:samachar_hub/feature_forex/presentation/blocs/timeline/forex_timeline_bloc.dart';
+import 'package:samachar_hub/feature_forex/presentation/blocs/view/view_bloc.dart';
+import 'package:samachar_hub/feature_forex/presentation/models/forex_model.dart';
+import 'package:samachar_hub/feature_forex/presentation/extensions/forex_extensions.dart';
+import 'package:samachar_hub/feature_forex/presentation/ui/widgets/forex_graph.dart';
 
 class ForexDetailScreen extends StatefulWidget {
+  final ForexEntity forexEntity;
+  const ForexDetailScreen({Key key, @required this.forexEntity})
+      : assert(forexEntity != null, 'Forex cannot be null.'),
+        super(key: key);
   @override
   _ForexDetailScreenState createState() => _ForexDetailScreenState();
 }
 
 class _ForexDetailScreenState extends State<ForexDetailScreen> {
-  List<ReactionDisposer> _disposers;
-  final ValueNotifier<bool> likeNotifier = ValueNotifier<bool>(false);
-  final ValueNotifier<int> likeCountNotifier = ValueNotifier<int>(0);
-  final ValueNotifier<int> commentCountNotifier = ValueNotifier<int>(0);
+  ForexUIModel forexUIModel;
 
   @override
   void initState() {
-    final store = context.read<ForexDetailStore>();
-    _setupObserver(store);
-    store.loadData();
-
     super.initState();
+    this.forexUIModel = widget.forexEntity.toUIModel;
   }
 
-  @override
-  void dispose() {
-    // Dispose reactions
-    for (final d in _disposers) {
-      d();
-    }
-    likeNotifier.dispose();
-    likeCountNotifier.dispose();
-    commentCountNotifier.dispose();
-    super.dispose();
-  }
-
-  _setupObserver(store) {
-    _disposers = [
-      // Listens for error message
-      autorun((_) {
-        final String message = store.error;
-        if (message != null) context.showMessage(message);
-      }),
-      // Listens for API error
-      autorun((_) {
-        final APIException error = store.apiError;
-        if (error != null) context.showErrorDialog(error);
-      }),
-    ];
-  }
-
-  void _updateMeta(PostMetaModel metaModel) {
-    if (metaModel.isUserLiked != null)
-      this.likeNotifier.value = metaModel.isUserLiked;
-    if (metaModel.likeCount != null)
-      this.likeCountNotifier.value = metaModel.likeCount;
-    if (metaModel.commentCount != null)
-      this.commentCountNotifier.value = metaModel.commentCount;
-  }
-
-  Widget _buildContent(BuildContext context, ForexDetailStore store) {
-    return StreamBuilder<List<ForexModel>>(
-      stream: store.dataStream,
-      builder: (_, AsyncSnapshot<List<ForexModel>> snapshot) {
-        if (snapshot.hasError) {
-          return Center(
-            child: ErrorDataView(
-              onRetry: () => store.retry(),
-            ),
+  Widget _buildContent(BuildContext context) {
+    return BlocBuilder<ForexTimelineBloc, ForexTimelineState>(
+      builder: (context, state) {
+        if (state is ForexTimelineLoadSuccessState) {
+          return ForexGraph(
+            timeline: state.forexList,
           );
+        } else if (state is ForexTimeLineLoadingState) {
+          return Center(child: ProgressView());
         }
-        if (snapshot.hasData) {
-          if (snapshot.data.isEmpty) {
-            return Center(
-              child: EmptyDataView(),
-            );
-          }
-          return ForexGraph(timeline: snapshot.data);
-        }
-        return Center(child: ProgressView());
+        return SizedBox.shrink();
       },
     );
   }
 
-  Widget _buildTodayStat(BuildContext context, ForexDetailStore store) {
+  Widget _buildTodayStat(BuildContext context) {
     return Text(
-      'Buy: ${store.forex.buying} Sell: ${store.forex.selling}',
+      'Buy: ${forexUIModel.forexEntity.buying} Sell: ${forexUIModel.forexEntity.selling}',
       style: Theme.of(context).textTheme.bodyText1,
+    );
+  }
+
+  Widget _buildCommentBar() {
+    return BlocBuilder<LikeUnlikeBloc, LikeUnlikeState>(
+      builder: (context, state) {
+        return CommentBar(
+          likeCount: forexUIModel?.formattedLikeCount ?? '0',
+          onCommentTap: () => context
+              .repository<NavigationService>()
+              .toCommentsScreen(
+                  context: context,
+                  title: forexUIModel.forexEntity.currency.title,
+                  postId: forexUIModel.forexEntity.id),
+          onShareTap: () {
+            context.bloc<ShareBloc>().add(Share());
+          },
+          commentCount: forexUIModel?.formattedCommentCount ?? '0',
+          isLiked: forexUIModel?.forexEntity?.isLiked ?? false,
+          shareCount: forexUIModel?.formattedShareCount ?? '0',
+          userAvatar: null,
+          onLikeTap: () {
+            if (forexUIModel.forexEntity.isLiked) {
+              forexUIModel.unlike();
+              context.bloc<LikeUnlikeBloc>().add(UnlikeEvent());
+            } else {
+              forexUIModel.like();
+              context.bloc<LikeUnlikeBloc>().add(LikeEvent());
+            }
+          },
+        );
+      },
+    );
+  }
+
+  Widget _buildComment() {
+    return BlocBuilder<ForexTimelineBloc, ForexTimelineState>(
+      buildWhen: (previous, current) => !(current is ForexTimelineErrorState),
+      builder: (context, state) {
+        if (state is ForexTimelineLoadSuccessState) {
+          return _buildCommentBar();
+        }
+        return const CommentBarPlaceholder();
+      },
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    return Consumer2<ForexDetailStore, PostMetaStore>(
-      builder: (_, ForexDetailStore store, PostMetaStore metaStore, __) {
-        return Scaffold(
-          backgroundColor: Theme.of(context).backgroundColor,
-          appBar: AppBar(
-            title: Text(store.forex.currency),
-            actions: <Widget>[
-              IconButton(
-                icon: Icon(Icons.settings),
-                onPressed: () {
-                  context
-                      .read<NavigationService>()
-                      .toSettingsScreen(context: context);
-                },
-              ),
-            ],
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<ForexTimelineBloc>(
+          create: (context) => ForexTimelineBloc(
+            currencyId: forexUIModel.forexEntity.currency.id,
+            getForexTimelineUseCase:
+                context.repository<GetForexTimelineUseCase>(),
+          )..add(GetForexTimelineEvent()),
+        ),
+        BlocProvider<LikeUnlikeBloc>(
+          create: (context) => LikeUnlikeBloc(
+            forexEntity: forexUIModel.forexEntity,
+            likeNewsFeedUseCase: context.repository<LikeForexUseCase>(),
+            unLikeNewsFeedUseCase: context.repository<UnlikeForexUseCase>(),
           ),
-          body: SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: SingleChildScrollView(
-                  child: Column(
-                children: <Widget>[
-                  _buildTodayStat(context, store),
-                  _buildContent(context, store),
-                ],
-              )),
-            ),
+        ),
+        BlocProvider<DislikeBloc>(
+          create: (context) => DislikeBloc(
+            forexEntity: forexUIModel.forexEntity,
+            dislikeForexUseCase: context.repository<DislikeForexUseCase>(),
+            undislikeForexUseCase: context.repository<UndislikeForexUseCase>(),
           ),
-          bottomNavigationBar: BottomAppBar(
-            child: Consumer<AuthenticationStore>(
-              builder: (_, authenticationStore, __) {
-                return Observer(
-                  builder: (_) {
-                    return IgnorePointer(
-                      ignoring: metaStore.postMeta == null,
-                      child: CommentBar(
-                        userProfileImageUrl: authenticationStore.user.avatar,
-                        commentCountNotifier: this.commentCountNotifier,
-                        likeCountNotifier: this.likeCountNotifier,
-                        likeNotifier: this.likeNotifier,
-                        onCommentTap: () {
-                          context.read<NavigationService>().toCommentsScreen(
-                              context: context,
-                              title: 'Forex',
-                              postId: 'forex');
-                        },
-                        onLikeTap: (value) {
-                          likeNotifier.value = !value;
-                          if (value) {
-                            metaStore.removeLike().then((value) {
-                              likeNotifier.value = !value;
-                            });
-                          } else {
-                            metaStore.postLike().then((value) {
-                              likeNotifier.value = value;
-                            });
-                          }
-                        },
-                        onShareTap: () {
-                          if (store.forex != null)
-                            context
-                                .read<ShareService>()
-                                .share(
-                                    postId: store.forex.code,
-                                    contentType: 'forex',
-                                    data:
-                                        'Currency:${store.forex.currency}\nBuy: ${store.forex.buying}\nSell: ${store.forex.selling}\nLast updated: ${store.forex.addedDate}')
-                                .then((value) => metaStore.postShare());
-                        },
-                      ),
-                    );
-                  },
-                );
+        ),
+        BlocProvider<ShareBloc>(
+          create: (context) => ShareBloc(
+            forexEntity: forexUIModel.forexEntity,
+            shareNewsFeedUseCase: context.repository<ShareForexUseCase>(),
+          ),
+        ),
+        BlocProvider<ViewBloc>(
+          create: (context) => ViewBloc(
+            forexEntity: forexUIModel.forexEntity,
+            viewNewsFeedUseCase: context.repository<ViewForexUseCase>(),
+          )..add(View()),
+        ),
+      ],
+      child: Scaffold(
+        backgroundColor: Theme.of(context).backgroundColor,
+        appBar: AppBar(
+          title: Text(forexUIModel.forexEntity.currency.title),
+          actions: <Widget>[
+            IconButton(
+              icon: Icon(Icons.settings),
+              onPressed: () {
+                context
+                    .repository<NavigationService>()
+                    .toSettingsScreen(context: context);
               },
             ),
+          ],
+        ),
+        body: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: SingleChildScrollView(
+                child: Column(
+              children: <Widget>[
+                _buildTodayStat(context),
+                _buildContent(context),
+              ],
+            )),
           ),
-        );
-      },
+        ),
+        bottomNavigationBar: BottomAppBar(
+          child: _buildComment(),
+        ),
+      ),
     );
   }
 }

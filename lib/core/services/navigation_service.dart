@@ -2,6 +2,8 @@ import 'package:corona_module/corona.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:samachar_hub/data/models/models.dart';
+import 'package:samachar_hub/feature_forex/domain/entities/forex_entity.dart';
+import 'package:samachar_hub/feature_horoscope/domain/entities/horoscope_entity.dart';
 import 'package:samachar_hub/feature_news/domain/models/news_source.dart';
 import 'package:samachar_hub/feature_news/domain/models/news_topic.dart';
 import 'package:samachar_hub/feature_news/presentation/models/news_category.dart';
@@ -19,8 +21,8 @@ import 'package:samachar_hub/pages/authentication/login/login_screen.dart';
 import 'package:samachar_hub/feature_comment/presentation/ui/comment_screen.dart';
 import 'package:samachar_hub/feature_forex/presentation/ui/forex_detail_screen.dart';
 import 'package:samachar_hub/feature_forex/presentation/ui/forex_screen.dart';
-import 'package:samachar_hub/pages/horoscope/horoscope_detail_screen.dart';
-import 'package:samachar_hub/pages/horoscope/horoscope_screen.dart';
+import 'package:samachar_hub/feature_horoscope/presentation/ui/detail/horoscope_detail_screen.dart';
+import 'package:samachar_hub/feature_horoscope/presentation/ui/horoscope_screen.dart';
 import 'package:samachar_hub/pages/main/main_screen.dart';
 import 'package:samachar_hub/pages/profile/user_profile_screen.dart';
 import 'package:samachar_hub/pages/settings/settings_page.dart';
@@ -90,7 +92,7 @@ class NavigationService {
     );
   }
 
-  toForexDetailScreen(BuildContext context, ForexModel data) {
+  toForexDetailScreen(BuildContext context, ForexEntity data) {
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -136,7 +138,7 @@ class NavigationService {
   }
 
   toHoroscopeDetail(BuildContext context, String sign, String signIcon,
-      String zodiac, HoroscopeModel data) {
+      String zodiac, HoroscopeEntity data) {
     Navigator.push(
       context,
       MaterialPageRoute(

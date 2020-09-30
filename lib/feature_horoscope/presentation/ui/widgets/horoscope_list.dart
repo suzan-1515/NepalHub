@@ -4,47 +4,47 @@ import 'package:samachar_hub/core/services/preference_service.dart';
 import 'package:samachar_hub/core/widgets/empty_data_widget.dart';
 import 'package:samachar_hub/core/widgets/error_data_widget.dart';
 import 'package:samachar_hub/core/widgets/progress_widget.dart';
-import 'package:samachar_hub/feature_forex/presentation/blocs/latest/latest_forex_bloc.dart';
 import 'package:samachar_hub/core/extensions/view.dart';
-import 'package:samachar_hub/feature_forex/presentation/ui/widgets/forex_list_builder.dart';
+import 'package:samachar_hub/feature_horoscope/presentation/blocs/horoscope/horoscope_bloc.dart';
+import 'package:samachar_hub/feature_horoscope/presentation/ui/widgets/horoscope_list_builder.dart';
 
-class ForexList extends StatelessWidget {
-  const ForexList({
+class HoroscopeList extends StatelessWidget {
+  const HoroscopeList({
     Key key,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<ForexBloc, ForexState>(
+    return BlocConsumer<HoroscopeBloc, HoroscopeState>(
       listener: (context, state) {
-        if (state is ForexErrorState) {
+        if (state is HoroscopeErrorState) {
           context.showMessage(state.message);
-        } else if (state is ForexLoadErrorState) {
+        } else if (state is HoroscopeLoadErrorState) {
           context.showMessage(state.message);
         }
       },
-      buildWhen: (previous, current) => !(current is ForexErrorState),
+      buildWhen: (previous, current) => !(current is HoroscopeErrorState),
       builder: (context, state) {
-        if (state is ForexLoadSuccessState) {
-          return ForexListBuilder(
-            data: state.forexList,
-            defaultForex: state.defaultForex,
+        if (state is HoroscopeLoadSuccessState) {
+          return HoroscopeListBuilder(
+            horoscopeUIModel: state.horoscope,
+            defaultSignIndex: state.defaultSignIndex,
           );
-        } else if (state is ForexEmptyState) {
+        } else if (state is HoroscopeEmptyState) {
           return Center(
             child: EmptyDataView(
               text: state.message,
             ),
           );
-        } else if (state is ForexLoadErrorState) {
+        } else if (state is HoroscopeLoadErrorState) {
           return Center(
             child: ErrorDataView(
               message: state.message,
-              onRetry: () => context.bloc<ForexBloc>().add(
-                    GetLatestForexEvent(
-                        defaultCurrencyId: context
+              onRetry: () => context.bloc<HoroscopeBloc>().add(
+                    GetHoroscopeEvent(
+                        defaultSignIndex: context
                             .repository<PreferenceService>()
-                            .defaultForexCurrency),
+                            .defaultZodiac),
                   ),
             ),
           );

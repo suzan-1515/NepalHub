@@ -1,21 +1,17 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_advanced_networkimage/provider.dart';
-import 'package:provider/provider.dart';
-import 'package:samachar_hub/data/models/models.dart';
-import 'package:samachar_hub/services/services.dart';
 
 class HoroscopeListItem extends StatelessWidget {
   const HoroscopeListItem({
     Key key,
-    @required this.data,
+    @required this.onTap,
     @required this.context,
     @required this.sign,
     @required this.zodiac,
     @required this.signIcon,
   }) : super(key: key);
 
-  final HoroscopeModel data;
+  final Function(String, String, String) onTap;
   final BuildContext context;
   final String sign;
   final String zodiac;
@@ -26,9 +22,7 @@ class HoroscopeListItem extends StatelessWidget {
     return Card(
       color: Theme.of(context).cardColor,
       child: ListTile(
-        onTap: () => context
-            .read<NavigationService>()
-            .toHoroscopeDetail(context, sign, signIcon, zodiac, data),
+        onTap: () => onTap(sign, zodiac, signIcon),
         leading: Hero(
           tag: sign,
           child: CircleAvatar(

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_advanced_networkimage/provider.dart';
+import 'package:flutter_advanced_networkimage/transition.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:samachar_hub/core/services/services.dart';
-import 'package:samachar_hub/data/models/models.dart';
+import 'package:samachar_hub/feature_forex/presentation/models/forex_model.dart';
 
 class ForexListItem extends StatelessWidget {
   const ForexListItem({
@@ -12,7 +14,7 @@ class ForexListItem extends StatelessWidget {
   }) : super(key: key);
 
   final BuildContext context;
-  final ForexModel data;
+  final ForexUIModel data;
 
   @override
   Widget build(BuildContext context) {
@@ -20,25 +22,27 @@ class ForexListItem extends StatelessWidget {
       color: Colors.transparent,
       child: InkWell(
         onTap: () => context
-            .read<NavigationService>()
-            .toForexDetailScreen(context, data),
+            .repository<NavigationService>()
+            .toForexDetailScreen(context, data.forexEntity),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
             Expanded(
               flex: 1,
-              child: SvgPicture.network(
-                'https://www.ashesh.com.np/forex/flag/${data.code}.svg',
-                placeholderBuilder: (_) {
-                  return Container(
-                    width: 32,
-                    height: 32,
-                    color: Theme.of(context).cardColor,
-                  );
-                },
-                width: 32,
-                height: 32,
+              child: TransitionToImage(
+                width: 24,
+                height: 24,
+                image: AdvancedNetworkImage(
+                  data.forexEntity.currency.icon,
+                  useDiskCache: true,
+                  cacheRule: CacheRule(maxAge: const Duration(days: 3)),
+                ),
+                fit: BoxFit.contain,
+                loadingWidgetBuilder: (context, progress, imageData) =>
+                    Icon(FontAwesomeIcons.image),
+                placeholderBuilder: (context, reloadImage) =>
+                    Icon(FontAwesomeIcons.image),
               ),
             ),
             SizedBox(
@@ -47,7 +51,7 @@ class ForexListItem extends StatelessWidget {
             Expanded(
               flex: 3,
               child: Text(
-                '${data.currency} (${data.code})',
+                '${data.forexEntity.currency} (${data.forexEntity.currency.code})',
                 style: Theme.of(context).textTheme.bodyText1,
               ),
             ),
@@ -55,20 +59,20 @@ class ForexListItem extends StatelessWidget {
             Expanded(
               flex: 1,
               child: Text(
-                data.unit.toString(),
+                data.forexEntity.unit.toString(),
                 style: Theme.of(context).textTheme.bodyText2,
               ),
             ),
             SizedBox(width: 8),
             Expanded(
               flex: 1,
-              child: Text(data.buying.toString(),
+              child: Text(data.forexEntity.buying.toString(),
                   style: Theme.of(context).textTheme.bodyText2),
             ),
             SizedBox(width: 8),
             Expanded(
               flex: 1,
-              child: Text(data.selling.toString(),
+              child: Text(data.forexEntity.selling.toString(),
                   style: Theme.of(context).textTheme.bodyText2),
             ),
           ],
