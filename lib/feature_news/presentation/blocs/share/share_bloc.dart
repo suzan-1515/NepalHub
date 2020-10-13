@@ -13,10 +13,13 @@ part 'share_state.dart';
 
 class ShareBloc extends Bloc<ShareEvent, ShareState> {
   final UseCase _shareNewsFeedUseCase;
+  final NewsFeedUIModel _feedUIModel;
 
   ShareBloc({
     @required UseCase shareNewsFeedUseCase,
+    @required NewsFeedUIModel feedUIModel,
   })  : _shareNewsFeedUseCase = shareNewsFeedUseCase,
+        _feedUIModel = feedUIModel,
         super(ShareInitial());
 
   @override
@@ -29,7 +32,7 @@ class ShareBloc extends Bloc<ShareEvent, ShareState> {
       yield ShareInProgress();
       try {
         await _shareNewsFeedUseCase
-            .call(ShareNewsUseCaseParams(feed: event.feedModel.feed));
+            .call(ShareNewsUseCaseParams(feed: _feedUIModel.feed));
         yield ShareSuccess(message: 'Feed shared successfully.');
       } catch (e) {
         log('News feed share error.', error: e);

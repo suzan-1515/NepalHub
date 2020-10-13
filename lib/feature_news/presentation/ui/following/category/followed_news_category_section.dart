@@ -33,15 +33,7 @@ class FollowedNewsCategorySection extends StatelessWidget {
               ),
               Flexible(
                 fit: FlexFit.loose,
-                child: BlocProvider<NewsCategoryBloc>(
-                  create: (context) => NewsCategoryBloc(
-                    getNewsCategoriesUseCase:
-                        context.repository<GetNewsCategoriesUseCase>(),
-                    getNewsFollowedCategoriesUseCase:
-                        context.repository<GetFollowedNewsCategoriesUseCase>(),
-                  ),
-                  child: FollowedNewsCategoryList(),
-                ),
+                child: FollowedNewsCategoryList(),
               ),
               SizedBox(
                 height: 8,

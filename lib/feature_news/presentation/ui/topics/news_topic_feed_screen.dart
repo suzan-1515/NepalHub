@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:samachar_hub/feature_news/domain/usecases/get_news_by_topic_use_case.dart';
 import 'package:samachar_hub/feature_news/presentation/blocs/news_topic/topic_feeds/news_topic_feed_bloc.dart';
 import 'package:samachar_hub/feature_news/presentation/blocs/news_topic/follow_unfollow/follow_un_follow_bloc.dart';
 import 'package:samachar_hub/feature_news/presentation/models/news_topic.dart';
@@ -59,14 +60,21 @@ class _NewsTopicFeedScreenState extends State<NewsTopicFeedScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Theme.of(context).backgroundColor,
-      body: SafeArea(
-        child: NewsFilteringAppBar(
-          header: _buildHeader(),
-          body: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: NewsTopicFeedList(),
+    return BlocProvider<NewsTopicFeedBloc>(
+      create: (context) => NewsTopicFeedBloc(
+        newsByTopicUseCase: context.repository<GetNewsByTopicUseCase>(),
+        newsFilterBloc: null,
+        topicModel: null,
+      ),
+      child: Scaffold(
+        backgroundColor: Theme.of(context).backgroundColor,
+        body: SafeArea(
+          child: NewsFilteringAppBar(
+            header: _buildHeader(),
+            body: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: NewsTopicFeedList(),
+            ),
           ),
         ),
       ),

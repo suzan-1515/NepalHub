@@ -33,14 +33,7 @@ class FollowedNewsSourceSection extends StatelessWidget {
               ),
               Flexible(
                 fit: FlexFit.loose,
-                child: BlocProvider<NewsSourceBloc>(
-                  create: (context) => NewsSourceBloc(
-                      getNewsFollowedSourcesUseCase:
-                          context.repository<GetFollowedNewsSourcesUseCase>(),
-                      getNewsSourcesUseCase:
-                          context.repository<GetNewsSourcesUseCase>()),
-                  child: FollowedNewsSourceList(),
-                ),
+                child: FollowedNewsSourceList(),
               ),
               SizedBox(
                 height: 8,

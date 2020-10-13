@@ -41,7 +41,11 @@ class LikeUnlikeBloc extends Bloc<LikeUnlikeEvent, LikeUnlikeState> {
           ),
         );
         if (commentEntity != null) {
-          _commentUIModel.like();
+          _commentUIModel.comment = _commentUIModel.comment.copyWith(
+              isLiked: commentEntity.isLiked,
+              likeCount: commentEntity.likeCount,
+              isCommented: commentEntity.isCommented,
+              commentCount: commentEntity.commentCount);
         }
         yield LikeSuccessState();
       } catch (e) {
@@ -56,7 +60,11 @@ class LikeUnlikeBloc extends Bloc<LikeUnlikeEvent, LikeUnlikeState> {
           ),
         );
         if (commentEntity != null) {
-          _commentUIModel.unlike();
+          _commentUIModel.comment = _commentUIModel.comment.copyWith(
+              isLiked: commentEntity.isLiked,
+              likeCount: commentEntity.likeCount,
+              isCommented: commentEntity.isCommented,
+              commentCount: commentEntity.commentCount);
         }
         yield UnlikeSuccessState();
       } catch (e) {

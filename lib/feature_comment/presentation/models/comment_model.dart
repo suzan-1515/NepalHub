@@ -24,6 +24,6 @@ class CommentUIModel {
       NumberFormat.compact().format(comment.commentCount);
   String get formattedLikeCount =>
       NumberFormat.compact().format(comment.likeCount);
-  bool isOwn(String userId) => comment.user['id'] == userId;
+  bool isOwn(String userId) => comment.user.id == userId;
   String get publishedDateMomentAgo => _publishedDateMomentAgo;
 }

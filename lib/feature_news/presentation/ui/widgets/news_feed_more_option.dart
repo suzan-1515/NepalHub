@@ -7,7 +7,7 @@ import 'package:samachar_hub/feature_news/presentation/blocs/news_source/follow_
 import 'package:samachar_hub/feature_news/presentation/blocs/share/share_bloc.dart';
 import 'package:samachar_hub/feature_news/presentation/models/news_feed.dart';
 import 'package:samachar_hub/feature_news/presentation/ui/widgets/report_article.dart';
-import 'package:samachar_hub/utils/extensions.dart';
+import 'package:samachar_hub/core/extensions/view.dart';
 
 class NewsFeedMoreOption extends StatelessWidget {
   final NewsFeedUIModel feed;
@@ -99,13 +99,9 @@ class NewsFeedMoreOption extends StatelessWidget {
               onTap: () {
                 final value = feed.feed.isBookmarked;
                 if (value)
-                  context
-                      .bloc<BookmarkUnBookmarkBloc>()
-                      .add(UnBookmarkNews(feedModel: feed));
+                  context.bloc<BookmarkUnBookmarkBloc>().add(UnBookmarkNews());
                 else
-                  context
-                      .bloc<BookmarkUnBookmarkBloc>()
-                      .add(BookmarkNews(feedModel: feed));
+                  context.bloc<BookmarkUnBookmarkBloc>().add(BookmarkNews());
                 Navigator.pop(context);
               },
             );
@@ -121,7 +117,7 @@ class NewsFeedMoreOption extends StatelessWidget {
               style: Theme.of(context).textTheme.bodyText2,
             ),
             onTap: () {
-              context.bloc<ShareBloc>().add(Share(feedModel: feed));
+              context.bloc<ShareBloc>().add(Share());
               Navigator.pop(context);
             },
           ),
@@ -166,7 +162,7 @@ class NewsFeedMoreOption extends StatelessWidget {
               style: Theme.of(context).textTheme.bodyText2,
             ),
             onTap: () {
-              context.bloc<DislikeBloc>().add(DislikeEvent(feedModel: feed));
+              context.bloc<DislikeBloc>().add(DislikeEvent());
               Navigator.pop(context);
             },
           ),

@@ -4,8 +4,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 import 'package:samachar_hub/core/services/services.dart';
 import 'package:samachar_hub/core/utils/link_utils.dart';
+import 'package:samachar_hub/feature_main/presentation/blocs/settings/settings_cubit.dart';
 import 'package:samachar_hub/feature_news/presentation/models/news_feed.dart';
-import 'package:samachar_hub/pages/settings/settings_store.dart';
 
 class ReadMore extends StatelessWidget {
   const ReadMore({
@@ -41,7 +41,7 @@ class ReadMore extends StatelessWidget {
             child: OutlineButton.icon(
               onPressed: () {
                 final int newsReadMode =
-                    context.read<SettingsStore>().newsReadMode;
+                    context.bloc<SettingsCubit>().settings.newsReadMode;
                 if (newsReadMode == 2)
                   return LinkUtils.openLink(feedUIModel.feed.link);
                 context.repository<NavigationService>().toWebViewScreen(

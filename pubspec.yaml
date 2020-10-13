@@ -66,6 +66,7 @@ dependencies:
   launch_review: ^2.0.0
   data_connection_checker: ^0.3.4
   shimmer: ^1.1.1
+  dio: ^3.0.10
 
   corona_module:
     path: ./corona_module

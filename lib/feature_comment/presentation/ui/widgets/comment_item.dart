@@ -14,15 +14,19 @@ class CommentListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final hasAvatar = (commentUIModel.comment.user.avatar != null &&
+        commentUIModel.comment.user.avatar.isNotEmpty);
     return Material(
       child: ListTile(
         leading: CircleAvatar(
           backgroundColor: Theme.of(context).backgroundColor,
-          backgroundImage: NetworkImage(commentUIModel.comment.user['avatar']),
+          backgroundImage: hasAvatar
+              ? NetworkImage(commentUIModel.comment.user.avatar)
+              : Image.asset('/assets/images/user.png'),
         ),
         title: RichText(
           text: TextSpan(
-              text: '${commentUIModel.comment.user['username']}',
+              text: '${commentUIModel.comment.user.fullname}',
               style: Theme.of(context).textTheme.bodyText1,
               children: <TextSpan>[
                 TextSpan(
@@ -51,8 +55,10 @@ class CommentListItem extends StatelessWidget {
                   ),
                   onPressed: () {
                     if (commentUIModel.comment.isLiked) {
+                      commentUIModel.unlike();
                       context.bloc<LikeUnlikeBloc>().add(UnlikeEvent());
                     } else {
+                      commentUIModel.like();
                       context.bloc<LikeUnlikeBloc>().add(LikeEvent());
                     }
                   },

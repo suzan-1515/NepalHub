@@ -4,7 +4,7 @@ import 'package:samachar_hub/core/widgets/empty_data_widget.dart';
 import 'package:samachar_hub/core/widgets/error_data_widget.dart';
 import 'package:samachar_hub/core/widgets/progress_widget.dart';
 import 'package:samachar_hub/feature_news/presentation/ui/source/sources/widgets/news_source_list.dart';
-import 'package:samachar_hub/utils/extensions.dart';
+import 'package:samachar_hub/core/extensions/view.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class NewsSourcesScreen extends StatefulWidget {

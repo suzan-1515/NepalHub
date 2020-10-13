@@ -112,12 +112,14 @@ class _NewsListBuilderState extends State<NewsListBuilder> {
             providers: [
               BlocProvider<LikeUnlikeBloc>(
                 create: (context) => LikeUnlikeBloc(
+                  newsFeedUIModel: feed,
                   likeNewsFeedUseCase: _likeNewsUseCase,
                   unLikeNewsFeedUseCase: _unlikeNewsUseCase,
                 ),
               ),
               BlocProvider<DislikeBloc>(
                 create: (context) => DislikeBloc(
+                  newsFeedUIModel: feed,
                   dislikeNewsFeedUseCase: _dislikeNewsUseCase,
                   undislikeNewsFeedUseCase: _undislikeNewsUseCase,
                 ),
@@ -130,19 +132,22 @@ class _NewsListBuilderState extends State<NewsListBuilder> {
               ),
               BlocProvider<BookmarkUnBookmarkBloc>(
                 create: (context) => BookmarkUnBookmarkBloc(
+                  newsFeedUIModel: feed,
                   addBookmarkNewsUseCase: _bookmarkNewsUseCase,
                   removeBookmarkNewsUseCase: _unbookmarkNewsUseCase,
                 ),
               ),
               BlocProvider<ShareBloc>(
                 create: (context) => ShareBloc(
+                  feedUIModel: feed,
                   shareNewsFeedUseCase: _shareNewsUseCase,
                 ),
               ),
               BlocProvider<ViewBloc>(
                 create: (context) => ViewBloc(
+                  feedUIModel: feed,
                   viewNewsFeedUseCase: _viewNewsUseCase,
-                ),
+                )..add(View()),
               ),
             ],
             child: view,

@@ -1,7 +1,6 @@
 import 'package:corona_module/corona.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:samachar_hub/data/models/models.dart';
 import 'package:samachar_hub/feature_forex/domain/entities/forex_entity.dart';
 import 'package:samachar_hub/feature_horoscope/domain/entities/horoscope_entity.dart';
 import 'package:samachar_hub/feature_news/domain/models/news_source.dart';
@@ -17,18 +16,13 @@ import 'package:samachar_hub/feature_news/presentation/ui/source/source_feed/new
 import 'package:samachar_hub/feature_news/presentation/ui/source/sources/sources_screen.dart';
 import 'package:samachar_hub/feature_news/presentation/ui/topics/news_topic_feed_screen.dart';
 import 'package:samachar_hub/feature_news/presentation/ui/trending/trending_news_screen.dart';
-import 'package:samachar_hub/pages/authentication/login/login_screen.dart';
 import 'package:samachar_hub/feature_comment/presentation/ui/comment_screen.dart';
 import 'package:samachar_hub/feature_forex/presentation/ui/forex_detail_screen.dart';
 import 'package:samachar_hub/feature_forex/presentation/ui/forex_screen.dart';
 import 'package:samachar_hub/feature_horoscope/presentation/ui/detail/horoscope_detail_screen.dart';
 import 'package:samachar_hub/feature_horoscope/presentation/ui/horoscope_screen.dart';
-import 'package:samachar_hub/pages/main/main_screen.dart';
-import 'package:samachar_hub/pages/profile/user_profile_screen.dart';
-import 'package:samachar_hub/pages/settings/settings_page.dart';
-import 'package:samachar_hub/pages/settings/settings_store.dart';
+import 'package:samachar_hub/feature_profile/presentation/ui/user_profile_screen.dart';
 import 'package:samachar_hub/repository/repositories.dart';
-import 'package:samachar_hub/services/services.dart';
 import 'package:samachar_hub/stores/stores.dart';
 import 'package:samachar_hub/core/widgets/webview_widget.dart';
 

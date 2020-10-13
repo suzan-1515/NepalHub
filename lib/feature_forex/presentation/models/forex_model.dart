@@ -29,4 +29,6 @@ class ForexUIModel {
   String get formattedViewCount =>
       NumberFormat.compact().format(forexEntity.viewCount);
   String get publishedDateMomentAgo => _publishedDateMomentAgo;
+  String get formatttedDate =>
+      DateFormat('dd MMMM, yyyy').format(forexEntity.publishedAt);
 }

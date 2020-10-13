@@ -9,7 +9,7 @@ import 'package:samachar_hub/feature_comment/domain/entities/comment_entity.dart
 import 'package:samachar_hub/feature_comment/domain/entities/thread_type.dart';
 import 'package:samachar_hub/feature_comment/domain/usecases/get_comments_use_case.dart';
 import 'package:samachar_hub/feature_comment/presentation/models/comment_model.dart';
-import 'package:samachar_hub/feature_comment/utils/comment_entity_extension.dart';
+import 'package:samachar_hub/feature_comment/presentation/extensions/comment_entity_extension.dart';
 
 part 'comment_event.dart';
 part 'comment_state.dart';
@@ -19,15 +19,15 @@ class CommentBloc extends Bloc<CommentEvent, CommentState> {
   final String _threadId;
   final CommentThreadType _threadType;
   final String _threadTitle;
-  final String _likeCount;
-  final String _commentCount;
+  final int _likeCount;
+  final int _commentCount;
 
   CommentBloc(
       {@required UseCase getCommentsUseCase,
       @required String threadId,
       @required String threadTitle,
-      @required String likeCount,
-      @required String commentCount,
+      int likeCount,
+      int commentCount,
       @required CommentThreadType threadType})
       : _getCommentsUseCase = getCommentsUseCase,
         _threadId = threadId,
@@ -45,8 +45,8 @@ class CommentBloc extends Bloc<CommentEvent, CommentState> {
 
   String get threadId => _threadId;
   String get threadTitle => _threadTitle;
-  String get likeCount => _likeCount;
-  String get commentCount => _commentCount;
+  int get likeCount => _likeCount;
+  int get commentCount => _commentCount;
   CommentThreadType get threadType => _threadType;
   int get page => _page;
 

@@ -1,27 +1,16 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 import 'package:nepali_utils/nepali_utils.dart';
-import 'package:provider/provider.dart';
-import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:samachar_hub/core/handlers/notification_handler.dart';
-import 'package:samachar_hub/notifier/news_setting_notifier.dart';
-import 'package:samachar_hub/pages/splash/splash_screen.dart';
-import 'package:samachar_hub/pages/settings/settings_store.dart';
-import 'package:samachar_hub/pages/splash/widgets/splash_view.dart';
-import 'package:samachar_hub/repository/repositories.dart';
-import 'package:samachar_hub/services/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:samachar_hub/core/services/services.dart';
+import 'package:samachar_hub/feature_auth/utils/providers.dart';
+import 'package:samachar_hub/feature_main/presentation/blocs/settings/settings_cubit.dart';
+import 'package:samachar_hub/feature_main/presentation/ui/splash/splash_screen.dart';
+import 'package:samachar_hub/feature_main/presentation/ui/splash/widgets/splash_view.dart';
+import 'package:samachar_hub/feature_main/utils/providers.dart';
+import 'package:samachar_hub/global_providers.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'core/themes.dart' as Themes;
-import 'repository/authentication_repository.dart';
-import 'services/crash_analytics_service.dart';
-import 'services/dynamic_link_service.dart';
-import 'services/notification_service.dart';
-import 'stores/auth/auth_store.dart';
-import 'stores/main/main_store.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -29,16 +18,16 @@ Future<void> main() async {
 }
 
 class App extends StatelessWidget {
-  ThemeData _getTheme(SettingsStore settingStore) {
-    return settingStore.useDarkMode
-        ? settingStore.usePitchBlack ? Themes.pitchBlack : Themes.darkTheme
+  ThemeData _getTheme(bool darkMode, bool pitchBlackMode) {
+    return darkMode
+        ? pitchBlackMode ? Themes.pitchBlack : Themes.darkTheme
         : Themes.lightTheme;
   }
 
-  ThemeMode _getThemeMode(SettingsStore settingStore) {
-    return settingStore.themeSetBySystem
+  ThemeMode _getThemeMode(bool themeSetBySystem, bool darkMode) {
+    return themeSetBySystem
         ? ThemeMode.system
-        : (settingStore.useDarkMode ? ThemeMode.dark : ThemeMode.light);
+        : (darkMode ? ThemeMode.dark : ThemeMode.light);
   }
 
   @override
@@ -56,7 +45,8 @@ class App extends StatelessWidget {
               color: Colors.white,
               child: Center(
                 child: Text(
-                    'Oops something went run. Please restart application.'),
+                  'Oops something went run. Please restart application.',
+                ),
               ),
             ),
           );
@@ -65,146 +55,64 @@ class App extends StatelessWidget {
         if (snapshot.hasData) {
           final sfs = snapshot.data
               .firstWhere((element) => element is SharedPreferences);
-          return MultiProvider(
+          return MultiRepositoryProvider(
             providers: [
-              Provider<PreferenceService>(
-                create: (_) => PreferenceService(sfs),
+              RepositoryProvider(
+                create: (context) => PreferenceService(sfs),
               ),
-              Provider<AnalyticsService>(
-                create: (_) => AnalyticsService(),
-              ),
-              Provider<NavigationService>(
-                create: (_) => NavigationService(),
-              ),
-              Provider<InAppMessagingService>(
-                create: (_) => InAppMessagingService(),
-              ),
-              ProxyProvider<AnalyticsService, ShareService>(
-                update: (_, _analyticsService, __) =>
-                    ShareService(_analyticsService),
-              ),
-
-              //Notifier
-              ChangeNotifierProvider(
-                create: (_) => NewsSettingNotifier(),
-              ),
-
-              //Notification
-              Provider<FlutterLocalNotificationsPlugin>(
-                create: (_) => FlutterLocalNotificationsPlugin(),
-              ),
-              ProxyProvider<FlutterLocalNotificationsPlugin,
-                  NotificationService>(
-                update: (_, _flutterLocalNotificationsPlugin, __) =>
-                    NotificationService(_flutterLocalNotificationsPlugin),
-                dispose: (context, value) => value.dispose(),
-              ),
-              ProxyProvider2<NotificationService, PreferenceService,
-                  NotificationHandler>(
-                lazy: false,
-                update: (_, _notificationService, _preferenceService, __) =>
-                    NotificationHandler(
-                        _notificationService, _preferenceService),
-                dispose: (context, value) => value.dispose(),
-              ),
-              Provider<DynamicLinkService>(
-                create: (_) => DynamicLinkService(),
-                dispose: (context, value) => value.dispose(),
-              ),
-
-              //repository
-              ProxyProvider2<AnalyticsService, NotificationService,
-                  AuthenticationRepository>(
-                update: (_, _analyticsService, _notificationService, __) =>
-                    AuthenticationRepository(
-                        AuthenticationService(FirebaseAuth.instance,
-                            GoogleSignIn(), FacebookAuth.instance),
-                        _analyticsService,
-                        _notificationService),
-              ),
-              ProxyProvider2<AnalyticsService, PreferenceService,
-                  PostMetaRepository>(
-                update: (_, _analyticsService, _preferenceService, __) =>
-                    PostMetaRepository(PostMetaFirestoreService(),
-                        _analyticsService, _preferenceService),
-              ),
-
-              ProxyProvider<PreferenceService, NewsRepository>(
-                update: (_, _preferenceService, __) =>
-                    NewsRepository(NewsApiService(), _preferenceService),
-              ),
-              Provider<CoronaRepository>(
-                create: (_) => CoronaRepository(CoronaApiService()),
-              ),
-              ProxyProvider2<PreferenceService, AnalyticsService,
-                  ForexRepository>(
-                update: (_, preferenceService, analyticsService, __) =>
-                    ForexRepository(
-                        preferenceService, ForexApiService(), analyticsService),
-              ),
-              ProxyProvider2<PreferenceService, AnalyticsService,
-                  HoroscopeRepository>(
-                update: (_, preferenceService, analyticsService, __) =>
-                    HoroscopeRepository(preferenceService,
-                        HoroscopeApiService(), analyticsService),
-              ),
-
-              ProxyProvider2<AnalyticsService, PreferenceService,
-                  FollowingRepository>(
-                update: (_, _analyticsService, _preferenceService, __) =>
-                    FollowingRepository(FollowingFirestoreService(),
-                        _analyticsService, _preferenceService),
-              ),
-              ProxyProvider2<PreferenceService, PostMetaRepository,
-                  BookmarkRepository>(
-                update: (_, _preferenceService, _postMetaRepository, __) =>
-                    BookmarkRepository(BookmarkFirestoreService(),
-                        _postMetaRepository, _preferenceService),
-              ),
-
-              //store
-              ProxyProvider<AuthenticationRepository, AuthenticationStore>(
-                update: (_, _authenticationRepository, __) =>
-                    AuthenticationStore(_authenticationRepository),
-              ),
-              Provider<MainStore>(
-                create: (_) => MainStore(),
-                dispose: (context, value) => value.dispose(),
-              ),
-              ProxyProvider<PreferenceService, SettingsStore>(
-                update: (_, preferenceService, __) =>
-                    SettingsStore(preferenceService),
-              ),
-
-              ProxyProvider<AuthenticationRepository, CrashAnalyticsService>(
-                lazy: false,
-                update: (_, _authenticationRepository, __) =>
-                    CrashAnalyticsService(_authenticationRepository),
-              ),
+              ...GlobalProvider.coreRepositoryProviders,
+              ...AuthProviders.authRepositoryProviders,
+              ...GlobalProvider.commentRepositoryProviders,
+              ...GlobalProvider.forexRepositoryProviders,
+              ...GlobalProvider.goldRepositoryProviders,
+              ...GlobalProvider.horoscopeRepositoryProviders,
+              ...GlobalProvider.newsRepositoryProviders,
+              ...SettingsProvider.settingsRepositoryProviders,
+              ...GlobalProvider.profileRepositoryProviders,
             ],
-            child: Consumer2<SettingsStore, AnalyticsService>(
-              builder: (context, settingStore, _analyticsService, _) {
-                return Observer(
-                  builder: (_) {
+            child: SettingsProvider.settingsBlocProvider(
+              child: BlocConsumer<SettingsCubit, SettingsState>(
+                listener: (context, state) {},
+                buildWhen: (previous, current) =>
+                    (current is SettingsInitialState) ||
+                    (current is SettingsDarkModeChangedState) ||
+                    (current is SettingsPitchBlackModeChangedState) ||
+                    (current is SettingsLoadSuccess) ||
+                    (current is SettingsSystemThemeChangedState),
+                builder: (context, state) {
+                  if (state is SettingsLoadSuccess ||
+                      state is SettingsDarkModeChangedState ||
+                      state is SettingsPitchBlackModeChangedState ||
+                      state is SettingsSystemThemeChangedState) {
+                    var settings = context.bloc<SettingsCubit>().settings;
                     return MaterialApp(
-                      theme: _getTheme(settingStore),
+                      theme: _getTheme(
+                          settings.useDarkMode, settings.usePitchBlack),
                       home: SplashScreen(),
-                      themeMode: settingStore.themeSetBySystem
+                      themeMode: settings.themeSetBySystem
                           ? ThemeMode.system
-                          : _getThemeMode(settingStore),
-                      darkTheme: settingStore.usePitchBlack
+                          : _getThemeMode(
+                              settings.themeSetBySystem, settings.useDarkMode),
+                      darkTheme: settings.usePitchBlack
                           ? Themes.pitchBlack
                           : Themes.darkTheme,
                       navigatorObservers: [
-                        _analyticsService.getAnalyticsObserver(),
+                        context
+                            .repository<AnalyticsService>()
+                            .getAnalyticsObserver(),
                       ],
                     );
-                  },
-                );
-              },
+                  }
+
+                  return MaterialApp(
+                    home: SplashView(),
+                  );
+                },
+              ),
             ),
           );
         }
+
         return MaterialApp(
           home: SplashView(),
         );

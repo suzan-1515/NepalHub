@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
+import 'package:samachar_hub/feature_auth/domain/entities/user_entity.dart';
 import 'package:samachar_hub/feature_comment/domain/entities/thread_type.dart';
 
 class CommentEntity extends Equatable {
@@ -11,7 +12,7 @@ class CommentEntity extends Equatable {
   final bool isCommented;
   final int commentCount;
   final int likeCount;
-  final Map<String, dynamic> user;
+  final UserEntity user;
   final DateTime createdAt;
   final DateTime updatedAt;
 
@@ -37,7 +38,7 @@ class CommentEntity extends Equatable {
     bool isCommented,
     int commentCount,
     int likeCount,
-    Map<String, dynamic> user,
+    UserEntity user,
     DateTime updatedAt,
     DateTime createdAt,
   }) =>
@@ -64,6 +65,7 @@ class CommentEntity extends Equatable {
         isLiked,
         isCommented,
         comment,
+        user,
         likeCount,
         createdAt,
         updatedAt

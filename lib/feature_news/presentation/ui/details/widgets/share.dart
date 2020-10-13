@@ -38,14 +38,10 @@ class Share extends StatelessWidget {
             onTap: () {
               if (feedUIModel.feed.isLiked) {
                 feedUIModel.unlike();
-                context
-                    .bloc<LikeUnlikeBloc>()
-                    .add(UnlikeEvent(feedModel: feedUIModel));
+                context.bloc<LikeUnlikeBloc>().add(UnlikeEvent());
               } else {
                 feedUIModel.like();
-                context
-                    .bloc<LikeUnlikeBloc>()
-                    .add(LikeEvent(feedModel: feedUIModel));
+                context.bloc<LikeUnlikeBloc>().add(LikeEvent());
               }
             },
             text: feedUIModel.feed.likeCount == 0
@@ -67,9 +63,7 @@ class Share extends StatelessWidget {
               url: feedUIModel.feed.link,
               contentType: 'news_feed')
           .then((value) {
-        context
-            .bloc<shareBloc.ShareBloc>()
-            .add(shareBloc.Share(feedModel: feedUIModel));
+        context.bloc<shareBloc.ShareBloc>().add(shareBloc.Share());
       }),
       text: 'Share',
     );
@@ -87,9 +81,7 @@ class Share extends StatelessWidget {
               url: feedUIModel.feed.link,
               contentType: 'news_feed')
           .then((value) {
-        context
-            .bloc<shareBloc.ShareBloc>()
-            .add(shareBloc.Share(feedModel: feedUIModel));
+        context.bloc<shareBloc.ShareBloc>().add(shareBloc.Share());
       }),
       text: 'Share',
     );
@@ -106,9 +98,7 @@ class Share extends StatelessWidget {
               data: '${feedUIModel.feed.title}\n${feedUIModel.feed.link}',
               contentType: 'news_feed')
           .then((value) {
-        context
-            .bloc<shareBloc.ShareBloc>()
-            .add(shareBloc.Share(feedModel: feedUIModel));
+        context.bloc<shareBloc.ShareBloc>().add(shareBloc.Share());
       }),
       text: 'Share',
     );

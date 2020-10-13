@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:samachar_hub/core/models/language.dart';
 import 'package:samachar_hub/core/services/services.dart';
+import 'package:samachar_hub/feature_horoscope/domain/entities/horoscope_entity.dart';
 import 'package:samachar_hub/feature_horoscope/presentation/models/horoscope_model.dart';
 import 'package:samachar_hub/feature_horoscope/presentation/ui/widgets/header.dart';
 import 'package:samachar_hub/feature_horoscope/presentation/ui/widgets/horoscope_list_item.dart';
@@ -40,7 +41,7 @@ class HoroscopeListBuilder extends StatelessWidget {
                 .signByIndex(0, Language.NEPALI),
             zodiac: horoscopeUIModel.horoscopeEntity
                 .horoscopeByIndex(0, Language.NEPALI),
-            signIcon: 'https://www.ashesh.com.np/rashifal/images/1@2x.png',
+            signIcon: HOROSCOPE_ICONS[0],
             onTap: (sign, zodiac, signIcon) => context
                 .repository<NavigationService>()
                 .toHoroscopeDetail(context, sign, signIcon, zodiac,
@@ -52,7 +53,7 @@ class HoroscopeListBuilder extends StatelessWidget {
                 .signByIndex(1, Language.NEPALI),
             zodiac: horoscopeUIModel.horoscopeEntity
                 .horoscopeByIndex(1, Language.NEPALI),
-            signIcon: 'https://www.ashesh.com.np/rashifal/images/2@2x.png',
+            signIcon: HOROSCOPE_ICONS[1],
             onTap: (sign, zodiac, signIcon) => context
                 .repository<NavigationService>()
                 .toHoroscopeDetail(context, sign, signIcon, zodiac,
@@ -64,7 +65,7 @@ class HoroscopeListBuilder extends StatelessWidget {
                 .signByIndex(2, Language.NEPALI),
             zodiac: horoscopeUIModel.horoscopeEntity
                 .horoscopeByIndex(2, Language.NEPALI),
-            signIcon: 'https://www.ashesh.com.np/rashifal/images/3@2x.png',
+            signIcon: HOROSCOPE_ICONS[2],
             onTap: (sign, zodiac, signIcon) => context
                 .repository<NavigationService>()
                 .toHoroscopeDetail(context, sign, signIcon, zodiac,
@@ -76,7 +77,7 @@ class HoroscopeListBuilder extends StatelessWidget {
                 .signByIndex(3, Language.NEPALI),
             zodiac: horoscopeUIModel.horoscopeEntity
                 .horoscopeByIndex(3, Language.NEPALI),
-            signIcon: 'https://www.ashesh.com.np/rashifal/images/4@2x.png',
+            signIcon: HOROSCOPE_ICONS[3],
             onTap: (sign, zodiac, signIcon) => context
                 .repository<NavigationService>()
                 .toHoroscopeDetail(context, sign, signIcon, zodiac,
@@ -88,7 +89,7 @@ class HoroscopeListBuilder extends StatelessWidget {
                 .signByIndex(4, Language.NEPALI),
             zodiac: horoscopeUIModel.horoscopeEntity
                 .horoscopeByIndex(4, Language.NEPALI),
-            signIcon: 'https://www.ashesh.com.np/rashifal/images/5@2x.png',
+            signIcon: HOROSCOPE_ICONS[4],
             onTap: (sign, zodiac, signIcon) => context
                 .repository<NavigationService>()
                 .toHoroscopeDetail(context, sign, signIcon, zodiac,
@@ -100,7 +101,7 @@ class HoroscopeListBuilder extends StatelessWidget {
                 .signByIndex(5, Language.NEPALI),
             zodiac: horoscopeUIModel.horoscopeEntity
                 .horoscopeByIndex(5, Language.NEPALI),
-            signIcon: 'https://www.ashesh.com.np/rashifal/images/6@2x.png',
+            signIcon: HOROSCOPE_ICONS[5],
             onTap: (sign, zodiac, signIcon) => context
                 .repository<NavigationService>()
                 .toHoroscopeDetail(context, sign, signIcon, zodiac,
@@ -112,7 +113,7 @@ class HoroscopeListBuilder extends StatelessWidget {
                 .signByIndex(6, Language.NEPALI),
             zodiac: horoscopeUIModel.horoscopeEntity
                 .horoscopeByIndex(6, Language.NEPALI),
-            signIcon: 'https://www.ashesh.com.np/rashifal/images/7@2x.png',
+            signIcon: HOROSCOPE_ICONS[6],
             onTap: (sign, zodiac, signIcon) => context
                 .repository<NavigationService>()
                 .toHoroscopeDetail(context, sign, signIcon, zodiac,
@@ -124,7 +125,7 @@ class HoroscopeListBuilder extends StatelessWidget {
                 .signByIndex(7, Language.NEPALI),
             zodiac: horoscopeUIModel.horoscopeEntity
                 .horoscopeByIndex(7, Language.NEPALI),
-            signIcon: 'https://www.ashesh.com.np/rashifal/images/8@2x.png',
+            signIcon: HOROSCOPE_ICONS[7],
             onTap: (sign, zodiac, signIcon) => context
                 .repository<NavigationService>()
                 .toHoroscopeDetail(context, sign, signIcon, zodiac,
@@ -136,7 +137,7 @@ class HoroscopeListBuilder extends StatelessWidget {
                 .signByIndex(8, Language.NEPALI),
             zodiac: horoscopeUIModel.horoscopeEntity
                 .horoscopeByIndex(8, Language.NEPALI),
-            signIcon: 'https://www.ashesh.com.np/rashifal/images/9@2x.png',
+            signIcon: HOROSCOPE_ICONS[8],
             onTap: (sign, zodiac, signIcon) => context
                 .repository<NavigationService>()
                 .toHoroscopeDetail(context, sign, signIcon, zodiac,
@@ -148,7 +149,7 @@ class HoroscopeListBuilder extends StatelessWidget {
                 .signByIndex(9, Language.NEPALI),
             zodiac: horoscopeUIModel.horoscopeEntity
                 .horoscopeByIndex(9, Language.NEPALI),
-            signIcon: 'https://www.ashesh.com.np/rashifal/images/10@2x.png',
+            signIcon: HOROSCOPE_ICONS[9],
             onTap: (sign, zodiac, signIcon) => context
                 .repository<NavigationService>()
                 .toHoroscopeDetail(context, sign, signIcon, zodiac,
@@ -160,7 +161,7 @@ class HoroscopeListBuilder extends StatelessWidget {
                 .signByIndex(10, Language.NEPALI),
             zodiac: horoscopeUIModel.horoscopeEntity
                 .horoscopeByIndex(10, Language.NEPALI),
-            signIcon: 'https://www.ashesh.com.np/rashifal/images/11@2x.png',
+            signIcon: HOROSCOPE_ICONS[10],
             onTap: (sign, zodiac, signIcon) => context
                 .repository<NavigationService>()
                 .toHoroscopeDetail(context, sign, signIcon, zodiac,
@@ -172,7 +173,7 @@ class HoroscopeListBuilder extends StatelessWidget {
                 .signByIndex(11, Language.NEPALI),
             zodiac: horoscopeUIModel.horoscopeEntity
                 .horoscopeByIndex(11, Language.NEPALI),
-            signIcon: 'https://www.ashesh.com.np/rashifal/images/12@2x.png',
+            signIcon: HOROSCOPE_ICONS[11],
             onTap: (sign, zodiac, signIcon) => context
                 .repository<NavigationService>()
                 .toHoroscopeDetail(context, sign, signIcon, zodiac,

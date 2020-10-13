@@ -6,7 +6,7 @@ import 'package:samachar_hub/core/services/services.dart';
 import 'package:samachar_hub/feature_news/presentation/blocs/like_unlike/like_unlike_bloc.dart';
 import 'package:samachar_hub/feature_news/presentation/models/news_feed.dart';
 import 'package:samachar_hub/feature_news/presentation/ui/widgets/news_feed_more_option.dart';
-import 'package:samachar_hub/utils/extensions.dart';
+import 'package:samachar_hub/core/extensions/view.dart';
 
 class NewsFeedCardSourceCategory extends StatelessWidget {
   final String sourceIcon;
@@ -164,13 +164,9 @@ class NewsFeedOptions extends StatelessWidget {
                 onPressed: () {
                   final isLiked = feedUIModel.feed.isLiked;
                   if (isLiked) {
-                    context
-                        .bloc<LikeUnlikeBloc>()
-                        .add(UnlikeEvent(feedModel: feedUIModel));
+                    context.bloc<LikeUnlikeBloc>().add(UnlikeEvent());
                   } else {
-                    context
-                        .bloc<LikeUnlikeBloc>()
-                        .add(LikeEvent(feedModel: feedUIModel));
+                    context.bloc<LikeUnlikeBloc>().add(LikeEvent());
                   }
                 },
               );

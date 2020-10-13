@@ -16,12 +16,15 @@ class BookmarkUnBookmarkBloc
     extends Bloc<BookmarkUnBookmarkEvent, BookmarkUnBookmarkState> {
   final UseCase _addBookmarkNewsUseCase;
   final UseCase _removeBookmarkNewsUseCase;
+  final NewsFeedUIModel _newsFeedUIModel;
 
-  BookmarkUnBookmarkBloc(
-      {@required UseCase addBookmarkNewsUseCase,
-      @required UseCase removeBookmarkNewsUseCase})
-      : _addBookmarkNewsUseCase = addBookmarkNewsUseCase,
+  BookmarkUnBookmarkBloc({
+    @required UseCase addBookmarkNewsUseCase,
+    @required UseCase removeBookmarkNewsUseCase,
+    @required NewsFeedUIModel newsFeedUIModel,
+  })  : _addBookmarkNewsUseCase = addBookmarkNewsUseCase,
         _removeBookmarkNewsUseCase = removeBookmarkNewsUseCase,
+        _newsFeedUIModel = newsFeedUIModel,
         assert(addBookmarkNewsUseCase != null),
         assert(removeBookmarkNewsUseCase != null),
         super(BookmarkUnBookmarkInitial());
@@ -36,7 +39,7 @@ class BookmarkUnBookmarkBloc
       try {
         await _addBookmarkNewsUseCase.call(
           BookmarkNewsUseCaseParams(
-            feed: event.feedModel.feed,
+            feed: _newsFeedUIModel.feed,
           ),
         );
         yield BookmarkSuccess(message: 'News bookmarked successfully.');
@@ -49,7 +52,7 @@ class BookmarkUnBookmarkBloc
       try {
         await _removeBookmarkNewsUseCase.call(
           UnBookmarkNewsUseCaseParams(
-            feed: event.feedModel.feed,
+            feed: _newsFeedUIModel.feed,
           ),
         );
         yield UnbookmarkSuccess(message: 'News unbookmark successfully.');

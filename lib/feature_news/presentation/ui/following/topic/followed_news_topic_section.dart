@@ -1,11 +1,7 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
-import 'package:samachar_hub/feature_news/domain/usecases/get_followed_news_topics_use_case.dart';
-import 'package:samachar_hub/feature_news/domain/usecases/get_news_topics_use_case.dart';
-import 'package:samachar_hub/feature_news/presentation/blocs/news_topic/news_topic_bloc.dart';
 import 'package:samachar_hub/feature_news/presentation/ui/following/topic/followed_news_topic_list.dart';
 import 'package:samachar_hub/feature_news/presentation/ui/following/widgets/section_title.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 class FollowedNewsTopicSection extends StatelessWidget {
   const FollowedNewsTopicSection({
@@ -29,16 +25,7 @@ class FollowedNewsTopicSection extends StatelessWidget {
               SizedBox(
                 height: 8,
               ),
-              Flexible(
-                  fit: FlexFit.loose,
-                  child: BlocProvider<NewsTopicBloc>(
-                    create: (context) => NewsTopicBloc(
-                        getNewsTopicsUseCase:
-                            context.repository<GetNewsTopicsUseCase>(),
-                        getNewsFollowedTopicsUseCase:
-                            context.repository<GetFollowedNewsTopicsUseCase>()),
-                    child: FollowedNewsTopicList(),
-                  )),
+              Flexible(fit: FlexFit.loose, child: FollowedNewsTopicList()),
               SizedBox(
                 height: 8,
               ),

@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:samachar_hub/feature_main/presentation/ui/widgets/page_heading_widget.dart';
 import 'package:samachar_hub/feature_news/presentation/ui/following/category/followed_news_category_section.dart';
 import 'package:samachar_hub/feature_news/presentation/ui/following/source/followed_news_source_section.dart';
 import 'package:samachar_hub/feature_news/presentation/ui/following/topic/followed_news_topic_section.dart';
-import 'package:samachar_hub/pages/widgets/page_heading_widget.dart';
 
-class FollowingPage extends StatefulWidget {
+class FollowingScreen extends StatefulWidget {
   @override
-  _FollowingPageState createState() => _FollowingPageState();
+  _FollowingScreenState createState() => _FollowingScreenState();
 }
 
-class _FollowingPageState extends State<FollowingPage>
+class _FollowingScreenState extends State<FollowingScreen>
     with AutomaticKeepAliveClientMixin {
   @override
   void initState() {

@@ -21,7 +21,7 @@ class NewsRemoteDataSource implements RemoteDataSource {
     final responseList =
         await _remoteService.fetchCategories(language: language);
     final categoriesResponse =
-        responseList.map((e) => NewsCategoryModel.fromMap(e));
+        responseList.map((e) => NewsCategoryModel.fromMap(e)).toList();
     return categoriesResponse;
   }
 
@@ -117,14 +117,14 @@ class NewsRemoteDataSource implements RemoteDataSource {
   @override
   Future<List<NewsSourceModel>> fetchSources({Language language}) async {
     final response = await _remoteService.fetchSources(language: language);
-    final sources = response.map((e) => NewsSourceModel.fromMap(e));
+    final sources = response.map((e) => NewsSourceModel.fromMap(e)).toList();
     return sources;
   }
 
   @override
   Future<List<NewsTopicModel>> fetchTopics({Language language}) async {
     final response = await _remoteService.fetchTopics(language: language);
-    final call = response.map((e) => NewsTopicModel.fromMap(e));
+    final call = response.map((e) => NewsTopicModel.fromMap(e)).toList();
     return call;
   }
 

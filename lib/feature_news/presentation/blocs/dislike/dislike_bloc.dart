@@ -15,12 +15,15 @@ part 'dislike_state.dart';
 class DislikeBloc extends Bloc<DislikeUndislikeEvent, DislikeState> {
   final UseCase _dislikeNewsFeedUseCase;
   final UseCase _undislikeNewsFeedUseCase;
+  final NewsFeedUIModel _newsFeedUIModel;
 
   DislikeBloc({
     @required UseCase dislikeNewsFeedUseCase,
     @required UseCase undislikeNewsFeedUseCase,
+    @required NewsFeedUIModel newsFeedUIModel,
   })  : _dislikeNewsFeedUseCase = dislikeNewsFeedUseCase,
         _undislikeNewsFeedUseCase = undislikeNewsFeedUseCase,
+        _newsFeedUIModel = newsFeedUIModel,
         super(DislikeInitial());
 
   @override
@@ -33,7 +36,7 @@ class DislikeBloc extends Bloc<DislikeUndislikeEvent, DislikeState> {
       yield DislikeInProgress();
       try {
         await _dislikeNewsFeedUseCase
-            .call(DislikeNewsUseCaseParams(feed: event.feedModel.feed));
+            .call(DislikeNewsUseCaseParams(feed: _newsFeedUIModel.feed));
         yield DislikeSuccess(message: 'Feed disliked successfully.');
       } catch (e) {
         log('News feed dislike error.', error: e);
@@ -43,7 +46,7 @@ class DislikeBloc extends Bloc<DislikeUndislikeEvent, DislikeState> {
       yield DislikeInProgress();
       try {
         await _undislikeNewsFeedUseCase
-            .call(UndislikeNewsUseCaseParams(feed: event.feedModel.feed));
+            .call(UndislikeNewsUseCaseParams(feed: _newsFeedUIModel.feed));
         yield UndislikeSuccess(message: 'News feed undisliked successfully.');
       } catch (e) {
         log('News feed undislike error.', error: e);

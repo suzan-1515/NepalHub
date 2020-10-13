@@ -67,12 +67,12 @@ class AuthorAndBookmark extends StatelessWidget {
                           feedUIModel.unbookmark();
                           context
                               .bloc<BookmarkUnBookmarkBloc>()
-                              .add(UnBookmarkNews(feedModel: feedUIModel));
+                              .add(UnBookmarkNews());
                         } else {
                           feedUIModel.unbookmark();
                           context
                               .bloc<BookmarkUnBookmarkBloc>()
-                              .add(BookmarkNews(feedModel: feedUIModel));
+                              .add(BookmarkNews());
                         }
                       },
                     );

@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:samachar_hub/data/models/models.dart';
+import 'package:samachar_hub/feature_news/presentation/models/news_feed.dart';
 import 'package:samachar_hub/feature_news/presentation/ui/widgets/article_info_widget.dart';
 import 'package:samachar_hub/core/widgets/cached_image_widget.dart';
 
 class BookmarkListItem extends StatelessWidget {
   BookmarkListItem(this.feed);
 
-  final NewsFeed feed;
+  final NewsFeedUIModel feed;
 
   @override
   Widget build(BuildContext context) {
@@ -25,10 +25,10 @@ class BookmarkListItem extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             NewsFeedCardSourceCategory(
-              category: feed.category.name,
-              publishedDate: feed.momentPublishedDate,
-              source: feed.source.name,
-              sourceIcon: feed.source.favicon,
+              category: feed.feed.category.title,
+              publishedDate: feed.publishedDateMomentAgo,
+              source: feed.feed.source.title,
+              sourceIcon: feed.feed.source.favicon,
             ),
             SizedBox(height: 8),
             Row(
@@ -38,8 +38,8 @@ class BookmarkListItem extends StatelessWidget {
                 Expanded(
                   flex: 4,
                   child: NewsFeedCardTitleDescription(
-                    description: feed.description,
-                    title: feed.title,
+                    description: feed.feed.description,
+                    title: feed.feed.title,
                   ),
                 ),
                 SizedBox(
@@ -52,7 +52,7 @@ class BookmarkListItem extends StatelessWidget {
                     aspectRatio: 4 / 3,
                     child: ClipRRect(
                       borderRadius: BorderRadius.all(Radius.circular(6)),
-                      child: CachedImage(feed.image, tag: feed.tag),
+                      child: CachedImage(feed.feed.image, tag: feed.tag),
                     ),
                   ),
                 ),

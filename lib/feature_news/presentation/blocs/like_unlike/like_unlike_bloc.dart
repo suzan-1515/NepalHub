@@ -15,12 +15,15 @@ part 'like_unlike_state.dart';
 class LikeUnlikeBloc extends Bloc<LikeUnlikeEvent, LikeUnlikeState> {
   final UseCase _likeNewsFeedUseCase;
   final UseCase _unLikeNewsFeedUseCase;
+  final NewsFeedUIModel _newsFeedUIModel;
 
   LikeUnlikeBloc({
     @required UseCase likeNewsFeedUseCase,
     @required UseCase unLikeNewsFeedUseCase,
+    @required NewsFeedUIModel newsFeedUIModel,
   })  : _likeNewsFeedUseCase = likeNewsFeedUseCase,
         _unLikeNewsFeedUseCase = unLikeNewsFeedUseCase,
+        _newsFeedUIModel = newsFeedUIModel,
         super(InitialState());
 
   @override
@@ -33,7 +36,7 @@ class LikeUnlikeBloc extends Bloc<LikeUnlikeEvent, LikeUnlikeState> {
       yield InProgressState();
       try {
         await _likeNewsFeedUseCase
-            .call(LikeNewsUseCaseParams(feed: event.feedModel.feed));
+            .call(LikeNewsUseCaseParams(feed: _newsFeedUIModel.feed));
         yield LikedState(message: 'Feed liked successfully.');
       } catch (e) {
         log('News feed like error.', error: e);
@@ -43,7 +46,7 @@ class LikeUnlikeBloc extends Bloc<LikeUnlikeEvent, LikeUnlikeState> {
       yield InProgressState();
       try {
         await _unLikeNewsFeedUseCase
-            .call(UnlikeNewsUseCaseParams(feed: event.feedModel.feed));
+            .call(UnlikeNewsUseCaseParams(feed: _newsFeedUIModel.feed));
         yield UnlikedState(message: 'News feed unliked successfully.');
       } catch (e) {
         log('News feed unlike error.', error: e);

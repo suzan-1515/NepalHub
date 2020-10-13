@@ -20,9 +20,8 @@ class AnalyticsService {
     return await _analytics.logSignUp(signUpMethod: method);
   }
 
-  Future logLogout({String method = 'google'}) async {
-    return await _analytics
-        .logEvent(name: "logout", parameters: {'logout_method': method});
+  Future logLogout() async {
+    return await _analytics.logEvent(name: "logout");
   }
 
   Future logLike({@required String postId, @required String postType}) async {
@@ -62,27 +61,31 @@ class AnalyticsService {
     );
   }
 
-  Future logCommentPost(
-      {@required String threadId, @required String threadType}) async {
+  Future logCommentPost({@required String commentId}) async {
     await _analytics.logEvent(
       name: 'comment_post',
-      parameters: {'thread_id': threadId, 'thread_type': threadType},
+      parameters: {'id': commentId},
     );
   }
 
-  Future logCommentLike(
-      {@required String threadId, @required String threadType}) async {
+  Future logCommentUpdate({@required String commentId}) async {
+    await _analytics.logEvent(
+      name: 'comment_update',
+      parameters: {'id': commentId},
+    );
+  }
+
+  Future logCommentLike({@required String commentId}) async {
     await _analytics.logEvent(
       name: 'comment_like',
-      parameters: {'thread_id': threadId, 'thread_type': threadType},
+      parameters: {'id': commentId},
     );
   }
 
-  Future logCommentUnlike(
-      {@required String threadId, @required String threadType}) async {
+  Future logCommentUnlike({@required String commentId}) async {
     await _analytics.logEvent(
       name: 'comment_unlike',
-      parameters: {'thread_id': threadId, 'thread_type': threadType},
+      parameters: {'id': commentId},
     );
   }
 
@@ -121,60 +124,89 @@ class AnalyticsService {
     );
   }
 
-  Future logNewsTopicUnFollow({@required String topic}) async {
-    await _analytics.logEvent(
+  Future logNewsTopicUnFollow({@required String topic}) {
+    return _analytics.logEvent(
       name: 'news_topic_unfollow',
       parameters: {'topic': topic},
     );
   }
 
-  Future logNewsReadMode({@required String mode}) async {
-    await _analytics.logEvent(
-      name: 'news_read_mode_$mode',
-    );
+  Future logNewsReadMode({@required String mode}) {
+    return _analytics
+        .logEvent(name: 'news_read_mode', parameters: {'mode': mode});
   }
 
-  Future logNewsDailyMorningNotificatoon({@required bool notify}) async {
-    await _analytics.logEvent(
-        name: 'news_morning_notification', parameters: {'notify': notify});
+  Future logNewsDailyMorningNotificatoon({@required bool notify}) {
+    return _analytics.logEvent(
+        name: 'news_morning_notification', parameters: {'enable': notify});
   }
 
-  Future logNewsNotificatoon({@required bool notify}) async {
-    await _analytics
-        .logEvent(name: 'news_notification', parameters: {'notify': notify});
+  Future logNewsNotificatoon({@required bool notify}) {
+    return _analytics
+        .logEvent(name: 'news_notification', parameters: {'enable': notify});
   }
 
-  Future logHoroscopeDailyMorningNotificatoon({@required bool notify}) async {
-    await _analytics.logEvent(
-        name: 'horoscope_morning_notification', parameters: {'notify': notify});
+  Future logHoroscopeDailyMorningNotificatoon({@required bool notify}) {
+    return _analytics.logEvent(
+        name: 'horoscope_morning_notification', parameters: {'enable': notify});
   }
 
-  Future logTrendingNotificatoon({@required bool notify}) async {
-    await _analytics.logEvent(
-        name: 'trending_notification', parameters: {'notify': notify});
+  Future logTrendingNotificatoon({@required bool notify}) {
+    return _analytics.logEvent(
+        name: 'trending_notification', parameters: {'enable': notify});
   }
 
-  Future logCommentNotificatoon({@required bool notify}) async {
-    await _analytics
-        .logEvent(name: 'comment_notification', parameters: {'notify': notify});
+  Future logCommentNotification({@required bool notify}) {
+    return _analytics
+        .logEvent(name: 'comment_notification', parameters: {'enable': notify});
   }
 
-  Future logMessageNotificatoon({@required bool notify}) async {
-    await _analytics
-        .logEvent(name: 'message_notification', parameters: {'notify': notify});
+  Future logMessageNotification({@required bool notify}) {
+    return _analytics
+        .logEvent(name: 'message_notification', parameters: {'enable': notify});
   }
 
-  Future logOtherNotificatoon({@required bool notify}) async {
-    await _analytics
-        .logEvent(name: 'other_notification', parameters: {'notify': notify});
+  Future logOtherNotificatoon({@required bool notify}) {
+    return _analytics
+        .logEvent(name: 'other_notification', parameters: {'enable': notify});
   }
 
-  Future logShare(
-      {String postId, String method, String contentType = 'feed'}) async {
-    await _analytics.logShare(
+  Future logShare({String postId, String method, String contentType = 'feed'}) {
+    return _analytics.logShare(
       contentType: contentType,
       itemId: postId,
       method: method,
     );
+  }
+
+  Future logDarkMode({@required bool enable}) {
+    return _analytics
+        .logEvent(name: 'dark_mode', parameters: {'enable': enable});
+  }
+
+  Future logDefaultForexCurrency({@required String currencyId}) {
+    return _analytics.logEvent(
+        name: 'default_forex_currency',
+        parameters: {'currency_id': currencyId});
+  }
+
+  Future logDefaultHoroscopeSign({@required int signIndex}) {
+    return _analytics.logEvent(
+        name: 'default_horoscope_sign', parameters: {'sign_index': signIndex});
+  }
+
+  Future logUseSystemTheme({@required bool value}) {
+    return _analytics
+        .logEvent(name: 'system_theme', parameters: {'enable': value});
+  }
+
+  Future logPitchBlackMode({@required bool value}) {
+    return _analytics
+        .logEvent(name: 'pitch_black_mode', parameters: {'enable': value});
+  }
+
+  Future logCommentDelete({@required String commentId}) {
+    return _analytics
+        .logEvent(name: 'comment_delete', parameters: {'id': commentId});
   }
 }

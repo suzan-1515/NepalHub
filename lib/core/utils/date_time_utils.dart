@@ -26,7 +26,7 @@ bool isMorning() {
 
 bool isEarlyMorning() {
   var hour = DateTime.now().hour;
-  if (hour >= 5 && hour < 10) {
+  if (hour >= 5 && hour < 12) {
     return true;
   }
 

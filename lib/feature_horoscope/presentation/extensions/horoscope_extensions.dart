@@ -6,6 +6,7 @@ extension HoroscopeX on HoroscopeEntity {
   HoroscopeUIModel get toUIModel => HoroscopeUIModel(this);
   String signByIndex(int index, Language language) =>
       HOROSCOPE_SIGNS[language][index];
+  String signIconByIndex(int index) => HOROSCOPE_ICONS[index];
   String horoscopeByIndex(int index, Language language) {
     switch (index) {
       case 0:

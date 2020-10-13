@@ -38,8 +38,8 @@ class NewsRemoteService implements RemoteService {
       '_limit': page.limit,
       'language': language.value
     };
-    var latestNewsCall =
-        httpManager.get(url: baseApiURL + _news, query: queryParams);
+    var latestNewsCall = httpManager.get(
+        path: APIUrlConstants.BASE_API_URL + _news, query: queryParams);
 
     return latestNewsCall;
   }
@@ -56,8 +56,8 @@ class NewsRemoteService implements RemoteService {
       '_limit': limit ?? page.limit,
       'language': language.value
     };
-    var trendingNewsCall =
-        httpManager.get(url: baseApiURL + _news, query: queryParams);
+    var trendingNewsCall = httpManager.get(
+        path: APIUrlConstants.BASE_API_URL + _news, query: queryParams);
 
     return trendingNewsCall;
   }
@@ -73,7 +73,8 @@ class NewsRemoteService implements RemoteService {
       '_limit': page.limit,
       'language': language.value
     };
-    var newsCall = httpManager.get(url: baseApiURL + _news, query: queryParams);
+    var newsCall = httpManager.get(
+        path: APIUrlConstants.BASE_API_URL + _news, query: queryParams);
 
     return newsCall;
   }
@@ -91,7 +92,8 @@ class NewsRemoteService implements RemoteService {
       '_limit': page.limit,
       'language': language.value
     };
-    var newsCall = httpManager.get(url: baseApiURL + _news, query: queryParams);
+    var newsCall = httpManager.get(
+        path: APIUrlConstants.BASE_API_URL + _news, query: queryParams);
 
     return newsCall;
   }
@@ -99,8 +101,8 @@ class NewsRemoteService implements RemoteService {
   @override
   Future fetchSources({Language language = Language.NEPALI}) async {
     final Map<String, dynamic> queryParams = {'language': language.value};
-    var sourceCall =
-        httpManager.get(url: baseApiURL + _newsSource, query: queryParams);
+    var sourceCall = httpManager.get(
+        path: APIUrlConstants.BASE_API_URL + _newsSource, query: queryParams);
 
     return sourceCall;
   }
@@ -108,8 +110,8 @@ class NewsRemoteService implements RemoteService {
   @override
   Future fetchTopics({Language language = Language.NEPALI}) async {
     final Map<String, dynamic> queryParams = {'language': language.value};
-    var topicCall =
-        httpManager.get(url: baseApiURL + _newsTopic, query: queryParams);
+    var topicCall = httpManager.get(
+        path: APIUrlConstants.BASE_API_URL + _newsTopic, query: queryParams);
 
     return topicCall;
   }
@@ -127,8 +129,8 @@ class NewsRemoteService implements RemoteService {
       '_limit': page.limit,
       'language': language.value
     };
-    var tagNewsCall =
-        httpManager.get(url: baseApiURL + _news, query: queryParams);
+    var tagNewsCall = httpManager.get(
+        path: APIUrlConstants.BASE_API_URL + _news, query: queryParams);
 
     return tagNewsCall;
   }
@@ -136,8 +138,8 @@ class NewsRemoteService implements RemoteService {
   @override
   Future fetchCategories({Language language = Language.NEPALI}) async {
     final Map<String, dynamic> queryParams = {'language': language.value};
-    var categoryCall =
-        httpManager.get(url: baseApiURL + _newsCategory, query: queryParams);
+    var categoryCall = httpManager.get(
+        path: APIUrlConstants.BASE_API_URL + _newsCategory, query: queryParams);
 
     return categoryCall;
   }
@@ -150,8 +152,8 @@ class NewsRemoteService implements RemoteService {
       '_limit': page.limit,
       'language': language.value
     };
-    var latestNewsCall =
-        httpManager.get(url: baseApiURL + _news, query: queryParams);
+    var latestNewsCall = httpManager.get(
+        path: APIUrlConstants.BASE_API_URL + _news, query: queryParams);
 
     return latestNewsCall;
   }
@@ -161,8 +163,8 @@ class NewsRemoteService implements RemoteService {
     final Map<String, dynamic> body = {
       'feed_id': feed.id,
     };
-    var bookmarkCall =
-        httpManager.post(url: baseApiURL + _newsBookmark, body: body);
+    var bookmarkCall = httpManager.post(
+        path: APIUrlConstants.BASE_API_URL + _newsBookmark, body: body);
 
     return bookmarkCall;
   }
@@ -170,8 +172,8 @@ class NewsRemoteService implements RemoteService {
   @override
   Future unBookmarkFeed(NewsFeedEntity feed) {
     final parameter = '/${feed.id}';
-    var bookmarkCall =
-        httpManager.delete(url: baseApiURL + _newsBookmark + parameter);
+    var bookmarkCall = httpManager.delete(
+        url: APIUrlConstants.BASE_API_URL + _newsBookmark + parameter);
 
     return bookmarkCall;
   }
@@ -181,8 +183,8 @@ class NewsRemoteService implements RemoteService {
     final Map<String, dynamic> body = {
       'category_id': category.id,
     };
-    var call =
-        httpManager.post(url: baseApiURL + _newsCategoryFollow, body: body);
+    var call = httpManager.post(
+        path: APIUrlConstants.BASE_API_URL + _newsCategoryFollow, body: body);
 
     return call;
   }
@@ -192,8 +194,8 @@ class NewsRemoteService implements RemoteService {
     final Map<String, dynamic> body = {
       'source_id': source.id,
     };
-    var call =
-        httpManager.post(url: baseApiURL + _newsSourceFollow, body: body);
+    var call = httpManager.post(
+        path: APIUrlConstants.BASE_API_URL + _newsSourceFollow, body: body);
 
     return call;
   }
@@ -201,8 +203,8 @@ class NewsRemoteService implements RemoteService {
   @override
   Future unFollowCategory(NewsCategoryEntity category) {
     final parameter = '/${category.id}';
-    var call =
-        httpManager.delete(url: baseApiURL + _newsCategoryFollow + parameter);
+    var call = httpManager.delete(
+        url: APIUrlConstants.BASE_API_URL + _newsCategoryFollow + parameter);
 
     return call;
   }
@@ -210,8 +212,8 @@ class NewsRemoteService implements RemoteService {
   @override
   Future unFollowSource(NewsSourceEntity source) {
     final parameter = '/${source.id}';
-    var call =
-        httpManager.delete(url: baseApiURL + _newsCategoryFollow + parameter);
+    var call = httpManager.delete(
+        url: APIUrlConstants.BASE_API_URL + _newsCategoryFollow + parameter);
 
     return call;
   }
@@ -221,7 +223,8 @@ class NewsRemoteService implements RemoteService {
     final Map<String, dynamic> body = {
       'topic_id': topic.id,
     };
-    var call = httpManager.post(url: baseApiURL + _newsTopicFollow, body: body);
+    var call = httpManager.post(
+        path: APIUrlConstants.BASE_API_URL + _newsTopicFollow, body: body);
 
     return call;
   }
@@ -229,8 +232,8 @@ class NewsRemoteService implements RemoteService {
   @override
   Future unFollowTopic(NewsTopicEntity topic) {
     final parameter = '/${topic.id}';
-    var call =
-        httpManager.delete(url: baseApiURL + _newsCategoryFollow + parameter);
+    var call = httpManager.delete(
+        url: APIUrlConstants.BASE_API_URL + _newsCategoryFollow + parameter);
 
     return call;
   }
@@ -240,7 +243,8 @@ class NewsRemoteService implements RemoteService {
     final Map<String, dynamic> queryParams = {
       'parent_id': parent.uuid,
     };
-    var call = httpManager.get(url: baseApiURL + _news, query: queryParams);
+    var call = httpManager.get(
+        path: APIUrlConstants.BASE_API_URL + _news, query: queryParams);
 
     return call;
   }
@@ -250,7 +254,8 @@ class NewsRemoteService implements RemoteService {
     final Map<String, dynamic> body = {
       'feed_id': feed.id,
     };
-    var call = httpManager.post(url: baseApiURL + _newsDislike, body: body);
+    var call = httpManager.post(
+        path: APIUrlConstants.BASE_API_URL + _newsDislike, body: body);
 
     return call;
   }
@@ -260,7 +265,8 @@ class NewsRemoteService implements RemoteService {
     final Map<String, dynamic> body = {
       'feed_id': feed.id,
     };
-    var call = httpManager.post(url: baseApiURL + _newsLike, body: body);
+    var call = httpManager.post(
+        path: APIUrlConstants.BASE_API_URL + _newsLike, body: body);
 
     return call;
   }
@@ -270,7 +276,8 @@ class NewsRemoteService implements RemoteService {
     final Map<String, dynamic> body = {
       'feed_id': feed.id,
     };
-    var call = httpManager.post(url: baseApiURL + _newsShare, body: body);
+    var call = httpManager.post(
+        path: APIUrlConstants.BASE_API_URL + _newsShare, body: body);
 
     return call;
   }
@@ -278,7 +285,8 @@ class NewsRemoteService implements RemoteService {
   @override
   Future undislikeFeed(NewsFeedEntity feed) {
     final parameter = '/${feed.id}';
-    var call = httpManager.delete(url: baseApiURL + _newsDislike + parameter);
+    var call = httpManager.delete(
+        url: APIUrlConstants.BASE_API_URL + _newsDislike + parameter);
 
     return call;
   }
@@ -286,7 +294,8 @@ class NewsRemoteService implements RemoteService {
   @override
   Future unlikeFeed(NewsFeedEntity feed) {
     final parameter = '/${feed.id}';
-    var call = httpManager.delete(url: baseApiURL + _newsLike + parameter);
+    var call = httpManager.delete(
+        url: APIUrlConstants.BASE_API_URL + _newsLike + parameter);
 
     return call;
   }
@@ -296,7 +305,8 @@ class NewsRemoteService implements RemoteService {
     final Map<String, dynamic> body = {
       'feed_id': feed.id,
     };
-    var call = httpManager.post(url: baseApiURL + _newsView, body: body);
+    var call = httpManager.post(
+        path: APIUrlConstants.BASE_API_URL + _newsView, body: body);
 
     return call;
   }
