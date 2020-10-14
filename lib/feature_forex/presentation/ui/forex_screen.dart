@@ -2,34 +2,43 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:samachar_hub/core/services/services.dart';
 import 'package:samachar_hub/core/widgets/progress_widget.dart';
-import 'package:samachar_hub/feature_forex/domain/usecases/get_forex_timeline_use_case.dart';
-import 'package:samachar_hub/feature_forex/domain/usecases/get_latest_forex_use_case.dart';
 import 'package:samachar_hub/feature_forex/presentation/blocs/latest/latest_forex_bloc.dart';
 import 'package:samachar_hub/feature_forex/presentation/blocs/timeline/forex_timeline_bloc.dart';
 import 'package:samachar_hub/feature_forex/presentation/ui/widgets/forex_graph.dart';
 import 'package:samachar_hub/feature_forex/presentation/ui/widgets/forex_list.dart';
+import 'package:samachar_hub/feature_forex/utils/provider.dart';
 
-class ForexScreen extends StatefulWidget {
-  @override
-  _ForexScreenState createState() => _ForexScreenState();
-}
-
-class _ForexScreenState extends State<ForexScreen> {
+class ForexScreen extends StatelessWidget {
   Widget _buildDefaultCurrencyStat(BuildContext context) {
-    return BlocBuilder<ForexTimelineBloc, ForexTimelineState>(
-      cubit: ForexTimelineBloc(
-        getForexTimelineUseCase: context.repository<GetForexTimelineUseCase>(),
-        currencyId:
-            context.repository<PreferenceService>().defaultForexCurrency,
-      ),
+    return BlocBuilder<ForexBloc, ForexState>(
+      buildWhen: (previous, current) =>
+          (current is ForexInitialState || current is ForexLoadSuccessState),
       builder: (context, state) {
-        if (state is ForexTimelineLoadSuccessState) {
-          return ForexGraph(
-            timeline: state.forexList,
+        if (state is ForexLoadSuccessState) {
+          return ForexProvider.forexTimelineBlocProvider(
+            currencyId: state.defaultForex.forexEntity.currency.id,
+            child: BlocConsumer<ForexTimelineBloc, ForexTimelineState>(
+              listener: (context, state) {
+                if (state is ForexTimelineInitialState) {
+                  context
+                      .bloc<ForexTimelineBloc>()
+                      .add(GetForexTimelineEvent());
+                }
+              },
+              builder: (context, state) {
+                if (state is ForexTimelineLoadSuccessState) {
+                  return ForexGraph(
+                    timeline: state.forexList,
+                  );
+                } else if (state is ForexTimeLineLoadingState) {
+                  return Center(child: ProgressView());
+                }
+                return SizedBox.shrink();
+              },
+            ),
           );
-        } else if (state is ForexTimeLineLoadingState) {
-          return Center(child: ProgressView());
         }
+
         return SizedBox.shrink();
       },
     );
@@ -51,12 +60,7 @@ class _ForexScreenState extends State<ForexScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<ForexBloc>(
-      create: (context) => ForexBloc(
-        getLatestForexUseCase: context.repository<GetLatestForexUseCase>(),
-      )..add(GetLatestForexEvent(
-          defaultCurrencyId:
-              context.repository<PreferenceService>().defaultForexCurrency)),
+    return ForexProvider.forexBlocProvider(
       child: Scaffold(
         backgroundColor: Theme.of(context).backgroundColor,
         appBar: AppBar(

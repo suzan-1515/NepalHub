@@ -6,13 +6,13 @@ import 'package:samachar_hub/core/usecases/usecase.dart';
 import 'package:samachar_hub/feature_forex/domain/entities/forex_entity.dart';
 import 'package:samachar_hub/feature_forex/domain/repositories/repository.dart';
 
-class ViewForexUseCase implements UseCase<void, ViewForexUseCaseParams> {
+class ViewForexUseCase implements UseCase<ForexEntity, ViewForexUseCaseParams> {
   final Repository _repository;
 
   ViewForexUseCase(this._repository);
 
   @override
-  Future<void> call(ViewForexUseCaseParams params) {
+  Future<ForexEntity> call(ViewForexUseCaseParams params) {
     try {
       return this._repository.view(params.forexEntity);
     } catch (e) {

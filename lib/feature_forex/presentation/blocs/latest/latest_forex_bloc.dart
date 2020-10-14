@@ -16,8 +16,12 @@ part 'latest_forex_state.dart';
 
 class ForexBloc extends Bloc<ForexEvent, ForexState> {
   final UseCase _getLatestForexUseCase;
-  ForexBloc({@required UseCase getLatestForexUseCase})
+  final UseCase _getDefaultForexCurrencyUseCase;
+  ForexBloc(
+      {@required UseCase getLatestForexUseCase,
+      @required UseCase getDefaultForexCurrencyUseCase})
       : _getLatestForexUseCase = getLatestForexUseCase,
+        _getDefaultForexCurrencyUseCase = getDefaultForexCurrencyUseCase,
         super(ForexInitialState());
 
   @override
@@ -42,12 +46,17 @@ class ForexBloc extends Bloc<ForexEvent, ForexState> {
           language: event.language,
         ),
       );
+      final String defaultCurrency =
+          await _getDefaultForexCurrencyUseCase.call(NoParams());
+
       if (forexList == null || forexList.isEmpty) {
         yield ForexEmptyState(message: 'Forex data not available.');
       } else {
-        final defaultForex = forexList.firstWhere(
-            (element) => element.currency.id == event.defaultCurrencyId,
-            orElse: () => forexList.first);
+        final defaultForex = (defaultCurrency == null)
+            ? forexList.first
+            : forexList.firstWhere(
+                (element) => element.currency.code == defaultCurrency,
+                orElse: () => forexList.first);
         yield ForexLoadSuccessState(
             forexList: forexList.toUIModels,
             defaultForex: defaultForex.toUIModel);
@@ -69,10 +78,14 @@ class ForexBloc extends Bloc<ForexEvent, ForexState> {
           language: event.language,
         ),
       );
+      final String defaultCurrency =
+          await _getDefaultForexCurrencyUseCase.call(NoParams());
       if (forexList != null && forexList.isNotEmpty) {
-        final defaultForex = forexList.firstWhere(
-            (element) => element.currency.id == event.defaultCurrencyId,
-            orElse: () => forexList.first);
+        final defaultForex = (defaultCurrency == null)
+            ? forexList.first
+            : forexList.firstWhere(
+                (element) => element.currency.code == defaultCurrency,
+                orElse: () => forexList.first);
         yield ForexLoadSuccessState(
             forexList: forexList.toUIModels,
             defaultForex: defaultForex.toUIModel);

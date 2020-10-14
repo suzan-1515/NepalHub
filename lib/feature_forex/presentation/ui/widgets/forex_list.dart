@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:samachar_hub/core/services/preference_service.dart';
 import 'package:samachar_hub/core/widgets/empty_data_widget.dart';
 import 'package:samachar_hub/core/widgets/error_data_widget.dart';
 import 'package:samachar_hub/core/widgets/progress_widget.dart';
@@ -17,7 +16,9 @@ class ForexList extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocConsumer<ForexBloc, ForexState>(
       listener: (context, state) {
-        if (state is ForexErrorState) {
+        if (state is ForexInitialState) {
+          context.bloc<ForexBloc>().add(GetLatestForexEvent());
+        } else if (state is ForexErrorState) {
           context.showMessage(state.message);
         } else if (state is ForexLoadErrorState) {
           context.showMessage(state.message);
@@ -41,10 +42,7 @@ class ForexList extends StatelessWidget {
             child: ErrorDataView(
               message: state.message,
               onRetry: () => context.bloc<ForexBloc>().add(
-                    GetLatestForexEvent(
-                        defaultCurrencyId: context
-                            .repository<PreferenceService>()
-                            .defaultForexCurrency),
+                    GetLatestForexEvent(),
                   ),
             ),
           );

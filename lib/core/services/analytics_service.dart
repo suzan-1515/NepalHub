@@ -184,12 +184,6 @@ class AnalyticsService {
         .logEvent(name: 'dark_mode', parameters: {'enable': enable});
   }
 
-  Future logDefaultForexCurrency({@required String currencyId}) {
-    return _analytics.logEvent(
-        name: 'default_forex_currency',
-        parameters: {'currency_id': currencyId});
-  }
-
   Future logDefaultHoroscopeSign({@required int signIndex}) {
     return _analytics.logEvent(
         name: 'default_horoscope_sign', parameters: {'sign_index': signIndex});
@@ -208,5 +202,30 @@ class AnalyticsService {
   Future logCommentDelete({@required String commentId}) {
     return _analytics
         .logEvent(name: 'comment_delete', parameters: {'id': commentId});
+  }
+
+// Forex
+  Future logForexView({@required String forexId}) {
+    return _analytics.logEvent(name: 'forex_view', parameters: {'id': forexId});
+  }
+
+  Future logForexUnlike({@required String forexId}) {
+    return _analytics
+        .logEvent(name: 'forex_unlike', parameters: {'id': forexId});
+  }
+
+  Future logForexShare({@required String forexId}) {
+    return _analytics
+        .logEvent(name: 'forex_share', parameters: {'id': forexId});
+  }
+
+  Future logForexLike({@required String forexId}) {
+    return _analytics.logEvent(name: 'forex_like', parameters: {'id': forexId});
+  }
+
+  Future logDefaultForexCurrency({@required String currencyId}) {
+    return _analytics.logEvent(
+        name: 'default_forex_currency',
+        parameters: {'currency_id': currencyId});
   }
 }

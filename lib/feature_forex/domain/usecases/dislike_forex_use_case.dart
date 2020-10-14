@@ -6,13 +6,14 @@ import 'package:samachar_hub/core/usecases/usecase.dart';
 import 'package:samachar_hub/feature_forex/domain/entities/forex_entity.dart';
 import 'package:samachar_hub/feature_forex/domain/repositories/repository.dart';
 
-class DislikeForexUseCase implements UseCase<void, DislikeForexUseCaseParams> {
+class DislikeForexUseCase
+    implements UseCase<ForexEntity, DislikeForexUseCaseParams> {
   final Repository _repository;
 
   DislikeForexUseCase(this._repository);
 
   @override
-  Future<void> call(DislikeForexUseCaseParams params) {
+  Future<ForexEntity> call(DislikeForexUseCaseParams params) {
     try {
       return this._repository.dislike(params.forexEntity);
     } catch (e) {

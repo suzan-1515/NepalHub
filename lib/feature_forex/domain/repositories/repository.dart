@@ -6,7 +6,7 @@ import 'package:samachar_hub/feature_forex/domain/entities/forex_entity.dart';
 mixin Repository {
   Future<List<ForexEntity>> getLatestForex({Language language});
   Future<List<ForexEntity>> getForexTimeline(
-      {@required String currencyId, Language language, int numOfDays = 7});
+      {@required String currencyId, Language language, int numOfDays});
   Future<List<CurrencyEntity>> getCurrencies({Language language});
   Future<ForexEntity> like(ForexEntity feed);
   Future<ForexEntity> unlike(ForexEntity feed);
@@ -16,4 +16,6 @@ mixin Repository {
 
   Future<ForexEntity> share(ForexEntity feed);
   Future<ForexEntity> view(ForexEntity feed);
+
+  Future<String> getDefaultCurrencyCode();
 }
