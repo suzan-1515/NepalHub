@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:samachar_hub/core/services/services.dart';
+import 'package:samachar_hub/feature_comment/domain/entities/thread_type.dart';
 import 'package:samachar_hub/feature_news/presentation/blocs/like_unlike/like_unlike_bloc.dart';
 import 'package:samachar_hub/feature_news/presentation/models/news_feed.dart';
 import 'package:samachar_hub/feature_news/presentation/ui/widgets/news_feed_more_option.dart';
@@ -132,15 +133,10 @@ class NewsFeedOptions extends StatelessWidget {
         children: <Widget>[
           BlocBuilder<LikeUnlikeBloc, LikeUnlikeState>(
             builder: (context, state) {
-              if (state is LikedState) {
-                feedUIModel.like();
-              } else if (state is UnlikedState) {
-                feedUIModel.unlike();
-              }
               return FlatButton.icon(
                 materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                 label: Text(
-                  feedUIModel.feed.likeCount == 0
+                  feedUIModel.feedEntity.likeCount == 0
                       ? 'Like'
                       : '${feedUIModel.formattedLikeCount}',
                   style: Theme.of(context).textTheme.overline,
@@ -151,7 +147,7 @@ class NewsFeedOptions extends StatelessWidget {
                         size: 16,
                         color: Theme.of(context).accentColor,
                       )
-                    : feedUIModel.feed.isLiked
+                    : feedUIModel.feedEntity.isLiked
                         ? Icon(
                             FontAwesomeIcons.solidThumbsUp,
                             size: 16,
@@ -162,10 +158,11 @@ class NewsFeedOptions extends StatelessWidget {
                             size: 16,
                           ),
                 onPressed: () {
-                  final isLiked = feedUIModel.feed.isLiked;
-                  if (isLiked) {
+                  if (feedUIModel.feedEntity.isLiked) {
+                    feedUIModel.unlike();
                     context.bloc<LikeUnlikeBloc>().add(UnlikeEvent());
                   } else {
+                    feedUIModel.like();
                     context.bloc<LikeUnlikeBloc>().add(LikeEvent());
                   }
                 },
@@ -175,7 +172,7 @@ class NewsFeedOptions extends StatelessWidget {
           FlatButton.icon(
             materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
             label: Text(
-              feedUIModel.feed.commentCount == 0
+              feedUIModel.feedEntity.commentCount == 0
                   ? 'Comment'
                   : '${feedUIModel.formattedCommentCount}',
               style: Theme.of(context).textTheme.overline,
@@ -184,12 +181,13 @@ class NewsFeedOptions extends StatelessWidget {
               FontAwesomeIcons.comment,
               size: 16,
             ),
-            onPressed: () =>
-                context.repository<NavigationService>().toCommentsScreen(
-                      context: context,
-                      title: feedUIModel.feed.title,
-                      postId: feedUIModel.feed.id,
-                    ),
+            onPressed: () => context
+                .repository<NavigationService>()
+                .toCommentsScreen(
+                    context: context,
+                    threadTitle: feedUIModel.feedEntity.title,
+                    threadId: feedUIModel.feedEntity.id,
+                    threadType: CommentThreadType.NEWS_FEED),
           ),
           Spacer(),
           IconButton(

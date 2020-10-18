@@ -15,22 +15,18 @@ class CommentProvider {
   CommentProvider._();
   static List<RepositoryProvider> get commentRepositoryProviders => [
         RepositoryProvider(
-          create: (context) => CommentRemoteService(
-            context.repository<HttpManager>(),
-          ),
-        ),
-        RepositoryProvider(
-          create: (context) => CommentRemoteDataSource(
-            context.repository<CommentRemoteService>(),
-          ),
-        ),
-        RepositoryProvider(
           create: (context) => CommentRepository(
-            context.repository<CommentRemoteDataSource>(),
+            CommentRemoteDataSource(
+              CommentRemoteService(
+                context.repository<HttpManager>(),
+              ),
+            ),
             context.repository<AnalyticsService>(),
             context.repository<AuthRepository>(),
           ),
         ),
+      ];
+  static List<RepositoryProvider> get comment2RepositoryProviders => [
         RepositoryProvider(
           create: (context) =>
               DeleteCommentUseCase(context.repository<CommentRepository>()),

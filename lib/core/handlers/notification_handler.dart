@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:developer';
 
 import 'package:onesignal_flutter/onesignal_flutter.dart';
@@ -6,6 +7,7 @@ import 'package:samachar_hub/core/services/services.dart';
 class NotificationHandler {
   final NotificationService _notificationService;
   final PreferenceService _preferenceService;
+  StreamSubscription _notificationStreamSubscription;
   NotificationHandler(this._notificationService, this._preferenceService) {
     _handleOneSignal();
     _handleLocal();
@@ -52,14 +54,17 @@ class NotificationHandler {
 
   _handleLocal() {
     log('[NotificationHandler] _handleLocal');
-    _notificationService.selectNotificationStream.listen((event) {
+    _notificationStreamSubscription =
+        _notificationService.selectNotificationStream.listen((event) {
       log('Local notification received: $event');
     }, cancelOnError: true);
-    if (!_preferenceService.defaultLocalNotifications) {
+    if (!(_preferenceService.defaultLocalNotifications ?? false)) {
       _preferenceService.defaultLocalNotifications = true;
       _notificationService.setDefaultLocalNotification();
     }
   }
 
-  dispose() {}
+  dispose() {
+    _notificationStreamSubscription?.cancel();
+  }
 }

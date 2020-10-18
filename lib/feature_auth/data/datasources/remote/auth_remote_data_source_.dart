@@ -1,4 +1,6 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
+import 'package:samachar_hub/core/exceptions/app_exceptions.dart';
 import 'package:samachar_hub/feature_auth/data/datasources/remote/remote_data_source.dart';
 import 'package:samachar_hub/feature_auth/data/models/user_model.dart';
 import 'package:samachar_hub/feature_auth/data/services/remote_service.dart';
@@ -51,5 +53,13 @@ class AuthRemoteDataSource with RemoteDataSource {
   @override
   Future<void> logout({@required UserEntity userEntity}) {
     return _remoteService.logout(userEntity: userEntity);
+  }
+
+  @override
+  Future<UserModel> autoLogin() async {
+    final User user = await _remoteService.fetchCurrentUser();
+    if (user == null) throw UnauthorisedException();
+    await user.getIdToken();
+    return loginWithEmail(identifier: user.email, password: user.uid);
   }
 }

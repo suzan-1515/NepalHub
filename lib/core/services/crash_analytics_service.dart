@@ -1,10 +1,14 @@
 import 'dart:developer';
 
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'package:flutter/foundation.dart';
+
 class CrashAnalyticsService {
-  // CrashAnalyticsService(this._authenticationRepository) {
-  //   log('[CrashAnalyticsService] CrashAnalyticsService');
-  //   _authenticationRepository.authStateChanges().listen((event) {
-  //     if (event != null) Crashlytics.instance.setUserIdentifier(event.uid);
-  //   });
-  // }
+  CrashAnalyticsService() {
+    log('[CrashAnalyticsService] CrashAnalyticsService');
+  }
+
+  Future setUser({@required String userId}) {
+    return Crashlytics.instance.setUserIdentifier(userId);
+  }
 }

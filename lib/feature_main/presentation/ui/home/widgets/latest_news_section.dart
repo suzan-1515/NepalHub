@@ -98,6 +98,7 @@ class _LatestNewsSectionState extends State<LatestNewsSection> {
             ),
             BlocProvider<FollowUnFollowBloc>(
               create: (context) => FollowUnFollowBloc(
+                newsSourceUIModel: feed.newsSourceUIModel,
                 followNewsSourceUseCase: _followNewsSourceUseCase,
                 unFollowNewsSourceUseCase: _unfollowNewsSourceUseCase,
               ),

@@ -3,6 +3,7 @@ import 'package:samachar_hub/feature_auth/data/models/user_model.dart';
 import 'package:samachar_hub/feature_auth/domain/entities/user_entity.dart';
 
 mixin RemoteDataSource {
+  Future<UserModel> autoLogin();
   Future<UserModel> loginWithGoogle();
   Future<UserModel> loginWithFacebook();
   Future<UserModel> loginWithTwitter();

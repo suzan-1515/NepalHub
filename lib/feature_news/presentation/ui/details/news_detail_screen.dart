@@ -4,8 +4,9 @@ import 'package:samachar_hub/core/widgets/comment_bar_placeholder_widget.dart';
 import 'package:samachar_hub/core/widgets/empty_data_widget.dart';
 import 'package:samachar_hub/core/widgets/error_data_widget.dart';
 import 'package:samachar_hub/core/widgets/progress_widget.dart';
+import 'package:samachar_hub/feature_auth/presentation/blocs/auth_bloc.dart';
+import 'package:samachar_hub/feature_comment/domain/entities/thread_type.dart';
 import 'package:samachar_hub/feature_news/domain/models/news_feed.dart';
-import 'package:samachar_hub/feature_news/domain/usecases/get_news_detail_use_case.dart';
 import 'package:samachar_hub/feature_news/presentation/blocs/like_unlike/like_unlike_bloc.dart'
     as likeUnlikeBloc;
 import 'package:samachar_hub/feature_news/presentation/blocs/news_detail/news_detail_bloc.dart'
@@ -19,13 +20,12 @@ import 'package:samachar_hub/core/widgets/cached_image_widget.dart';
 import 'package:samachar_hub/core/widgets/comment_bar_widget.dart';
 import 'package:samachar_hub/core/extensions/view.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:samachar_hub/feature_news/utils/provider.dart';
 
 class NewsDetailScreen extends StatelessWidget {
-  final String feedId;
   final NewsFeedEntity feedEntity;
 
-  const NewsDetailScreen({Key key, this.feedId, this.feedEntity})
-      : super(key: key);
+  const NewsDetailScreen({Key key, this.feedEntity}) : super(key: key);
   Widget _buildBody(BuildContext context, NewsFeedUIModel feedUIModel) {
     return OrientationBuilder(
       builder: (_, Orientation orientation) {
@@ -37,14 +37,15 @@ class NewsDetailScreen extends StatelessWidget {
                 children: <Widget>[
                   Expanded(
                     child: CachedImage(
-                      feedUIModel.feed.image,
+                      feedUIModel.feedEntity.image,
                       tag: feedUIModel.tag,
                     ),
                   ),
                   Expanded(
                     child: SingleChildScrollView(
-                        child: ArticleDetail(
-                            context: context, feedUIModel: feedUIModel)),
+                      child: ArticleDetail(
+                          context: context, feedUIModel: feedUIModel),
+                    ),
                   ),
                 ],
               ),
@@ -61,7 +62,7 @@ class NewsDetailScreen extends StatelessWidget {
                       fit: StackFit.expand,
                       children: [
                         CachedImage(
-                          feedUIModel.feed.image,
+                          feedUIModel.feedEntity.image,
                           tag: feedUIModel.tag,
                         ),
                         Container(
@@ -103,40 +104,50 @@ class NewsDetailScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildCommentBar(NewsFeedUIModel feedUIModel) {
+  Widget _buildCommentBar(BuildContext context, NewsFeedUIModel feedUIModel) {
+    final user = context.bloc<AuthBloc>().currentUser;
     return BlocBuilder<likeUnlikeBloc.LikeUnlikeBloc,
         likeUnlikeBloc.LikeUnlikeState>(
-      builder: (context, state) {
-        return CommentBar(
-          likeCount: feedUIModel?.formattedLikeCount ?? '0',
-          onCommentTap: () => context
-              .repository<NavigationService>()
-              .toCommentsScreen(
-                  context: context,
-                  title: feedUIModel.feed.title,
-                  postId: feedUIModel.feed.id),
-          onShareTap: () {
+      builder: (context, state) => CommentBar(
+        likeCount: feedUIModel?.formattedLikeCount ?? '0',
+        onCommentTap: () => context
+            .repository<NavigationService>()
+            .toCommentsScreen(
+                context: context,
+                threadTitle: feedUIModel.feedEntity.title,
+                threadId: feedUIModel.feedEntity.id,
+                threadType: CommentThreadType.NEWS_FEED),
+        onShareTap: () {
+          context
+              .repository<ShareService>()
+              .share(
+                threadId: feedUIModel.feedEntity.id,
+                data: feedUIModel.feedEntity.link,
+                contentType: 'news_feed',
+              )
+              .then((value) {
             context.bloc<ShareBloc>().add(Share());
-          },
-          commentCount: feedUIModel?.formattedCommentCount ?? '0',
-          isLiked: feedUIModel?.feed?.isLiked ?? false,
-          shareCount: feedUIModel?.formattedShareCount ?? '0',
-          userAvatar: null,
-          onLikeTap: () {
-            if (feedUIModel.feed.isLiked) {
-              feedUIModel.unlike();
-              context
-                  .bloc<likeUnlikeBloc.LikeUnlikeBloc>()
-                  .add(likeUnlikeBloc.UnlikeEvent());
-            } else {
-              feedUIModel.like();
-              context
-                  .bloc<likeUnlikeBloc.LikeUnlikeBloc>()
-                  .add(likeUnlikeBloc.LikeEvent());
-            }
-          },
-        );
-      },
+            return value;
+          });
+        },
+        commentCount: feedUIModel?.formattedCommentCount ?? '0',
+        isLiked: feedUIModel?.feedEntity?.isLiked ?? false,
+        shareCount: feedUIModel?.formattedShareCount ?? '0',
+        userAvatar: user?.avatar,
+        onLikeTap: () {
+          if (feedUIModel.feedEntity.isLiked) {
+            feedUIModel.unlike();
+            context
+                .bloc<likeUnlikeBloc.LikeUnlikeBloc>()
+                .add(likeUnlikeBloc.UnlikeEvent());
+          } else {
+            feedUIModel.like();
+            context
+                .bloc<likeUnlikeBloc.LikeUnlikeBloc>()
+                .add(likeUnlikeBloc.LikeEvent());
+          }
+        },
+      ),
     );
   }
 
@@ -146,7 +157,7 @@ class NewsDetailScreen extends StatelessWidget {
       buildWhen: (previous, current) => !(current is newsDetailBloc.ErrorState),
       builder: (context, state) {
         if (state is newsDetailBloc.LoadSuccessState) {
-          return _buildCommentBar(state.feed);
+          return _buildCommentBar(context, state.feed);
         }
         return const CommentBarPlaceholder();
       },
@@ -155,18 +166,18 @@ class NewsDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<newsDetailBloc.NewsDetailBloc>(
-      create: (context) => newsDetailBloc.NewsDetailBloc(
-        feed: feedEntity.toUIModel,
-        feedId: feedId,
-        getDetailNewsUseCase: context.repository<GetNewsDetailUseCase>(),
-      )..add(newsDetailBloc.GetNewsDetailEvent()),
+    return NewsProvider.detailMultiBlocProvider(
+      feedUIModel: feedEntity.toUIModel,
       child: Scaffold(
         backgroundColor: Theme.of(context).backgroundColor,
         body: BlocConsumer<newsDetailBloc.NewsDetailBloc,
                 newsDetailBloc.NewsDetailState>(
             listener: (context, state) {
-              if (state is newsDetailBloc.ErrorState) {
+              if (state is newsDetailBloc.InitialState) {
+                context
+                    .bloc<newsDetailBloc.NewsDetailBloc>()
+                    .add(newsDetailBloc.GetNewsDetailEvent());
+              } else if (state is newsDetailBloc.ErrorState) {
                 context.showMessage(state.message);
               } else if (state is newsDetailBloc.LoadErrorState) {
                 context.showMessage(state.message);
@@ -175,7 +186,9 @@ class NewsDetailScreen extends StatelessWidget {
             buildWhen: (previous, current) =>
                 !(current is newsDetailBloc.ErrorState),
             builder: (context, state) {
-              if (state is newsDetailBloc.LoadSuccessState) {
+              if (state is newsDetailBloc.InitialState) {
+                return _buildBody(context, state.feed);
+              } else if (state is newsDetailBloc.LoadSuccessState) {
                 return _buildBody(context, state.feed);
               } else if (state is newsDetailBloc.LoadErrorState) {
                 return Center(

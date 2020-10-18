@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:provider/provider.dart';
 import 'package:samachar_hub/core/services/services.dart';
 import 'package:samachar_hub/core/utils/link_utils.dart';
 import 'package:samachar_hub/feature_main/presentation/blocs/settings/settings_cubit.dart';
@@ -43,10 +42,10 @@ class ReadMore extends StatelessWidget {
                 final int newsReadMode =
                     context.bloc<SettingsCubit>().settings.newsReadMode;
                 if (newsReadMode == 2)
-                  return LinkUtils.openLink(feedUIModel.feed.link);
+                  return LinkUtils.openLink(feedUIModel.feedEntity.link);
                 context.repository<NavigationService>().toWebViewScreen(
-                      feedUIModel.feed.title,
-                      feedUIModel.feed.link,
+                      feedUIModel.feedEntity.title,
+                      feedUIModel.feedEntity.link,
                       context,
                     );
               },

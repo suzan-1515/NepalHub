@@ -1,4 +1,3 @@
-import 'package:samachar_hub/core/constants/api_url_constants.dart';
 import 'package:samachar_hub/core/models/language.dart';
 import 'package:samachar_hub/core/network/http_manager/http_manager.dart';
 import 'package:samachar_hub/feature_news/data/service/remote_service.dart';
@@ -10,18 +9,18 @@ import 'package:samachar_hub/feature_news/domain/models/sort.dart';
 import 'package:samachar_hub/core/extensions/api_paging.dart';
 
 class NewsRemoteService implements RemoteService {
-  static const String _news = '/news-feeds';
-  static const String _newsCategory = '/news-categories';
-  static const String _newsSource = '/news-sources';
-  static const String _newsTopic = '/news-topics';
-  static const String _newsBookmark = _news + '/bookmark';
-  static const String _newsCategoryFollow = _newsCategory + '/follow';
-  static const String _newsSourceFollow = _newsSource + '/follow';
-  static const String _newsTopicFollow = _newsTopic + '/follow';
-  static const String _newsLike = _news + '/like';
-  static const String _newsDislike = _news + '/dislike';
-  static const String _newsShare = _news + '/share';
-  static const String _newsView = _news + '/view';
+  static const String NEWS = '/news-feeds';
+  static const String NEWS_CATEGORY = '/news-categories';
+  static const String NEWS_SOURCE = '/news-sources';
+  static const String NEWS_TOPIC = '/news-topics';
+  static const String NEWS_BOOKMARK = NEWS + '/bookmark';
+  static const String NEWS_CATEGORY_FOLLOW = NEWS_CATEGORY + '/follow';
+  static const String NEWS_SOURCE_FOLLOW = NEWS_SOURCE + '/follow';
+  static const String NEWS_TOPIC_FOLLOW = NEWS_TOPIC + '/follow';
+  static const String NEWS_LIKE = NEWS + '/like';
+  static const String NEWS_DISLIKE = NEWS + '/dislike';
+  static const String NEWS_SHARE = NEWS + '/share';
+  static const String NEWS_VIEW = NEWS + '/view';
   final HttpManager httpManager;
 
   NewsRemoteService(this.httpManager);
@@ -30,283 +29,351 @@ class NewsRemoteService implements RemoteService {
   Future fetchLatestNews(
       {NewsSourceEntity source,
       SortBy sortBy,
-      int page = 1,
-      Language language = Language.NEPALI}) async {
+      int page,
+      Language language = Language.NEPALI,
+      String token}) async {
+    Map<String, String> headers = {
+      'Authorization': 'Bearer $token',
+    };
     final Map<String, dynamic> queryParams = {
       'type': 'latest',
       '_start': page.start,
       '_limit': page.limit,
       'language': language.value
     };
-    var latestNewsCall = httpManager.get(
-        path: APIUrlConstants.BASE_API_URL + _news, query: queryParams);
+    var latestNewsCall =
+        httpManager.get(path: NEWS, query: queryParams, headers: headers);
 
     return latestNewsCall;
   }
 
   @override
-  Future fetchTrendingNews(
-      {SortBy sortBy,
-      int page = 1,
-      int limit,
-      Language language = Language.NEPALI}) async {
+  Future fetchTrendingNews({
+    SortBy sortBy,
+    int page = 1,
+    int limit,
+    Language language = Language.NEPALI,
+    String token,
+  }) async {
+    Map<String, String> headers = {
+      'Authorization': 'Bearer $token',
+    };
     final Map<String, dynamic> queryParams = {
       'type': 'trending',
       '_start': page.start,
       '_limit': limit ?? page.limit,
       'language': language.value
     };
-    var trendingNewsCall = httpManager.get(
-        path: APIUrlConstants.BASE_API_URL + _news, query: queryParams);
+    var trendingNewsCall =
+        httpManager.get(path: NEWS, query: queryParams, headers: headers);
 
     return trendingNewsCall;
   }
 
   @override
-  Future fetchNewsBySource(NewsSourceEntity source,
-      {SortBy sortBy,
-      int page = 1,
-      Language language = Language.NEPALI}) async {
+  Future fetchNewsBySource({
+    String sourceId,
+    SortBy sortBy,
+    int page = 1,
+    Language language = Language.NEPALI,
+    String token,
+  }) async {
+    Map<String, String> headers = {
+      'Authorization': 'Bearer $token',
+    };
     final Map<String, dynamic> queryParams = {
-      'source': source.id,
+      'source': sourceId,
       '_start': page.start,
       '_limit': page.limit,
       'language': language.value
     };
-    var newsCall = httpManager.get(
-        path: APIUrlConstants.BASE_API_URL + _news, query: queryParams);
+    var newsCall =
+        httpManager.get(path: NEWS, query: queryParams, headers: headers);
 
     return newsCall;
   }
 
   @override
-  Future fetchNewsByCategory(NewsCategoryEntity category,
-      {NewsSourceEntity source,
-      SortBy sortBy,
-      int page = 1,
-      Language language = Language.NEPALI}) async {
+  Future fetchNewsByCategory({
+    String categoryId,
+    String sourceId,
+    SortBy sortBy,
+    int page = 1,
+    Language language = Language.NEPALI,
+    String token,
+  }) async {
+    Map<String, String> headers = {
+      'Authorization': 'Bearer $token',
+    };
     final Map<String, dynamic> queryParams = {
-      'category': category.id,
-      'source': source?.id,
+      'category': categoryId,
+      'source': sourceId,
       '_start': page.start,
       '_limit': page.limit,
       'language': language.value
     };
-    var newsCall = httpManager.get(
-        path: APIUrlConstants.BASE_API_URL + _news, query: queryParams);
+    var newsCall =
+        httpManager.get(path: NEWS, query: queryParams, headers: headers);
 
     return newsCall;
   }
 
   @override
-  Future fetchSources({Language language = Language.NEPALI}) async {
+  Future fetchSources(
+      {Language language = Language.NEPALI, String token}) async {
+    Map<String, String> headers = {
+      'Authorization': 'Bearer $token',
+    };
     final Map<String, dynamic> queryParams = {'language': language.value};
     var sourceCall = httpManager.get(
-        path: APIUrlConstants.BASE_API_URL + _newsSource, query: queryParams);
+        path: NEWS_SOURCE, query: queryParams, headers: headers);
 
     return sourceCall;
   }
 
   @override
-  Future fetchTopics({Language language = Language.NEPALI}) async {
+  Future fetchTopics(
+      {Language language = Language.NEPALI, String token}) async {
     final Map<String, dynamic> queryParams = {'language': language.value};
-    var topicCall = httpManager.get(
-        path: APIUrlConstants.BASE_API_URL + _newsTopic, query: queryParams);
+    Map<String, String> headers = {
+      'Authorization': 'Bearer $token',
+    };
+    var topicCall =
+        httpManager.get(path: NEWS_TOPIC, query: queryParams, headers: headers);
 
     return topicCall;
   }
 
   @override
-  Future fetchNewsByTopic(NewsTopicEntity topic,
-      {NewsSourceEntity source,
+  Future fetchNewsByTopic(
+      {String topicId,
+      String sourceId,
       SortBy sortBy,
       int page = 1,
-      Language language = Language.NEPALI}) async {
+      Language language = Language.NEPALI,
+      String token}) async {
+    Map<String, String> headers = {
+      'Authorization': 'Bearer $token',
+    };
     final Map<String, dynamic> queryParams = {
-      'topics.id': topic.id,
-      'source': source?.id,
+      'topics.id': topicId,
+      'source': sourceId,
       '_start': page.start,
       '_limit': page.limit,
       'language': language.value
     };
-    var tagNewsCall = httpManager.get(
-        path: APIUrlConstants.BASE_API_URL + _news, query: queryParams);
+    var tagNewsCall =
+        httpManager.get(path: NEWS, query: queryParams, headers: headers);
 
     return tagNewsCall;
   }
 
   @override
-  Future fetchCategories({Language language = Language.NEPALI}) async {
+  Future fetchCategories(
+      {Language language = Language.NEPALI, String token}) async {
     final Map<String, dynamic> queryParams = {'language': language.value};
+    Map<String, String> headers = {
+      'Authorization': 'Bearer $token',
+    };
     var categoryCall = httpManager.get(
-        path: APIUrlConstants.BASE_API_URL + _newsCategory, query: queryParams);
+        path: NEWS_CATEGORY, query: queryParams, headers: headers);
 
     return categoryCall;
   }
 
   @override
-  Future fetchRecentNews({SortBy sortBy, int page, Language language}) {
+  Future fetchRecentNews(
+      {SortBy sortBy, int page, Language language, String token}) {
+    Map<String, String> headers = {
+      'Authorization': 'Bearer $token',
+    };
     final Map<String, dynamic> queryParams = {
       'type': 'recent',
       '_start': page.start,
       '_limit': page.limit,
       'language': language.value
     };
-    var latestNewsCall = httpManager.get(
-        path: APIUrlConstants.BASE_API_URL + _news, query: queryParams);
+    var latestNewsCall =
+        httpManager.get(path: NEWS, query: queryParams, headers: headers);
 
     return latestNewsCall;
   }
 
   @override
-  Future bookmarkFeed(NewsFeedEntity feed) {
-    final Map<String, dynamic> body = {
-      'feed_id': feed.id,
+  Future bookmarkFeed({String feedId, String token}) {
+    Map<String, String> headers = {
+      'Authorization': 'Bearer $token',
     };
-    var bookmarkCall = httpManager.post(
-        path: APIUrlConstants.BASE_API_URL + _newsBookmark, body: body);
+    var path = '$NEWS_BOOKMARK/$feedId';
+    var bookmarkCall = httpManager.post(path: path, headers: headers);
 
     return bookmarkCall;
   }
 
   @override
-  Future unBookmarkFeed(NewsFeedEntity feed) {
-    final parameter = '/${feed.id}';
-    var bookmarkCall = httpManager.delete(
-        url: APIUrlConstants.BASE_API_URL + _newsBookmark + parameter);
+  Future unBookmarkFeed({String feedId, String token}) {
+    Map<String, String> headers = {
+      'Authorization': 'Bearer $token',
+    };
+    var path = '$NEWS_BOOKMARK/$feedId';
+    var bookmarkCall = httpManager.delete(url: path, headers: headers);
 
     return bookmarkCall;
   }
 
   @override
-  Future followCategory(NewsCategoryEntity category) {
-    final Map<String, dynamic> body = {
-      'category_id': category.id,
+  Future followCategory({String categoryId, String token}) {
+    Map<String, String> headers = {
+      'Authorization': 'Bearer $token',
     };
-    var call = httpManager.post(
-        path: APIUrlConstants.BASE_API_URL + _newsCategoryFollow, body: body);
+    var path = '$NEWS_CATEGORY_FOLLOW/$categoryId';
+    var call = httpManager.post(path: path, headers: headers);
 
     return call;
   }
 
   @override
-  Future followSource(NewsSourceEntity source) {
-    final Map<String, dynamic> body = {
-      'source_id': source.id,
+  Future followSource({String sourceId, String token}) {
+    Map<String, String> headers = {
+      'Authorization': 'Bearer $token',
     };
-    var call = httpManager.post(
-        path: APIUrlConstants.BASE_API_URL + _newsSourceFollow, body: body);
+    var path = '$NEWS_SOURCE_FOLLOW/$sourceId';
+    var call = httpManager.post(path: path, headers: headers);
 
     return call;
   }
 
   @override
-  Future unFollowCategory(NewsCategoryEntity category) {
-    final parameter = '/${category.id}';
-    var call = httpManager.delete(
-        url: APIUrlConstants.BASE_API_URL + _newsCategoryFollow + parameter);
-
-    return call;
-  }
-
-  @override
-  Future unFollowSource(NewsSourceEntity source) {
-    final parameter = '/${source.id}';
-    var call = httpManager.delete(
-        url: APIUrlConstants.BASE_API_URL + _newsCategoryFollow + parameter);
-
-    return call;
-  }
-
-  @override
-  Future followTopic(NewsTopicEntity topic) {
-    final Map<String, dynamic> body = {
-      'topic_id': topic.id,
+  Future unFollowCategory({String categoryId, String token}) {
+    Map<String, String> headers = {
+      'Authorization': 'Bearer $token',
     };
-    var call = httpManager.post(
-        path: APIUrlConstants.BASE_API_URL + _newsTopicFollow, body: body);
+    var path = '$NEWS_CATEGORY_FOLLOW/$categoryId';
+    var call = httpManager.delete(url: path, headers: headers);
 
     return call;
   }
 
   @override
-  Future unFollowTopic(NewsTopicEntity topic) {
-    final parameter = '/${topic.id}';
-    var call = httpManager.delete(
-        url: APIUrlConstants.BASE_API_URL + _newsCategoryFollow + parameter);
+  Future unFollowSource({String sourceId, String token}) {
+    Map<String, String> headers = {
+      'Authorization': 'Bearer $token',
+    };
+    var path = '$NEWS_SOURCE_FOLLOW/$sourceId';
+    var call = httpManager.delete(url: path, headers: headers);
 
     return call;
   }
 
   @override
-  Future fetchRelatedNews(NewsFeedEntity parent) {
+  Future followTopic({String topicId, String token}) {
+    Map<String, String> headers = {
+      'Authorization': 'Bearer $token',
+    };
+    var path = '$NEWS_TOPIC_FOLLOW/$topicId';
+    var call = httpManager.post(path: path, headers: headers);
+
+    return call;
+  }
+
+  @override
+  Future unFollowTopic({String topicId, String token}) {
+    Map<String, String> headers = {
+      'Authorization': 'Bearer $token',
+    };
+    var path = '$NEWS_TOPIC_FOLLOW/$topicId';
+    var call = httpManager.delete(url: path, headers: headers);
+
+    return call;
+  }
+
+  @override
+  Future fetchRelatedNews({String parentId, String token}) {
+    Map<String, String> headers = {
+      'Authorization': 'Bearer $token',
+    };
     final Map<String, dynamic> queryParams = {
-      'parent_id': parent.uuid,
+      'parent_id': parentId,
     };
-    var call = httpManager.get(
-        path: APIUrlConstants.BASE_API_URL + _news, query: queryParams);
+    var call =
+        httpManager.get(path: NEWS, query: queryParams, headers: headers);
 
     return call;
   }
 
   @override
-  Future dislikeFeed(NewsFeedEntity feed) {
-    final Map<String, dynamic> body = {
-      'feed_id': feed.id,
+  Future dislikeFeed({String feedId, String token}) {
+    Map<String, String> headers = {
+      'Authorization': 'Bearer $token',
     };
-    var call = httpManager.post(
-        path: APIUrlConstants.BASE_API_URL + _newsDislike, body: body);
+    var path = '$NEWS_DISLIKE/$feedId';
+    var call = httpManager.post(path: path, headers: headers);
 
     return call;
   }
 
   @override
-  Future likeFeed(NewsFeedEntity feed) {
-    final Map<String, dynamic> body = {
-      'feed_id': feed.id,
+  Future likeFeed({String feedId, String token}) {
+    Map<String, String> headers = {
+      'Authorization': 'Bearer $token',
     };
-    var call = httpManager.post(
-        path: APIUrlConstants.BASE_API_URL + _newsLike, body: body);
+    var path = '$NEWS_LIKE/$feedId';
+    var call = httpManager.post(path: path, headers: headers);
 
     return call;
   }
 
   @override
-  Future shareFeed(NewsFeedEntity feed) {
-    final Map<String, dynamic> body = {
-      'feed_id': feed.id,
+  Future shareFeed({String feedId, String token}) {
+    Map<String, String> headers = {
+      'Authorization': 'Bearer $token',
     };
-    var call = httpManager.post(
-        path: APIUrlConstants.BASE_API_URL + _newsShare, body: body);
+    var path = '$NEWS_SHARE/$feedId';
+    var call = httpManager.post(path: path, headers: headers);
 
     return call;
   }
 
   @override
-  Future undislikeFeed(NewsFeedEntity feed) {
-    final parameter = '/${feed.id}';
-    var call = httpManager.delete(
-        url: APIUrlConstants.BASE_API_URL + _newsDislike + parameter);
-
-    return call;
-  }
-
-  @override
-  Future unlikeFeed(NewsFeedEntity feed) {
-    final parameter = '/${feed.id}';
-    var call = httpManager.delete(
-        url: APIUrlConstants.BASE_API_URL + _newsLike + parameter);
-
-    return call;
-  }
-
-  @override
-  Future viewFeed(NewsFeedEntity feed) {
-    final Map<String, dynamic> body = {
-      'feed_id': feed.id,
+  Future undislikeFeed({String feedId, String token}) {
+    Map<String, String> headers = {
+      'Authorization': 'Bearer $token',
     };
-    var call = httpManager.post(
-        path: APIUrlConstants.BASE_API_URL + _newsView, body: body);
+    var path = '$NEWS_DISLIKE/$feedId';
+    var call = httpManager.delete(url: path, headers: headers);
+
+    return call;
+  }
+
+  @override
+  Future unlikeFeed({String feedId, String token}) {
+    Map<String, String> headers = {
+      'Authorization': 'Bearer $token',
+    };
+    var path = '$NEWS_LIKE/$feedId';
+    var call = httpManager.delete(url: path, headers: headers);
+
+    return call;
+  }
+
+  @override
+  Future viewFeed({String feedId, String token}) {
+    Map<String, String> headers = {
+      'Authorization': 'Bearer $token',
+    };
+    var path = '$NEWS_VIEW/$feedId';
+    var call = httpManager.post(path: path, headers: headers);
+
+    return call;
+  }
+
+  @override
+  Future fetchNewsDetail({String feedId, String token}) {
+    Map<String, String> headers = {
+      'Authorization': 'Bearer $token',
+    };
+    var path = '$NEWS/$feedId';
+    var call = httpManager.get(path: path, headers: headers);
 
     return call;
   }

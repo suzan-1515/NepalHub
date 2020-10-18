@@ -2,37 +2,23 @@ import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
 import 'package:samachar_hub/feature_news/domain/models/news_source.dart';
 
-class NewsSourceUIModel extends ChangeNotifier {
+class NewsSourceUIModel {
   NewsSourceEntity source;
-  final ValueNotifier<bool> followNotifier = ValueNotifier<bool>(false);
-  final ValueNotifier<int> followerCountNotifier = ValueNotifier<int>(0);
 
-  NewsSourceUIModel({@required this.source}) {
-    this.followerCountNotifier.value = source.followerCount;
-    this.followNotifier.value = source.isFollowed;
-  }
+  NewsSourceUIModel({@required this.source});
 
   follow() {
     if (source.isFollowed) return;
-    followerCountNotifier.value = followerCountNotifier.value++;
     source = source.copyWith(
-        isFollowed: true, followerCount: followerCountNotifier.value);
+        isFollowed: true, followerCount: source.followerCount + 1);
   }
 
   unfollow() {
     if (!source.isFollowed) return;
-    followerCountNotifier.value = followerCountNotifier.value--;
     source = source.copyWith(
-        isFollowed: false, followerCount: followerCountNotifier.value);
+        isFollowed: false, followerCount: source.followerCount - 1);
   }
 
   String get formattedFollowerCount =>
       NumberFormat.compact().format(source.followerCount);
-
-  @override
-  void dispose() {
-    super.dispose();
-    followNotifier.dispose();
-    followerCountNotifier.dispose();
-  }
 }

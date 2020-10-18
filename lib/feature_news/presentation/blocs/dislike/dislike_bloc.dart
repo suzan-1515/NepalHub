@@ -36,7 +36,7 @@ class DislikeBloc extends Bloc<DislikeUndislikeEvent, DislikeState> {
       yield DislikeInProgress();
       try {
         await _dislikeNewsFeedUseCase
-            .call(DislikeNewsUseCaseParams(feed: _newsFeedUIModel.feed));
+            .call(DislikeNewsUseCaseParams(feed: _newsFeedUIModel.feedEntity));
         yield DislikeSuccess(message: 'Feed disliked successfully.');
       } catch (e) {
         log('News feed dislike error.', error: e);
@@ -45,8 +45,8 @@ class DislikeBloc extends Bloc<DislikeUndislikeEvent, DislikeState> {
     } else if (event is UndislikeEvent) {
       yield DislikeInProgress();
       try {
-        await _undislikeNewsFeedUseCase
-            .call(UndislikeNewsUseCaseParams(feed: _newsFeedUIModel.feed));
+        await _undislikeNewsFeedUseCase.call(
+            UndislikeNewsUseCaseParams(feed: _newsFeedUIModel.feedEntity));
         yield UndislikeSuccess(message: 'News feed undisliked successfully.');
       } catch (e) {
         log('News feed undislike error.', error: e);

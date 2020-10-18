@@ -19,32 +19,23 @@ class AuthProviders {
   AuthProviders._();
   static List<RepositoryProvider> get authRepositoryProviders => [
         RepositoryProvider(
-          create: (context) =>
-              AuthStorage(context.repository<SharedPreferences>()),
-        ),
-        RepositoryProvider(
-          create: (context) => AuthRemoteService(
-            FirebaseAuth.instance,
-            GoogleSignIn(),
-            FacebookAuth.instance,
-            context.repository<HttpManager>(),
-          ),
-        ),
-        RepositoryProvider(
-          create: (context) =>
-              AuthRemoteDataSource(context.repository<AuthRemoteService>()),
-        ),
-        RepositoryProvider(
-          create: (context) =>
-              AuthLocalDataSource(context.repository<AuthStorage>()),
-        ),
-        RepositoryProvider(
           create: (context) => AuthRepository(
-            context.repository<AuthRemoteDataSource>(),
+            AuthRemoteDataSource(
+              AuthRemoteService(
+                FirebaseAuth.instance,
+                GoogleSignIn(),
+                FacebookAuth.instance,
+                context.repository<HttpManager>(),
+              ),
+            ),
             context.repository<AnalyticsService>(),
-            context.repository<AuthLocalDataSource>(),
+            AuthLocalDataSource(
+              AuthStorage(context.repository<SharedPreferences>()),
+            ),
           ),
         ),
+      ];
+  static List<RepositoryProvider> get auth2RepositoryProviders => [
         RepositoryProvider(
           create: (context) =>
               GetUserProfileUseCase(context.repository<AuthRepository>()),
@@ -65,10 +56,15 @@ class AuthProviders {
           create: (context) =>
               GetUserProfileUseCase(context.repository<AuthRepository>()),
         ),
+        RepositoryProvider(
+          create: (context) =>
+              AutoLoginUseCase(context.repository<AuthRepository>()),
+        ),
       ];
   static BlocProvider authBlocProvider({@required Widget child}) =>
       BlocProvider<AuthBloc>(
         create: (context) => AuthBloc(
+          autoLoginUseCase: context.repository<AutoLoginUseCase>(),
           loginWithFacebookUseCase:
               context.repository<LoginWithFacebookUseCase>(),
           loginWithGoogleUseCase: context.repository<LoginWithGoogleUseCase>(),

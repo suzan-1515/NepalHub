@@ -26,9 +26,9 @@ class RelatedNewsListItem extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 NewsFeedCardSourceCategory(
-                  category: feedUIModel.feed.category.title,
-                  source: feedUIModel.feed.source.title,
-                  sourceIcon: feedUIModel.feed.source.icon,
+                  category: feedUIModel.feedEntity.category.title,
+                  source: feedUIModel.newsSourceUIModel.source.title,
+                  sourceIcon: feedUIModel.newsSourceUIModel.source.icon,
                   publishedDate: feedUIModel.publishedDateMomentAgo,
                 ),
                 SizedBox(
@@ -41,8 +41,8 @@ class RelatedNewsListItem extends StatelessWidget {
                     Expanded(
                       flex: 4,
                       child: NewsFeedCardTitleDescription(
-                        title: feedUIModel.feed.title,
-                        description: feedUIModel.feed.description,
+                        title: feedUIModel.feedEntity.title,
+                        description: feedUIModel.feedEntity.description,
                       ),
                     ),
                     SizedBox(
@@ -54,7 +54,7 @@ class RelatedNewsListItem extends StatelessWidget {
                         aspectRatio: 4 / 3,
                         child: ClipRRect(
                           borderRadius: BorderRadius.all(Radius.circular(6)),
-                          child: CachedImage(feedUIModel.feed.image,
+                          child: CachedImage(feedUIModel.feedEntity.image,
                               tag: feedUIModel.tag),
                         ),
                       ),

@@ -32,7 +32,7 @@ class ShareBloc extends Bloc<ShareEvent, ShareState> {
       yield ShareInProgress();
       try {
         await _shareNewsFeedUseCase
-            .call(ShareNewsUseCaseParams(feed: _feedUIModel.feed));
+            .call(ShareNewsUseCaseParams(feed: _feedUIModel.feedEntity));
         yield ShareSuccess(message: 'Feed shared successfully.');
       } catch (e) {
         log('News feed share error.', error: e);

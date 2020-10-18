@@ -62,6 +62,7 @@ class _NewsSourceListState extends State<NewsSourceList> {
               var sourceModel = widget.data[index];
               return BlocProvider<FollowUnFollowBloc>(
                 create: (context) => FollowUnFollowBloc(
+                    newsSourceUIModel: sourceModel,
                     followNewsSourceUseCase: _followNewsSourceUseCase,
                     unFollowNewsSourceUseCase: _unfollowNewsSourceUseCase),
                 child: NewsSourceListItem(

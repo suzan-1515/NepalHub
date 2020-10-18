@@ -4,6 +4,7 @@ import 'package:samachar_hub/feature_news/presentation/blocs/related_news/relate
 import 'package:samachar_hub/feature_news/presentation/models/news_feed.dart';
 import 'package:samachar_hub/feature_news/presentation/ui/details/widgets/related_news_list.dart';
 import 'package:samachar_hub/core/extensions/view.dart';
+import 'package:samachar_hub/feature_news/utils/provider.dart';
 
 class RelatedNews extends StatelessWidget {
   const RelatedNews({Key key, @required this.feedUIModel})
@@ -12,24 +13,29 @@ class RelatedNews extends StatelessWidget {
   final NewsFeedUIModel feedUIModel;
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<RelatedNewsBloc, RelatedNewsState>(
-        listener: (context, state) {
-          if (state is LoadErrorState) {
-            context.showMessage(state.message);
-          }
-        },
-        buildWhen: (previous, current) =>
-            (current is InitialState) ||
-            (current is LoadingState) ||
-            (current is LoadSuccessState),
-        builder: (context, state) {
-          if (state is LoadSuccessState) {
-            return RelatedNewsList(
-              data: state.feeds,
-            );
-          }
+    return NewsProvider.relatedNewsBlocProvider(
+      feedUIModel: feedUIModel,
+      child: BlocConsumer<RelatedNewsBloc, RelatedNewsState>(
+          listener: (context, state) {
+            if (state is InitialState) {
+              context.bloc<RelatedNewsBloc>().add(GetRelatedNewsEvent());
+            } else if (state is LoadErrorState) {
+              context.showMessage(state.message);
+            }
+          },
+          buildWhen: (previous, current) =>
+              (current is InitialState) ||
+              (current is LoadingState) ||
+              (current is LoadSuccessState),
+          builder: (context, state) {
+            if (state is LoadSuccessState) {
+              return RelatedNewsList(
+                data: state.feeds,
+              );
+            }
 
-          return SizedBox.shrink();
-        });
+            return SizedBox.shrink();
+          }),
+    );
   }
 }

@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:samachar_hub/core/network/http_manager/http_manager.dart';
+import 'package:samachar_hub/feature_auth/data/repositories/auth_repository.dart';
 import 'package:samachar_hub/feature_main/data/datasources/remote/home/home_remote_data_source.dart';
 import 'package:samachar_hub/feature_main/data/repositories/home_repository.dart';
 import 'package:samachar_hub/feature_main/data/services/home/home_remote_service.dart';
@@ -27,8 +28,10 @@ class HomeProvider {
               HomeRemoteDataSource(context.repository<HomeRemoteService>()),
         ),
         RepositoryProvider(
-          create: (context) =>
-              HomeRepository(context.repository<HomeRemoteDataSource>()),
+          create: (context) => HomeRepository(
+              context.repository<HomeRemoteDataSource>(),
+              context.repository<AnalyticsService>(),
+              context.repository<AuthRepository>()),
         ),
         RepositoryProvider(
           create: (context) =>
@@ -49,21 +52,17 @@ class SettingsProvider {
   SettingsProvider._();
   static List<RepositoryProvider> get settingsRepositoryProviders => [
         RepositoryProvider(
-          create: (context) => SettingsStorage(
-            sharedPreferences: context.repository<SharedPreferences>(),
-          ),
-        ),
-        RepositoryProvider(
-          create: (context) => SettingsLocalDataSource(
-            context.repository<SettingsStorage>(),
-          ),
-        ),
-        RepositoryProvider(
           create: (context) => SettingsRepository(
-            context.repository<SettingsLocalDataSource>(),
+            SettingsLocalDataSource(
+              SettingsStorage(
+                sharedPreferences: context.repository<SharedPreferences>(),
+              ),
+            ),
             context.repository<AnalyticsService>(),
           ),
         ),
+      ];
+  static List<RepositoryProvider> get settings2RepositoryProviders => [
         RepositoryProvider(
           create: (context) => GetSettingsUseCase(
             context.repository<SettingsRepository>(),

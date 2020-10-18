@@ -14,6 +14,7 @@ class HomeUIModel {
   List<NewsTopicUIModel> newsTopicUIModels;
   bool _showNewsCategory = true;
   bool _showNewsSource = true;
+  bool _showDailyHoroscope = true;
 
   HomeUIModel({
     @required this.coronaUIModel,
@@ -35,4 +36,9 @@ class HomeUIModel {
 
   bool get shouldShowNewsCategorySection => _showNewsCategory;
   bool get shouldShowNewsSourceSection => _showNewsSource;
+
+  set shouldShowDailyHoroscopeSection(bool value) =>
+      _showDailyHoroscope = value;
+
+  bool get shouldShowDailyHoroscopeSection => _showDailyHoroscope;
 }

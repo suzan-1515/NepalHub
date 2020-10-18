@@ -15,13 +15,11 @@ part 'news_detail_state.dart';
 
 class NewsDetailBloc extends Bloc<NewsDetailEvent, NewsDetailState> {
   final NewsFeedUIModel feed;
-  final String feedId;
   final UseCase _getDetailNewsUseCase;
 
-  NewsDetailBloc(
-      {this.feedId, this.feed, @required UseCase getDetailNewsUseCase})
+  NewsDetailBloc({@required this.feed, @required UseCase getDetailNewsUseCase})
       : _getDetailNewsUseCase = getDetailNewsUseCase,
-        super(InitialState(feed: feed, feedId: feedId));
+        super(InitialState(feed: feed));
 
   @override
   Stream<NewsDetailState> mapEventToState(
@@ -33,18 +31,13 @@ class NewsDetailBloc extends Bloc<NewsDetailEvent, NewsDetailState> {
       try {
         if (feed != null) {
           yield LoadSuccessState(feed);
-        } else if (feedId != null && feedId.isNotEmpty) {
-          final NewsFeedEntity feed = await _getDetailNewsUseCase
-              .call(GetNewsDetailUseCaseParams(feedId: feedId));
-          if (feed == null)
-            yield EmptyState(message: 'News detail not available.');
-          else
-            yield LoadSuccessState(feed.toUIModel);
-        } else
-          yield LoadErrorState(message: 'Unknown feed.');
+        }
+        final NewsFeedEntity feedEntity = await _getDetailNewsUseCase
+            .call(GetNewsDetailUseCaseParams(feedId: feed.feedEntity.id));
+        if (feedEntity != null) yield LoadSuccessState(feedEntity.toUIModel);
       } catch (e) {
         log('News detail load error.', error: e);
-        yield LoadErrorState(message: 'Unable to load data.');
+        yield ErrorState(message: 'Unable to load data.');
       }
     }
   }

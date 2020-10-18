@@ -4,6 +4,8 @@ import 'package:samachar_hub/core/services/services.dart';
 import 'package:samachar_hub/core/widgets/comment_bar_placeholder_widget.dart';
 import 'package:samachar_hub/core/widgets/progress_widget.dart';
 import 'package:samachar_hub/core/widgets/comment_bar_widget.dart';
+import 'package:samachar_hub/feature_auth/presentation/blocs/auth_bloc.dart';
+import 'package:samachar_hub/feature_comment/domain/entities/thread_type.dart';
 import 'package:samachar_hub/feature_forex/domain/entities/forex_entity.dart';
 import 'package:samachar_hub/feature_forex/domain/usecases/dislike_forex_use_case.dart';
 import 'package:samachar_hub/feature_forex/domain/usecases/get_forex_timeline_use_case.dart';
@@ -62,6 +64,7 @@ class _ForexDetailScreenState extends State<ForexDetailScreen> {
   }
 
   Widget _buildCommentBar() {
+    final user = context.bloc<AuthBloc>().currentUser;
     return BlocBuilder<LikeUnlikeBloc, LikeUnlikeState>(
       builder: (context, state) {
         return CommentBar(
@@ -70,15 +73,16 @@ class _ForexDetailScreenState extends State<ForexDetailScreen> {
               .repository<NavigationService>()
               .toCommentsScreen(
                   context: context,
-                  title: forexUIModel.forexEntity.currency.title,
-                  postId: forexUIModel.forexEntity.id),
+                  threadTitle: forexUIModel.forexEntity.currency.title,
+                  threadId: forexUIModel.forexEntity.id,
+                  threadType: CommentThreadType.FOREX),
           onShareTap: () {
             context.bloc<ShareBloc>().add(Share());
           },
           commentCount: forexUIModel?.formattedCommentCount ?? '0',
           isLiked: forexUIModel?.forexEntity?.isLiked ?? false,
           shareCount: forexUIModel?.formattedShareCount ?? '0',
-          userAvatar: null,
+          userAvatar: user?.avatar,
           onLikeTap: () {
             if (forexUIModel.forexEntity.isLiked) {
               forexUIModel.unlike();

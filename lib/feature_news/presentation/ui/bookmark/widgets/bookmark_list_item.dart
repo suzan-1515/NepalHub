@@ -25,10 +25,10 @@ class BookmarkListItem extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             NewsFeedCardSourceCategory(
-              category: feed.feed.category.title,
+              category: feed.newsCategoryUIModel.category.title,
               publishedDate: feed.publishedDateMomentAgo,
-              source: feed.feed.source.title,
-              sourceIcon: feed.feed.source.favicon,
+              source: feed.newsSourceUIModel.source.title,
+              sourceIcon: feed.newsSourceUIModel.source.favicon,
             ),
             SizedBox(height: 8),
             Row(
@@ -38,8 +38,8 @@ class BookmarkListItem extends StatelessWidget {
                 Expanded(
                   flex: 4,
                   child: NewsFeedCardTitleDescription(
-                    description: feed.feed.description,
-                    title: feed.feed.title,
+                    description: feed.feedEntity.description,
+                    title: feed.feedEntity.title,
                   ),
                 ),
                 SizedBox(
@@ -52,7 +52,7 @@ class BookmarkListItem extends StatelessWidget {
                     aspectRatio: 4 / 3,
                     child: ClipRRect(
                       borderRadius: BorderRadius.all(Radius.circular(6)),
-                      child: CachedImage(feed.feed.image, tag: feed.tag),
+                      child: CachedImage(feed.feedEntity.image, tag: feed.tag),
                     ),
                   ),
                 ),

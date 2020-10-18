@@ -117,6 +117,12 @@ class LoginScreen extends StatelessWidget {
                 if (state is AuthErrorState) {
                   context.showMessage(state.message);
                 } else if (state is AuthSuccessState) {
+                  context
+                      .repository<CrashAnalyticsService>()
+                      .setUser(userId: state.user.id);
+                  context
+                      .repository<NotificationService>()
+                      .setEmail(state.user.email);
                   context.repository<NavigationService>().toHomeScreen(context);
                 }
               },

@@ -32,7 +32,7 @@ class ArticleDetail extends StatelessWidget {
               height: 16,
             ),
             Text(
-              feedUIModel.feed.title,
+              feedUIModel.feedEntity.title,
               style: Theme.of(context).textTheme.headline5.copyWith(
                   fontWeight: FontWeight.w600), //Todo: Use proper style
             ),
@@ -54,7 +54,8 @@ class ArticleDetail extends StatelessWidget {
               height: 16,
             ),
             Text(
-              feedUIModel.feed.description ?? 'Article content not available.',
+              feedUIModel.feedEntity.description ??
+                  'Article content not available.',
               style:
                   Theme.of(context).textTheme.subtitle1.copyWith(height: 1.5),
             ),

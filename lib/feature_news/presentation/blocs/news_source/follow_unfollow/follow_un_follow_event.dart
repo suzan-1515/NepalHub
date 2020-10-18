@@ -2,22 +2,11 @@ part of 'follow_un_follow_bloc.dart';
 
 abstract class FollowUnFollowEvent extends Equatable {
   const FollowUnFollowEvent();
-}
-
-class FollowEvent extends FollowUnFollowEvent {
-  final NewsSourceEntity sourceModel;
-
-  FollowEvent({@required this.sourceModel});
-
   @override
-  List<Object> get props => [sourceModel];
+  // TODO: implement props
+  List<Object> get props => [];
 }
 
-class UnFollowEvent extends FollowUnFollowEvent {
-  final NewsSourceEntity sourceModel;
+class FollowUnFollowFollowEvent extends FollowUnFollowEvent {}
 
-  UnFollowEvent({@required this.sourceModel});
-
-  @override
-  List<Object> get props => [sourceModel];
-}
+class FollowUnFollowUnFollowEvent extends FollowUnFollowEvent {}

@@ -15,4 +15,5 @@ mixin Repository {
 
   Future<HoroscopeEntity> share(HoroscopeEntity feed);
   Future<HoroscopeEntity> view(HoroscopeEntity feed);
+  Future<int> getDefaultHoroscopeSignIndex();
 }

@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:samachar_hub/core/models/language.dart';
 import 'package:samachar_hub/feature_news/data/models/news_category_model.dart';
 import 'package:samachar_hub/feature_news/data/models/news_feed_model.dart';
@@ -6,61 +7,104 @@ import 'package:samachar_hub/feature_news/data/models/news_topic_model.dart';
 import 'package:samachar_hub/feature_news/domain/models/news_category.dart';
 import 'package:samachar_hub/feature_news/domain/models/news_feed.dart';
 import 'package:samachar_hub/feature_news/domain/models/news_source.dart';
-import 'package:samachar_hub/feature_news/domain/models/news_topic.dart';
 import 'package:samachar_hub/feature_news/domain/models/sort.dart';
 
 mixin RemoteDataSource {
   Future<List<NewsFeedModel>> fetchLatestNews(
-      {SortBy sortBy, int page, Language language});
+      {@required SortBy sortBy,
+      @required int page,
+      @required Language language,
+      @required String token});
 
   Future<List<NewsFeedModel>> fetchRecentNews(
-      {SortBy sortBy, int page, Language language});
+      {@required SortBy sortBy,
+      @required int page,
+      @required Language language,
+      @required String token});
 
   Future<List<NewsFeedModel>> fetchTrendingNews(
-      {Language language, SortBy sortBy, int page, int limit});
+      {@required Language language,
+      @required SortBy sortBy,
+      @required int page,
+      @required int limit,
+      @required String token});
 
-  Future<List<NewsFeedModel>> fetchNewsBySource(NewsSourceEntity source,
-      {SortBy sortBy, int page, Language language});
+  Future<List<NewsFeedModel>> fetchNewsBySource(
+      {@required String sourceId,
+      @required SortBy sortBy,
+      @required int page,
+      @required Language language,
+      @required String token});
 
-  Future<List<NewsFeedModel>> fetchNewsByCategory(NewsCategoryEntity category,
-      {NewsSourceEntity source, SortBy sortBy, int page, Language language});
+  Future<List<NewsFeedModel>> fetchNewsByCategory(
+      {@required String categoryId,
+      @required String sourceId,
+      @required SortBy sortBy,
+      @required int page,
+      @required Language language,
+      @required String token});
 
-  Future<NewsFeedModel> fetchNewsDetail(String feedId);
-  Future<List<NewsFeedModel>> fetchRelatedNews(NewsFeedEntity feed);
+  Future<NewsFeedModel> fetchNewsDetail(
+      {@required String feedId, @required String token});
+  Future<List<NewsFeedModel>> fetchRelatedNews(
+      {@required String feedId, @required String token});
 
-  Future<void> likeFeed(NewsFeedEntity feed);
-  Future<void> unlikeFeed(NewsFeedEntity feed);
+  Future<NewsFeedModel> likeFeed(
+      {@required String feedId, @required String token});
+  Future<NewsFeedModel> unlikeFeed(
+      {@required String feedId, @required String token});
 
-  Future<void> dislikeFeed(NewsFeedEntity feed);
-  Future<void> undislikeFeed(NewsFeedEntity feed);
+  Future<NewsFeedModel> dislikeFeed(
+      {@required String feedId, @required String token});
+  Future<NewsFeedModel> undislikeFeed(
+      {@required String feedId, @required String token});
 
-  Future<void> shareFeed(NewsFeedEntity feed);
-  Future<void> viewFeed(NewsFeedEntity feed);
+  Future<NewsFeedModel> shareFeed(
+      {@required String feedId, @required String token});
+  Future<NewsFeedModel> viewFeed(
+      {@required String feedId, @required String token});
 
-  Future<void> bookmarkFeed(NewsFeedEntity feed);
+  Future<NewsFeedModel> bookmarkFeed(
+      {@required String feedId, @required String token});
 
-  Future<void> unBookmarkFeed(NewsFeedEntity feed);
+  Future<NewsFeedModel> unBookmarkFeed(
+      {@required String feedId, @required String token});
 
-  Future<List<NewsFeedModel>> fetchBookmarkedNews({int page});
+  Future<List<NewsFeedModel>> fetchBookmarkedNews(
+      {@required int page, @required String token});
 
-  Future<void> followSource(NewsSourceEntity source);
+  Future<NewsSourceModel> followSource(
+      {@required String sourceId, @required String token});
 
-  Future<void> unFollowSource(NewsSourceEntity source);
+  Future<NewsSourceModel> unFollowSource(
+      {@required String sourceId, @required String token});
 
-  Future<void> followCategory(NewsCategoryEntity category);
+  Future<NewsCategoryModel> followCategory(
+      {@required String categoryId, @required String token});
 
-  Future<void> unFollowCategory(NewsCategoryEntity category);
+  Future<NewsCategoryModel> unFollowCategory(
+      {@required String categoryId, @required String token});
 
-  Future<List<NewsSourceModel>> fetchSources({Language language});
+  Future<List<NewsSourceModel>> fetchSources(
+      {@required Language language, @required String token});
 
-  Future<List<NewsCategoryModel>> fetchCategories({Language language});
+  Future<List<NewsCategoryModel>> fetchCategories(
+      {@required Language language, @required String token});
 
-  Future<List<NewsTopicModel>> fetchTopics({Language language});
+  Future<List<NewsTopicModel>> fetchTopics(
+      {@required Language language, @required String token});
 
-  Future<void> followTopic(NewsTopicEntity topic);
+  Future<NewsTopicModel> followTopic(
+      {@required String topicId, @required String token});
 
-  Future<void> unFollowTopic(NewsTopicEntity topic);
+  Future<NewsTopicModel> unFollowTopic(
+      {@required String topicId, @required String token});
 
-  Future<List<NewsFeedModel>> fetchNewsByTopic(NewsTopicEntity topic,
-      {NewsSourceEntity source, SortBy sortBy, int page, Language language});
+  Future<List<NewsFeedModel>> fetchNewsByTopic(
+      {@required String topicId,
+      @required String sourceId,
+      @required SortBy sortBy,
+      @required int page,
+      @required Language language,
+      @required String token});
 }

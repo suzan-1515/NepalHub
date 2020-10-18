@@ -6,13 +6,13 @@ import 'package:samachar_hub/feature_news/domain/models/news_feed.dart';
 import 'package:samachar_hub/feature_news/domain/repository/repository.dart';
 
 class UnBookmarkNewsUseCase
-    implements UseCase<void, UnBookmarkNewsUseCaseParams> {
+    implements UseCase<NewsFeedEntity, UnBookmarkNewsUseCaseParams> {
   final Repository _repository;
 
   UnBookmarkNewsUseCase(this._repository);
 
   @override
-  Future<void> call(UnBookmarkNewsUseCaseParams params) {
+  Future<NewsFeedEntity> call(UnBookmarkNewsUseCaseParams params) {
     try {
       return this._repository.unBookmarkFeed(params.feed);
     } catch (e) {

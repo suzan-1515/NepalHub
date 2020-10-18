@@ -23,7 +23,7 @@ class NewsListView extends StatelessWidget {
       child: InkWell(
         onTap: () => context
             .repository<NavigationService>()
-            .toFeedDetail(feedUIModel, context),
+            .toFeedDetail(feedUIModel.feedEntity, context),
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Column(
@@ -31,10 +31,10 @@ class NewsListView extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               NewsFeedCardSourceCategory(
-                category: feedUIModel.feed.category.title,
+                category: feedUIModel.feedEntity.category.title,
                 publishedDate: feedUIModel.publishedDateMomentAgo,
-                source: feedUIModel.feed.source.title,
-                sourceIcon: feedUIModel.feed.source.favicon,
+                source: feedUIModel.newsSourceUIModel.source.title,
+                sourceIcon: feedUIModel.newsSourceUIModel.source.favicon,
               ),
               SizedBox(height: 8),
               Row(
@@ -44,8 +44,8 @@ class NewsListView extends StatelessWidget {
                   Expanded(
                     flex: 4,
                     child: NewsFeedCardTitleDescription(
-                      description: feedUIModel.feed.description,
-                      title: feedUIModel.feed.title,
+                      description: feedUIModel.feedEntity.description,
+                      title: feedUIModel.feedEntity.title,
                       descriptionMaxLines: MediaQuery.of(context).orientation ==
                               Orientation.portrait
                           ? 2
@@ -62,7 +62,7 @@ class NewsListView extends StatelessWidget {
                       aspectRatio: 4 / 3,
                       child: ClipRRect(
                         borderRadius: BorderRadius.all(Radius.circular(6)),
-                        child: CachedImage(feedUIModel.feed.image,
+                        child: CachedImage(feedUIModel.feedEntity.image,
                             tag: feedUIModel.tag),
                       ),
                     ),

@@ -36,7 +36,7 @@ class RelatedNewsList extends StatelessWidget {
                 feedUIModel: feed,
                 onTap: () => context
                     .repository<NavigationService>()
-                    .toFeedDetail(feed, context),
+                    .toFeedDetail(feed.feedEntity, context),
               );
             }) +
             [

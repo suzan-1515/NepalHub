@@ -39,7 +39,7 @@ class BookmarkUnBookmarkBloc
       try {
         await _addBookmarkNewsUseCase.call(
           BookmarkNewsUseCaseParams(
-            feed: _newsFeedUIModel.feed,
+            feed: _newsFeedUIModel.feedEntity,
           ),
         );
         yield BookmarkSuccess(message: 'News bookmarked successfully.');
@@ -52,7 +52,7 @@ class BookmarkUnBookmarkBloc
       try {
         await _removeBookmarkNewsUseCase.call(
           UnBookmarkNewsUseCaseParams(
-            feed: _newsFeedUIModel.feed,
+            feed: _newsFeedUIModel.feedEntity,
           ),
         );
         yield UnbookmarkSuccess(message: 'News unbookmark successfully.');

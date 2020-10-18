@@ -3,10 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:samachar_hub/core/services/services.dart';
 import 'package:samachar_hub/feature_main/presentation/models/home/home_model.dart';
 import 'package:samachar_hub/feature_main/presentation/ui/widgets/section_heading.dart';
-import 'package:samachar_hub/feature_news/domain/usecases/get_followed_news_sources_use_case.dart';
-import 'package:samachar_hub/feature_news/domain/usecases/get_news_sources_use_case.dart';
 import 'package:samachar_hub/feature_news/presentation/blocs/news_source/news_sources_bloc.dart';
 import 'package:samachar_hub/feature_news/presentation/ui/widgets/news_menu_item.dart';
+import 'package:samachar_hub/feature_news/utils/provider.dart';
 
 class NewsSourceMenuSection extends StatefulWidget {
   const NewsSourceMenuSection({
@@ -25,20 +24,18 @@ class _NewsSourceMenuSectionState extends State<NewsSourceMenuSection>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return BlocProvider<NewsSourceBloc>(
-      create: (context) => NewsSourceBloc(
-        getNewsSourcesUseCase: context.repository<GetNewsSourcesUseCase>(),
-        getNewsFollowedSourcesUseCase:
-            context.repository<GetFollowedNewsSourcesUseCase>(),
-      )..add(GetFollowedSourcesEvent()),
+    return NewsProvider.sourceBlocProvider(
       child: BlocConsumer<NewsSourceBloc, NewsSourceState>(
         listener: (context, state) {
-          if (state is ErrorState || state is EmptyState) {
+          if (state is InitialState) {
+            context.bloc<NewsSourceBloc>().add(GetFollowedSourcesEvent());
+          } else if (state is ErrorState || state is EmptyState) {
             widget.homeUIModel.shouldShowNewsSourceSection = false;
           }
         },
         builder: (context, state) {
           if (state is LoadSuccessState) {
+            widget.homeUIModel.shouldShowNewsSourceSection = true;
             return Column(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.stretch,

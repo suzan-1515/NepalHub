@@ -5,6 +5,7 @@ mixin Repository {
   Future<UserEntity> loginWithGoogle();
   Future<UserEntity> loginWithFacebook();
   Future<UserEntity> loginWithTwitter();
+  Future<UserEntity> autoLogin();
   Future<void> logout({@required UserEntity userEntity});
   Future<UserEntity> getUserProfile();
   String getUserToken();

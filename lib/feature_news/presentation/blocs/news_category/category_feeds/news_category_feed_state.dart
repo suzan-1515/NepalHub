@@ -4,35 +4,35 @@ abstract class NewsCategoryFeedState extends Equatable {
   const NewsCategoryFeedState();
 }
 
-class Initial extends NewsCategoryFeedState {
+class NewsCategoryFeedInitialState extends NewsCategoryFeedState {
   final NewsCategoryUIModel categoryModel;
-  const Initial({@required this.categoryModel});
+  const NewsCategoryFeedInitialState({@required this.categoryModel});
 
   @override
   List<Object> get props => [categoryModel.category];
 }
 
-class Loading extends NewsCategoryFeedState {
+class NewsCategoryFeedLoadingState extends NewsCategoryFeedState {
   @override
   List<Object> get props => [];
 }
 
-class LoadMoreLoading extends NewsCategoryFeedState {
+class NewsCategoryFeedMoreLoadingState extends NewsCategoryFeedState {
   @override
   List<Object> get props => [];
 }
 
-class LoadSuccess extends NewsCategoryFeedState {
+class NewsCategoryFeedLoadSuccessState extends NewsCategoryFeedState {
   final List<NewsFeedUIModel> feeds;
   final bool hasMore;
 
-  LoadSuccess({this.feeds, this.hasMore});
+  NewsCategoryFeedLoadSuccessState({this.feeds, this.hasMore});
 
-  LoadSuccess copyWith({
+  NewsCategoryFeedLoadSuccessState copyWith({
     List<NewsFeedUIModel> feeds,
     bool hasMore,
   }) =>
-      LoadSuccess(
+      NewsCategoryFeedLoadSuccessState(
         feeds: feeds ?? this.feeds,
         hasMore: hasMore ?? this.hasMore,
       );
@@ -41,42 +41,42 @@ class LoadSuccess extends NewsCategoryFeedState {
   List<Object> get props => [feeds, hasMore];
 }
 
-class Empty extends NewsCategoryFeedState {
+class NewsCategoryFeedEmptyState extends NewsCategoryFeedState {
   final String message;
 
-  Empty({this.message});
+  NewsCategoryFeedEmptyState({this.message});
 
   @override
   List<Object> get props => [message];
 }
 
-class ErrorState extends NewsCategoryFeedState {
+class NewsCategoryFeedErrorState extends NewsCategoryFeedState {
   final String message;
 
-  ErrorState({this.message});
+  NewsCategoryFeedErrorState({this.message});
 
   @override
   List<Object> get props => [message];
 }
 
-class LoadMoreError extends NewsCategoryFeedState {
+class NewsCategoryFeedLoadMoreErrorState extends NewsCategoryFeedState {
   final String message;
 
-  LoadMoreError({this.message});
+  NewsCategoryFeedLoadMoreErrorState({this.message});
 
   @override
   List<Object> get props => [message];
 }
 
-class Refreshing extends NewsCategoryFeedState {
+class NewsCategoryFeedRefreshingState extends NewsCategoryFeedState {
   @override
   List<Object> get props => [];
 }
 
-class RefreshError extends NewsCategoryFeedState {
+class NewsCategoryFeedRefreshErrorState extends NewsCategoryFeedState {
   final String message;
 
-  RefreshError({this.message});
+  NewsCategoryFeedRefreshErrorState({this.message});
 
   @override
   List<Object> get props => [message];

@@ -20,33 +20,23 @@ class ForexProvider {
   ForexProvider._();
   static List<RepositoryProvider> get forexRepositoryProviders => [
         RepositoryProvider(
-          create: (context) => ForexStorage(
-            context.repository<SharedPreferences>(),
-          ),
-        ),
-        RepositoryProvider(
-          create: (context) => ForexRemoteService(
-            context.repository<HttpManager>(),
-          ),
-        ),
-        RepositoryProvider(
-          create: (context) => ForexRemoteDataSource(
-            context.repository<ForexRemoteService>(),
-          ),
-        ),
-        RepositoryProvider(
-          create: (context) => ForexLocalDataSource(
-            context.repository<ForexStorage>(),
-          ),
-        ),
-        RepositoryProvider(
           create: (context) => ForexRepository(
-            context.repository<ForexRemoteDataSource>(),
-            context.repository<ForexLocalDataSource>(),
+            ForexRemoteDataSource(
+              ForexRemoteService(
+                context.repository<HttpManager>(),
+              ),
+            ),
+            ForexLocalDataSource(
+              ForexStorage(
+                context.repository<SharedPreferences>(),
+              ),
+            ),
             context.repository<AnalyticsService>(),
             context.repository<AuthRepository>(),
           ),
         ),
+      ];
+  static List<RepositoryProvider> get forex2RepositoryProviders => [
         RepositoryProvider(
           create: (context) =>
               DislikeForexUseCase(context.repository<ForexRepository>()),

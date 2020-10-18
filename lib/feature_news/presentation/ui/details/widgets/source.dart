@@ -25,21 +25,22 @@ class Source extends StatelessWidget {
         SizedBox(
           height: 42,
           width: 42,
-          child: CachedImage(feedUIModel.feed.source.favicon),
+          child: CachedImage(feedUIModel.newsSourceUIModel.source.favicon),
         ),
         SizedBox(width: 8),
         BlocBuilder<FollowUnFollowBloc, FollowUnFollowState>(
           buildWhen: (previous, current) =>
-              current is FollowedState || current is UnFollowedState,
+              current is FollowUnFollowFollowedState ||
+              current is FollowUnFollowUnFollowedState,
           builder: (context, state) => RichText(
             text: TextSpan(
-                text: '${feedUIModel.feed.source.title}',
+                text: '${feedUIModel.newsSourceUIModel.source.title}',
                 style: Theme.of(context).textTheme.subtitle2,
                 children: [
                   TextSpan(text: '\n'),
                   TextSpan(
                       text:
-                          '${feedUIModel.formattedSourceFollowerCount} followers',
+                          '${feedUIModel.newsSourceUIModel.formattedFollowerCount} followers',
                       style: Theme.of(context).textTheme.caption),
                 ]),
             overflow: TextOverflow.ellipsis,
@@ -52,7 +53,9 @@ class Source extends StatelessWidget {
           child: BlocBuilder<FollowUnFollowBloc, FollowUnFollowState>(
             builder: (context, state) => FlatButton(
               visualDensity: VisualDensity.compact,
-              color: feedUIModel.feed.source.isFollowed ? Colors.blue : null,
+              color: feedUIModel.newsSourceUIModel.source.isFollowed
+                  ? Colors.blue
+                  : null,
               shape: RoundedRectangleBorder(
                   side: BorderSide(color: Colors.blue),
                   borderRadius: BorderRadius.horizontal(
@@ -60,34 +63,36 @@ class Source extends StatelessWidget {
                     right: Radius.circular(6),
                   )),
               onPressed: () {
-                if (feedUIModel.feed.source.isFollowed) {
-                  feedUIModel.unfollowSource();
+                if (feedUIModel.newsSourceUIModel.source.isFollowed) {
+                  feedUIModel.newsSourceUIModel.unfollow();
                   context
                       .bloc<FollowUnFollowBloc>()
-                      .add(UnFollowEvent(sourceModel: feedUIModel.feed.source));
+                      .add(FollowUnFollowUnFollowEvent());
                 } else {
-                  feedUIModel.followSource();
+                  feedUIModel.newsSourceUIModel.follow();
                   context
                       .bloc<FollowUnFollowBloc>()
-                      .add(FollowEvent(sourceModel: feedUIModel.feed.source));
+                      .add(FollowUnFollowFollowEvent());
                 }
               },
               child: Row(
                 children: [
                   Icon(
-                    feedUIModel.feed.source.isFollowed
+                    feedUIModel.newsSourceUIModel.source.isFollowed
                         ? Icons.star
                         : Icons.star_border,
-                    color: feedUIModel.feed.source.isFollowed
+                    color: feedUIModel.newsSourceUIModel.source.isFollowed
                         ? Colors.white
                         : Colors.blue,
                     size: 14,
                   ),
                   SizedBox(width: 4),
                   Text(
-                    feedUIModel.feed.source.isFollowed ? 'Following' : 'Follow',
+                    feedUIModel.newsSourceUIModel.source.isFollowed
+                        ? 'Following'
+                        : 'Follow',
                     style: Theme.of(context).textTheme.caption.copyWith(
-                        color: feedUIModel.feed.source.isFollowed
+                        color: feedUIModel.newsSourceUIModel.source.isFollowed
                             ? Colors.white
                             : Colors.blue),
                   ),

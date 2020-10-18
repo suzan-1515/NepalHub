@@ -3,6 +3,8 @@ import 'package:flutter_advanced_networkimage/provider.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:samachar_hub/core/services/services.dart';
 import 'package:samachar_hub/core/widgets/comment_bar_widget.dart';
+import 'package:samachar_hub/feature_auth/presentation/blocs/auth_bloc.dart';
+import 'package:samachar_hub/feature_comment/domain/entities/thread_type.dart';
 import 'package:samachar_hub/feature_horoscope/domain/entities/horoscope_entity.dart';
 import 'package:samachar_hub/feature_horoscope/domain/entities/horoscope_type.dart';
 import 'package:samachar_hub/feature_horoscope/domain/usecases/dislike_horoscope_use_case.dart';
@@ -100,6 +102,7 @@ class _HoroscopeDetailScreenState extends State<HoroscopeDetailScreen> {
   }
 
   Widget _buildCommentBar() {
+    final user = context.bloc<AuthBloc>().currentUser;
     return BlocBuilder<LikeUnlikeBloc, LikeUnlikeState>(
       builder: (context, state) {
         return CommentBar(
@@ -108,9 +111,10 @@ class _HoroscopeDetailScreenState extends State<HoroscopeDetailScreen> {
               .repository<NavigationService>()
               .toCommentsScreen(
                   context: context,
-                  title:
+                  threadTitle:
                       '${_horoscopeUIModel.horoscopeEntity.type.value.toUpperCase()} Horoscope - ${widget.sign}',
-                  postId: _horoscopeUIModel.horoscopeEntity.id),
+                  threadId: _horoscopeUIModel.horoscopeEntity.id,
+                  threadType: CommentThreadType.HOROSCOPE),
           onShareTap: () {
             context
                 .repository<ShareService>()
@@ -124,7 +128,7 @@ class _HoroscopeDetailScreenState extends State<HoroscopeDetailScreen> {
           commentCount: _horoscopeUIModel?.formattedCommentCount ?? '0',
           isLiked: _horoscopeUIModel?.horoscopeEntity?.isLiked ?? false,
           shareCount: _horoscopeUIModel?.formattedShareCount ?? '0',
-          userAvatar: null,
+          userAvatar: user?.avatar,
           onLikeTap: () {
             if (_horoscopeUIModel.horoscopeEntity.isLiked) {
               _horoscopeUIModel.unlike();

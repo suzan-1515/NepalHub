@@ -8,6 +8,7 @@ import 'package:samachar_hub/core/usecases/usecase.dart';
 import 'package:samachar_hub/feature_news/domain/models/news_source.dart';
 import 'package:samachar_hub/feature_news/domain/usecases/follow_news_source_use_case.dart';
 import 'package:samachar_hub/feature_news/domain/usecases/unfollow_news_source_use_case.dart';
+import 'package:samachar_hub/feature_news/presentation/models/news_source.dart';
 
 part 'follow_un_follow_event.dart';
 part 'follow_un_follow_state.dart';
@@ -16,38 +17,58 @@ class FollowUnFollowBloc
     extends Bloc<FollowUnFollowEvent, FollowUnFollowState> {
   final UseCase _followNewsSourceUseCase;
   final UseCase _unFollowNewsSourceUseCase;
+  final NewsSourceUIModel _newsSourceUIModel;
 
-  FollowUnFollowBloc({
-    @required UseCase followNewsSourceUseCase,
-    @required UseCase unFollowNewsSourceUseCase,
-  })  : _followNewsSourceUseCase = followNewsSourceUseCase,
+  FollowUnFollowBloc(
+      {@required UseCase followNewsSourceUseCase,
+      @required UseCase unFollowNewsSourceUseCase,
+      @required NewsSourceUIModel newsSourceUIModel})
+      : _followNewsSourceUseCase = followNewsSourceUseCase,
         _unFollowNewsSourceUseCase = unFollowNewsSourceUseCase,
-        super(InitialState());
+        _newsSourceUIModel = newsSourceUIModel,
+        super(FollowUnFollowInitialState());
+
+  NewsSourceUIModel get newsSourceUIModel => _newsSourceUIModel;
 
   @override
   Stream<FollowUnFollowState> mapEventToState(
     FollowUnFollowEvent event,
   ) async* {
     final currentState = state;
-    if (event is FollowEvent && !(currentState is InProgressState)) {
-      yield InProgressState();
+    if (event is FollowUnFollowFollowEvent &&
+        !(currentState is FollowUnFollowInProgressState)) {
+      yield FollowUnFollowInProgressState();
       try {
-        await _followNewsSourceUseCase
-            .call(FollowNewsSourceUseCaseParams(source: event.sourceModel));
-        yield FollowedState(message: 'Source followed successfully.');
+        final NewsSourceEntity newsSourceEntity =
+            await _followNewsSourceUseCase.call(FollowNewsSourceUseCaseParams(
+                source: newsSourceUIModel.source));
+        if (newsSourceEntity != null)
+          newsSourceUIModel.source = newsSourceUIModel.source.copyWith(
+              isFollowed: newsSourceEntity.isFollowed,
+              followerCount: newsSourceEntity.followerCount);
+        yield FollowUnFollowFollowedState(
+            message: 'Source followed successfully.');
       } catch (e) {
         log('News source follow load error.', error: e);
-        yield ErrorState(message: 'Unable to follow.');
+        yield FollowUnFollowErrorState(message: 'Unable to follow.');
       }
-    } else if (event is UnFollowEvent && !(currentState is InProgressState)) {
-      yield InProgressState();
+    } else if (event is FollowUnFollowUnFollowEvent &&
+        !(currentState is FollowUnFollowInProgressState)) {
+      yield FollowUnFollowInProgressState();
       try {
-        await _unFollowNewsSourceUseCase
-            .call(UnFollowNewsSourceUseCaseParams(source: event.sourceModel));
-        yield UnFollowedState(message: 'Source unFollowed successfully.');
+        final NewsSourceEntity newsSourceEntity =
+            await _unFollowNewsSourceUseCase.call(
+                UnFollowNewsSourceUseCaseParams(
+                    source: newsSourceUIModel.source));
+        if (newsSourceEntity != null)
+          newsSourceUIModel.source = newsSourceUIModel.source.copyWith(
+              isFollowed: newsSourceEntity.isFollowed,
+              followerCount: newsSourceEntity.followerCount);
+        yield FollowUnFollowUnFollowedState(
+            message: 'Source unFollowed successfully.');
       } catch (e) {
         log('News categories load error.', error: e);
-        yield ErrorState(message: 'Unable to unfollow.');
+        yield FollowUnFollowErrorState(message: 'Unable to unfollow.');
       }
     }
   }

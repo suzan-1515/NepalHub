@@ -2,37 +2,23 @@ import 'package:flutter/foundation.dart';
 import 'package:intl/intl.dart';
 import 'package:samachar_hub/feature_news/domain/models/news_category.dart';
 
-class NewsCategoryUIModel extends ChangeNotifier {
+class NewsCategoryUIModel {
   NewsCategoryEntity category;
-  final ValueNotifier<bool> followNotifier = ValueNotifier<bool>(false);
-  final ValueNotifier<int> followerCountNotifier = ValueNotifier<int>(0);
 
-  NewsCategoryUIModel({@required this.category}) {
-    this.followerCountNotifier.value = category.followerCount;
-    this.followNotifier.value = category.isFollowed;
-  }
+  NewsCategoryUIModel({@required this.category});
 
   follow() {
     if (category.isFollowed) return;
-    followerCountNotifier.value = followerCountNotifier.value++;
     category = category.copyWith(
-        isFollowed: true, followerCount: followerCountNotifier.value);
+        isFollowed: true, followerCount: category.followerCount + 1);
   }
 
   unfollow() {
     if (!category.isFollowed) return;
-    followerCountNotifier.value = followerCountNotifier.value--;
     category = category.copyWith(
-        isFollowed: false, followerCount: followerCountNotifier.value);
+        isFollowed: false, followerCount: category.followerCount - 1);
   }
 
   String get formattedFollowerCount =>
       NumberFormat.compact().format(category.followerCount);
-
-  @override
-  void dispose() {
-    super.dispose();
-    followNotifier.dispose();
-    followerCountNotifier.dispose();
-  }
 }

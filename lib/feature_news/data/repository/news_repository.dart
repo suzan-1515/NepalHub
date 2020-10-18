@@ -2,6 +2,8 @@ import 'package:flutter/foundation.dart';
 import 'package:samachar_hub/core/exceptions/app_exceptions.dart';
 import 'package:samachar_hub/core/models/language.dart';
 import 'package:samachar_hub/core/network/network_info.dart';
+import 'package:samachar_hub/core/services/services.dart';
+import 'package:samachar_hub/feature_auth/data/repositories/auth_repository.dart';
 import 'package:samachar_hub/feature_news/data/datasource/remote/remote_data_source.dart';
 import 'package:samachar_hub/feature_news/domain/models/news_category.dart';
 import 'package:samachar_hub/feature_news/domain/models/news_feed.dart';
@@ -13,12 +15,18 @@ import 'package:samachar_hub/feature_news/domain/repository/repository.dart';
 class NewsRepository implements Repository {
   final RemoteDataSource _remoteDataSource;
   final NetworkInfo _networkInfo;
+  final AnalyticsService _analyticsService;
+  final AuthRepository _authRepository;
 
-  NewsRepository(
-      {@required RemoteDataSource remoteDataSource,
-      @required NetworkInfo networkInfo})
-      : this._remoteDataSource = remoteDataSource,
-        this._networkInfo = networkInfo;
+  NewsRepository({
+    @required RemoteDataSource remoteDataSource,
+    @required NetworkInfo networkInfo,
+    @required AnalyticsService analyticsService,
+    @required AuthRepository authRepository,
+  })  : this._remoteDataSource = remoteDataSource,
+        this._networkInfo = networkInfo,
+        this._analyticsService = analyticsService,
+        this._authRepository = authRepository;
 
   @override
   Future<List<NewsFeedEntity>> getNewsByCategory(NewsCategoryEntity category,
@@ -27,16 +35,31 @@ class NewsRepository implements Repository {
       int page,
       Language language}) async {
     if (!(await _networkInfo.isConnected)) throw NetworkException();
-    return _remoteDataSource.fetchNewsByCategory(category,
-        source: source, sortBy: sortBy, page: page, language: language);
+    return _remoteDataSource.fetchNewsByCategory(
+      categoryId: category.id,
+      sourceId: source.id,
+      sortBy: sortBy,
+      page: page,
+      language: language,
+      token: _authRepository.getUserToken(),
+    );
   }
 
   @override
-  Future<List<NewsFeedEntity>> getNewsBySource(NewsSourceEntity source,
-      {SortBy sortBy, int page, Language language}) async {
+  Future<List<NewsFeedEntity>> getNewsBySource(
+    NewsSourceEntity source, {
+    SortBy sortBy,
+    int page,
+    Language language,
+  }) async {
     if (!(await _networkInfo.isConnected)) throw NetworkException();
-    return _remoteDataSource.fetchNewsBySource(source,
-        sortBy: sortBy, page: page, language: language);
+    return _remoteDataSource.fetchNewsBySource(
+      sourceId: source.id,
+      sortBy: sortBy,
+      page: page,
+      language: language,
+      token: _authRepository.getUserToken(),
+    );
   }
 
   @override
@@ -46,34 +69,56 @@ class NewsRepository implements Repository {
       int page,
       Language language}) async {
     if (!(await _networkInfo.isConnected)) throw NetworkException();
-    return _remoteDataSource.fetchNewsByTopic(topic,
-        source: source, sortBy: sortBy, page: page, language: language);
+    return _remoteDataSource.fetchNewsByTopic(
+      topicId: topic.id,
+      sourceId: source.id,
+      sortBy: sortBy,
+      page: page,
+      language: language,
+      token: _authRepository.getUserToken(),
+    );
   }
 
   @override
   Future<List<NewsCategoryEntity>> getCategories({Language language}) async {
     if (!(await _networkInfo.isConnected)) throw NetworkException();
-    return _remoteDataSource.fetchCategories(language: language);
+    return _remoteDataSource.fetchCategories(
+      language: language,
+      token: _authRepository.getUserToken(),
+    );
   }
 
   @override
-  Future<List<NewsFeedEntity>> getLatestNews(
-      {SortBy sortBy, int page, Language language}) async {
+  Future<List<NewsFeedEntity>> getLatestNews({
+    SortBy sortBy,
+    int page,
+    Language language,
+  }) async {
     if (!(await _networkInfo.isConnected)) throw NetworkException();
     return _remoteDataSource.fetchLatestNews(
-        sortBy: sortBy, page: page, language: language);
+      sortBy: sortBy,
+      page: page,
+      language: language,
+      token: _authRepository.getUserToken(),
+    );
   }
 
   @override
   Future<List<NewsSourceEntity>> getSources({Language language}) async {
     if (!(await _networkInfo.isConnected)) throw NetworkException();
-    return _remoteDataSource.fetchSources(language: language);
+    return _remoteDataSource.fetchSources(
+      language: language,
+      token: _authRepository.getUserToken(),
+    );
   }
 
   @override
   Future<List<NewsTopicEntity>> getTopics({Language language}) async {
     if (!(await _networkInfo.isConnected)) throw NetworkException();
-    return _remoteDataSource.fetchTopics(language: language);
+    return _remoteDataSource.fetchTopics(
+      language: language,
+      token: _authRepository.getUserToken(),
+    );
   }
 
   @override
@@ -85,67 +130,143 @@ class NewsRepository implements Repository {
       Language language}) async {
     if (!(await _networkInfo.isConnected)) throw NetworkException();
     return _remoteDataSource.fetchTrendingNews(
-        sortBy: sortBy, page: page, limit: limit, language: language);
+      sortBy: sortBy,
+      page: page,
+      limit: limit,
+      language: language,
+      token: _authRepository.getUserToken(),
+    );
   }
 
   @override
-  Future<void> bookmarkFeed(NewsFeedEntity feed) async {
+  Future<NewsFeedEntity> bookmarkFeed(NewsFeedEntity feed) async {
     if (!(await _networkInfo.isConnected)) throw NetworkException();
-    return _remoteDataSource.bookmarkFeed(feed);
+    return _remoteDataSource
+        .bookmarkFeed(
+      feedId: feed.id,
+      token: _authRepository.getUserToken(),
+    )
+        .then((value) {
+      _analyticsService.logNewsBookmark(feedId: feed.id);
+      return value;
+    });
   }
 
   @override
-  Future<void> followCategory(NewsCategoryEntity category) async {
+  Future<NewsCategoryEntity> followCategory(NewsCategoryEntity category) async {
     if (!(await _networkInfo.isConnected)) throw NetworkException();
-    return _remoteDataSource.followCategory(category);
+    return _remoteDataSource
+        .followCategory(
+      categoryId: category.id,
+      token: _authRepository.getUserToken(),
+    )
+        .then((value) {
+      _analyticsService.logNewsCategoryFollow(categoryId: category.id);
+      return value;
+    });
   }
 
   @override
-  Future<void> followSource(NewsSourceEntity source) async {
+  Future<NewsSourceEntity> followSource(NewsSourceEntity source) async {
     if (!(await _networkInfo.isConnected)) throw NetworkException();
-    return _remoteDataSource.followSource(source);
+    return _remoteDataSource
+        .followSource(
+      sourceId: source.id,
+      token: _authRepository.getUserToken(),
+    )
+        .then((value) {
+      _analyticsService.logNewsSourceFollow(sourceId: source.id);
+      return value;
+    });
   }
 
   @override
   Future<List<NewsFeedEntity>> getBookmarkedNews({int page}) async {
     if (!(await _networkInfo.isConnected)) throw NetworkException();
-    return _remoteDataSource.fetchBookmarkedNews(page: page);
+    return _remoteDataSource.fetchBookmarkedNews(
+      page: page,
+      token: _authRepository.getUserToken(),
+    );
   }
 
   @override
-  Future<void> unBookmarkFeed(NewsFeedEntity feed) async {
+  Future<NewsFeedEntity> unBookmarkFeed(NewsFeedEntity feed) async {
     if (!(await _networkInfo.isConnected)) throw NetworkException();
-    return _remoteDataSource.unBookmarkFeed(feed);
+    return _remoteDataSource
+        .unBookmarkFeed(
+      feedId: feed.id,
+      token: _authRepository.getUserToken(),
+    )
+        .then((value) {
+      _analyticsService.logNewsUnBookmark(feedId: feed.id);
+      return value;
+    });
   }
 
   @override
-  Future<void> followTopic(NewsTopicEntity topic) async {
+  Future<NewsTopicEntity> followTopic(NewsTopicEntity topic) async {
     if (!(await _networkInfo.isConnected)) throw NetworkException();
-    return _remoteDataSource.followTopic(topic);
+    return _remoteDataSource
+        .followTopic(
+      topicId: topic.id,
+      token: _authRepository.getUserToken(),
+    )
+        .then((value) {
+      _analyticsService.logNewsTopicFollow(topicId: topic.id);
+      return value;
+    });
   }
 
   @override
-  Future<void> unFollowCategory(NewsCategoryEntity category) async {
+  Future<NewsCategoryEntity> unFollowCategory(
+      NewsCategoryEntity category) async {
     if (!(await _networkInfo.isConnected)) throw NetworkException();
-    return _remoteDataSource.unFollowCategory(category);
+    return _remoteDataSource
+        .unFollowCategory(
+      categoryId: category.id,
+      token: _authRepository.getUserToken(),
+    )
+        .then((value) {
+      _analyticsService.logNewsCategoryUnFollow(categoryId: category.id);
+      return value;
+    });
   }
 
   @override
-  Future<void> unFollowSource(NewsSourceEntity source) async {
+  Future<NewsSourceEntity> unFollowSource(NewsSourceEntity source) async {
     if (!(await _networkInfo.isConnected)) throw NetworkException();
-    return _remoteDataSource.unFollowSource(source);
+    return _remoteDataSource
+        .unFollowSource(
+      sourceId: source.id,
+      token: _authRepository.getUserToken(),
+    )
+        .then((value) {
+      _analyticsService.logNewsSourceUnFollow(sourceId: source.id);
+      return value;
+    });
   }
 
   @override
-  Future<void> unFollowTopic(NewsTopicEntity topic) async {
+  Future<NewsTopicEntity> unFollowTopic(NewsTopicEntity topic) async {
     if (!(await _networkInfo.isConnected)) throw NetworkException();
-    return _remoteDataSource.unFollowTopic(topic);
+    return _remoteDataSource
+        .unFollowTopic(
+      topicId: topic.id,
+      token: _authRepository.getUserToken(),
+    )
+        .then((value) {
+      _analyticsService.logNewsTopicUnFollow(topicId: topic.id);
+      return value;
+    });
   }
 
   @override
   Future<NewsFeedEntity> getNewsDetail(String feed) async {
     if (!(await _networkInfo.isConnected)) throw NetworkException();
-    return _remoteDataSource.fetchNewsDetail(feed);
+    return _remoteDataSource.fetchNewsDetail(
+      feedId: feed,
+      token: _authRepository.getUserToken(),
+    );
   }
 
   @override
@@ -153,48 +274,103 @@ class NewsRepository implements Repository {
       {Language language, SortBy sortBy, int page}) async {
     if (!(await _networkInfo.isConnected)) throw NetworkException();
     return _remoteDataSource.fetchRecentNews(
-        sortBy: sortBy, page: page, language: language);
+      sortBy: sortBy,
+      page: page,
+      language: language,
+      token: _authRepository.getUserToken(),
+    );
   }
 
   @override
   Future<List<NewsFeedEntity>> getRelatedNews(NewsFeedEntity parentFeed) async {
     if (!(await _networkInfo.isConnected)) throw NetworkException();
-    return _remoteDataSource.fetchRelatedNews(parentFeed);
+    return _remoteDataSource.fetchRelatedNews(
+      feedId: parentFeed.id,
+      token: _authRepository.getUserToken(),
+    );
   }
 
   @override
-  Future<void> dislikeFeed(NewsFeedEntity feed) async {
+  Future<NewsFeedEntity> dislikeFeed(NewsFeedEntity feed) async {
     if (!(await _networkInfo.isConnected)) throw NetworkException();
-    return _remoteDataSource.dislikeFeed(feed);
+    return _remoteDataSource
+        .dislikeFeed(
+      feedId: feed.id,
+      token: _authRepository.getUserToken(),
+    )
+        .then((value) {
+      _analyticsService.logNewsDislike(feedId: feed.id);
+      return value;
+    });
   }
 
   @override
-  Future<void> likeFeed(NewsFeedEntity feed) async {
+  Future<NewsFeedEntity> likeFeed(NewsFeedEntity feed) async {
     if (!(await _networkInfo.isConnected)) throw NetworkException();
-    return _remoteDataSource.likeFeed(feed);
+    return _remoteDataSource
+        .likeFeed(
+      feedId: feed.id,
+      token: _authRepository.getUserToken(),
+    )
+        .then((value) {
+      _analyticsService.logNewsLike(feedId: feed.id);
+      return value;
+    });
   }
 
   @override
-  Future<void> shareFeed(NewsFeedEntity feed) async {
+  Future<NewsFeedEntity> shareFeed(NewsFeedEntity feed) async {
     if (!(await _networkInfo.isConnected)) throw NetworkException();
-    return _remoteDataSource.shareFeed(feed);
+    return _remoteDataSource
+        .shareFeed(
+      feedId: feed.id,
+      token: _authRepository.getUserToken(),
+    )
+        .then((value) {
+      _analyticsService.logNewsShare(feedId: feed.id);
+      return value;
+    });
   }
 
   @override
-  Future<void> undislikeFeed(NewsFeedEntity feed) async {
+  Future<NewsFeedEntity> undislikeFeed(NewsFeedEntity feed) async {
     if (!(await _networkInfo.isConnected)) throw NetworkException();
-    return _remoteDataSource.undislikeFeed(feed);
+    return _remoteDataSource
+        .undislikeFeed(
+      feedId: feed.id,
+      token: _authRepository.getUserToken(),
+    )
+        .then((value) {
+      _analyticsService.logNewsUndislike(feedId: feed.id);
+      return value;
+    });
   }
 
   @override
-  Future<void> unlikeFeed(NewsFeedEntity feed) async {
+  Future<NewsFeedEntity> unlikeFeed(NewsFeedEntity feed) async {
     if (!(await _networkInfo.isConnected)) throw NetworkException();
-    return _remoteDataSource.unlikeFeed(feed);
+    return _remoteDataSource
+        .unlikeFeed(
+      feedId: feed.id,
+      token: _authRepository.getUserToken(),
+    )
+        .then((value) {
+      _analyticsService.logNewsUnlike(feedId: feed.id);
+      return value;
+    });
   }
 
   @override
-  Future<void> viewFeed(NewsFeedEntity feed) async {
+  Future<NewsFeedEntity> viewFeed(NewsFeedEntity feed) async {
     if (!(await _networkInfo.isConnected)) throw NetworkException();
-    return _remoteDataSource.viewFeed(feed);
+    return _remoteDataSource
+        .viewFeed(
+      feedId: feed.id,
+      token: _authRepository.getUserToken(),
+    )
+        .then((value) {
+      _analyticsService.logNewsView(feedId: feed.id);
+      return value;
+    });
   }
 }

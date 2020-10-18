@@ -7,13 +7,13 @@ import 'package:samachar_hub/feature_news/domain/models/news_feed.dart';
 import 'package:samachar_hub/feature_news/domain/repository/repository.dart';
 
 class UndislikeNewsUseCase
-    implements UseCase<void, UndislikeNewsUseCaseParams> {
+    implements UseCase<NewsFeedEntity, UndislikeNewsUseCaseParams> {
   final Repository _repository;
 
   UndislikeNewsUseCase(this._repository);
 
   @override
-  Future<void> call(UndislikeNewsUseCaseParams params) {
+  Future<NewsFeedEntity> call(UndislikeNewsUseCaseParams params) {
     try {
       return this._repository.undislikeFeed(params.feed);
     } catch (e) {

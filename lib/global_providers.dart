@@ -1,45 +1,49 @@
+import 'package:data_connection_checker/data_connection_checker.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:samachar_hub/core/handlers/notification_handler.dart';
+import 'package:samachar_hub/core/network/http_manager/app_http_manager.dart';
+import 'package:samachar_hub/core/network/network_info.dart';
 import 'package:samachar_hub/core/services/services.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class GlobalProvider {
   GlobalProvider._();
   static List<RepositoryProvider> get coreRepositoryProviders => [
-        RepositoryProvider(
+        RepositoryProvider<AppHttpManager>(
+          create: (context) => AppHttpManager(),
+        ),
+        RepositoryProvider<PreferenceService>(
+          create: (context) =>
+              PreferenceService(context.repository<SharedPreferences>()),
+        ),
+        RepositoryProvider<NotificationService>(
+          create: (context) =>
+              NotificationService(FlutterLocalNotificationsPlugin()),
+        ),
+        RepositoryProvider<AnalyticsService>(
           create: (context) => AnalyticsService(),
         ),
-        RepositoryProvider(
+      ];
+  static List<RepositoryProvider> get core2RepositoryProviders => [
+        RepositoryProvider<NetworkInfoImpl>(
+          create: (context) => NetworkInfoImpl(DataConnectionChecker()),
+        ),
+        RepositoryProvider<NavigationService>(
           create: (context) => NavigationService(),
         ),
-        RepositoryProvider(
+        RepositoryProvider<InAppMessagingService>(
           create: (context) => InAppMessagingService(),
         ),
-        RepositoryProvider(
-          create: (context) =>
-              ShareService(context.repository<AnalyticsService>()),
-        ),
-        RepositoryProvider(
-            create: (context) => FlutterLocalNotificationsPlugin()),
-        RepositoryProvider(
-          create: (context) => NotificationService(
-              context.repository<FlutterLocalNotificationsPlugin>()),
-        ),
-        RepositoryProvider(
+        RepositoryProvider<NotificationHandler>(
+          lazy: false,
           create: (context) => NotificationHandler(
               context.repository<NotificationService>(),
               context.repository<PreferenceService>()),
         ),
-        RepositoryProvider(
+        RepositoryProvider<ShareService>(
           create: (context) =>
               ShareService(context.repository<AnalyticsService>()),
         ),
       ];
-
-  static List<RepositoryProvider> get commentRepositoryProviders => [];
-  static List<RepositoryProvider> get forexRepositoryProviders => [];
-  static List<RepositoryProvider> get horoscopeRepositoryProviders => [];
-  static List<RepositoryProvider> get goldRepositoryProviders => [];
-  static List<RepositoryProvider> get newsRepositoryProviders => [];
-  static List<RepositoryProvider> get profileRepositoryProviders => [];
 }

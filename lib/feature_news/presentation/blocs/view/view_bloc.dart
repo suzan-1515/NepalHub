@@ -32,7 +32,7 @@ class ViewBloc extends Bloc<ViewEvent, ViewState> {
       yield ViewInProgress();
       try {
         await _viewNewsFeedUseCase
-            .call(ViewNewsUseCaseParams(feed: _feedUIModel.feed));
+            .call(ViewNewsUseCaseParams(feed: _feedUIModel.feedEntity));
         yield ViewSuccess(message: 'Feed viewd successfully.');
       } catch (e) {
         log('News feed view error.', error: e);

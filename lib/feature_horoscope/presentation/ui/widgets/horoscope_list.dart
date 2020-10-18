@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:samachar_hub/core/services/preference_service.dart';
 import 'package:samachar_hub/core/widgets/empty_data_widget.dart';
 import 'package:samachar_hub/core/widgets/error_data_widget.dart';
 import 'package:samachar_hub/core/widgets/progress_widget.dart';
@@ -17,7 +16,9 @@ class HoroscopeList extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocConsumer<HoroscopeBloc, HoroscopeState>(
       listener: (context, state) {
-        if (state is HoroscopeErrorState) {
+        if (state is HoroscopeInitialState) {
+          context.bloc<HoroscopeBloc>().add(GetHoroscopeEvent());
+        } else if (state is HoroscopeErrorState) {
           context.showMessage(state.message);
         } else if (state is HoroscopeLoadErrorState) {
           context.showMessage(state.message);
@@ -41,10 +42,7 @@ class HoroscopeList extends StatelessWidget {
             child: ErrorDataView(
               message: state.message,
               onRetry: () => context.bloc<HoroscopeBloc>().add(
-                    GetHoroscopeEvent(
-                        defaultSignIndex: context
-                            .repository<PreferenceService>()
-                            .defaultZodiac),
+                    GetHoroscopeEvent(),
                   ),
             ),
           );

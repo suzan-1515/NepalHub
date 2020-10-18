@@ -64,7 +64,8 @@ class _NewsCategoryListState extends State<NewsCategoryList> {
               return BlocProvider<FollowUnFollowBloc>(
                 create: (context) => FollowUnFollowBloc(
                     followNewsCategoryUseCase: _followNewsCategoryUseCase,
-                    unFollowNewsCategoryUseCase: _unfollowNewsCategoryUseCase),
+                    unFollowNewsCategoryUseCase: _unfollowNewsCategoryUseCase,
+                    newsCategoryUIModel: categoryModel),
                 child: NewsCategoryListItem(
                   categoryUIModel: categoryModel,
                 ),

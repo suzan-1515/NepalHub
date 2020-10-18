@@ -6,13 +6,13 @@ import 'package:samachar_hub/feature_news/domain/models/news_topic.dart';
 import 'package:samachar_hub/feature_news/domain/repository/repository.dart';
 
 class FollowNewsTopicUseCase
-    implements UseCase<void, FollowNewsTopicUseCaseParams> {
+    implements UseCase<NewsTopicEntity, FollowNewsTopicUseCaseParams> {
   final Repository _repository;
 
   FollowNewsTopicUseCase(this._repository);
 
   @override
-  Future<void> call(FollowNewsTopicUseCaseParams params) {
+  Future<NewsTopicEntity> call(FollowNewsTopicUseCaseParams params) {
     try {
       return this._repository.followTopic(params.topic);
     } catch (e) {

@@ -5,13 +5,14 @@ import 'package:samachar_hub/core/usecases/usecase.dart';
 import 'package:samachar_hub/feature_news/domain/models/news_feed.dart';
 import 'package:samachar_hub/feature_news/domain/repository/repository.dart';
 
-class BookmarkNewsUseCase implements UseCase<void, BookmarkNewsUseCaseParams> {
+class BookmarkNewsUseCase
+    implements UseCase<NewsFeedEntity, BookmarkNewsUseCaseParams> {
   final Repository _repository;
 
   BookmarkNewsUseCase(this._repository);
 
   @override
-  Future<void> call(BookmarkNewsUseCaseParams params) {
+  Future<NewsFeedEntity> call(BookmarkNewsUseCaseParams params) {
     try {
       return this._repository.bookmarkFeed(params.feed);
     } catch (e) {

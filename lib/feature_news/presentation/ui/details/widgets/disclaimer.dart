@@ -27,7 +27,7 @@ class Disclaimer extends StatelessWidget {
                 visualDensity: VisualDensity.compact,
                 onPressed: () => context.showBottomSheet(
                   child: ReportArticle(
-                    articleId: feedUIModel.feed.id,
+                    articleId: feedUIModel.feedEntity.id,
                     articleType: 'news_feed',
                   ),
                 ),
@@ -57,7 +57,7 @@ class Disclaimer extends StatelessWidget {
                 children: [
                   TextSpan(
                       text:
-                          'This story is auto-aggregated by a computer program and has not been created or edited by Nepal Hub.\nPublisher: ${feedUIModel.feed.source.title}',
+                          'This story is auto-aggregated by a computer program and has not been created or edited by Nepal Hub.\nPublisher: ${feedUIModel.newsSourceUIModel.source.title}',
                       style: fontStyle.copyWith(fontStyle: FontStyle.normal)),
                 ],
               ),

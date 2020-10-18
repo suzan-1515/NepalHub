@@ -39,35 +39,38 @@ class _NewsCategoryFeedListState extends State<NewsCategoryFeedList> {
     return BlocConsumer<NewsCategoryFeedBloc, NewsCategoryFeedState>(
         cubit: _newsCategoryFeedBloc,
         listener: (context, state) {
-          if (!(state is Loading)) {
+          if (state is NewsCategoryFeedInitialState) {
+            _newsCategoryFeedBloc.add(GetCategoryNewsEvent());
+          } else if (!(state is NewsCategoryFeedLoadingState)) {
             _refreshCompleter?.complete();
             _refreshCompleter = Completer();
           }
-          if (state is ErrorState) {
+          if (state is NewsCategoryFeedErrorState) {
             context.showMessage(state.message);
-          } else if (state is RefreshError) {
+          } else if (state is NewsCategoryFeedRefreshErrorState) {
             context.showMessage(state.message);
           }
         },
-        buildWhen: (previous, current) => (current is Initial ||
-            current is LoadSuccess ||
-            current is Empty ||
-            current is ErrorState ||
-            current is Loading),
+        buildWhen: (previous, current) =>
+            (current is NewsCategoryFeedInitialState ||
+                current is NewsCategoryFeedLoadSuccessState ||
+                current is NewsCategoryFeedEmptyState ||
+                current is NewsCategoryFeedErrorState ||
+                current is NewsCategoryFeedLoadingState),
         builder: (context, state) {
-          if (state is LoadSuccess) {
+          if (state is NewsCategoryFeedLoadSuccessState) {
             return NewsListBuilder(
               data: state.feeds,
               onRefresh: _onRefresh,
               hasMore: state.hasMore,
             );
-          } else if (state is Empty) {
+          } else if (state is NewsCategoryFeedEmptyState) {
             return Center(
               child: EmptyDataView(
                 text: state.message,
               ),
             );
-          } else if (state is ErrorState) {
+          } else if (state is NewsCategoryFeedErrorState) {
             return Center(
               child: ErrorDataView(
                 onRetry: () =>

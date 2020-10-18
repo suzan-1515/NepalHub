@@ -15,15 +15,18 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   UseCase _loginWithGoogleUseCase;
   UseCase _loginWithFacebookUseCase;
   UseCase _loginWithTwitterUseCase;
+  UseCase _autoLoginUseCase;
   UseCase _logoutUseCase;
   AuthBloc({
     @required UseCase loginWithGoogleUseCase,
+    @required UseCase autoLoginUseCase,
     @required UseCase loginWithFacebookUseCase,
     @required UseCase loginWithTwitterUseCase,
     @required UseCase logoutUseCase,
   })  : _loginWithGoogleUseCase = loginWithGoogleUseCase,
         _loginWithFacebookUseCase = loginWithFacebookUseCase,
         _loginWithTwitterUseCase = loginWithTwitterUseCase,
+        _autoLoginUseCase = autoLoginUseCase,
         _logoutUseCase = logoutUseCase,
         super(AuthInitialState());
 
@@ -35,7 +38,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   Stream<AuthState> mapEventToState(
     AuthEvent event,
   ) async* {
-    if (event is LoginWithGoogleEvent) {
+    if (event is AutoLoginEvent) {
+      yield* _mapAutoLoginEventToState(event);
+    } else if (event is LoginWithGoogleEvent) {
       yield* _mapLoginWithGoogleEventToState(event);
     } else if (event is LoginWithFacebookEvent) {
       yield* _mapLoginWithFacebookEventToState(event);
@@ -43,6 +48,22 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       yield* _mapLoginWithTwitterEventToState(event);
     } else if (event is LogoutEvent) {
       yield* _mapLogoutEventToState(event);
+    }
+  }
+
+  Stream<AuthState> _mapAutoLoginEventToState(
+    AutoLoginEvent event,
+  ) async* {
+    if (state is AuthLoadingState) return;
+    yield AuthLoadingState();
+    try {
+      this._currentUser = await _autoLoginUseCase.call(NoParams());
+      if (this._currentUser == null)
+        yield AuthErrorState(message: 'Unable to login.');
+      yield AuthSuccessState(this._currentUser);
+    } catch (e) {
+      log('Error login with google: ', error: e);
+      yield AuthErrorState(message: 'Unable to login.');
     }
   }
 

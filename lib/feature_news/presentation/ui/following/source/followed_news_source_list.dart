@@ -5,11 +5,10 @@ import 'package:samachar_hub/core/services/services.dart';
 import 'package:samachar_hub/core/widgets/empty_data_widget.dart';
 import 'package:samachar_hub/core/widgets/error_data_widget.dart';
 import 'package:samachar_hub/core/widgets/progress_widget.dart';
-import 'package:samachar_hub/feature_news/domain/usecases/get_followed_news_sources_use_case.dart';
-import 'package:samachar_hub/feature_news/domain/usecases/get_news_sources_use_case.dart';
 import 'package:samachar_hub/feature_news/presentation/blocs/news_source/news_sources_bloc.dart';
 import 'package:samachar_hub/feature_news/presentation/ui/widgets/news_menu_item.dart';
 import 'package:samachar_hub/core/extensions/view.dart';
+import 'package:samachar_hub/feature_news/utils/provider.dart';
 
 class FollowedNewsSourceList extends StatelessWidget {
   const FollowedNewsSourceList({
@@ -18,15 +17,12 @@ class FollowedNewsSourceList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<NewsSourceBloc>(
-      create: (context) => NewsSourceBloc(
-        getNewsFollowedSourcesUseCase:
-            context.repository<GetFollowedNewsSourcesUseCase>(),
-        getNewsSourcesUseCase: context.repository<GetNewsSourcesUseCase>(),
-      )..add(GetFollowedSourcesEvent()),
+    return NewsProvider.sourceBlocProvider(
       child: BlocConsumer<NewsSourceBloc, NewsSourceState>(
         listener: (context, state) {
-          if (state is ErrorState) {
+          if (state is InitialState) {
+            context.bloc<NewsSourceBloc>().add(GetFollowedSourcesEvent());
+          } else if (state is ErrorState) {
             context.showMessage(state.message);
           }
         },

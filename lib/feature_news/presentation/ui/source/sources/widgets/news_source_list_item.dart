@@ -58,11 +58,6 @@ class NewsSourceListItem extends StatelessWidget {
           child: BlocBuilder<sourceFollowUnfollow.FollowUnFollowBloc,
               sourceFollowUnfollow.FollowUnFollowState>(
             builder: (context, state) {
-              if (state is sourceFollowUnfollow.FollowedState) {
-                sourceUIModel.follow();
-              } else if (state is sourceFollowUnfollow.UnFollowedState) {
-                sourceUIModel.unfollow();
-              }
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
@@ -74,19 +69,18 @@ class NewsSourceListItem extends StatelessWidget {
                   FollowUnFollowButton(
                     isFollowed: sourceUIModel.source.isFollowed,
                     onTap: () {
-                      final currentValue = sourceUIModel.source.isFollowed;
-                      if (currentValue) {
+                      if (sourceUIModel.source.isFollowed) {
                         sourceUIModel.unfollow();
                         context
                             .bloc<sourceFollowUnfollow.FollowUnFollowBloc>()
-                            .add(sourceFollowUnfollow.UnFollowEvent(
-                                sourceModel: sourceUIModel.source));
+                            .add(sourceFollowUnfollow
+                                .FollowUnFollowUnFollowEvent());
                       } else {
                         sourceUIModel.follow();
                         context
                             .bloc<sourceFollowUnfollow.FollowUnFollowBloc>()
-                            .add(sourceFollowUnfollow.FollowEvent(
-                                sourceModel: sourceUIModel.source));
+                            .add(sourceFollowUnfollow
+                                .FollowUnFollowFollowEvent());
                       }
                     },
                   ),

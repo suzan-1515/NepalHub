@@ -6,13 +6,13 @@ import 'package:samachar_hub/feature_news/domain/models/news_source.dart';
 import 'package:samachar_hub/feature_news/domain/repository/repository.dart';
 
 class UnFollowNewsSourceUseCase
-    implements UseCase<void, UnFollowNewsSourceUseCaseParams> {
+    implements UseCase<NewsSourceEntity, UnFollowNewsSourceUseCaseParams> {
   final Repository _repository;
 
   UnFollowNewsSourceUseCase(this._repository);
 
   @override
-  Future<void> call(UnFollowNewsSourceUseCaseParams params) {
+  Future<NewsSourceEntity> call(UnFollowNewsSourceUseCaseParams params) {
     try {
       return this._repository.unFollowSource(params.source);
     } catch (e) {

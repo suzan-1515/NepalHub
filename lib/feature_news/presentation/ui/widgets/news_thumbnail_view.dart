@@ -22,7 +22,7 @@ class NewsThumbnailView extends StatelessWidget {
       child: InkWell(
         onTap: () => context
             .repository<NavigationService>()
-            .toFeedDetail(feedUIModel, context),
+            .toFeedDetail(feedUIModel.feedEntity, context),
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Column(
@@ -30,10 +30,10 @@ class NewsThumbnailView extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
               NewsFeedCardSourceCategory(
-                category: feedUIModel.feed.category.title,
+                category: feedUIModel.feedEntity.category.title,
                 publishedDate: feedUIModel.publishedDateMomentAgo,
-                source: feedUIModel.feed.source.title,
-                sourceIcon: feedUIModel.feed.source.favicon,
+                source: feedUIModel.newsSourceUIModel.source.title,
+                sourceIcon: feedUIModel.newsSourceUIModel.source.favicon,
               ),
               SizedBox(height: 8),
               AspectRatio(
@@ -42,14 +42,14 @@ class NewsThumbnailView extends StatelessWidget {
                   borderRadius: BorderRadius.all(
                     Radius.circular(6),
                   ),
-                  child:
-                      CachedImage(feedUIModel.feed.image, tag: feedUIModel.tag),
+                  child: CachedImage(feedUIModel.feedEntity.image,
+                      tag: feedUIModel.tag),
                 ),
               ),
               SizedBox(height: 8),
               NewsFeedCardTitleDescription(
-                description: feedUIModel.feed.description,
-                title: feedUIModel.feed.title,
+                description: feedUIModel.feedEntity.description,
+                title: feedUIModel.feedEntity.title,
                 descriptionMaxLines:
                     MediaQuery.of(context).orientation == Orientation.portrait
                         ? 2

@@ -1,20 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:samachar_hub/core/services/services.dart';
-import 'package:samachar_hub/core/usecases/usecase.dart';
 import 'package:samachar_hub/feature_horoscope/domain/entities/horoscope_type.dart';
-import 'package:samachar_hub/feature_horoscope/domain/usecases/dislike_horoscope_use_case.dart';
-import 'package:samachar_hub/feature_horoscope/domain/usecases/get_daily_horoscope_use_case.dart';
-import 'package:samachar_hub/feature_horoscope/domain/usecases/get_monthly_horoscope_use_case.dart';
-import 'package:samachar_hub/feature_horoscope/domain/usecases/get_weekly_horoscope_use_case.dart';
-import 'package:samachar_hub/feature_horoscope/domain/usecases/get_yearly_horoscope_use_case.dart';
-import 'package:samachar_hub/feature_horoscope/domain/usecases/like_horoscope_use_case.dart';
-import 'package:samachar_hub/feature_horoscope/domain/usecases/share_horoscope_use_case.dart';
-import 'package:samachar_hub/feature_horoscope/domain/usecases/undislike_horoscope_use_case.dart';
-import 'package:samachar_hub/feature_horoscope/domain/usecases/unlike_horoscope_use_case.dart';
-import 'package:samachar_hub/feature_horoscope/domain/usecases/view_horoscope_use_case.dart';
-import 'package:samachar_hub/feature_horoscope/presentation/blocs/horoscope/horoscope_bloc.dart';
 import 'package:samachar_hub/feature_horoscope/presentation/ui/widgets/horoscope_list.dart';
+import 'package:samachar_hub/feature_horoscope/utils/provider.dart';
 
 class HoroscopeScreen extends StatefulWidget {
   @override
@@ -30,70 +19,6 @@ class _HoroscopeScreenState extends State<HoroscopeScreen>
     Tab(key: ValueKey<HoroscopeType>(HoroscopeType.MONTHLY), text: 'Monthly'),
     Tab(key: ValueKey<HoroscopeType>(HoroscopeType.YEARLY), text: 'Yearly'),
   ];
-
-  UseCase _getDailyHoroscopeUseCase;
-  UseCase _getWeeklyHoroscopeUseCase;
-  UseCase _getMonthlyHoroscopeUseCase;
-  UseCase _getYearlyHoroscopeUseCase;
-  UseCase _likeHoroscopeUseCase;
-  UseCase _unlikeHoroscopeUseCase;
-  UseCase _dislikeHoroscopeUseCase;
-  UseCase _undislikeHoroscopeUseCase;
-  UseCase _shareHoroscopeUseCase;
-  UseCase _viewHoroscopeUseCase;
-
-  HoroscopeBloc _dailyHoroscopeBloc;
-  HoroscopeBloc _weeklyHoroscopeBloc;
-  HoroscopeBloc _monthlyHoroscopeBloc;
-  HoroscopeBloc _yearlyHoroscopeBloc;
-
-  @override
-  void initState() {
-    super.initState();
-    _getDailyHoroscopeUseCase = context.repository<GetDailyHoroscopeUseCase>();
-    _getWeeklyHoroscopeUseCase =
-        context.repository<GetWeeklyHoroscopeUseCase>();
-    _getMonthlyHoroscopeUseCase =
-        context.repository<GetMonthlyHoroscopeUseCase>();
-    _getYearlyHoroscopeUseCase =
-        context.repository<GetYearlyHoroscopeUseCase>();
-    _likeHoroscopeUseCase = context.repository<LikeHoroscopeUseCase>();
-    _unlikeHoroscopeUseCase = context.repository<UnlikeHoroscopeUseCase>();
-    _dislikeHoroscopeUseCase = context.repository<DislikeHoroscopeUseCase>();
-    _undislikeHoroscopeUseCase =
-        context.repository<UndislikeHoroscopeUseCase>();
-    _shareHoroscopeUseCase = context.repository<ShareHoroscopeUseCase>();
-    _viewHoroscopeUseCase = context.repository<ViewHoroscopeUseCase>();
-
-    _dailyHoroscopeBloc = HoroscopeBloc(
-      getDailyHoroscopeUseCase: _getDailyHoroscopeUseCase,
-      getMonthlyHoroscopeUseCase: _getMonthlyHoroscopeUseCase,
-      getWeeklyHoroscopeUseCase: _getWeeklyHoroscopeUseCase,
-      getYearlyHoroscopeUseCase: _getYearlyHoroscopeUseCase,
-      type: HoroscopeType.DAILY,
-    );
-    _weeklyHoroscopeBloc = HoroscopeBloc(
-      getDailyHoroscopeUseCase: _getDailyHoroscopeUseCase,
-      getMonthlyHoroscopeUseCase: _getMonthlyHoroscopeUseCase,
-      getWeeklyHoroscopeUseCase: _getWeeklyHoroscopeUseCase,
-      getYearlyHoroscopeUseCase: _getYearlyHoroscopeUseCase,
-      type: HoroscopeType.WEEKLY,
-    );
-    _monthlyHoroscopeBloc = HoroscopeBloc(
-      getDailyHoroscopeUseCase: _getDailyHoroscopeUseCase,
-      getMonthlyHoroscopeUseCase: _getMonthlyHoroscopeUseCase,
-      getWeeklyHoroscopeUseCase: _getWeeklyHoroscopeUseCase,
-      getYearlyHoroscopeUseCase: _getYearlyHoroscopeUseCase,
-      type: HoroscopeType.MONTHLY,
-    );
-    _yearlyHoroscopeBloc = HoroscopeBloc(
-      getDailyHoroscopeUseCase: _getDailyHoroscopeUseCase,
-      getMonthlyHoroscopeUseCase: _getMonthlyHoroscopeUseCase,
-      getWeeklyHoroscopeUseCase: _getWeeklyHoroscopeUseCase,
-      getYearlyHoroscopeUseCase: _getYearlyHoroscopeUseCase,
-      type: HoroscopeType.YEARLY,
-    );
-  }
 
   Widget _buildBody() {
     return Padding(
@@ -111,20 +36,20 @@ class _HoroscopeScreenState extends State<HoroscopeScreen>
             child: TabBarView(
               controller: _tabController,
               children: <Widget>[
-                BlocProvider<HoroscopeBloc>(
-                  create: (context) => _dailyHoroscopeBloc,
+                HoroscopeProvider.horoscopeBlocProvider(
+                  type: HoroscopeType.DAILY,
                   child: HoroscopeList(),
                 ),
-                BlocProvider<HoroscopeBloc>(
-                  create: (context) => _weeklyHoroscopeBloc,
+                HoroscopeProvider.horoscopeBlocProvider(
+                  type: HoroscopeType.WEEKLY,
                   child: HoroscopeList(),
                 ),
-                BlocProvider<HoroscopeBloc>(
-                  create: (context) => _monthlyHoroscopeBloc,
+                HoroscopeProvider.horoscopeBlocProvider(
+                  type: HoroscopeType.MONTHLY,
                   child: HoroscopeList(),
                 ),
-                BlocProvider<HoroscopeBloc>(
-                  create: (context) => _yearlyHoroscopeBloc,
+                HoroscopeProvider.horoscopeBlocProvider(
+                  type: HoroscopeType.YEARLY,
                   child: HoroscopeList(),
                 ),
               ],

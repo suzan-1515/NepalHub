@@ -23,14 +23,16 @@ class NewsCompactView extends StatelessWidget {
       child: InkWell(
         onTap: () => context
             .repository<NavigationService>()
-            .toFeedDetail(feedUIModel, context),
+            .toFeedDetail(feedUIModel.feedEntity, context),
         child: ClipRRect(
           borderRadius: BorderRadius.all(Radius.circular(6.0)),
           child: Stack(
             fit: StackFit.expand,
             children: <Widget>[
               CachedImage(
-                  feedUIModel.feed.isValidImage ? feedUIModel.feed.image : null,
+                  feedUIModel.feedEntity.isValidImage
+                      ? feedUIModel.feedEntity.image
+                      : null,
                   tag: feedUIModel.tag),
               Positioned(
                 bottom: 0,
@@ -68,7 +70,8 @@ class NewsCompactView extends StatelessWidget {
                               color: Colors.grey[100],
                               child: CachedNetworkImage(
                                 fit: BoxFit.cover,
-                                imageUrl: feedUIModel.feed.source.favicon,
+                                imageUrl: feedUIModel
+                                    .newsSourceUIModel.source.favicon,
                                 placeholder: (context, _) =>
                                     Icon(FontAwesomeIcons.image),
                                 errorWidget: (context, url, error) =>
@@ -82,7 +85,7 @@ class NewsCompactView extends StatelessWidget {
                           ),
                           RichText(
                             text: TextSpan(
-                              text: feedUIModel.feed.source.title,
+                              text: feedUIModel.newsSourceUIModel.source.title,
                               style: Theme.of(context)
                                   .textTheme
                                   .subtitle2
@@ -108,7 +111,7 @@ class NewsCompactView extends StatelessWidget {
                                 borderRadius:
                                     BorderRadius.all(Radius.circular(12))),
                             child: Text(
-                              feedUIModel.feed.category.title,
+                              feedUIModel.feedEntity.category.title,
                               style: Theme.of(context)
                                   .textTheme
                                   .caption
@@ -121,7 +124,7 @@ class NewsCompactView extends StatelessWidget {
                         height: 8,
                       ),
                       Text(
-                        feedUIModel.feed.title,
+                        feedUIModel.feedEntity.title,
                         maxLines: MediaQuery.of(context).orientation ==
                                 Orientation.portrait
                             ? 2

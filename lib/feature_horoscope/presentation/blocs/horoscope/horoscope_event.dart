@@ -9,20 +9,16 @@ abstract class HoroscopeEvent extends Equatable {
 
 class GetHoroscopeEvent extends HoroscopeEvent {
   final Language language;
-  final int defaultSignIndex;
 
-  GetHoroscopeEvent(
-      {@required this.defaultSignIndex, this.language = Language.NEPALI});
+  GetHoroscopeEvent({this.language = Language.NEPALI});
   @override
-  List<Object> get props => [language, defaultSignIndex];
+  List<Object> get props => [language];
 }
 
 class RefreshHoroscopeEvent extends HoroscopeEvent {
   final Language language;
-  final int defaultSignIndex;
 
-  RefreshHoroscopeEvent(
-      {@required this.defaultSignIndex, this.language = Language.NEPALI});
+  RefreshHoroscopeEvent({this.language = Language.NEPALI});
   @override
-  List<Object> get props => [language, defaultSignIndex];
+  List<Object> get props => [language];
 }

@@ -6,12 +6,11 @@ abstract class NewsDetailState extends Equatable {
 
 class InitialState extends NewsDetailState {
   final NewsFeedUIModel feed;
-  final String feedId;
 
-  InitialState({this.feed, this.feedId});
+  InitialState({this.feed});
 
   @override
-  List<Object> get props => [feed, feedId];
+  List<Object> get props => [feed];
 }
 
 class LoadingState extends NewsDetailState {

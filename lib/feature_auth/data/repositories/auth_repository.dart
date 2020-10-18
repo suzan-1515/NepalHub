@@ -15,7 +15,8 @@ class AuthRepository with Repository {
 
   @override
   Future<UserEntity> loginWithFacebook() {
-    return _authRemoteDataSource.loginWithFacebook().then((value) {
+    return _authRemoteDataSource.loginWithFacebook().then((value) async {
+      await _authLocalDataSource.saveUserToken(token: value.token);
       if (value.isNewUser)
         _analyticsService.logSignUp(method: 'facebook');
       else
@@ -27,7 +28,8 @@ class AuthRepository with Repository {
 
   @override
   Future<UserEntity> loginWithGoogle() {
-    return _authRemoteDataSource.loginWithGoogle().then((value) {
+    return _authRemoteDataSource.loginWithGoogle().then((value) async {
+      await _authLocalDataSource.saveUserToken(token: value.token);
       if (value.isNewUser)
         _analyticsService.logSignUp(method: 'google');
       else
@@ -39,7 +41,8 @@ class AuthRepository with Repository {
 
   @override
   Future<UserEntity> loginWithTwitter() {
-    return _authRemoteDataSource.loginWithTwitter().then((value) {
+    return _authRemoteDataSource.loginWithTwitter().then((value) async {
+      await _authLocalDataSource.saveUserToken(token: value.token);
       if (value.isNewUser)
         _analyticsService.logSignUp(method: 'twitter');
       else
@@ -51,7 +54,10 @@ class AuthRepository with Repository {
 
   @override
   Future<void> logout({@required UserEntity userEntity}) {
-    return _authRemoteDataSource.logout(userEntity: userEntity).then((value) {
+    return _authRemoteDataSource
+        .logout(userEntity: userEntity)
+        .then((value) async {
+      await _authLocalDataSource.saveUserToken(token: '');
       _analyticsService.logLogout();
       return value;
     });
@@ -66,5 +72,10 @@ class AuthRepository with Repository {
   @override
   String getUserToken() {
     return _authLocalDataSource.loadUserToken();
+  }
+
+  @override
+  Future<UserEntity> autoLogin() {
+    return _authRemoteDataSource.autoLogin();
   }
 }

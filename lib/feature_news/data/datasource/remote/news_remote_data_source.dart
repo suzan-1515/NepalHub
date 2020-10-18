@@ -5,10 +5,6 @@ import 'package:samachar_hub/feature_news/data/models/news_feed_model.dart';
 import 'package:samachar_hub/feature_news/data/models/news_source_model.dart';
 import 'package:samachar_hub/feature_news/data/models/news_topic_model.dart';
 import 'package:samachar_hub/feature_news/data/service/remote_service.dart';
-import 'package:samachar_hub/feature_news/domain/models/news_category.dart';
-import 'package:samachar_hub/feature_news/domain/models/news_feed.dart';
-import 'package:samachar_hub/feature_news/domain/models/news_source.dart';
-import 'package:samachar_hub/feature_news/domain/models/news_topic.dart';
 import 'package:samachar_hub/feature_news/domain/models/sort.dart';
 
 class NewsRemoteDataSource implements RemoteDataSource {
@@ -17,177 +13,212 @@ class NewsRemoteDataSource implements RemoteDataSource {
   NewsRemoteDataSource(this._remoteService);
 
   @override
-  Future<List<NewsCategoryModel>> fetchCategories({Language language}) async {
+  Future<List<NewsCategoryModel>> fetchCategories(
+      {Language language, String token}) async {
     final responseList =
-        await _remoteService.fetchCategories(language: language);
+        await _remoteService.fetchCategories(language: language, token: token);
     final categoriesResponse =
         responseList.map((e) => NewsCategoryModel.fromMap(e)).toList();
     return categoriesResponse;
   }
 
   @override
-  Future<void> bookmarkFeed(NewsFeedEntity feed) {
-    return _remoteService.bookmarkFeed(feed);
+  Future<NewsFeedModel> bookmarkFeed({String feedId, String token}) {
+    return _remoteService.bookmarkFeed(feedId: feedId, token: token);
   }
 
   @override
-  Future<void> followCategory(NewsCategoryEntity category) {
-    return _remoteService.followCategory(category);
+  Future<NewsCategoryModel> followCategory({String categoryId, String token}) {
+    return _remoteService.followCategory(categoryId: categoryId, token: token);
   }
 
   @override
-  Future<void> followSource(NewsSourceEntity source) {
-    return _remoteService.followSource(source);
+  Future<NewsSourceModel> followSource({String sourceId, String token}) {
+    return _remoteService.followSource(sourceId: sourceId, token: token);
   }
 
   @override
-  Future<void> followTopic(NewsTopicEntity topic) {
-    return _remoteService.followTopic(topic);
+  Future<NewsTopicModel> followTopic({String topicId, String token}) {
+    return _remoteService.followTopic(topicId: topicId, token: token);
   }
 
   @override
-  Future<void> unFollowCategory(NewsCategoryEntity category) {
-    return _remoteService.unFollowCategory(category);
+  Future<NewsCategoryModel> unFollowCategory(
+      {String categoryId, String token}) {
+    return _remoteService.unFollowCategory(
+        categoryId: categoryId, token: token);
   }
 
   @override
-  Future<void> unFollowSource(NewsSourceEntity source) {
-    return _remoteService.unFollowSource(source);
+  Future<NewsSourceModel> unFollowSource({String sourceId, String token}) {
+    return _remoteService.unFollowSource(sourceId: sourceId, token: token);
   }
 
   @override
-  Future<void> unFollowTopic(NewsTopicEntity topic) {
-    return _remoteService.unFollowTopic(topic);
+  Future<NewsTopicModel> unFollowTopic({String topicId, String token}) {
+    return _remoteService.unFollowTopic(topicId: topicId, token: token);
   }
 
   @override
   Future<List<NewsFeedModel>> fetchRecentNews(
-      {SortBy sortBy, int page, Language language}) async {
+      {SortBy sortBy, int page, Language language, String token}) async {
     final newsResponse = await _remoteService.fetchRecentNews(
-        sortBy: sortBy, page: page, language: language);
+        sortBy: sortBy, page: page, language: language, token: token);
     final feeds = newsResponse.map((e) => NewsFeedModel.fromMap(e)).toList();
     return feeds;
   }
 
   @override
   Future<List<NewsFeedModel>> fetchLatestNews(
-      {SortBy sortBy, int page, Language language}) async {
+      {SortBy sortBy, int page, Language language, String token}) async {
     final newsResponse = await _remoteService.fetchLatestNews(
-        sortBy: sortBy, page: page, language: language);
+        sortBy: sortBy, page: page, language: language, token: token);
     final feeds = newsResponse.map((e) => NewsFeedModel.fromMap(e)).toList();
     return feeds;
   }
 
   @override
-  Future<List<NewsFeedModel>> fetchNewsByCategory(NewsCategoryEntity category,
-      {NewsSourceEntity source,
+  Future<List<NewsFeedModel>> fetchNewsByCategory(
+      {String categoryId,
+      String sourceId,
       SortBy sortBy,
       int page,
-      Language language}) async {
-    final newsResponse = await _remoteService.fetchNewsByCategory(category,
-        sortBy: sortBy, page: page, language: language);
+      Language language,
+      String token}) async {
+    final newsResponse = await _remoteService.fetchNewsByCategory(
+        categoryId: categoryId,
+        sortBy: sortBy,
+        sourceId: sourceId,
+        page: page,
+        language: language,
+        token: token);
     final feeds = newsResponse.map((e) => NewsFeedModel.fromMap(e)).toList();
     return feeds;
   }
 
   @override
-  Future<List<NewsFeedModel>> fetchNewsBySource(NewsSourceEntity source,
-      {SortBy sortBy, int page, Language language}) async {
-    final newsResponse = await _remoteService.fetchNewsBySource(source,
-        sortBy: sortBy, page: page, language: language);
-    final feeds = newsResponse.map((e) => NewsFeedModel.fromMap(e)).toList();
-    return feeds;
-  }
-
-  @override
-  Future<List<NewsFeedModel>> fetchNewsByTopic(NewsTopicEntity topic,
-      {NewsSourceEntity source,
+  Future<List<NewsFeedModel>> fetchNewsBySource(
+      {String sourceId,
       SortBy sortBy,
       int page,
-      Language language}) async {
-    final newsResponse = await _remoteService.fetchNewsByTopic(topic,
-        sortBy: sortBy, page: page, language: language);
+      Language language,
+      String token}) async {
+    final newsResponse = await _remoteService.fetchNewsBySource(
+        sourceId: sourceId,
+        sortBy: sortBy,
+        page: page,
+        language: language,
+        token: token);
     final feeds = newsResponse.map((e) => NewsFeedModel.fromMap(e)).toList();
     return feeds;
   }
 
   @override
-  Future<NewsFeedModel> fetchNewsDetail(String feedId) {}
+  Future<List<NewsFeedModel>> fetchNewsByTopic(
+      {String topicId,
+      String sourceId,
+      SortBy sortBy,
+      int page,
+      Language language,
+      String token}) async {
+    final newsResponse = await _remoteService.fetchNewsByTopic(
+        topicId: topicId,
+        sortBy: sortBy,
+        sourceId: sourceId,
+        page: page,
+        language: language,
+        token: token);
+    final feeds = newsResponse.map((e) => NewsFeedModel.fromMap(e)).toList();
+    return feeds;
+  }
 
   @override
-  Future<List<NewsSourceModel>> fetchSources({Language language}) async {
-    final response = await _remoteService.fetchSources(language: language);
+  Future<NewsFeedModel> fetchNewsDetail({String feedId, String token}) {
+    return _remoteService.fetchNewsDetail(feedId: feedId, token: token);
+  }
+
+  @override
+  Future<List<NewsSourceModel>> fetchSources(
+      {Language language, String token}) async {
+    final response =
+        await _remoteService.fetchSources(language: language, token: token);
     final sources = response.map((e) => NewsSourceModel.fromMap(e)).toList();
     return sources;
   }
 
   @override
-  Future<List<NewsTopicModel>> fetchTopics({Language language}) async {
-    final response = await _remoteService.fetchTopics(language: language);
+  Future<List<NewsTopicModel>> fetchTopics(
+      {Language language, String token}) async {
+    final response =
+        await _remoteService.fetchTopics(language: language, token: token);
     final call = response.map((e) => NewsTopicModel.fromMap(e)).toList();
     return call;
   }
 
   @override
   Future<List<NewsFeedModel>> fetchTrendingNews(
-      {Language language, SortBy sortBy, int page, int limit}) async {
+      {Language language,
+      SortBy sortBy,
+      int page,
+      int limit,
+      String token}) async {
     final newsResponse = await _remoteService.fetchTrendingNews(
-        sortBy: sortBy, page: page, language: language);
+        sortBy: sortBy,
+        limit: limit,
+        page: page,
+        language: language,
+        token: token);
     final feeds = newsResponse.map((e) => NewsFeedModel.fromMap(e)).toList();
     return feeds;
   }
 
   @override
-  Future<List<NewsFeedModel>> fetchBookmarkedNews({int page}) {
+  Future<List<NewsFeedModel>> fetchBookmarkedNews({int page, String token}) {
     // TODO: implement getBookmarkedNews
     throw UnimplementedError();
   }
 
   @override
-  Future<void> unBookmarkFeed(NewsFeedEntity feed) {
-    return _remoteService.unBookmarkFeed(feed);
+  Future<NewsFeedModel> unBookmarkFeed({String feedId, String token}) {
+    return _remoteService.unBookmarkFeed(feedId: feedId, token: token);
   }
 
   @override
-  Future<List<NewsFeedModel>> fetchRelatedNews(NewsFeedEntity feed) async {
-    final newsResponse = await _remoteService.fetchRelatedNews(feed);
+  Future<List<NewsFeedModel>> fetchRelatedNews(
+      {String feedId, String token}) async {
+    final newsResponse =
+        await _remoteService.fetchRelatedNews(parentId: feedId, token: token);
     final feeds = newsResponse.map((e) => NewsFeedModel.fromMap(e)).toList();
     return feeds;
   }
 
   @override
-  Future<void> dislikeFeed(NewsFeedEntity feed) {
-    // TODO: implement dislikeFeed
-    throw UnimplementedError();
+  Future<NewsFeedModel> dislikeFeed({String feedId, String token}) {
+    return _remoteService.dislikeFeed(feedId: feedId, token: token);
   }
 
   @override
-  Future<void> likeFeed(NewsFeedEntity feed) {
-    // TODO: implement likeFeed
-    throw UnimplementedError();
+  Future<NewsFeedModel> likeFeed({String feedId, String token}) {
+    return _remoteService.likeFeed(feedId: feedId, token: token);
   }
 
   @override
-  Future<void> shareFeed(NewsFeedEntity feed) {
-    // TODO: implement shareFeed
-    throw UnimplementedError();
+  Future<NewsFeedModel> shareFeed({String feedId, String token}) {
+    return _remoteService.shareFeed(feedId: feedId, token: token);
   }
 
   @override
-  Future<void> undislikeFeed(NewsFeedEntity feed) {
-    // TODO: implement undislikeFeed
-    throw UnimplementedError();
+  Future<NewsFeedModel> undislikeFeed({String feedId, String token}) {
+    return _remoteService.undislikeFeed(feedId: feedId, token: token);
   }
 
   @override
-  Future<void> unlikeFeed(NewsFeedEntity feed) {
-    // TODO: implement unlikeFeed
-    throw UnimplementedError();
+  Future<NewsFeedModel> unlikeFeed({String feedId, String token}) {
+    return _remoteService.unlikeFeed(feedId: feedId, token: token);
   }
 
   @override
-  Future<void> viewFeed(NewsFeedEntity feed) {
-    // TODO: implement viewFeed
-    throw UnimplementedError();
+  Future<NewsFeedModel> viewFeed({String feedId, String token}) {
+    return _remoteService.viewFeed(feedId: feedId, token: token);
   }
 }

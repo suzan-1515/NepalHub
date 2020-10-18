@@ -36,7 +36,7 @@ class LikeUnlikeBloc extends Bloc<LikeUnlikeEvent, LikeUnlikeState> {
       yield InProgressState();
       try {
         await _likeNewsFeedUseCase
-            .call(LikeNewsUseCaseParams(feed: _newsFeedUIModel.feed));
+            .call(LikeNewsUseCaseParams(feed: _newsFeedUIModel.feedEntity));
         yield LikedState(message: 'Feed liked successfully.');
       } catch (e) {
         log('News feed like error.', error: e);
@@ -46,7 +46,7 @@ class LikeUnlikeBloc extends Bloc<LikeUnlikeEvent, LikeUnlikeState> {
       yield InProgressState();
       try {
         await _unLikeNewsFeedUseCase
-            .call(UnlikeNewsUseCaseParams(feed: _newsFeedUIModel.feed));
+            .call(UnlikeNewsUseCaseParams(feed: _newsFeedUIModel.feedEntity));
         yield UnlikedState(message: 'News feed unliked successfully.');
       } catch (e) {
         log('News feed unlike error.', error: e);

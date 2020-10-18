@@ -7,13 +7,13 @@ import 'package:samachar_hub/feature_news/domain/models/news_category.dart';
 import 'package:samachar_hub/feature_news/domain/repository/repository.dart';
 
 class FollowNewsCategoryUseCase
-    implements UseCase<void, FollowNewsCategoryUseCaseParams> {
+    implements UseCase<NewsCategoryEntity, FollowNewsCategoryUseCaseParams> {
   final Repository _repository;
 
   FollowNewsCategoryUseCase(this._repository);
 
   @override
-  Future<void> call(FollowNewsCategoryUseCaseParams params) {
+  Future<NewsCategoryEntity> call(FollowNewsCategoryUseCaseParams params) {
     try {
       return this._repository.followCategory(params.category);
     } catch (e) {

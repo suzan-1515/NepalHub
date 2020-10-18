@@ -77,10 +77,10 @@ class _MainScreenState extends State<MainScreen> {
                 icon: Icon(FontAwesomeIcons.home),
                 title: Text('For You'),
               ),
-              BottomNavigationBarItem(
-                icon: Icon(FontAwesomeIcons.globe),
-                title: Text('Discover'),
-              ),
+              // BottomNavigationBarItem(
+              //   icon: Icon(FontAwesomeIcons.globe),
+              //   title: Text('Discover'),
+              // ),
               BottomNavigationBarItem(
                 icon: Icon(FontAwesomeIcons.solidHeart),
                 title: Text('Following'),

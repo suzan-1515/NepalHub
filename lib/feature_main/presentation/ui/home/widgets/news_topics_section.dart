@@ -34,7 +34,7 @@ class NewsTopicsSection extends StatelessWidget {
                       onTap: (value) => context
                           .repository<NavigationService>()
                           .toNewsTopicFeedScreen(
-                              context: context, topicModel: e.topic),
+                              context: context, topicEntity: e.topic),
                     ))
                 .toList(),
           ),

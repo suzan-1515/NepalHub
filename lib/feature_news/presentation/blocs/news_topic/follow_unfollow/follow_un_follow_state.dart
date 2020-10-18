@@ -4,38 +4,38 @@ abstract class FollowUnFollowState extends Equatable {
   const FollowUnFollowState();
 }
 
-class InitialState extends FollowUnFollowState {
+class FollowUnFollowInitialState extends FollowUnFollowState {
   @override
   List<Object> get props => [];
 }
 
-class InProgressState extends FollowUnFollowState {
+class FollowUnFollowInProgressState extends FollowUnFollowState {
   @override
   List<Object> get props => [];
 }
 
-class FollowedState extends FollowUnFollowState {
+class FollowUnFollowFollowedState extends FollowUnFollowState {
   final String message;
 
-  FollowedState({this.message});
+  FollowUnFollowFollowedState({this.message});
 
   @override
   List<Object> get props => [message];
 }
 
-class UnFollowedState extends FollowUnFollowState {
+class FollowUnFollowUnFollowedState extends FollowUnFollowState {
   final String message;
 
-  UnFollowedState({this.message});
+  FollowUnFollowUnFollowedState({this.message});
 
   @override
   List<Object> get props => [message];
 }
 
-class ErrorState extends FollowUnFollowState {
+class FollowUnFollowErrorState extends FollowUnFollowState {
   final String message;
 
-  ErrorState({this.message});
+  FollowUnFollowErrorState({this.message});
 
   @override
   List<Object> get props => [message];

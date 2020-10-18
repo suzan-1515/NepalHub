@@ -21,7 +21,8 @@ class AuthRemoteService with RemoteService {
   AuthRemoteService(this._firebaseAuth, this._googleSignIn, this._facebookAuth,
       this.httpManager);
 
-  Future<User> currentUser() {
+  @override
+  Future<User> fetchCurrentUser() {
     return Future.value(_firebaseAuth.currentUser);
   }
 

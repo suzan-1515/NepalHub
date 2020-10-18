@@ -17,8 +17,8 @@ class RelatedNewsBloc extends Bloc<RelatedNewsEvent, RelatedNewsState> {
   final NewsFeedUIModel feed;
   final UseCase _getRelatedNewsUseCase;
 
-  RelatedNewsBloc({this.feed, @required UseCase getDetailNewsUseCase})
-      : _getRelatedNewsUseCase = getDetailNewsUseCase,
+  RelatedNewsBloc({this.feed, @required UseCase getRelatedNewsUseCase})
+      : _getRelatedNewsUseCase = getRelatedNewsUseCase,
         super(InitialState());
 
   @override
@@ -30,7 +30,7 @@ class RelatedNewsBloc extends Bloc<RelatedNewsEvent, RelatedNewsState> {
       yield LoadingState();
       try {
         final List<NewsFeedEntity> feeds = await _getRelatedNewsUseCase
-            .call(GetRelatedNewsUseCaseParams(feed: feed.feed));
+            .call(GetRelatedNewsUseCaseParams(feed: feed.feedEntity));
         if (feeds == null || feeds.isEmpty)
           yield EmptyState(message: 'Related feed not available.');
         else

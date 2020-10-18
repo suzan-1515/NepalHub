@@ -27,25 +27,22 @@ class NewsFeedMoreOption extends StatelessWidget {
           ListTile(
             visualDensity: VisualDensity.compact,
             title: Text(
-              '${feed.feed.source.title}',
+              '${feed.newsSourceUIModel.source.title}',
               style: Theme.of(context).textTheme.bodyText2,
             ),
             trailing: BlocBuilder<FollowUnFollowBloc, FollowUnFollowState>(
                 builder: (context, state) {
-              if (state is FollowedState) {
-                feed.followSource();
-              } else if (state is UnFollowedState) {
-                feed.unfollowSource();
-              }
               return OutlineButton.icon(
-                icon: state is InProgressState
+                icon: state is FollowUnFollowInProgressState
                     ? Icon(
                         Icons.donut_large,
                         color: Theme.of(context).accentColor,
                         size: 16,
                       )
                     : Icon(
-                        feed.feed.source.isFollowed ? Icons.check : Icons.add,
+                        feed.newsSourceUIModel.source.isFollowed
+                            ? Icons.check
+                            : Icons.add,
                         size: 16,
                       ),
                 shape: RoundedRectangleBorder(
@@ -55,30 +52,28 @@ class NewsFeedMoreOption extends StatelessWidget {
                 )),
                 visualDensity: VisualDensity.compact,
                 onPressed: () {
-                  final value = feed.feed.source.isFollowed;
-                  if (value)
+                  if (feed.newsSourceUIModel.source.isFollowed) {
+                    feed.newsSourceUIModel.unfollow();
                     context
                         .bloc<FollowUnFollowBloc>()
-                        .add(UnFollowEvent(sourceModel: feed.feed.source));
-                  else
+                        .add(FollowUnFollowUnFollowEvent());
+                  } else {
+                    feed.newsSourceUIModel.follow();
                     context
                         .bloc<FollowUnFollowBloc>()
-                        .add(FollowEvent(sourceModel: feed.feed.source));
+                        .add(FollowUnFollowFollowEvent());
+                  }
                   Navigator.pop(context);
                 },
-                label:
-                    Text(feed.feed.source.isFollowed ? 'Following' : 'Follow'),
+                label: Text(feed.newsSourceUIModel.source.isFollowed
+                    ? 'Following'
+                    : 'Follow'),
               );
             }),
           ),
           Divider(),
           BlocBuilder<BookmarkUnBookmarkBloc, BookmarkUnBookmarkState>(
               builder: (context, state) {
-            if (state is BookmarkSuccess) {
-              feed.bookmark();
-            } else if (state is UnbookmarkSuccess) {
-              feed.unbookmark();
-            }
             return ListTile(
               visualDensity: VisualDensity.compact,
               leading: Icon(
@@ -86,7 +81,7 @@ class NewsFeedMoreOption extends StatelessWidget {
                 size: 18,
               ),
               title: Text(
-                feed.feed.isBookmarked ? 'Remove bookmark' : 'Bookmark',
+                feed.feedEntity.isBookmarked ? 'Remove bookmark' : 'Bookmark',
                 style: Theme.of(context).textTheme.bodyText2,
               ),
               trailing: state is BookmarkInProgress
@@ -97,11 +92,13 @@ class NewsFeedMoreOption extends StatelessWidget {
                     )
                   : null,
               onTap: () {
-                final value = feed.feed.isBookmarked;
-                if (value)
+                if (feed.feedEntity.isBookmarked) {
+                  feed.unbookmark();
                   context.bloc<BookmarkUnBookmarkBloc>().add(UnBookmarkNews());
-                else
+                } else {
+                  feed.bookmark();
                   context.bloc<BookmarkUnBookmarkBloc>().add(BookmarkNews());
+                }
                 Navigator.pop(context);
               },
             );
@@ -117,7 +114,16 @@ class NewsFeedMoreOption extends StatelessWidget {
               style: Theme.of(context).textTheme.bodyText2,
             ),
             onTap: () {
-              context.bloc<ShareBloc>().add(Share());
+              context
+                  .repository<ShareService>()
+                  .share(
+                      threadId: feed.feedEntity.id,
+                      data: feed.feedEntity.link,
+                      contentType: 'news_feed')
+                  .then((value) {
+                context.bloc<ShareBloc>().add(Share());
+                return value;
+              });
               Navigator.pop(context);
             },
           ),
@@ -128,13 +134,13 @@ class NewsFeedMoreOption extends StatelessWidget {
               size: 18,
             ),
             title: Text(
-              'Browse ${feed.feed.source.title}',
+              'Browse ${feed.newsSourceUIModel.source.title}',
               style: Theme.of(context).textTheme.bodyText2,
             ),
             onTap: () {
               Navigator.pop(context);
               context.repository<NavigationService>().toNewsSourceFeedScreen(
-                  source: feed.feed.source, context: context);
+                  source: feed.newsSourceUIModel.source, context: context);
             },
           ),
           ListTile(
@@ -144,7 +150,7 @@ class NewsFeedMoreOption extends StatelessWidget {
               size: 18,
             ),
             title: Text(
-              'Block ${feed.feed.source.title}',
+              'Block ${feed.newsSourceUIModel.source.title}',
               style: Theme.of(context).textTheme.bodyText2,
             ),
             onTap: () {
@@ -180,7 +186,7 @@ class NewsFeedMoreOption extends StatelessWidget {
               // Navigator.pop(context);
               context.showBottomSheet(
                 child: ReportArticle(
-                  articleId: feed.feed.id,
+                  articleId: feed.feedEntity.id,
                   articleType: 'news',
                 ),
               );

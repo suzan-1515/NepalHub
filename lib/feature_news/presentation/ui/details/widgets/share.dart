@@ -19,24 +19,14 @@ class Share extends StatelessWidget {
   Widget _buildLikeButton() {
     return BlocConsumer<LikeUnlikeBloc, LikeUnlikeState>(
         listener: (context, state) {},
-        buildWhen: (previous, current) =>
-            current is InitialState ||
-            current is InProgressState ||
-            current is LikedState ||
-            current is UnlikedState,
         builder: (context, state) {
-          if (state is LikedState) {
-            feedUIModel.like();
-          } else if (state is UnlikedState) {
-            feedUIModel.unlike();
-          }
           return RoundIconButton(
             color: Theme.of(context).accentColor.withOpacity(0.7),
-            icon: feedUIModel.feed.isLiked
+            icon: feedUIModel.feedEntity.isLiked
                 ? FontAwesomeIcons.solidThumbsUp
                 : FontAwesomeIcons.thumbsUp,
             onTap: () {
-              if (feedUIModel.feed.isLiked) {
+              if (feedUIModel.feedEntity.isLiked) {
                 feedUIModel.unlike();
                 context.bloc<LikeUnlikeBloc>().add(UnlikeEvent());
               } else {
@@ -44,7 +34,7 @@ class Share extends StatelessWidget {
                 context.bloc<LikeUnlikeBloc>().add(LikeEvent());
               }
             },
-            text: feedUIModel.feed.likeCount == 0
+            text: feedUIModel.feedEntity.likeCount == 0
                 ? 'Like'
                 : '${feedUIModel.formattedLikeCount}',
           );
@@ -58,9 +48,9 @@ class Share extends StatelessWidget {
       onTap: () => context
           .repository<ShareService>()
           .shareToFacebook(
-              threadId: feedUIModel.feed.id,
-              title: feedUIModel.feed.title,
-              url: feedUIModel.feed.link,
+              threadId: feedUIModel.feedEntity.id,
+              title: feedUIModel.feedEntity.title,
+              url: feedUIModel.feedEntity.link,
               contentType: 'news_feed')
           .then((value) {
         context.bloc<shareBloc.ShareBloc>().add(shareBloc.Share());
@@ -76,9 +66,9 @@ class Share extends StatelessWidget {
       onTap: () => context
           .repository<ShareService>()
           .shareToTwitter(
-              threadId: feedUIModel.feed.id,
-              title: feedUIModel.feed.title,
-              url: feedUIModel.feed.link,
+              threadId: feedUIModel.feedEntity.id,
+              title: feedUIModel.feedEntity.title,
+              url: feedUIModel.feedEntity.link,
               contentType: 'news_feed')
           .then((value) {
         context.bloc<shareBloc.ShareBloc>().add(shareBloc.Share());
@@ -94,8 +84,9 @@ class Share extends StatelessWidget {
       onTap: () => context
           .repository<ShareService>()
           .share(
-              threadId: feedUIModel.feed.id,
-              data: '${feedUIModel.feed.title}\n${feedUIModel.feed.link}',
+              threadId: feedUIModel.feedEntity.id,
+              data:
+                  '${feedUIModel.feedEntity.title}\n${feedUIModel.feedEntity.link}',
               contentType: 'news_feed')
           .then((value) {
         context.bloc<shareBloc.ShareBloc>().add(shareBloc.Share());

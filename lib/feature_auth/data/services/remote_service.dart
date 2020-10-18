@@ -10,4 +10,5 @@ mixin RemoteService {
   Future<dynamic> loginWithEmail(
       {@required String identifier, @required String password});
   Future<dynamic> fetchUserProfile({@required String token});
+  Future<dynamic> fetchCurrentUser();
 }

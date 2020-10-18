@@ -8,6 +8,7 @@ class AnalyticsService {
   FirebaseAnalyticsObserver getAnalyticsObserver() =>
       FirebaseAnalyticsObserver(analytics: _analytics);
 
+//User
   Future setUser({@required String userId}) async {
     await _analytics.setUserId(userId);
   }
@@ -24,43 +25,7 @@ class AnalyticsService {
     return await _analytics.logEvent(name: "logout");
   }
 
-  Future logLike({@required String postId, @required String postType}) async {
-    return await _analytics.logEvent(
-      name: 'like',
-      parameters: {'thread_id': postId, 'thread_type': postType},
-    );
-  }
-
-  Future logUnLike({@required String postId, @required String postType}) async {
-    return await _analytics.logEvent(
-      name: 'unlike',
-      parameters: {'thread_id': postId, 'thread_type': postType},
-    );
-  }
-
-  Future logView({@required String postId, @required String postType}) async {
-    return await _analytics.logEvent(
-      name: 'view',
-      parameters: {'thread_id': postId, 'thread_type': postType},
-    );
-  }
-
-  Future logBookmark(
-      {@required String postId, String threadType = 'news_feed'}) async {
-    return await _analytics.logEvent(
-      name: 'bookmark',
-      parameters: {'thread_id': postId, 'thread_type': threadType},
-    );
-  }
-
-  Future logUnBookmark(
-      {@required String postId, String threadType = 'news_feed'}) async {
-    return await _analytics.logEvent(
-      name: 'unbookmark',
-      parameters: {'thread_id': postId, 'thread_type': threadType},
-    );
-  }
-
+//Comment
   Future logCommentPost({@required String commentId}) async {
     await _analytics.logEvent(
       name: 'comment_post',
@@ -89,48 +54,90 @@ class AnalyticsService {
     );
   }
 
-  Future logNewsSourceFollow({@required String sourceCode}) async {
+//News
+  Future logNewsSourceFollow({@required String sourceId}) async {
     await _analytics.logEvent(
       name: 'news_source_follow',
-      parameters: {'source_code': sourceCode},
+      parameters: {'id': sourceId},
     );
   }
 
-  Future logNewsSourceUnFollow({@required String sourceCode}) async {
+  Future logNewsSourceUnFollow({@required String sourceId}) async {
     await _analytics.logEvent(
       name: 'news_source_unfollow',
-      parameters: {'source_code': sourceCode},
+      parameters: {'id': sourceId},
     );
   }
 
-  Future logNewsCategoryFollow({@required String categoryCode}) async {
+  Future logNewsCategoryFollow({@required String categoryId}) async {
     await _analytics.logEvent(
       name: 'news_category_follow',
-      parameters: {'category_code': categoryCode},
+      parameters: {'id': categoryId},
     );
   }
 
-  Future logNewsCategoryUnFollow({@required String categoryCode}) async {
+  Future logNewsCategoryUnFollow({@required String categoryId}) async {
     await _analytics.logEvent(
       name: 'news_category_unfollow',
-      parameters: {'category_code': categoryCode},
+      parameters: {'id': categoryId},
     );
   }
 
-  Future logNewsTopicFollow({@required String topic}) async {
+  Future logNewsTopicFollow({@required String topicId}) async {
     await _analytics.logEvent(
       name: 'news_topic_follow',
-      parameters: {'topic': topic},
+      parameters: {'id': topicId},
     );
   }
 
-  Future logNewsTopicUnFollow({@required String topic}) {
+  Future logNewsTopicUnFollow({@required String topicId}) {
     return _analytics.logEvent(
       name: 'news_topic_unfollow',
-      parameters: {'topic': topic},
+      parameters: {'id': topicId},
     );
   }
 
+  Future logNewsDislike({@required String feedId}) {
+    return _analytics
+        .logEvent(name: 'news_dislike', parameters: {'id': feedId});
+  }
+
+  Future logNewsLike({@required String feedId}) {
+    return _analytics.logEvent(name: 'news_like', parameters: {'id': feedId});
+  }
+
+  Future logNewsShare({@required String feedId}) {
+    return _analytics.logEvent(name: 'news_share', parameters: {'id': feedId});
+  }
+
+  Future logNewsUndislike({@required String feedId}) {
+    return _analytics
+        .logEvent(name: 'news_undislike', parameters: {'id': feedId});
+  }
+
+  Future logNewsUnlike({@required String feedId}) {
+    return _analytics.logEvent(name: 'news_unlike', parameters: {'id': feedId});
+  }
+
+  Future logNewsView({@required String feedId}) {
+    return _analytics.logEvent(name: 'news_view', parameters: {'id': feedId});
+  }
+
+  Future logNewsBookmark({@required String feedId}) async {
+    return await _analytics.logEvent(
+      name: 'news_bookmark',
+      parameters: {'id': feedId},
+    );
+  }
+
+  Future logNewsUnBookmark({@required String feedId}) async {
+    return await _analytics.logEvent(
+      name: 'news_unbookmark',
+      parameters: {'id': feedId},
+    );
+  }
+
+  // Settings
   Future logNewsReadMode({@required String mode}) {
     return _analytics
         .logEvent(name: 'news_read_mode', parameters: {'mode': mode});
@@ -184,11 +191,6 @@ class AnalyticsService {
         .logEvent(name: 'dark_mode', parameters: {'enable': enable});
   }
 
-  Future logDefaultHoroscopeSign({@required int signIndex}) {
-    return _analytics.logEvent(
-        name: 'default_horoscope_sign', parameters: {'sign_index': signIndex});
-  }
-
   Future logUseSystemTheme({@required bool value}) {
     return _analytics
         .logEvent(name: 'system_theme', parameters: {'enable': value});
@@ -227,5 +229,31 @@ class AnalyticsService {
     return _analytics.logEvent(
         name: 'default_forex_currency',
         parameters: {'currency_id': currencyId});
+  }
+
+// Horoscope
+  Future logHoroscopeUnlike({@required String horoscopeId}) {
+    return _analytics
+        .logEvent(name: 'horoscope_unlike', parameters: {'id': horoscopeId});
+  }
+
+  Future logHoroscopeView({@required String horoscopeId}) {
+    return _analytics
+        .logEvent(name: 'horoscope_view', parameters: {'id': horoscopeId});
+  }
+
+  Future logHoroscopeLike({@required String horoscopeId}) {
+    return _analytics
+        .logEvent(name: 'horoscope_like', parameters: {'id': horoscopeId});
+  }
+
+  Future logDefaultHoroscopeSign({@required int signIndex}) {
+    return _analytics.logEvent(
+        name: 'default_horoscope_sign', parameters: {'sign_index': signIndex});
+  }
+
+  Future logHoroscopeShare({@required String horoscopeId}) {
+    return _analytics
+        .logEvent(name: 'horoscope_share', parameters: {'id': horoscopeId});
   }
 }

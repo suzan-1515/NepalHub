@@ -128,6 +128,7 @@ class _NewsListBuilderState extends State<NewsListBuilder> {
                 create: (context) => FollowUnFollowBloc(
                   followNewsSourceUseCase: _followNewsSourceUseCase,
                   unFollowNewsSourceUseCase: _unfollowNewsSourceUseCase,
+                  newsSourceUIModel: feed.newsSourceUIModel,
                 ),
               ),
               BlocProvider<BookmarkUnBookmarkBloc>(

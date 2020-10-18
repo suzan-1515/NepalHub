@@ -24,36 +24,36 @@ mixin Repository {
 
   Future<NewsFeedEntity> getNewsDetail(String feedId);
 
-  Future<void> likeFeed(NewsFeedEntity feed);
-  Future<void> unlikeFeed(NewsFeedEntity feed);
+  Future<NewsFeedEntity> likeFeed(NewsFeedEntity feed);
+  Future<NewsFeedEntity> unlikeFeed(NewsFeedEntity feed);
 
-  Future<void> dislikeFeed(NewsFeedEntity feed);
-  Future<void> undislikeFeed(NewsFeedEntity feed);
+  Future<NewsFeedEntity> dislikeFeed(NewsFeedEntity feed);
+  Future<NewsFeedEntity> undislikeFeed(NewsFeedEntity feed);
 
-  Future<void> shareFeed(NewsFeedEntity feed);
-  Future<void> viewFeed(NewsFeedEntity feed);
+  Future<NewsFeedEntity> shareFeed(NewsFeedEntity feed);
+  Future<NewsFeedEntity> viewFeed(NewsFeedEntity feed);
 
-  Future<void> bookmarkFeed(NewsFeedEntity feed);
+  Future<NewsFeedEntity> bookmarkFeed(NewsFeedEntity feed);
 
-  Future<void> unBookmarkFeed(NewsFeedEntity feed);
+  Future<NewsFeedEntity> unBookmarkFeed(NewsFeedEntity feed);
 
-  Future<void> followSource(NewsSourceEntity source);
+  Future<NewsSourceEntity> followSource(NewsSourceEntity source);
 
-  Future<void> unFollowSource(NewsSourceEntity source);
+  Future<NewsSourceEntity> unFollowSource(NewsSourceEntity source);
 
   Future<List<NewsSourceEntity>> getSources({Language language});
 
   Future<List<NewsCategoryEntity>> getCategories({Language language});
 
-  Future<void> followCategory(NewsCategoryEntity category);
+  Future<NewsCategoryEntity> followCategory(NewsCategoryEntity category);
 
-  Future<void> unFollowCategory(NewsCategoryEntity category);
+  Future<NewsCategoryEntity> unFollowCategory(NewsCategoryEntity category);
 
   Future<List<NewsTopicEntity>> getTopics({Language language});
 
-  Future<void> followTopic(NewsTopicEntity topic);
+  Future<NewsTopicEntity> followTopic(NewsTopicEntity topic);
 
-  Future<void> unFollowTopic(NewsTopicEntity topic);
+  Future<NewsTopicEntity> unFollowTopic(NewsTopicEntity topic);
 
   Future<List<NewsFeedEntity>> getNewsByTopic(NewsTopicEntity topic,
       {Language language, NewsSourceEntity source, SortBy sortBy, int page});

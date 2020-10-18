@@ -1,13 +1,17 @@
 import 'package:corona_module/corona.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:samachar_hub/feature_auth/presentation/ui/login_screen.dart';
+import 'package:samachar_hub/feature_comment/domain/entities/thread_type.dart';
 import 'package:samachar_hub/feature_forex/domain/entities/forex_entity.dart';
 import 'package:samachar_hub/feature_horoscope/domain/entities/horoscope_entity.dart';
+import 'package:samachar_hub/feature_main/presentation/blocs/settings/settings_cubit.dart';
+import 'package:samachar_hub/feature_main/presentation/ui/main/main_screen.dart';
+import 'package:samachar_hub/feature_main/presentation/ui/settings/settings_page.dart';
+import 'package:samachar_hub/feature_news/domain/models/news_category.dart';
+import 'package:samachar_hub/feature_news/domain/models/news_feed.dart';
 import 'package:samachar_hub/feature_news/domain/models/news_source.dart';
 import 'package:samachar_hub/feature_news/domain/models/news_topic.dart';
-import 'package:samachar_hub/feature_news/presentation/models/news_category.dart';
-import 'package:samachar_hub/feature_news/presentation/models/news_feed.dart';
-import 'package:samachar_hub/feature_news/presentation/models/news_source.dart';
 import 'package:samachar_hub/feature_news/presentation/ui/bookmark/bookmark_page.dart';
 import 'package:samachar_hub/feature_news/presentation/ui/category/categories/news_categories_screen.dart';
 import 'package:samachar_hub/feature_news/presentation/ui/category/category_feed/news_category_feed_screen.dart';
@@ -21,14 +25,12 @@ import 'package:samachar_hub/feature_forex/presentation/ui/forex_detail_screen.d
 import 'package:samachar_hub/feature_forex/presentation/ui/forex_screen.dart';
 import 'package:samachar_hub/feature_horoscope/presentation/ui/detail/horoscope_detail_screen.dart';
 import 'package:samachar_hub/feature_horoscope/presentation/ui/horoscope_screen.dart';
-import 'package:samachar_hub/feature_profile/presentation/ui/user_profile_screen.dart';
-import 'package:samachar_hub/repository/repositories.dart';
-import 'package:samachar_hub/stores/stores.dart';
+import 'package:samachar_hub/feature_auth/presentation/ui/user_profile_screen.dart';
 import 'package:samachar_hub/core/widgets/webview_widget.dart';
 
 class NavigationService {
-  toHomeScreen(BuildContext context) {
-    Navigator.pushAndRemoveUntil(
+  Future toHomeScreen(BuildContext context) {
+    return Navigator.pushAndRemoveUntil(
       context,
       MaterialPageRoute(
         builder: (context) => MainScreen(),
@@ -47,22 +49,17 @@ class NavigationService {
     );
   }
 
-  toTrendingNews(BuildContext context) {
-    Navigator.push(
+  Future toTrendingNews(BuildContext context) {
+    return Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => ProxyProvider<NewsRepository, TrendingNewsStore>(
-          update: (_, NewsRepository value, TrendingNewsStore previous) =>
-              TrendingNewsStore(value),
-          dispose: (context, value) => value.dispose(),
-          child: TrendingNewsScreen(),
-        ),
+        builder: (context) => TrendingNewsScreen(),
       ),
     );
   }
 
-  toCoronaScreen(BuildContext context) {
-    Navigator.push(
+  Future toCoronaScreen(BuildContext context) {
+    return Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => CoronaApp(),
@@ -70,125 +67,61 @@ class NavigationService {
     );
   }
 
-  toForexScreen(BuildContext context) {
-    Navigator.push(
+  Future toForexScreen(BuildContext context) {
+    return Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) =>
-            ProxyProvider2<ForexRepository, PreferenceService, ForexStore>(
-          update: (_, ForexRepository value,
-                  PreferenceService _preferenceService, ForexStore previous) =>
-              ForexStore(value, _preferenceService),
-          dispose: (context, value) => value.dispose(),
-          child: ForexScreen(),
+        builder: (context) => ForexScreen(),
+      ),
+    );
+  }
+
+  Future toForexDetailScreen(BuildContext context, ForexEntity data) {
+    return Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ForexDetailScreen(
+          forexEntity: data,
         ),
       ),
     );
   }
 
-  toForexDetailScreen(BuildContext context, ForexEntity data) {
-    Navigator.push(
+  Future toHoroscopeScreen(BuildContext context) {
+    return Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => MultiProvider(
-          providers: [
-            ProxyProvider2<PostMetaRepository, AuthenticationStore,
-                PostMetaStore>(
-              update: (_,
-                      PostMetaRepository metaRepository,
-                      AuthenticationStore authenticationStore,
-                      PostMetaStore previous) =>
-                  PostMetaStore(
-                      metaRepository, authenticationStore.user, 'forex'),
-            ),
-            ProxyProvider<ForexRepository, ForexDetailStore>(
-              update: (_, ForexRepository value, ForexDetailStore previous) =>
-                  ForexDetailStore(value, data),
-              dispose: (context, value) => value.dispose(),
-            ),
-          ],
-          child: ForexDetailScreen(),
-        ),
+        builder: (context) => HoroscopeScreen(),
       ),
     );
   }
 
-  toHoroscopeScreen(BuildContext context) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => ProxyProvider2<HoroscopeRepository,
-            PreferenceService, HoroscopeStore>(
-          update: (_,
-                  HoroscopeRepository value,
-                  PreferenceService _preferenceService,
-                  HoroscopeStore previous) =>
-              HoroscopeStore(value, _preferenceService),
-          dispose: (context, value) => value.dispose(),
-          child: HoroscopeScreen(),
-        ),
-      ),
-    );
-  }
-
-  toHoroscopeDetail(BuildContext context, String sign, String signIcon,
+  Future toHoroscopeDetail(BuildContext context, String sign, String signIcon,
       String zodiac, HoroscopeEntity data) {
-    Navigator.push(
+    return Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => MultiProvider(
-          providers: [
-            ProxyProvider2<PostMetaRepository, AuthenticationStore,
-                PostMetaStore>(
-              update: (_,
-                      PostMetaRepository metaRepository,
-                      AuthenticationStore authenticationStore,
-                      PostMetaStore previous) =>
-                  PostMetaStore(
-                      metaRepository, authenticationStore.user, 'horoscope'),
-            ),
-            Provider<HoroscopeDetailStore>(
-              create: (_) => HoroscopeDetailStore(data),
-              dispose: (context, value) => value.dispose(),
-            ),
-          ],
-          child: HoroscopeDetailScreen(
-              sign: sign, signIcon: signIcon, zodiac: zodiac),
+        builder: (context) => HoroscopeDetailScreen(
+          sign: sign,
+          signIcon: signIcon,
+          zodiac: zodiac,
+          horoscopeEntity: data,
         ),
       ),
     );
   }
 
-  toGoldSilverScreen(BuildContext context) {}
+  Future toGoldSilverScreen(BuildContext context) {}
 
-  Future toFeedDetail(NewsFeedUIModel feedUIModel, BuildContext context) {
-    if (context.read<SettingsStore>().newsReadMode == 2) {
-      return toWebViewScreen(
-          feedUIModel.feed.title, feedUIModel.feed.link, context);
+  Future toFeedDetail(NewsFeedEntity feedEntity, BuildContext context) {
+    if (context.read<SettingsCubit>().settings.newsReadMode == 2) {
+      return toWebViewScreen(feedEntity.title, feedEntity.link, context);
     }
     return Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => MultiProvider(
-          providers: [
-            ProxyProvider2<PostMetaRepository, AuthenticationStore,
-                PostMetaStore>(
-              update: (BuildContext context,
-                      PostMetaRepository metaRepository,
-                      AuthenticationStore authenticationStore,
-                      PostMetaStore previous) =>
-                  PostMetaStore(metaRepository, authenticationStore.user,
-                      feedUIModel.uuid),
-            ),
-            ProxyProvider<BookmarkRepository, NewsDetailStore>(
-              update: (BuildContext context,
-                      BookmarkRepository bookmarkRepository,
-                      NewsDetailStore previous) =>
-                  NewsDetailStore(bookmarkRepository, feedUIModel),
-              dispose: (context, value) => value.dispose(),
-            ),
-          ],
-          child: NewsDetailScreen(),
+        builder: (context) => NewsDetailScreen(
+          feedEntity: feedEntity,
         ),
       ),
     );
@@ -197,34 +130,18 @@ class NavigationService {
   Future toFollowedNewsSourceScreen(BuildContext context) {
     return Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (_) => MultiProvider(
-          providers: [
-            Provider.value(value: Provider.of<FollowingRepository>(context)),
-            ProxyProvider2<NewsRepository, FollowingRepository,
-                    NewsSourceStore>(
-                update: (BuildContext context,
-                        NewsRepository value,
-                        FollowingRepository favouritesRepository,
-                        NewsSourceStore previous) =>
-                    NewsSourceStore(value, favouritesRepository),
-                dispose: (context, value) => value.dispose()),
-          ],
-          child: NewsSourcesScreen(),
-        ),
+        builder: (_) => NewsSourcesScreen(),
       ),
     );
   }
 
   Future toNewsCategoryFeedScreen(
-      BuildContext context, NewsCategoryUIModel category) {
+      BuildContext context, NewsCategoryEntity categoryEntity) {
     return Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (_) => ProxyProvider<NewsRepository, NewsCategoryFeedStore>(
-            update: (_, NewsRepository value, NewsCategoryFeedStore previous) =>
-                NewsCategoryFeedStore(value, category),
-            dispose: (context, value) => value.dispose(),
-            child: NewsCategoryFeedScreen(),
+          builder: (_) => NewsCategoryFeedScreen(
+            newsCategoryEntity: categoryEntity,
           ),
         ));
   }
@@ -232,29 +149,13 @@ class NavigationService {
   Future toFollowedNewsCategoryScreen(BuildContext context) {
     return Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (_) => MultiProvider(
-          providers: [
-            Provider.value(value: Provider.of<FollowingRepository>(context)),
-            ProxyProvider2<NewsRepository, FollowingRepository,
-                    NewsCategoriesStore>(
-                update: (BuildContext context,
-                        NewsRepository value,
-                        FollowingRepository favouritesRepository,
-                        NewsCategoriesStore previous) =>
-                    NewsCategoriesStore(value, favouritesRepository),
-                dispose: (context, value) => value.dispose()),
-            // Provider.value(value: Provider.of<FollowingStore>(context)),
-            // Provider.value(value: Provider.of<FollowingRepository>(context)),
-          ],
-          child: NewsCategoriesScreen(),
-        ),
+        builder: (_) => NewsCategoriesScreen(),
       ),
     );
   }
 
-  toWebViewScreen(String title, String url, BuildContext context) {
-    print('open link: $title');
-    Navigator.push(
+  Future toWebViewScreen(String title, String url, BuildContext context) {
+    return Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => Webview(
@@ -266,15 +167,12 @@ class NavigationService {
   }
 
   Future toNewsTopicFeedScreen(
-      {@required BuildContext context, @required NewsTopicEntity topicModel}) {
+      {@required BuildContext context, @required NewsTopicEntity topicEntity}) {
     return Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => ProxyProvider<NewsRepository, NewsTopicFeedStore>(
-          update: (_, NewsRepository value, NewsTopicFeedStore previous) =>
-              NewsTopicFeedStore(value, topicModel),
-          dispose: (context, value) => value.dispose(),
-          child: NewsTopicFeedScreen(),
+        builder: (context) => NewsTopicFeedScreen(
+          newsTopicEntity: topicEntity,
         ),
       ),
     );
@@ -285,69 +183,31 @@ class NavigationService {
     return Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (_) => ProxyProvider<NewsRepository, NewsSourceFeedStore>(
-            update:
-                (_, NewsRepository newsRepository, NewsSourceFeedStore store) =>
-                    NewsSourceFeedStore(newsRepository, source),
-            dispose: (context, value) => value.dispose(),
-            child: NewsSourceFeedScreen(),
+          builder: (_) => NewsSourceFeedScreen(
+            newsSourceEntity: source,
           ),
         ));
   }
 
-  toCommentsScreen(
+  Future toCommentsScreen(
       {@required BuildContext context,
-      @required String title,
-      @required String postId}) {
-    Navigator.push(
+      @required String threadTitle,
+      @required CommentThreadType threadType,
+      @required String threadId}) {
+    return Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => MultiProvider(
-          providers: [
-            ProxyProvider2<PostMetaRepository, AuthenticationStore,
-                PostMetaStore>(
-              update: (BuildContext context,
-                      PostMetaRepository metaRepository,
-                      AuthenticationStore authenticationStore,
-                      PostMetaStore previous) =>
-                  PostMetaStore(
-                      metaRepository, authenticationStore.user, postId),
-            ),
-            ProxyProvider2<AnalyticsService, PostMetaRepository,
-                CommentRepository>(
-              update: (BuildContext context,
-                      AnalyticsService analyticsService,
-                      PostMetaRepository postMetaRepository,
-                      CommentRepository previous) =>
-                  CommentRepository(
-                CommentFirestoreService(),
-                postMetaRepository,
-                analyticsService,
-              ),
-            ),
-            ProxyProvider2<CommentRepository, AuthenticationStore,
-                CommentStore>(
-              update: (BuildContext context,
-                      CommentRepository commentRepository,
-                      AuthenticationStore authenticationStore,
-                      CommentStore previous) =>
-                  CommentStore(
-                      commentRepository: commentRepository,
-                      user: authenticationStore.user),
-              dispose: (context, value) => value.dispose(),
-            ),
-          ],
-          child: CommentScreen(
-            postTitle: title,
-            postId: postId,
-          ),
+        builder: (context) => CommentScreen(
+          threadId: threadId,
+          threadTitle: threadTitle,
+          threadType: threadType,
         ),
       ),
     );
   }
 
-  loginRedirect(BuildContext context) {
-    Navigator.push(
+  Future loginRedirect(BuildContext context) {
+    return Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => LoginScreen(),
@@ -359,29 +219,25 @@ class NavigationService {
     return Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (_) => SettingsPage(),
+        builder: (_) => SettingsScreen(),
       ),
     );
   }
 
   Future toUserProfileScreen({@required BuildContext context}) {
     return Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (_) => UserProfileScreen(),
-        ));
+      context,
+      MaterialPageRoute(
+        builder: (_) => UserProfileScreen(),
+      ),
+    );
   }
 
   Future toBookmarkedNewsScreen({@required BuildContext context}) {
     return Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (_) => ProxyProvider2<BookmarkRepository, AuthenticationStore,
-            BookmarkStore>(
-          update: (_, _bookmarkRepository, _authenticationStore, __) =>
-              BookmarkStore(_bookmarkRepository, _authenticationStore.user),
-          child: BookmarkScreen(),
-        ),
+        builder: (_) => BookmarkScreen(),
       ),
     );
   }

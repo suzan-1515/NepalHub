@@ -1,47 +1,87 @@
+import 'package:flutter/foundation.dart';
 import 'package:samachar_hub/core/models/language.dart';
-import 'package:samachar_hub/feature_news/domain/models/news_category.dart';
-import 'package:samachar_hub/feature_news/domain/models/news_feed.dart';
-import 'package:samachar_hub/feature_news/domain/models/news_source.dart';
-import 'package:samachar_hub/feature_news/domain/models/news_topic.dart';
 import 'package:samachar_hub/feature_news/domain/models/sort.dart';
 
 mixin RemoteService {
-  Future<dynamic> fetchLatestNews({SortBy sortBy, int page, Language language});
-  Future<dynamic> fetchRecentNews({SortBy sortBy, int page, Language language});
+  Future<dynamic> fetchLatestNews(
+      {@required SortBy sortBy,
+      @required int page,
+      @required Language language,
+      @required String token});
+  Future<dynamic> fetchRecentNews(
+      {@required SortBy sortBy,
+      @required int page,
+      @required Language language,
+      @required String token});
   Future<dynamic> fetchTrendingNews(
-      {Language language, SortBy sortBy, int page, int limit});
+      {@required Language language,
+      @required SortBy sortBy,
+      @required int page,
+      @required int limit,
+      @required String token});
 
-  Future<dynamic> fetchNewsBySource(NewsSourceEntity source,
-      {SortBy sortBy, int page, Language language});
+  Future<dynamic> fetchNewsBySource(
+      {@required String sourceId,
+      @required SortBy sortBy,
+      @required int page,
+      @required Language language,
+      @required String token});
 
-  Future<dynamic> fetchNewsByCategory(NewsCategoryEntity category,
-      {NewsSourceEntity source, SortBy sortBy, int page, Language language});
+  Future<dynamic> fetchNewsByCategory(
+      {@required String categoryId,
+      @required String sourceId,
+      @required SortBy sortBy,
+      @required int page,
+      @required Language language,
+      @required String token});
 
-  Future<dynamic> fetchSources({Language language});
+  Future<dynamic> fetchSources(
+      {@required Language language, @required String token});
 
-  Future<dynamic> fetchCategories({Language language});
+  Future<dynamic> fetchCategories(
+      {@required Language language, @required String token});
 
-  Future<dynamic> fetchTopics({Language language});
+  Future<dynamic> fetchTopics(
+      {@required Language language, @required String token});
 
-  Future<dynamic> fetchNewsByTopic(NewsTopicEntity topic,
-      {NewsSourceEntity source, SortBy sortBy, int page, Language language});
+  Future<dynamic> fetchNewsByTopic(
+      {@required String topicId,
+      @required String sourceId,
+      @required SortBy sortBy,
+      @required int page,
+      @required Language language,
+      @required String token});
 
-  Future<dynamic> likeFeed(NewsFeedEntity feed);
-  Future<dynamic> unlikeFeed(NewsFeedEntity feed);
+  Future<dynamic> fetchNewsDetail(
+      {@required String feedId, @required String token});
 
-  Future<dynamic> dislikeFeed(NewsFeedEntity feed);
-  Future<dynamic> undislikeFeed(NewsFeedEntity feed);
+  Future<dynamic> likeFeed({@required String feedId, @required String token});
+  Future<dynamic> unlikeFeed({@required String feedId, @required String token});
 
-  Future<dynamic> shareFeed(NewsFeedEntity feed);
-  Future<dynamic> viewFeed(NewsFeedEntity feed);
+  Future<dynamic> dislikeFeed(
+      {@required String feedId, @required String token});
+  Future<dynamic> undislikeFeed(
+      {@required String feedId, @required String token});
 
-  Future<dynamic> bookmarkFeed(NewsFeedEntity feed);
-  Future<dynamic> unBookmarkFeed(NewsFeedEntity feed);
-  Future<dynamic> followCategory(NewsCategoryEntity category);
-  Future<dynamic> unFollowCategory(NewsCategoryEntity category);
-  Future<dynamic> followSource(NewsSourceEntity source);
-  Future<dynamic> unFollowSource(NewsSourceEntity source);
-  Future<dynamic> followTopic(NewsTopicEntity topic);
-  Future<dynamic> unFollowTopic(NewsTopicEntity topic);
-  Future<dynamic> fetchRelatedNews(NewsFeedEntity parent);
+  Future<dynamic> shareFeed({@required String feedId, @required String token});
+  Future<dynamic> viewFeed({@required String feedId, @required String token});
+
+  Future<dynamic> bookmarkFeed(
+      {@required String feedId, @required String token});
+  Future<dynamic> unBookmarkFeed(
+      {@required String feedId, @required String token});
+  Future<dynamic> followCategory(
+      {@required String categoryId, @required String token});
+  Future<dynamic> unFollowCategory(
+      {@required String categoryId, @required String token});
+  Future<dynamic> followSource(
+      {@required String sourceId, @required String token});
+  Future<dynamic> unFollowSource(
+      {@required String sourceId, @required String token});
+  Future<dynamic> followTopic(
+      {@required String topicId, @required String token});
+  Future<dynamic> unFollowTopic(
+      {@required String topicId, @required String token});
+  Future<dynamic> fetchRelatedNews(
+      {@required String parentId, @required String token});
 }

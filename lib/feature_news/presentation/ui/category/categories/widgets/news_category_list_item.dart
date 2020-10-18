@@ -25,7 +25,7 @@ class NewsCategoryListItem extends StatelessWidget {
         onTap: () {
           context
               .repository<NavigationService>()
-              .toNewsCategoryFeedScreen(context, categoryUIModel);
+              .toNewsCategoryFeedScreen(context, categoryUIModel.category);
         },
         leading: Container(
           width: 84,
@@ -59,11 +59,6 @@ class NewsCategoryListItem extends StatelessWidget {
           child: BlocBuilder<categoryFollowUnfollow.FollowUnFollowBloc,
               categoryFollowUnfollow.FollowUnFollowState>(
             builder: (context, state) {
-              if (state is categoryFollowUnfollow.Followed) {
-                categoryUIModel.follow();
-              } else if (state is categoryFollowUnfollow.UnFollowed) {
-                categoryUIModel.unfollow();
-              }
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
@@ -75,19 +70,18 @@ class NewsCategoryListItem extends StatelessWidget {
                   FollowUnFollowButton(
                     isFollowed: categoryUIModel.category.isFollowed,
                     onTap: () {
-                      final currentValue = categoryUIModel.category.isFollowed;
-                      if (currentValue) {
+                      if (categoryUIModel.category.isFollowed) {
                         categoryUIModel.unfollow();
                         context
                             .bloc<categoryFollowUnfollow.FollowUnFollowBloc>()
-                            .add(categoryFollowUnfollow.UnFollow(
-                                categoryModel: categoryUIModel));
+                            .add(categoryFollowUnfollow
+                                .FollowUnFollowUnFollowEvent());
                       } else {
                         categoryUIModel.follow();
                         context
                             .bloc<categoryFollowUnfollow.FollowUnFollowBloc>()
-                            .add(categoryFollowUnfollow.Follow(
-                                categoryModel: categoryUIModel));
+                            .add(categoryFollowUnfollow
+                                .FollowUnFollowFollowEvent());
                       }
                     },
                   ),

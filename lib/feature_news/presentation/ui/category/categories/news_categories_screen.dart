@@ -8,12 +8,15 @@ import 'package:samachar_hub/core/widgets/error_data_widget.dart';
 import 'package:samachar_hub/core/widgets/progress_widget.dart';
 import 'package:samachar_hub/core/extensions/view.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:samachar_hub/feature_news/utils/provider.dart';
 
 class NewsCategoriesScreen extends StatelessWidget {
   Widget _buildCategoryList() {
     return BlocConsumer<NewsCategoryBloc, NewsCategoryState>(
         listener: (context, state) {
-      if (state is Error) {
+      if (state is Initial) {
+        context.bloc<NewsCategoryBloc>().add(GetCategories());
+      } else if (state is Error) {
         context.showMessage(state.message);
       }
     }, builder: (context, state) {
@@ -40,13 +43,7 @@ class NewsCategoriesScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<NewsCategoryBloc>(
-      create: (context) => NewsCategoryBloc(
-          getNewsCategoriesUseCase:
-              context.repository<GetNewsCategoriesUseCase>(),
-          getNewsFollowedCategoriesUseCase:
-              context.repository<GetFollowedNewsCategoriesUseCase>())
-        ..add(GetCategories()),
+    return NewsProvider.categoryBlocProvider(
       child: Scaffold(
         appBar: AppBar(
           title: Text(

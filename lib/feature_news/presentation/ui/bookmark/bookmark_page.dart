@@ -1,16 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:samachar_hub/feature_news/domain/usecases/get_bookmarked_news_use_case.dart';
-import 'package:samachar_hub/feature_news/presentation/blocs/bookmarks/bookmark_news_bloc.dart';
 import 'package:samachar_hub/feature_news/presentation/ui/bookmark/widgets/bookmarked_news_list.dart';
+import 'package:samachar_hub/feature_news/utils/provider.dart';
 
 class BookmarkScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<BookmarkNewsBloc>(
-      create: (context) => BookmarkNewsBloc(
-        getBookmarkNewsUseCase: context.repository<GetBookmarkedNewsUseCase>(),
-      )..add(GetBookmarkedNews()),
+    return NewsProvider.bookmarkBlocProvider(
       child: Scaffold(
         backgroundColor: Theme.of(context).backgroundColor,
         appBar: AppBar(

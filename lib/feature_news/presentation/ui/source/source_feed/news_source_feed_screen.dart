@@ -1,37 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:samachar_hub/feature_news/domain/models/news_source.dart';
 import 'package:samachar_hub/feature_news/presentation/blocs/news_source/source_feeds/news_source_feed_bloc.dart';
 import 'package:samachar_hub/feature_news/presentation/blocs/news_source/follow_unfollow/follow_un_follow_bloc.dart';
 import 'package:samachar_hub/feature_news/presentation/models/news_source.dart';
 import 'package:samachar_hub/feature_news/presentation/ui/source/source_feed/widgets/news_source_feed_list.dart';
 import 'package:samachar_hub/feature_news/presentation/ui/widgets/news_filter_appbar.dart';
 import 'package:samachar_hub/feature_news/presentation/ui/widgets/news_filter_header.dart';
+import 'package:samachar_hub/feature_news/presentation/extensions/news_extensions.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:samachar_hub/feature_news/utils/provider.dart';
 
-class NewsSourceFeedScreen extends StatefulWidget {
-  const NewsSourceFeedScreen({Key key}) : super(key: key);
-  @override
-  _NewsSourceFeedScreenState createState() => _NewsSourceFeedScreenState();
-}
+class NewsSourceFeedScreen extends StatelessWidget {
+  final NewsSourceEntity newsSourceEntity;
+  const NewsSourceFeedScreen({Key key, @required this.newsSourceEntity})
+      : super(key: key);
 
-class _NewsSourceFeedScreenState extends State<NewsSourceFeedScreen> {
-  NewsSourceUIModel sourceUIModel;
-  @override
-  void initState() {
-    super.initState();
-    sourceUIModel = context.bloc<NewsSourceFeedBloc>().sourceModel;
-  }
-
-  Widget _buildHeader() {
-    return BlocListener<FollowUnFollowBloc, FollowUnFollowState>(
-      listener: (context, state) {
-        if (state is FollowedState) {
-          sourceUIModel.follow();
-        } else if (state is UnFollowedState) {
-          sourceUIModel.unfollow();
-        }
-      },
-      child: NewsFilterHeader(
+  Widget _buildHeader(BuildContext context, NewsSourceUIModel sourceUIModel) {
+    return BlocBuilder<FollowUnFollowBloc, FollowUnFollowState>(
+      builder: (context, state) => NewsFilterHeader(
         icon: DecorationImage(
           image: AssetImage(sourceUIModel.source.isValidIcon
               ? sourceUIModel.source.icon
@@ -45,12 +32,10 @@ class _NewsSourceFeedScreenState extends State<NewsSourceFeedScreen> {
             sourceUIModel.unfollow();
             context
                 .bloc<FollowUnFollowBloc>()
-                .add(UnFollowEvent(sourceModel: sourceUIModel.source));
+                .add(FollowUnFollowUnFollowEvent());
           } else {
             sourceUIModel.follow();
-            context
-                .bloc<FollowUnFollowBloc>()
-                .add(FollowEvent(sourceModel: sourceUIModel.source));
+            context.bloc<FollowUnFollowBloc>().add(FollowUnFollowFollowEvent());
           }
         },
       ),
@@ -59,14 +44,18 @@ class _NewsSourceFeedScreenState extends State<NewsSourceFeedScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Theme.of(context).backgroundColor,
-      body: SafeArea(
-        child: NewsFilteringAppBar(
-          header: _buildHeader(),
-          body: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: NewsSourceFeedList(),
+    return NewsProvider.sourceFeedBlocProvider(
+      newsSourceUIModel: newsSourceEntity.toUIModel,
+      child: Scaffold(
+        backgroundColor: Theme.of(context).backgroundColor,
+        body: SafeArea(
+          child: NewsFilteringAppBar(
+            header: _buildHeader(
+                context, context.bloc<NewsSourceFeedBloc>().sourceModel),
+            body: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: NewsSourceFeedList(),
+            ),
           ),
         ),
       ),

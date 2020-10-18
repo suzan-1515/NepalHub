@@ -37,18 +37,18 @@ class UserModel extends UserEntity {
   String toJson() => json.encode(toMap());
 
   factory UserModel.fromMap(Map<String, dynamic> json) => UserModel(
-        id: json["id"].toString(),
-        email: json["email"],
-        username: json["username"],
-        fullname: json["displayname"],
+        id: json["user"]["id"].toString(),
+        email: json["user"]["email"],
+        username: json["user"]["username"],
+        fullname: json["user"]["displayname"],
         token: json["jwt"],
-        createdAt: DateTime.parse(json["created_at"]),
-        updatedAt: DateTime.parse(json["updated_at"]),
-        avatar: json["avatar"],
-        isAnonymous: json["is_anonymous"],
-        isBlocked: json["is_blocked"],
-        isNewUser: json["is_new_user"],
-        method: json["provider"],
+        createdAt: DateTime.parse(json["user"]["created_at"]),
+        updatedAt: DateTime.parse(json["user"]["updated_at"]),
+        avatar: json["user"]["avatar"],
+        isAnonymous: json["user"]["is_anonymous"],
+        isBlocked: json["user"]["is_blocked"],
+        isNewUser: json["user"]["is_new_user"],
+        method: json["user"]["provider"],
       );
 
   Map<String, dynamic> toMap() => {

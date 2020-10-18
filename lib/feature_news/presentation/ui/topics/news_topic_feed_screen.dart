@@ -1,38 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:samachar_hub/feature_news/domain/usecases/get_news_by_topic_use_case.dart';
+import 'package:samachar_hub/feature_news/domain/models/news_topic.dart';
 import 'package:samachar_hub/feature_news/presentation/blocs/news_topic/topic_feeds/news_topic_feed_bloc.dart';
 import 'package:samachar_hub/feature_news/presentation/blocs/news_topic/follow_unfollow/follow_un_follow_bloc.dart';
 import 'package:samachar_hub/feature_news/presentation/models/news_topic.dart';
 import 'package:samachar_hub/feature_news/presentation/ui/topics/widgets/news_topic_feed_list.dart';
 import 'package:samachar_hub/feature_news/presentation/ui/widgets/news_filter_appbar.dart';
 import 'package:samachar_hub/feature_news/presentation/ui/widgets/news_filter_header.dart';
+import 'package:samachar_hub/feature_news/presentation/extensions/news_extensions.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:samachar_hub/feature_news/utils/provider.dart';
 
-class NewsTopicFeedScreen extends StatefulWidget {
-  const NewsTopicFeedScreen({Key key}) : super(key: key);
-  @override
-  _NewsTopicFeedScreenState createState() => _NewsTopicFeedScreenState();
-}
+class NewsTopicFeedScreen extends StatelessWidget {
+  final NewsTopicEntity newsTopicEntity;
+  const NewsTopicFeedScreen({Key key, @required this.newsTopicEntity})
+      : super(key: key);
 
-class _NewsTopicFeedScreenState extends State<NewsTopicFeedScreen> {
-  NewsTopicUIModel topicUIModel;
-  @override
-  void initState() {
-    super.initState();
-    topicUIModel = context.bloc<NewsTopicFeedBloc>().topicModel;
-  }
-
-  Widget _buildHeader() {
-    return BlocListener<FollowUnFollowBloc, FollowUnFollowState>(
-      listener: (context, state) {
-        if (state is FollowedState) {
-          topicUIModel.follow();
-        } else if (state is UnFollowedState) {
-          topicUIModel.unfollow();
-        }
-      },
-      child: NewsFilterHeader(
+  Widget _buildHeader(BuildContext context, NewsTopicUIModel topicUIModel) {
+    return BlocBuilder<FollowUnFollowBloc, FollowUnFollowState>(
+      builder: (context, state) => NewsFilterHeader(
         icon: DecorationImage(
           image: AssetImage(topicUIModel.topic.isValidIcon
               ? topicUIModel.topic.icon
@@ -46,12 +32,10 @@ class _NewsTopicFeedScreenState extends State<NewsTopicFeedScreen> {
             topicUIModel.unfollow();
             context
                 .bloc<FollowUnFollowBloc>()
-                .add(UnFollowEvent(topicModel: topicUIModel));
+                .add(FollowUnFollowUnFollowEvent());
           } else {
             topicUIModel.follow();
-            context
-                .bloc<FollowUnFollowBloc>()
-                .add(FollowEvent(topicModel: topicUIModel));
+            context.bloc<FollowUnFollowBloc>().add(FollowUnFollowFollowEvent());
           }
         },
       ),
@@ -60,17 +44,14 @@ class _NewsTopicFeedScreenState extends State<NewsTopicFeedScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<NewsTopicFeedBloc>(
-      create: (context) => NewsTopicFeedBloc(
-        newsByTopicUseCase: context.repository<GetNewsByTopicUseCase>(),
-        newsFilterBloc: null,
-        topicModel: null,
-      ),
+    return NewsProvider.topicFeedBlocProvider(
+      newsTopicUIModel: newsTopicEntity.toUIModel,
       child: Scaffold(
         backgroundColor: Theme.of(context).backgroundColor,
         body: SafeArea(
           child: NewsFilteringAppBar(
-            header: _buildHeader(),
+            header: _buildHeader(
+                context, context.bloc<NewsTopicFeedBloc>().topicModel),
             body: Padding(
               padding: const EdgeInsets.all(8.0),
               child: NewsTopicFeedList(),

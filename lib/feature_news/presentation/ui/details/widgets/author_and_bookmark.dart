@@ -23,7 +23,7 @@ class AuthorAndBookmark extends StatelessWidget {
         SizedBox(width: 6),
         RichText(
           text: TextSpan(
-            text: 'By ${feedUIModel.feed.author}',
+            text: 'By ${feedUIModel.feedEntity.author}',
             style: Theme.of(context).textTheme.bodyText2.copyWith(fontSize: 13),
             children: <TextSpan>[
               TextSpan(
@@ -56,14 +56,14 @@ class AuthorAndBookmark extends StatelessWidget {
                     }
                     return IconButton(
                       icon: Icon(
-                        feedUIModel.feed.isBookmarked
+                        feedUIModel.feedEntity.isBookmarked
                             ? FontAwesomeIcons.solidHeart
                             : FontAwesomeIcons.heart,
                         size: 36,
                         color: Theme.of(context).accentColor,
                       ),
                       onPressed: () {
-                        if (feedUIModel.feed.isBookmarked) {
+                        if (feedUIModel.feedEntity.isBookmarked) {
                           feedUIModel.unbookmark();
                           context
                               .bloc<BookmarkUnBookmarkBloc>()

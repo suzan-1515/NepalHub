@@ -5,11 +5,11 @@ import 'package:samachar_hub/core/services/services.dart';
 import 'package:samachar_hub/core/widgets/empty_data_widget.dart';
 import 'package:samachar_hub/core/widgets/error_data_widget.dart';
 import 'package:samachar_hub/core/widgets/progress_widget.dart';
-import 'package:samachar_hub/feature_news/domain/usecases/get_followed_news_topics_use_case.dart';
-import 'package:samachar_hub/feature_news/domain/usecases/get_news_topics_use_case.dart';
+import 'package:samachar_hub/feature_news/presentation/blocs/news_category/news_category_bloc.dart';
 import 'package:samachar_hub/feature_news/presentation/blocs/news_topic/news_topic_bloc.dart';
 import 'package:samachar_hub/feature_news/presentation/ui/widgets/news_menu_item.dart';
 import 'package:samachar_hub/core/extensions/view.dart';
+import 'package:samachar_hub/feature_news/utils/provider.dart';
 
 class FollowedNewsTopicList extends StatelessWidget {
   const FollowedNewsTopicList({
@@ -18,15 +18,12 @@ class FollowedNewsTopicList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<NewsTopicBloc>(
-      create: (context) => NewsTopicBloc(
-        getNewsTopicsUseCase: context.repository<GetNewsTopicsUseCase>(),
-        getNewsFollowedTopicsUseCase:
-            context.repository<GetFollowedNewsTopicsUseCase>(),
-      )..add(GetFollowedTopicsEvent()),
+    return NewsProvider.topicBlocProvider(
       child: BlocConsumer<NewsTopicBloc, NewsTopicState>(
         listener: (context, state) {
-          if (state is ErrorState) {
+          if (state is Initial) {
+            context.bloc<NewsTopicBloc>().add(GetFollowedTopicsEvent());
+          } else if (state is ErrorState) {
             context.showMessage(state.message);
           }
         },
@@ -50,7 +47,8 @@ class FollowedNewsTopicList extends StatelessWidget {
                         context
                             .repository<NavigationService>()
                             .toNewsTopicFeedScreen(
-                                context: context, topicModel: topicModel.topic);
+                                context: context,
+                                topicEntity: topicModel.topic);
                       },
                     );
                   },

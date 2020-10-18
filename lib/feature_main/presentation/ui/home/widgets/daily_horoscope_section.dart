@@ -5,17 +5,16 @@ import 'package:samachar_hub/core/models/language.dart';
 import 'package:samachar_hub/core/services/services.dart';
 import 'package:samachar_hub/core/widgets/cached_image_widget.dart';
 import 'package:samachar_hub/feature_horoscope/domain/entities/horoscope_type.dart';
-import 'package:samachar_hub/feature_horoscope/domain/usecases/get_daily_horoscope_use_case.dart';
-import 'package:samachar_hub/feature_horoscope/domain/usecases/get_monthly_horoscope_use_case.dart';
-import 'package:samachar_hub/feature_horoscope/domain/usecases/get_weekly_horoscope_use_case.dart';
-import 'package:samachar_hub/feature_horoscope/domain/usecases/get_yearly_horoscope_use_case.dart';
 import 'package:samachar_hub/feature_horoscope/presentation/blocs/horoscope/horoscope_bloc.dart';
 import 'package:samachar_hub/feature_horoscope/presentation/models/horoscope_model.dart';
 import 'package:samachar_hub/feature_horoscope/presentation/extensions/horoscope_extensions.dart';
+import 'package:samachar_hub/feature_horoscope/utils/provider.dart';
 import 'package:samachar_hub/feature_main/presentation/blocs/settings/settings_cubit.dart';
+import 'package:samachar_hub/feature_main/presentation/models/home/home_model.dart';
 
 class DailyHoroscope extends StatelessWidget {
-  const DailyHoroscope({Key key}) : super(key: key);
+  final HomeUIModel homeUIModel;
+  const DailyHoroscope({Key key, this.homeUIModel}) : super(key: key);
 
   Widget _buildPopupMenu(BuildContext context) {
     return PopupMenuButton<String>(
@@ -133,45 +132,33 @@ class DailyHoroscope extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FadeInUp(
-      child: BlocProvider<HoroscopeBloc>(
-        create: (context) => HoroscopeBloc(
-            getDailyHoroscopeUseCase:
-                context.repository<GetDailyHoroscopeUseCase>(),
-            getMonthlyHoroscopeUseCase:
-                context.repository<GetMonthlyHoroscopeUseCase>(),
-            getWeeklyHoroscopeUseCase:
-                context.repository<GetWeeklyHoroscopeUseCase>(),
-            getYearlyHoroscopeUseCase:
-                context.repository<GetYearlyHoroscopeUseCase>(),
-            type: HoroscopeType.DAILY)
-          ..add(
-            GetHoroscopeEvent(
-              defaultSignIndex:
-                  context.bloc<SettingsCubit>().settings.defaultHoroscopeSign,
-            ),
-          ),
+    return HoroscopeProvider.horoscopeBlocProvider(
+      type: HoroscopeType.DAILY,
+      child: FadeInUp(
         child: BlocListener<SettingsCubit, SettingsState>(
           listenWhen: (previous, current) =>
               (current is SettingsDefaultHoroscopeSignChangedState),
           listener: (context, state) {
             if (state is SettingsDefaultHoroscopeSignChangedState) {
               context.bloc<HoroscopeBloc>().add(
-                    RefreshHoroscopeEvent(
-                      defaultSignIndex: state.value,
-                    ),
+                    RefreshHoroscopeEvent(),
                   );
             }
           },
           child: BlocConsumer<HoroscopeBloc, HoroscopeState>(
-            listener: (context, state) {},
+            listener: (context, state) {
+              if (state is HoroscopeInitialState) {
+                context.bloc<HoroscopeBloc>().add(GetHoroscopeEvent());
+              }
+            },
             buildWhen: (previous, current) => !(current is HoroscopeErrorState),
             builder: (context, state) {
               if (state is HoroscopeLoadSuccessState) {
+                homeUIModel.shouldShowDailyHoroscopeSection = true;
                 return _buildCard(
                     context, state.horoscope, state.defaultSignIndex);
               }
-
+              homeUIModel.shouldShowDailyHoroscopeSection = false;
               return SizedBox.shrink();
             },
           ),

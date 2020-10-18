@@ -10,6 +10,7 @@ import 'package:samachar_hub/feature_news/domain/usecases/get_followed_news_cate
 import 'package:samachar_hub/feature_news/domain/usecases/get_news_category_use_case.dart';
 import 'package:samachar_hub/feature_news/presentation/blocs/news_category/news_category_bloc.dart';
 import 'package:samachar_hub/feature_news/presentation/ui/widgets/news_menu_item.dart';
+import 'package:samachar_hub/feature_news/utils/provider.dart';
 
 class FollowedNewsCategoryList extends StatelessWidget {
   const FollowedNewsCategoryList({
@@ -18,16 +19,12 @@ class FollowedNewsCategoryList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<NewsCategoryBloc>(
-      create: (context) => NewsCategoryBloc(
-        getNewsCategoriesUseCase:
-            context.repository<GetNewsCategoriesUseCase>(),
-        getNewsFollowedCategoriesUseCase:
-            context.repository<GetFollowedNewsCategoriesUseCase>(),
-      )..add(GetFollowedCategories()),
+    return NewsProvider.categoryBlocProvider(
       child: BlocConsumer<NewsCategoryBloc, NewsCategoryState>(
         listener: (context, state) {
-          if (state is Error) {
+          if (state is Initial) {
+            context.bloc<NewsCategoryBloc>().add(GetFollowedCategories());
+          } else if (state is Error) {
             context.showMessage(state.message);
           }
         },
@@ -50,7 +47,8 @@ class FollowedNewsCategoryList extends StatelessWidget {
                       onTap: () {
                         context
                             .repository<NavigationService>()
-                            .toNewsCategoryFeedScreen(context, categoryModel);
+                            .toNewsCategoryFeedScreen(
+                                context, categoryModel.category);
                       },
                     );
                   },
