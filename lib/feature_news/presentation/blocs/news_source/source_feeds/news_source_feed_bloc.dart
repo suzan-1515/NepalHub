@@ -38,12 +38,10 @@ class NewsSourceFeedBloc
         this._sourceModel = sourceModel,
         this._newsFilterBloc = newsFilterBloc,
         super(InitialState(sourceModel: sourceModel)) {
+    this._sortBy = _newsFilterBloc.selectedSortBy;
     this._newsFilterBlocSubscription = this._newsFilterBloc.listen((state) {
-      if (state is InitialState) {
-        this._sortBy = _newsFilterBloc.selectedSortBy;
-        this._sourceModel = _newsFilterBloc.selectedSource;
-      } else if (state is SourceChangedState) {
-        this._sourceModel = state.source;
+      if (state is SourceChangedState) {
+        if (state.source != null) this._sourceModel = state.source;
         this.add(RefreshSourceNewsEvent());
       } else if (state is SortByChangedState) {
         this._sortBy = state.sortBy;

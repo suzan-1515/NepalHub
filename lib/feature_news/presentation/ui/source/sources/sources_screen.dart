@@ -8,7 +8,26 @@ import 'package:samachar_hub/core/extensions/view.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:samachar_hub/feature_news/utils/provider.dart';
 
-class NewsSourcesScreen extends StatelessWidget {
+class NewsSourcesScreen extends StatefulWidget {
+  @override
+  _NewsSourcesScreenState createState() => _NewsSourcesScreenState();
+}
+
+class _NewsSourcesScreenState extends State<NewsSourcesScreen> {
+  NewsSourceBloc _newsSourceBloc;
+  @override
+  void initState() {
+    super.initState();
+    _newsSourceBloc = NewsProvider.sourceBlocProvider(context: context);
+    _newsSourceBloc.add(GetSourcesEvent());
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _newsSourceBloc?.close();
+  }
+
   Widget _buildSourceList() {
     return BlocConsumer<NewsSourceBloc, NewsSourceState>(
         listener: (context, state) {
@@ -41,7 +60,8 @@ class NewsSourcesScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return NewsProvider.sourceBlocProvider(
+    return BlocProvider<NewsSourceBloc>.value(
+      value: _newsSourceBloc,
       child: Scaffold(
         appBar: AppBar(
           title: Text(

@@ -47,7 +47,7 @@ class _RecentNewsSectionState extends State<RecentNewsSection> {
   void initState() {
     super.initState();
     _likeNewsUseCase = context.repository<LikeNewsUseCase>();
-    _likeNewsUseCase = context.repository<UnlikeNewsUseCase>();
+    _unlikeNewsUseCase = context.repository<UnlikeNewsUseCase>();
     _dislikeNewsUseCase = context.repository<DislikeNewsUseCase>();
     _undislikeNewsUseCase = context.repository<UndislikeNewsUseCase>();
     _followNewsSourceUseCase = context.repository<FollowNewsSourceUseCase>();
@@ -64,12 +64,12 @@ class _RecentNewsSectionState extends State<RecentNewsSection> {
     return SliverList(
       delegate: SliverChildBuilderDelegate((_, int index) {
         if (index == 0) {
-          SectionHeading(
+          return SectionHeading(
             title: 'Recent News',
             subtitle: 'Most recent stories around you',
           );
         }
-        var feed = widget.recentNewsUIModel.feeds[index];
+        var feed = widget.recentNewsUIModel.feeds[index - 1];
         Widget feedWidget;
         if (index % 4 == 0) {
           feedWidget = NewsThumbnailView(
@@ -117,9 +117,9 @@ class _RecentNewsSectionState extends State<RecentNewsSection> {
               ),
             ),
             BlocProvider<ViewBloc>(
-                create: (context) => ViewBloc(
-                    viewNewsFeedUseCase: _viewNewsUseCase, feedUIModel: feed)
-                  ..add(View())),
+              create: (context) => ViewBloc(
+                  viewNewsFeedUseCase: _viewNewsUseCase, feedUIModel: feed),
+            ),
           ],
           child: feedWidget,
         );

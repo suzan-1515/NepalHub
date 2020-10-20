@@ -18,50 +18,63 @@ import 'package:shared_preferences/shared_preferences.dart';
 class AuthProviders {
   AuthProviders._();
   static List<RepositoryProvider> get authRepositoryProviders => [
-        RepositoryProvider(
-          create: (context) => AuthRepository(
-            AuthRemoteDataSource(
-              AuthRemoteService(
-                FirebaseAuth.instance,
-                GoogleSignIn(),
-                FacebookAuth.instance,
-                context.repository<HttpManager>(),
-              ),
-            ),
-            context.repository<AnalyticsService>(),
-            AuthLocalDataSource(
+        RepositoryProvider<AuthStorage>(
+          create: (context) =>
               AuthStorage(context.repository<SharedPreferences>()),
-            ),
+        ),
+        RepositoryProvider<AuthRemoteService>(
+          create: (context) => AuthRemoteService(
+            FirebaseAuth.instance,
+            GoogleSignIn(),
+            FacebookAuth.instance,
+            context.repository<HttpManager>(),
           ),
         ),
-      ];
-  static List<RepositoryProvider> get auth2RepositoryProviders => [
-        RepositoryProvider(
+        RepositoryProvider<AuthRemoteDataSource>(
+          create: (context) =>
+              AuthRemoteDataSource(context.repository<AuthRemoteService>()),
+        ),
+        RepositoryProvider<AuthLocalDataSource>(
+          create: (context) =>
+              AuthLocalDataSource(context.repository<AuthStorage>()),
+        ),
+        RepositoryProvider<AuthRepository>(
+          create: (context) => AuthRepository(
+            context.repository<AuthRemoteDataSource>(),
+            context.repository<AnalyticsService>(),
+            context.repository<AuthLocalDataSource>(),
+          ),
+        ),
+        RepositoryProvider<GetUserProfileUseCase>(
           create: (context) =>
               GetUserProfileUseCase(context.repository<AuthRepository>()),
         ),
-        RepositoryProvider(
+        RepositoryProvider<LoginWithFacebookUseCase>(
           create: (context) =>
               LoginWithFacebookUseCase(context.repository<AuthRepository>()),
         ),
-        RepositoryProvider(
+        RepositoryProvider<LoginWithGoogleUseCase>(
           create: (context) =>
               LoginWithGoogleUseCase(context.repository<AuthRepository>()),
         ),
-        RepositoryProvider(
+        RepositoryProvider<LoginWithTwitterUseCase>(
           create: (context) =>
               LoginWithTwitterUseCase(context.repository<AuthRepository>()),
         ),
-        RepositoryProvider(
+        RepositoryProvider<GetUserProfileUseCase>(
           create: (context) =>
               GetUserProfileUseCase(context.repository<AuthRepository>()),
         ),
-        RepositoryProvider(
+        RepositoryProvider<AutoLoginUseCase>(
           create: (context) =>
               AutoLoginUseCase(context.repository<AuthRepository>()),
         ),
+        RepositoryProvider<LogoutUseCase>(
+          create: (context) =>
+              LogoutUseCase(context.repository<AuthRepository>()),
+        ),
       ];
-  static BlocProvider authBlocProvider({@required Widget child}) =>
+  static BlocProvider<AuthBloc> authBlocProvider({@required Widget child}) =>
       BlocProvider<AuthBloc>(
         create: (context) => AuthBloc(
           autoLoginUseCase: context.repository<AutoLoginUseCase>(),

@@ -62,7 +62,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         yield AuthErrorState(message: 'Unable to login.');
       yield AuthSuccessState(this._currentUser);
     } catch (e) {
-      log('Error login with google: ', error: e);
+      log('Error auto login: ', error: e);
       yield AuthErrorState(message: 'Unable to login.');
     }
   }

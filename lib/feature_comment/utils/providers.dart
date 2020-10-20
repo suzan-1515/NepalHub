@@ -14,45 +14,49 @@ import 'package:samachar_hub/feature_comment/presentation/blocs/comment_bloc.dar
 class CommentProvider {
   CommentProvider._();
   static List<RepositoryProvider> get commentRepositoryProviders => [
-        RepositoryProvider(
+        RepositoryProvider<CommentRemoteService>(
+          create: (context) => CommentRemoteService(
+            context.repository<HttpManager>(),
+          ),
+        ),
+        RepositoryProvider<CommentRemoteDataSource>(
+          create: (context) => CommentRemoteDataSource(
+            context.repository<CommentRemoteService>(),
+          ),
+        ),
+        RepositoryProvider<CommentRepository>(
           create: (context) => CommentRepository(
-            CommentRemoteDataSource(
-              CommentRemoteService(
-                context.repository<HttpManager>(),
-              ),
-            ),
+            context.repository<CommentRemoteDataSource>(),
             context.repository<AnalyticsService>(),
             context.repository<AuthRepository>(),
           ),
         ),
-      ];
-  static List<RepositoryProvider> get comment2RepositoryProviders => [
-        RepositoryProvider(
+        RepositoryProvider<DeleteCommentUseCase>(
           create: (context) =>
               DeleteCommentUseCase(context.repository<CommentRepository>()),
         ),
-        RepositoryProvider(
+        RepositoryProvider<GetCommentsUseCase>(
           create: (context) =>
               GetCommentsUseCase(context.repository<CommentRepository>()),
         ),
-        RepositoryProvider(
+        RepositoryProvider<LikeCommentUseCase>(
           create: (context) =>
               LikeCommentUseCase(context.repository<CommentRepository>()),
         ),
-        RepositoryProvider(
+        RepositoryProvider<UnlikeCommentUseCase>(
           create: (context) =>
               UnlikeCommentUseCase(context.repository<CommentRepository>()),
         ),
-        RepositoryProvider(
+        RepositoryProvider<UpdateCommentUseCase>(
           create: (context) =>
               UpdateCommentUseCase(context.repository<CommentRepository>()),
         ),
-        RepositoryProvider(
+        RepositoryProvider<PostCommentUseCase>(
           create: (context) =>
               PostCommentUseCase(context.repository<CommentRepository>()),
         ),
       ];
-  static BlocProvider commentBlocProvider({
+  static BlocProvider<CommentBloc> commentBlocProvider({
     @required Widget child,
     @required String threadId,
     @required CommentThreadType threadType,
@@ -68,7 +72,7 @@ class CommentProvider {
           threadType: threadType,
           likeCount: likeCount,
           commentCount: commentCount,
-        ),
+        )..add(GetCommentsEvent()),
         child: child,
       );
 }

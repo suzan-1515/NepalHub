@@ -39,9 +39,7 @@ class _NewsSourceFeedListState extends State<NewsSourceFeedList> {
     return BlocConsumer<NewsSourceFeedBloc, NewsSourceFeedState>(
         cubit: _newsSourceFeedBloc,
         listener: (context, state) {
-          if (state is InitialState) {
-            _newsSourceFeedBloc.add(GetSourceNewsEvent());
-          } else if (!(state is LoadingState)) {
+          if (!(state is LoadingState)) {
             _refreshCompleter?.complete();
             _refreshCompleter = Completer();
           }

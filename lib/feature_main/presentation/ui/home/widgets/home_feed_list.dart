@@ -28,6 +28,7 @@ class _HomeFeedListState extends State<HomeFeedList> {
   void initState() {
     super.initState();
     _refreshCompleter = Completer<void>();
+    _scrollController = ScrollController();
     _homeCubit = context.bloc<HomeCubit>();
   }
 

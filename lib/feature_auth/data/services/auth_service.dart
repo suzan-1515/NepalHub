@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_twitter/flutter_twitter.dart';
@@ -10,8 +12,8 @@ import 'package:samachar_hub/feature_auth/domain/entities/user_entity.dart';
 
 class AuthRemoteService with RemoteService {
   static const String REGISTER = '/register';
-  static const String LOGIN = '/auth/local';
-  static const String PROFILE = '/profile';
+  static const String LOGIN = '/login';
+  static const String PROFILE = '/user-profiles';
 
   final FirebaseAuth _firebaseAuth;
   final GoogleSignIn _googleSignIn;
@@ -36,17 +38,7 @@ class AuthRemoteService with RemoteService {
     UserCredential userCredential =
         await _firebaseAuth.signInWithCredential(facebookAuthCredential);
 
-    UserEntity userEntity;
-    if (userCredential.additionalUserInfo.isNewUser)
-      userEntity = await signup(
-        uid: userCredential.user.uid,
-      );
-    else
-      userEntity = await loginWithEmail(
-          identifier: userCredential.user.email,
-          password: userCredential.user.uid);
-
-    return userEntity;
+    return userCredential;
   }
 
   @override
@@ -63,17 +55,7 @@ class AuthRemoteService with RemoteService {
     UserCredential userCredential =
         await _firebaseAuth.signInWithCredential(credential);
 
-    UserEntity userEntity;
-    if (userCredential.additionalUserInfo.isNewUser)
-      userEntity = await signup(
-        uid: userCredential.user.uid,
-      );
-    else
-      userEntity = await loginWithEmail(
-          identifier: userCredential.user.email,
-          password: userCredential.user.uid);
-
-    return userEntity;
+    return userCredential;
   }
 
   @override
@@ -98,32 +80,21 @@ class AuthRemoteService with RemoteService {
     UserCredential userCredential =
         await _firebaseAuth.signInWithCredential(twitterAuthCredential);
 
-    UserEntity userEntity;
-    if (userCredential.additionalUserInfo.isNewUser)
-      userEntity = await signup(
-        uid: userCredential.user.uid,
-      );
-    else
-      userEntity = await loginWithEmail(
-          identifier: userCredential.user.email,
-          password: userCredential.user.uid);
-
-    return userEntity;
+    return userCredential;
   }
 
   @override
   Future signup({@required String uid}) {
-    final Map<String, dynamic> body = {
+    final Map<String, String> body = {
       'uid': uid,
     };
     var call = httpManager.post(path: REGISTER, body: body);
-
     return call;
   }
 
   @override
   Future loginWithEmail({String identifier, String password}) {
-    final Map<String, dynamic> body = {
+    final Map<String, String> body = {
       'identifier': identifier,
       'password': password,
     };
@@ -143,6 +114,16 @@ class AuthRemoteService with RemoteService {
       'Authorization': 'Bearer $token',
     };
     var call = httpManager.get(path: PROFILE, headers: headers);
+
+    return call;
+  }
+
+  @override
+  Future login({String uid}) {
+    final Map<String, String> body = {
+      'uid': uid,
+    };
+    var call = httpManager.post(path: LOGIN, body: body);
 
     return call;
   }

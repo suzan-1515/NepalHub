@@ -7,7 +7,6 @@ import 'package:samachar_hub/core/services/services.dart';
 import 'package:samachar_hub/core/widgets/progress_widget.dart';
 import 'package:samachar_hub/feature_auth/presentation/blocs/auth_bloc.dart';
 import 'package:samachar_hub/core/extensions/view.dart';
-import 'package:samachar_hub/feature_auth/utils/providers.dart';
 
 class LoginScreen extends StatelessWidget {
   Widget _buildHeader(BuildContext context) {
@@ -105,50 +104,48 @@ class LoginScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AuthProviders.authBlocProvider(
-      child: Scaffold(
-        backgroundColor: Theme.of(context).backgroundColor,
-        body: Container(
-          padding: const EdgeInsets.all(32.0),
-          color: Theme.of(context).backgroundColor,
-          child: Center(
-            child: BlocConsumer<AuthBloc, AuthState>(
-              listener: (context, state) {
-                if (state is AuthErrorState) {
-                  context.showMessage(state.message);
-                } else if (state is AuthSuccessState) {
-                  context
-                      .repository<CrashAnalyticsService>()
-                      .setUser(userId: state.user.id);
-                  context
-                      .repository<NotificationService>()
-                      .setEmail(state.user.email);
-                  context.repository<NavigationService>().toHomeScreen(context);
-                }
-              },
-              buildWhen: (previous, current) => !(current is AuthSuccessState),
-              builder: (context, state) {
-                return IgnorePointer(
-                  ignoring: state is AuthLoadingState,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                      Expanded(
-                        child: _buildHeader(context),
-                      ),
-                      SizedBox(height: 16),
-                      if (state is AuthLoadingState)
-                        Center(child: ProgressView()),
-                      Expanded(
-                        child: _buildSignInButtons(context),
-                      ),
-                    ],
-                  ),
-                );
-              },
-            ),
+    return Scaffold(
+      backgroundColor: Theme.of(context).backgroundColor,
+      body: Container(
+        padding: const EdgeInsets.all(32.0),
+        color: Theme.of(context).backgroundColor,
+        child: Center(
+          child: BlocConsumer<AuthBloc, AuthState>(
+            listener: (context, state) {
+              if (state is AuthErrorState) {
+                context.showMessage(state.message);
+              } else if (state is AuthSuccessState) {
+                context
+                    .repository<CrashAnalyticsService>()
+                    .setUser(userId: state.user.id);
+                context
+                    .repository<NotificationService>()
+                    .setEmail(state.user.email);
+                context.repository<NavigationService>().toHomeScreen(context);
+              }
+            },
+            buildWhen: (previous, current) => !(current is AuthSuccessState),
+            builder: (context, state) {
+              return IgnorePointer(
+                ignoring: state is AuthLoadingState,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    Expanded(
+                      child: _buildHeader(context),
+                    ),
+                    SizedBox(height: 16),
+                    if (state is AuthLoadingState)
+                      Center(child: ProgressView()),
+                    Expanded(
+                      child: _buildSignInButtons(context),
+                    ),
+                  ],
+                ),
+              );
+            },
           ),
         ),
       ),

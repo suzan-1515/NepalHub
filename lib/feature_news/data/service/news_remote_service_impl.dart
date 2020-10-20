@@ -1,10 +1,7 @@
 import 'package:samachar_hub/core/models/language.dart';
 import 'package:samachar_hub/core/network/http_manager/http_manager.dart';
 import 'package:samachar_hub/feature_news/data/service/remote_service.dart';
-import 'package:samachar_hub/feature_news/domain/models/news_category.dart';
-import 'package:samachar_hub/feature_news/domain/models/news_feed.dart';
 import 'package:samachar_hub/feature_news/domain/models/news_source.dart';
-import 'package:samachar_hub/feature_news/domain/models/news_topic.dart';
 import 'package:samachar_hub/feature_news/domain/models/sort.dart';
 import 'package:samachar_hub/core/extensions/api_paging.dart';
 
@@ -50,9 +47,9 @@ class NewsRemoteService implements RemoteService {
   @override
   Future fetchTrendingNews({
     SortBy sortBy,
-    int page = 1,
+    int page,
     int limit,
-    Language language = Language.NEPALI,
+    Language language,
     String token,
   }) async {
     Map<String, String> headers = {
@@ -60,8 +57,8 @@ class NewsRemoteService implements RemoteService {
     };
     final Map<String, dynamic> queryParams = {
       'type': 'trending',
-      '_start': page.start,
-      '_limit': limit ?? page.limit,
+      '_start': page.start.toString(),
+      '_limit': limit?.toString() ?? page.limit.toString(),
       'language': language.value
     };
     var trendingNewsCall =
@@ -74,8 +71,8 @@ class NewsRemoteService implements RemoteService {
   Future fetchNewsBySource({
     String sourceId,
     SortBy sortBy,
-    int page = 1,
-    Language language = Language.NEPALI,
+    int page,
+    Language language,
     String token,
   }) async {
     Map<String, String> headers = {
@@ -83,8 +80,8 @@ class NewsRemoteService implements RemoteService {
     };
     final Map<String, dynamic> queryParams = {
       'source': sourceId,
-      '_start': page.start,
-      '_limit': page.limit,
+      '_start': page.start.toString(),
+      '_limit': page.limit.toString(),
       'language': language.value
     };
     var newsCall =
@@ -98,8 +95,8 @@ class NewsRemoteService implements RemoteService {
     String categoryId,
     String sourceId,
     SortBy sortBy,
-    int page = 1,
-    Language language = Language.NEPALI,
+    int page,
+    Language language,
     String token,
   }) async {
     Map<String, String> headers = {
@@ -108,8 +105,8 @@ class NewsRemoteService implements RemoteService {
     final Map<String, dynamic> queryParams = {
       'category': categoryId,
       'source': sourceId,
-      '_start': page.start,
-      '_limit': page.limit,
+      '_start': page.start.toString(),
+      '_limit': page.limit.toString(),
       'language': language.value
     };
     var newsCall =
@@ -149,8 +146,8 @@ class NewsRemoteService implements RemoteService {
       {String topicId,
       String sourceId,
       SortBy sortBy,
-      int page = 1,
-      Language language = Language.NEPALI,
+      int page,
+      Language language,
       String token}) async {
     Map<String, String> headers = {
       'Authorization': 'Bearer $token',
@@ -158,8 +155,8 @@ class NewsRemoteService implements RemoteService {
     final Map<String, dynamic> queryParams = {
       'topics.id': topicId,
       'source': sourceId,
-      '_start': page.start,
-      '_limit': page.limit,
+      '_start': page.start.toString(),
+      '_limit': page.limit.toString(),
       'language': language.value
     };
     var tagNewsCall =
@@ -189,9 +186,9 @@ class NewsRemoteService implements RemoteService {
     };
     final Map<String, dynamic> queryParams = {
       'type': 'recent',
-      '_start': page.start,
-      '_limit': page.limit,
-      'language': language.value
+      '_start': page.start.toString(),
+      '_limit': page.limit.toString(),
+      'language': language?.value
     };
     var latestNewsCall =
         httpManager.get(path: NEWS, query: queryParams, headers: headers);

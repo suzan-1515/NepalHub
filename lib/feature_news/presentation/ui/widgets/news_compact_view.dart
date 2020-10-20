@@ -71,7 +71,7 @@ class NewsCompactView extends StatelessWidget {
                               child: CachedNetworkImage(
                                 fit: BoxFit.cover,
                                 imageUrl: feedUIModel
-                                    .newsSourceUIModel.source.favicon,
+                                    .newsSourceUIModel.source.favicon ?? '',
                                 placeholder: (context, _) =>
                                     Icon(FontAwesomeIcons.image),
                                 errorWidget: (context, url, error) =>

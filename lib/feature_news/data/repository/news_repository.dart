@@ -37,7 +37,7 @@ class NewsRepository implements Repository {
     if (!(await _networkInfo.isConnected)) throw NetworkException();
     return _remoteDataSource.fetchNewsByCategory(
       categoryId: category.id,
-      sourceId: source.id,
+      sourceId: source?.id,
       sortBy: sortBy,
       page: page,
       language: language,
@@ -71,7 +71,7 @@ class NewsRepository implements Repository {
     if (!(await _networkInfo.isConnected)) throw NetworkException();
     return _remoteDataSource.fetchNewsByTopic(
       topicId: topic.id,
-      sourceId: source.id,
+      sourceId: source?.id,
       sortBy: sortBy,
       page: page,
       language: language,

@@ -76,6 +76,9 @@ class AuthRepository with Repository {
 
   @override
   Future<UserEntity> autoLogin() {
-    return _authRemoteDataSource.autoLogin();
+    return _authRemoteDataSource.autoLogin().then((value) async {
+      await _authLocalDataSource.saveUserToken(token: value.token);
+      return value;
+    });
   }
 }

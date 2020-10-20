@@ -35,7 +35,7 @@ class NewsTopicModel extends NewsTopicEntity {
   String toJson() => json.encode(toMap());
 
   factory NewsTopicModel.fromMap(Map<String, dynamic> json) => NewsTopicModel(
-        id: json["id"],
+        id: json["id"].toString(),
         title: json["title"],
         language: (json["language"] as String).toLanguage,
         createdAt: DateTime.parse(json["created_at"]),

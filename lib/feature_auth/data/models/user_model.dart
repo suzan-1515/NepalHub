@@ -45,24 +45,26 @@ class UserModel extends UserEntity {
         createdAt: DateTime.parse(json["user"]["created_at"]),
         updatedAt: DateTime.parse(json["user"]["updated_at"]),
         avatar: json["user"]["avatar"],
-        isAnonymous: json["user"]["is_anonymous"],
-        isBlocked: json["user"]["is_blocked"],
-        isNewUser: json["user"]["is_new_user"],
+        isAnonymous: json["user"]["is_anonymous"] ?? false,
+        isBlocked: json["user"]["blocked"] ?? false,
+        isNewUser: json["user"]["is_new_user"] ?? false,
         method: json["user"]["provider"],
       );
 
   Map<String, dynamic> toMap() => {
-        "id": id,
-        "email": email,
-        "username": username,
-        "displayname": fullname,
         "jwt": token,
-        "created_at": createdAt.toIso8601String(),
-        "updated_at": updatedAt.toIso8601String(),
-        "avatar": avatar,
-        "is_anonymous": isAnonymous,
-        "is_blocked": isBlocked,
-        "is_new_user": isNewUser,
-        "provider": method,
+        "user": {
+          "id": id,
+          "email": email,
+          "username": username,
+          "displayname": fullname,
+          "created_at": createdAt.toIso8601String(),
+          "updated_at": updatedAt.toIso8601String(),
+          "avatar": avatar,
+          "is_anonymous": isAnonymous,
+          "blocked": isBlocked,
+          "is_new_user": isNewUser,
+          "provider": method,
+        }
       };
 }

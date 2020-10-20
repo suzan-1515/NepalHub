@@ -13,7 +13,12 @@ class HomeModel extends HomeEntity {
     @required List<NewsFeedModel> recentNews,
     @required List<NewsFeedModel> latestNews,
     @required List<NewsTopicModel> newsTopics,
-  });
+  }) : super(
+            corona: corona,
+            trendingNews: trendingNews,
+            recentNews: recentNews,
+            latestNews: latestNews,
+            newsTopics: newsTopics);
   factory HomeModel.fromJson(String str) => HomeModel.fromMap(json.decode(str));
 
   String toJson() => json.encode(toMap());
@@ -140,7 +145,14 @@ class CoronaCountryModel extends CountryEntity {
     @required DateTime createdAt,
     @required DateTime updatedAt,
     @required String flag,
-  });
+  }) : super(
+            id: id,
+            title: title,
+            code: code,
+            language: language,
+            createdAt: createdAt,
+            updatedAt: updatedAt,
+            flag: flag);
   factory CoronaCountryModel.fromJson(String str) =>
       CoronaCountryModel.fromMap(json.decode(str));
 

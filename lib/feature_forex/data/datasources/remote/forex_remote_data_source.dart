@@ -21,7 +21,7 @@ class ForexRemoteDataSource with RemoteDataSource {
       {@required Language language, @required String token}) async {
     var response =
         await _remoteService.fetchCurrencies(language: language, token: token);
-    var currencies =
+    final List<ForexCurrencyModel> currencies =
         response.map((e) => ForexCurrencyModel.fromMap(e)).toList();
     return currencies;
   }
@@ -38,7 +38,8 @@ class ForexRemoteDataSource with RemoteDataSource {
       numOfDays: numOfDays,
       token: token,
     );
-    var forexList = response.map((e) => ForexModel.fromMap(e)).toList();
+    final List<ForexModel> forexList =
+        response.map((e) => ForexModel.fromMap(e)).toList();
     return forexList;
   }
 
@@ -49,7 +50,8 @@ class ForexRemoteDataSource with RemoteDataSource {
       language: language,
       token: token,
     );
-    var forexList = response.map((e) => ForexModel.fromMap(e)).toList();
+    final List<ForexModel> forexList =
+        response.map((e) => ForexModel.fromMap(e)).toList();
     return forexList;
   }
 

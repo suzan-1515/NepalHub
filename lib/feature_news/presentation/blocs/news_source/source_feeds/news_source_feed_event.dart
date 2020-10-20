@@ -7,15 +7,15 @@ abstract class NewsSourceFeedEvent extends Equatable {
 class GetSourceNewsEvent extends NewsSourceFeedEvent {
   final Language language;
 
-  GetSourceNewsEvent({this.language});
+  GetSourceNewsEvent({this.language = Language.NEPALI});
   @override
-  List<Object> get props => [];
+  List<Object> get props => [language];
 }
 
 class GetMoreSourceNewsEvent extends NewsSourceFeedEvent {
   final int page;
   final Language language;
-  const GetMoreSourceNewsEvent({this.page, this.language});
+  const GetMoreSourceNewsEvent({this.page, this.language = Language.NEPALI});
 
   @override
   List<Object> get props => [page, language];
@@ -29,7 +29,7 @@ class RetrySourceNewsEvent extends NewsSourceFeedEvent {
 class RefreshSourceNewsEvent extends NewsSourceFeedEvent {
   final Language language;
 
-  RefreshSourceNewsEvent({this.language});
+  RefreshSourceNewsEvent({this.language = Language.NEPALI});
   @override
-  List<Object> get props => [];
+  List<Object> get props => [language];
 }

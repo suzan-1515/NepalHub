@@ -47,7 +47,7 @@ class _LatestNewsSectionState extends State<LatestNewsSection> {
   void initState() {
     super.initState();
     _likeNewsUseCase = context.repository<LikeNewsUseCase>();
-    _likeNewsUseCase = context.repository<UnlikeNewsUseCase>();
+    _unlikeNewsUseCase = context.repository<UnlikeNewsUseCase>();
     _dislikeNewsUseCase = context.repository<DislikeNewsUseCase>();
     _undislikeNewsUseCase = context.repository<UndislikeNewsUseCase>();
     _followNewsSourceUseCase = context.repository<FollowNewsSourceUseCase>();
@@ -64,12 +64,12 @@ class _LatestNewsSectionState extends State<LatestNewsSection> {
     return SliverList(
       delegate: SliverChildBuilderDelegate((_, int index) {
         if (index == 0) {
-          SectionHeading(
+          return SectionHeading(
             title: 'Latest News',
             subtitle: 'Latest stories around you',
           );
         }
-        var feed = widget.latestNewsUIModel.feeds[index];
+        var feed = widget.latestNewsUIModel.feeds[index - 1];
         Widget feedWidget;
         if (index % 4 == 0) {
           feedWidget = NewsThumbnailView(

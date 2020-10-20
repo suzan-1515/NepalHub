@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:samachar_hub/core/models/language.dart';
 import 'package:samachar_hub/feature_news/domain/models/news_category.dart';
 import 'package:samachar_hub/feature_news/domain/models/news_feed.dart';
@@ -7,18 +8,30 @@ import 'package:samachar_hub/feature_news/domain/models/sort.dart';
 
 mixin Repository {
   Future<List<NewsFeedEntity>> getLatestNews(
-      {Language language, SortBy sortBy, int page});
+      {@required Language language,
+      @required SortBy sortBy,
+      @required int page});
   Future<List<NewsFeedEntity>> getRecentNews(
-      {Language language, SortBy sortBy, int page});
+      {@required Language language,
+      @required SortBy sortBy,
+      @required int page});
 
   Future<List<NewsFeedEntity>> getTrendingNews(
-      {Language language, SortBy sortBy, int page, int limit});
+      {@required Language language,
+      @required SortBy sortBy,
+      @required int page,
+      @required int limit});
 
   Future<List<NewsFeedEntity>> getNewsBySource(NewsSourceEntity source,
-      {Language language, SortBy sortBy, int page});
+      {@required Language language,
+      @required SortBy sortBy,
+      @required int page});
 
   Future<List<NewsFeedEntity>> getNewsByCategory(NewsCategoryEntity category,
-      {Language language, NewsSourceEntity source, SortBy sortBy, int page});
+      {@required Language language,
+      @required NewsSourceEntity source,
+      @required SortBy sortBy,
+      @required int page});
 
   Future<List<NewsFeedEntity>> getRelatedNews(NewsFeedEntity parentFeed);
 
@@ -41,22 +54,25 @@ mixin Repository {
 
   Future<NewsSourceEntity> unFollowSource(NewsSourceEntity source);
 
-  Future<List<NewsSourceEntity>> getSources({Language language});
+  Future<List<NewsSourceEntity>> getSources({@required Language language});
 
-  Future<List<NewsCategoryEntity>> getCategories({Language language});
+  Future<List<NewsCategoryEntity>> getCategories({@required Language language});
 
   Future<NewsCategoryEntity> followCategory(NewsCategoryEntity category);
 
   Future<NewsCategoryEntity> unFollowCategory(NewsCategoryEntity category);
 
-  Future<List<NewsTopicEntity>> getTopics({Language language});
+  Future<List<NewsTopicEntity>> getTopics({@required Language language});
 
   Future<NewsTopicEntity> followTopic(NewsTopicEntity topic);
 
   Future<NewsTopicEntity> unFollowTopic(NewsTopicEntity topic);
 
   Future<List<NewsFeedEntity>> getNewsByTopic(NewsTopicEntity topic,
-      {Language language, NewsSourceEntity source, SortBy sortBy, int page});
+      {@required Language language,
+      @required NewsSourceEntity source,
+      @required SortBy sortBy,
+      @required int page});
 
-  Future<List<NewsFeedEntity>> getBookmarkedNews({int page});
+  Future<List<NewsFeedEntity>> getBookmarkedNews({@required int page});
 }

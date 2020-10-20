@@ -42,10 +42,9 @@ class NewsCategoryFeedBloc
         this._newsFilterBloc = newsFilterBloc,
         super(NewsCategoryFeedInitialState(categoryModel: categoryModel)) {
     this._newsFilterBlocSubscription = this._newsFilterBloc.listen((state) {
-      if (state is InitialState) {
-        this._sortBy = _newsFilterBloc.selectedSortBy;
-        this._source = _newsFilterBloc.selectedSource;
-      } else if (state is SourceChangedState) {
+      this._sortBy = _newsFilterBloc.selectedSortBy;
+      this._source = _newsFilterBloc.selectedSource;
+      if (state is SourceChangedState) {
         this._source = state.source;
         this.add(RefreshCategoryNewsEvent());
       } else if (state is SortByChangedState) {
@@ -85,6 +84,7 @@ class NewsCategoryFeedBloc
         final List<NewsFeedEntity> newsList = await _newsByCategoryUseCase.call(
           GetNewsByCategoryUseCaseParams(
               category: categoryModel.category,
+              source: sourceModel?.source,
               sortBy: sortBy,
               page: 1,
               language: event.language),
@@ -130,6 +130,7 @@ class NewsCategoryFeedBloc
         final List<NewsFeedEntity> newsList = await _newsByCategoryUseCase.call(
           GetNewsByCategoryUseCaseParams(
               category: categoryModel.category,
+              source: sourceModel?.source,
               sortBy: sortBy,
               page: event.page,
               language: event.language),
@@ -170,6 +171,7 @@ class NewsCategoryFeedBloc
       final List<NewsFeedEntity> newsList = await _newsByCategoryUseCase.call(
         GetNewsByCategoryUseCaseParams(
           category: categoryModel.category,
+          source: sourceModel?.source,
           sortBy: sortBy,
           page: 1,
           language: event.language,

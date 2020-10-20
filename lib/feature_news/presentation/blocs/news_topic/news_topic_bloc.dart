@@ -22,7 +22,7 @@ class NewsTopicBloc extends Bloc<NewsTopicEvent, NewsTopicState> {
       {@required getNewsTopicsUseCase, @required getNewsFollowedTopicsUseCase})
       : _newsTopicsUseCase = getNewsTopicsUseCase,
         _newsFollowedTopicsUseCase = getNewsFollowedTopicsUseCase,
-        super(LoadingState());
+        super(InitialState());
 
   @override
   Stream<NewsTopicState> mapEventToState(

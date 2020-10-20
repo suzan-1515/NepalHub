@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_advanced_networkimage/provider.dart';
 import 'package:samachar_hub/feature_news/domain/models/news_source.dart';
 import 'package:samachar_hub/feature_news/presentation/blocs/news_source/source_feeds/news_source_feed_bloc.dart';
 import 'package:samachar_hub/feature_news/presentation/blocs/news_source/follow_unfollow/follow_un_follow_bloc.dart';
@@ -16,29 +17,35 @@ class NewsSourceFeedScreen extends StatelessWidget {
   const NewsSourceFeedScreen({Key key, @required this.newsSourceEntity})
       : super(key: key);
 
-  Widget _buildHeader(BuildContext context, NewsSourceUIModel sourceUIModel) {
+  Widget _buildHeader(BuildContext context) {
     return BlocBuilder<FollowUnFollowBloc, FollowUnFollowState>(
-      builder: (context, state) => NewsFilterHeader(
-        icon: DecorationImage(
-          image: AssetImage(sourceUIModel.source.isValidIcon
-              ? sourceUIModel.source.icon
-              : 'assets/images/user.png'),
-          fit: BoxFit.cover,
-        ),
-        title: sourceUIModel.source.title,
-        isFollowed: sourceUIModel.source.isFollowed,
-        onTap: () {
-          if (sourceUIModel.source.isFollowed) {
-            sourceUIModel.unfollow();
-            context
-                .bloc<FollowUnFollowBloc>()
-                .add(FollowUnFollowUnFollowEvent());
-          } else {
-            sourceUIModel.follow();
-            context.bloc<FollowUnFollowBloc>().add(FollowUnFollowFollowEvent());
-          }
-        },
-      ),
+      builder: (context, state) {
+        final NewsSourceUIModel sourceUIModel =
+            context.bloc<NewsSourceFeedBloc>().sourceModel;
+        return NewsFilterHeader(
+          icon: DecorationImage(
+            image: sourceUIModel.source.isValidIcon
+                ? AdvancedNetworkImage(sourceUIModel.source.icon)
+                : AssetImage('assets/images/user.png'),
+            fit: BoxFit.cover,
+          ),
+          title: sourceUIModel.source.title,
+          isFollowed: sourceUIModel.source.isFollowed,
+          onTap: () {
+            if (sourceUIModel.source.isFollowed) {
+              sourceUIModel.unfollow();
+              context
+                  .bloc<FollowUnFollowBloc>()
+                  .add(FollowUnFollowUnFollowEvent());
+            } else {
+              sourceUIModel.follow();
+              context
+                  .bloc<FollowUnFollowBloc>()
+                  .add(FollowUnFollowFollowEvent());
+            }
+          },
+        );
+      },
     );
   }
 
@@ -50,8 +57,7 @@ class NewsSourceFeedScreen extends StatelessWidget {
         backgroundColor: Theme.of(context).backgroundColor,
         body: SafeArea(
           child: NewsFilteringAppBar(
-            header: _buildHeader(
-                context, context.bloc<NewsSourceFeedBloc>().sourceModel),
+            header: _buildHeader(context),
             body: Padding(
               padding: const EdgeInsets.all(8.0),
               child: NewsSourceFeedList(),

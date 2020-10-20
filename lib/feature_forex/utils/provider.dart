@@ -19,62 +19,72 @@ import 'package:shared_preferences/shared_preferences.dart';
 class ForexProvider {
   ForexProvider._();
   static List<RepositoryProvider> get forexRepositoryProviders => [
-        RepositoryProvider(
+        RepositoryProvider<ForexStorage>(
+          create: (context) => ForexStorage(
+            context.repository<SharedPreferences>(),
+          ),
+        ),
+        RepositoryProvider<ForexRemoteService>(
+          create: (context) => ForexRemoteService(
+            context.repository<HttpManager>(),
+          ),
+        ),
+        RepositoryProvider<ForexRemoteDataSource>(
+          create: (context) => ForexRemoteDataSource(
+            context.repository<ForexRemoteService>(),
+          ),
+        ),
+        RepositoryProvider<ForexLocalDataSource>(
+          create: (context) => ForexLocalDataSource(
+            context.repository<ForexStorage>(),
+          ),
+        ),
+        RepositoryProvider<ForexRepository>(
           create: (context) => ForexRepository(
-            ForexRemoteDataSource(
-              ForexRemoteService(
-                context.repository<HttpManager>(),
-              ),
-            ),
-            ForexLocalDataSource(
-              ForexStorage(
-                context.repository<SharedPreferences>(),
-              ),
-            ),
+            context.repository<ForexRemoteDataSource>(),
+            context.repository<ForexLocalDataSource>(),
             context.repository<AnalyticsService>(),
             context.repository<AuthRepository>(),
           ),
         ),
-      ];
-  static List<RepositoryProvider> get forex2RepositoryProviders => [
-        RepositoryProvider(
+        RepositoryProvider<DislikeForexUseCase>(
           create: (context) =>
               DislikeForexUseCase(context.repository<ForexRepository>()),
         ),
-        RepositoryProvider(
+        RepositoryProvider<GetForexCurrenciesUseCase>(
           create: (context) =>
               GetForexCurrenciesUseCase(context.repository<ForexRepository>()),
         ),
-        RepositoryProvider(
+        RepositoryProvider<GetForexTimelineUseCase>(
           create: (context) =>
               GetForexTimelineUseCase(context.repository<ForexRepository>()),
         ),
-        RepositoryProvider(
+        RepositoryProvider<GetLatestForexUseCase>(
           create: (context) =>
               GetLatestForexUseCase(context.repository<ForexRepository>()),
         ),
-        RepositoryProvider(
+        RepositoryProvider<LikeForexUseCase>(
           create: (context) =>
               LikeForexUseCase(context.repository<ForexRepository>()),
         ),
-        RepositoryProvider(
+        RepositoryProvider<ShareForexUseCase>(
           create: (context) =>
               ShareForexUseCase(context.repository<ForexRepository>()),
         ),
-        RepositoryProvider(
+        RepositoryProvider<UndislikeForexUseCase>(
           create: (context) =>
               UndislikeForexUseCase(context.repository<ForexRepository>()),
         ),
-        RepositoryProvider(
+        RepositoryProvider<UnlikeForexUseCase>(
           create: (context) =>
               UnlikeForexUseCase(context.repository<ForexRepository>()),
         ),
-        RepositoryProvider(
+        RepositoryProvider<ViewForexUseCase>(
           create: (context) =>
               ViewForexUseCase(context.repository<ForexRepository>()),
         ),
       ];
-  static BlocProvider forexBlocProvider({
+  static BlocProvider<ForexBloc> forexBlocProvider({
     @required Widget child,
   }) =>
       BlocProvider<ForexBloc>(
@@ -82,25 +92,26 @@ class ForexProvider {
           getLatestForexUseCase: context.repository<GetLatestForexUseCase>(),
           getDefaultForexCurrencyUseCase:
               context.repository<GetDefaultForexCurrencyUseCase>(),
-        ),
+        )..add(GetLatestForexEvent()),
         child: child,
       );
-  static BlocProvider forexTimelineBlocProvider(
+  static BlocProvider<ForexTimelineBloc> forexTimelineBlocProvider(
           {@required Widget child, @required String currencyId}) =>
       BlocProvider<ForexTimelineBloc>(
         create: (context) => ForexTimelineBloc(
           currencyId: currencyId,
           getForexTimelineUseCase:
               context.repository<GetForexTimelineUseCase>(),
-        ),
+        )..add(GetForexTimelineEvent()),
         child: child,
       );
-  static BlocProvider forexCurrencyBlocProvider({@required Widget child}) =>
+  static BlocProvider<ForexCurrencyBloc> forexCurrencyBlocProvider(
+          {@required Widget child}) =>
       BlocProvider<ForexCurrencyBloc>(
         create: (context) => ForexCurrencyBloc(
           getForexCurrenciesUseCase:
               context.repository<GetForexCurrenciesUseCase>(),
-        ),
+        )..add(GetForexCurrencies()),
         child: child,
       );
 }

@@ -23,7 +23,7 @@ class GetFollowedCategories extends NewsCategoryEvent {
 class RefreshCategories extends NewsCategoryEvent {
   final Language language;
 
-  RefreshCategories({this.language});
+  RefreshCategories({this.language = Language.ENGLISH});
   @override
   List<Object> get props => [language];
 }

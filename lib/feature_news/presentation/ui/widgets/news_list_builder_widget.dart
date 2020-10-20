@@ -62,7 +62,7 @@ class _NewsListBuilderState extends State<NewsListBuilder> {
   void initState() {
     super.initState();
     _likeNewsUseCase = context.repository<LikeNewsUseCase>();
-    _likeNewsUseCase = context.repository<UnlikeNewsUseCase>();
+    _unlikeNewsUseCase = context.repository<UnlikeNewsUseCase>();
     _dislikeNewsUseCase = context.repository<DislikeNewsUseCase>();
     _undislikeNewsUseCase = context.repository<UndislikeNewsUseCase>();
     _followNewsSourceUseCase = context.repository<FollowNewsSourceUseCase>();
@@ -148,7 +148,7 @@ class _NewsListBuilderState extends State<NewsListBuilder> {
                 create: (context) => ViewBloc(
                   feedUIModel: feed,
                   viewNewsFeedUseCase: _viewNewsUseCase,
-                )..add(View()),
+                ),
               ),
             ],
             child: view,

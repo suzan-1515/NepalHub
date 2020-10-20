@@ -41,11 +41,10 @@ class NewsTopicFeedBloc extends Bloc<NewsTopicFeedEvent, NewsTopicFeedState> {
         this._topicModel = topicModel,
         this._newsFilterBloc = newsFilterBloc,
         super(InitialState(topicModel: topicModel)) {
+    this._sortBy = _newsFilterBloc.selectedSortBy;
+    this._source = _newsFilterBloc.selectedSource;
     this._newsFilterBlocSubscription = this._newsFilterBloc.listen((state) {
-      if (state is InitialState) {
-        this._sortBy = _newsFilterBloc.selectedSortBy;
-        this._source = _newsFilterBloc.selectedSource;
-      } else if (state is SourceChangedState) {
+      if (state is SourceChangedState) {
         this._source = state.source;
         this.add(RefreshTopicNewsEvent());
       } else if (state is SortByChangedState) {
@@ -128,7 +127,7 @@ class NewsTopicFeedBloc extends Bloc<NewsTopicFeedEvent, NewsTopicFeedState> {
         final List<NewsFeedEntity> newsList = await _newsByTopicUseCase.call(
           GetNewsByTopicUseCaseParams(
               topic: topicModel.topic,
-              source: sourceModel.source,
+              source: sourceModel?.source,
               sortBy: sortBy,
               page: event.page,
               language: event.language),
@@ -167,7 +166,7 @@ class NewsTopicFeedBloc extends Bloc<NewsTopicFeedEvent, NewsTopicFeedState> {
       final List<NewsFeedEntity> newsList = await _newsByTopicUseCase.call(
         GetNewsByTopicUseCaseParams(
           topic: topicModel.topic,
-          source: sourceModel.source,
+          source: sourceModel?.source,
           sortBy: sortBy,
           page: 1,
           language: event.language,

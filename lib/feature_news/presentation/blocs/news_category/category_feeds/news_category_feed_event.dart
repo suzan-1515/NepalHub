@@ -16,7 +16,8 @@ class GetMoreCategoryNewsEvent extends NewsCategoryFeedEvent {
   final Language language;
   final int page;
 
-  GetMoreCategoryNewsEvent({this.language = Language.NEPALI, this.page});
+  GetMoreCategoryNewsEvent(
+      {this.language = Language.NEPALI, @required this.page});
 
   @override
   List<Object> get props => [language, page];

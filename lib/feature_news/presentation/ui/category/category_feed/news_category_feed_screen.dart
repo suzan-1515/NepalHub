@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_advanced_networkimage/provider.dart';
 import 'package:samachar_hub/feature_news/domain/models/news_category.dart';
 import 'package:samachar_hub/feature_news/presentation/blocs/news_category/category_feeds/news_category_feed_bloc.dart';
 import 'package:samachar_hub/feature_news/presentation/blocs/news_category/follow_unfollow/follow_un_follow_bloc.dart';
@@ -16,15 +17,16 @@ class NewsCategoryFeedScreen extends StatelessWidget {
   const NewsCategoryFeedScreen({Key key, @required this.newsCategoryEntity})
       : super(key: key);
 
-  Widget _buildHeader(
-      BuildContext context, NewsCategoryUIModel categoryUIModel) {
+  Widget _buildHeader(BuildContext context) {
     return BlocBuilder<FollowUnFollowBloc, FollowUnFollowState>(
       builder: (context, state) {
+        final NewsCategoryUIModel categoryUIModel =
+            context.bloc<NewsCategoryFeedBloc>().categoryModel;
         return NewsFilterHeader(
           icon: DecorationImage(
-            image: AssetImage(categoryUIModel.category.isValidIcon
-                ? categoryUIModel.category.icon
-                : 'assets/images/user.png'),
+            image: categoryUIModel.category.isValidIcon
+                ? AdvancedNetworkImage(categoryUIModel.category.icon)
+                : AssetImage('assets/images/user.png'),
             fit: BoxFit.cover,
           ),
           title: categoryUIModel.category.title,
@@ -55,8 +57,7 @@ class NewsCategoryFeedScreen extends StatelessWidget {
         backgroundColor: Theme.of(context).backgroundColor,
         body: SafeArea(
           child: NewsFilteringAppBar(
-            header: _buildHeader(
-                context, context.bloc<NewsCategoryFeedBloc>().categoryModel),
+            header: _buildHeader(context),
             body: Padding(
               padding: const EdgeInsets.all(8.0),
               child: NewsCategoryFeedList(),

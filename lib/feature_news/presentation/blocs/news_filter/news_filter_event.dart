@@ -7,7 +7,7 @@ abstract class NewsFilterEvent extends Equatable {
 class GetNewsFilterSourcesEvent extends NewsFilterEvent {
   final Language language;
 
-  GetNewsFilterSourcesEvent({this.language});
+  GetNewsFilterSourcesEvent({this.language = Language.ENGLISH});
   @override
   List<Object> get props => [language];
 }

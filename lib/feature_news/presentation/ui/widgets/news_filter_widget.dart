@@ -19,7 +19,7 @@ class NewsFilterView extends StatelessWidget {
   final SortBy selectedSortby;
 
   Map<String, String> _getSourceSelectors() {
-    var sourceOptions = {};
+    Map<String, String> sourceOptions = {};
     sourceOptions['all'] = 'All Sources';
     sources?.forEach(
       (element) => sourceOptions[element.source.code] = element.source.title,

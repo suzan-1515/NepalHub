@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:samachar_hub/core/exceptions/app_exceptions.dart';
@@ -34,20 +36,41 @@ class AuthRemoteDataSource with RemoteDataSource {
 
   @override
   Future<UserModel> loginWithFacebook() async {
-    var userProfileResponse = await _remoteService.loginWithFacebook();
-    return UserModel.fromMap(userProfileResponse);
+    UserCredential userCredential = await _remoteService.loginWithFacebook();
+    UserModel userModel;
+    if (userCredential.additionalUserInfo.isNewUser)
+      userModel = await signup(
+        uid: userCredential.user.uid,
+      );
+    else
+      userModel = await login(uid: userCredential.user.uid);
+    return userModel;
   }
 
   @override
   Future<UserModel> loginWithGoogle() async {
-    var userProfileResponse = await _remoteService.loginWithGoogle();
-    return UserModel.fromMap(userProfileResponse);
+    UserCredential userCredential = await _remoteService.loginWithGoogle();
+    UserModel userModel;
+    if (userCredential.additionalUserInfo.isNewUser)
+      userModel = await signup(
+        uid: userCredential.user.uid,
+      );
+    else
+      userModel = await login(uid: userCredential.user.uid);
+    return userModel;
   }
 
   @override
   Future<UserModel> loginWithTwitter() async {
-    var userProfileResponse = await _remoteService.loginWithTwitter();
-    return UserModel.fromMap(userProfileResponse);
+    UserCredential userCredential = await _remoteService.loginWithTwitter();
+    UserModel userModel;
+    if (userCredential.additionalUserInfo.isNewUser)
+      userModel = await signup(
+        uid: userCredential.user.uid,
+      );
+    else
+      userModel = await login(uid: userCredential.user.uid);
+    return userModel;
   }
 
   @override
@@ -60,6 +83,12 @@ class AuthRemoteDataSource with RemoteDataSource {
     final User user = await _remoteService.fetchCurrentUser();
     if (user == null) throw UnauthorisedException();
     await user.getIdToken();
-    return loginWithEmail(identifier: user.email, password: user.uid);
+    return login(uid: user.uid);
+  }
+
+  @override
+  Future<UserModel> login({String uid}) async {
+    var userProfileResponse = await _remoteService.login(uid: uid);
+    return UserModel.fromMap(userProfileResponse);
   }
 }

@@ -17,11 +17,8 @@ class GetNewsBySourceUseCase
   @override
   Future<List<NewsFeedEntity>> call(GetNewsBySourceUseCaseParams params) {
     try {
-      return this._repository.getNewsBySource(
-            params.source,
-            sortBy: params.sortBy,
-            page: params.page,
-          );
+      return this._repository.getNewsBySource(params.source,
+          sortBy: params.sortBy, page: params.page, language: params.language);
     } catch (e) {
       log('GetNewsBySourceUseCase unsuccessful.', error: e);
       throw e;

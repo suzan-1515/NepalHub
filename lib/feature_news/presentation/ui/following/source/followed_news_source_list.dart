@@ -8,7 +8,6 @@ import 'package:samachar_hub/core/widgets/progress_widget.dart';
 import 'package:samachar_hub/feature_news/presentation/blocs/news_source/news_sources_bloc.dart';
 import 'package:samachar_hub/feature_news/presentation/ui/widgets/news_menu_item.dart';
 import 'package:samachar_hub/core/extensions/view.dart';
-import 'package:samachar_hub/feature_news/utils/provider.dart';
 
 class FollowedNewsSourceList extends StatelessWidget {
   const FollowedNewsSourceList({
@@ -17,61 +16,59 @@ class FollowedNewsSourceList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return NewsProvider.sourceBlocProvider(
-      child: BlocConsumer<NewsSourceBloc, NewsSourceState>(
-        listener: (context, state) {
-          if (state is InitialState) {
-            context.bloc<NewsSourceBloc>().add(GetFollowedSourcesEvent());
-          } else if (state is ErrorState) {
-            context.showMessage(state.message);
-          }
-        },
-        builder: (context, state) {
-          if (state is LoadSuccessState) {
-            return FadeInUp(
-              duration: Duration(milliseconds: 200),
-              child: LimitedBox(
-                maxHeight: 100,
-                child: ListView.builder(
-                  primary: false,
-                  itemExtent: 120,
-                  scrollDirection: Axis.horizontal,
-                  itemCount: state.sources.length,
-                  itemBuilder: (_, index) {
-                    var sourceModel = state.sources[index];
-                    return NewsMenuItem(
-                      title: sourceModel.source.title,
-                      icon: sourceModel.source.icon,
-                      onTap: () {
-                        context
-                            .repository<NavigationService>()
-                            .toNewsSourceFeedScreen(
-                                context: context, source: sourceModel.source);
-                      },
-                    );
-                  },
-                ),
-              ),
-            );
-          } else if (state is ErrorState) {
-            return Center(
-              child: ErrorDataView(
-                message: state.message,
-                onRetry: () {
-                  context.bloc<NewsSourceBloc>().add(GetFollowedSourcesEvent());
+    return BlocConsumer<NewsSourceBloc, NewsSourceState>(
+      listener: (context, state) {
+        if (state is InitialState) {
+          context.bloc<NewsSourceBloc>().add(GetFollowedSourcesEvent());
+        } else if (state is ErrorState) {
+          context.showMessage(state.message);
+        }
+      },
+      builder: (context, state) {
+        if (state is LoadSuccessState) {
+          return FadeInUp(
+            duration: Duration(milliseconds: 200),
+            child: LimitedBox(
+              maxHeight: 100,
+              child: ListView.builder(
+                primary: false,
+                itemExtent: 120,
+                scrollDirection: Axis.horizontal,
+                itemCount: state.sources.length,
+                itemBuilder: (_, index) {
+                  var sourceModel = state.sources[index];
+                  return NewsMenuItem(
+                    title: sourceModel.source.title,
+                    icon: sourceModel.source.icon,
+                    onTap: () {
+                      context
+                          .repository<NavigationService>()
+                          .toNewsSourceFeedScreen(
+                              context: context, source: sourceModel.source);
+                    },
+                  );
                 },
               ),
-            );
-          } else if (state is EmptyState) {
-            return Center(
-              child: EmptyDataView(
-                text: state.message,
-              ),
-            );
-          }
-          return Center(child: ProgressView());
-        },
-      ),
+            ),
+          );
+        } else if (state is ErrorState) {
+          return Center(
+            child: ErrorDataView(
+              message: state.message,
+              onRetry: () {
+                context.bloc<NewsSourceBloc>().add(GetFollowedSourcesEvent());
+              },
+            ),
+          );
+        } else if (state is EmptyState) {
+          return Center(
+            child: EmptyDataView(
+              text: state.message,
+            ),
+          );
+        }
+        return Center(child: ProgressView());
+      },
     );
   }
 }

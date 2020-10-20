@@ -1,6 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
@@ -19,6 +17,8 @@ class AppHttpManager implements HttpManager {
       receiveTimeout: 15000,
     );
     this.dio = Dio(options);
+    dio.interceptors.add(LogInterceptor(
+        responseBody: true, requestBody: true, requestHeader: true));
   }
 
   @override
@@ -27,13 +27,13 @@ class AppHttpManager implements HttpManager {
     Map<String, dynamic> query,
     Map<String, String> headers,
   }) async {
-    log('Api Get request url $path');
     final response = await dio.get(
       path,
       queryParameters: _filterNullOrEmptyValuesFromMap(query),
       options: Options(
-          headers: _filterNullOrEmptyValuesFromMap(headers),
-          contentType: 'application/json'),
+        headers: _filterNullOrEmptyValuesFromMap(headers),
+        responseType: ResponseType.json,
+      ),
     );
 
     return _returnResponse(response);
@@ -46,14 +46,14 @@ class AppHttpManager implements HttpManager {
     Map<String, dynamic> query,
     Map<String, String> headers,
   }) async {
-    log('Api Post request url $path, with $body');
     final response = await dio.post(
       path,
       data: _filterNullOrEmptyValuesFromMap(body),
       queryParameters: _filterNullOrEmptyValuesFromMap(query),
       options: Options(
-          headers: _filterNullOrEmptyValuesFromMap(headers),
-          contentType: 'application/json'),
+        headers: _filterNullOrEmptyValuesFromMap(headers),
+        responseType: ResponseType.json,
+      ),
     );
 
     return _returnResponse(response);
@@ -66,14 +66,14 @@ class AppHttpManager implements HttpManager {
     Map<String, dynamic> query,
     Map<String, String> headers,
   }) async {
-    log('Api Put request url $url, with $body');
     final response = await dio.put(
       url,
       data: _filterNullOrEmptyValuesFromMap(body),
       queryParameters: _filterNullOrEmptyValuesFromMap(query),
       options: Options(
-          headers: _filterNullOrEmptyValuesFromMap(headers),
-          contentType: 'application/json'),
+        headers: _filterNullOrEmptyValuesFromMap(headers),
+        responseType: ResponseType.json,
+      ),
     );
 
     return _returnResponse(response);
@@ -85,12 +85,11 @@ class AppHttpManager implements HttpManager {
     Map<String, dynamic> query,
     Map<String, String> headers,
   }) async {
-    log('Api Delete request url $url');
     final response = await dio.delete(url,
         queryParameters: _filterNullOrEmptyValuesFromMap(query),
         options: Options(
           headers: _filterNullOrEmptyValuesFromMap(headers),
-          contentType: 'application/json',
+          responseType: ResponseType.json,
         ));
 
     return _returnResponse(response);
@@ -108,7 +107,7 @@ class AppHttpManager implements HttpManager {
     return headers;
   }
 
-  String _queryBuilder(String path, Map<String, dynamic> query) {
+  String _queryBuilder(String path, Map<String, String> query) {
     final buffer = StringBuffer()..write(path);
     if (query != null) {
       if (query.isNotEmpty) {
@@ -123,9 +122,8 @@ class AppHttpManager implements HttpManager {
 
   dynamic _returnResponse(Response response) {
     if (response.statusCode >= 200 && response.statusCode <= 299) {
-      return json.decode(response.data);
+      return response.data;
     }
-    log('Api response error with ${response.statusCode} + ${response.data}');
     switch (response.statusCode) {
       case 400:
         throw BadRequestException();
@@ -138,9 +136,10 @@ class AppHttpManager implements HttpManager {
     }
   }
 
-  Map<String, String> _filterNullOrEmptyValuesFromMap(Map<String, String> map) {
-    final Map<String, String> filteredMap = <String, String>{};
-    map.forEach((String key, String value) {
+  Map<String, dynamic> _filterNullOrEmptyValuesFromMap(
+      Map<String, dynamic> map) {
+    final Map<String, dynamic> filteredMap = <String, dynamic>{};
+    map?.forEach((String key, dynamic value) {
       if (value != null && value.isNotEmpty) filteredMap[key] = value;
     });
     return filteredMap;

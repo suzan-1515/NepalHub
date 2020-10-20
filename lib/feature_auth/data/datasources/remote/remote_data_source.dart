@@ -11,5 +11,6 @@ mixin RemoteDataSource {
   Future<UserModel> signup({@required String uid});
   Future<UserModel> loginWithEmail(
       {@required String identifier, @required String password});
+  Future<UserModel> login({@required String uid});
   Future<UserModel> fetchUserProfile({@required String token});
 }

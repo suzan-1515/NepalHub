@@ -16,12 +16,12 @@ class HomeCubit extends Cubit<HomeState> {
       : _getHomeFeedUseCase = getHomeFeedUseCase,
         super(HomeInitialState());
 
-  getHomeFeed({Language language = Language.NEPALI}) async {
+  getHomeFeed() async {
     if (state is HomeLoadingState) return;
     emit(HomeLoadingState());
     try {
       final homeEntity = await _getHomeFeedUseCase
-          .call(GetHomeFeedUseCaseParams(language: language));
+          .call(GetHomeFeedUseCaseParams(language: null));
       if (homeEntity == null) {
         emit(HomeEmptyState(message: 'Data not available.'));
       } else {
@@ -35,11 +35,11 @@ class HomeCubit extends Cubit<HomeState> {
     }
   }
 
-  refreshHomeFeed({Language language = Language.NEPALI}) async {
+  refreshHomeFeed() async {
     if (state is HomeLoadingState) return;
     try {
       final homeEntity = await _getHomeFeedUseCase
-          .call(GetHomeFeedUseCaseParams(language: language));
+          .call(GetHomeFeedUseCaseParams(language: null));
       if (homeEntity != null) {
         emit(HomeLoadSuccessState(homeModel: homeEntity.toUIModel));
       } else {

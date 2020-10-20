@@ -9,6 +9,7 @@ mixin RemoteService {
   Future<dynamic> signup({@required String uid});
   Future<dynamic> loginWithEmail(
       {@required String identifier, @required String password});
+  Future<dynamic> login({@required String uid});
   Future<dynamic> fetchUserProfile({@required String token});
   Future<dynamic> fetchCurrentUser();
 }

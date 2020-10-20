@@ -22,15 +22,28 @@ class NewsCategoryMenuSection extends StatefulWidget {
 
 class _NewsCategoryMenuSectionState extends State<NewsCategoryMenuSection>
     with AutomaticKeepAliveClientMixin {
+  NewsCategoryBloc _newsCategoryBloc;
+  @override
+  void initState() {
+    super.initState();
+    _newsCategoryBloc = NewsProvider.categoryBlocProvider(context: context);
+    _newsCategoryBloc.add(GetFollowedCategories());
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _newsCategoryBloc?.close();
+  }
+
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return NewsProvider.categoryBlocProvider(
+    return BlocProvider<NewsCategoryBloc>.value(
+      value: _newsCategoryBloc,
       child: BlocConsumer<NewsCategoryBloc, NewsCategoryState>(
         listener: (context, state) {
-          if (state is Initial) {
-            context.bloc<NewsCategoryBloc>().add(GetFollowedCategories());
-          } else if (state is Empty || state is Error) {
+          if (state is Empty || state is Error) {
             widget.homeUIModel.shouldShowNewsCategorySection = false;
           }
         },

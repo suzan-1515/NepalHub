@@ -17,70 +17,80 @@ import 'package:shared_preferences/shared_preferences.dart';
 class HoroscopeProvider {
   HoroscopeProvider._();
   static List<RepositoryProvider> get horoscopeRepositoryProviders => [
-        RepositoryProvider(
+        RepositoryProvider<HoroscopeStorage>(
+          create: (context) => HoroscopeStorage(
+            context.repository<SharedPreferences>(),
+          ),
+        ),
+        RepositoryProvider<HoroscopeRemoteService>(
+          create: (context) => HoroscopeRemoteService(
+            context.repository<HttpManager>(),
+          ),
+        ),
+        RepositoryProvider<HoroscopeRemoteDataSource>(
+          create: (context) => HoroscopeRemoteDataSource(
+            context.repository<HoroscopeRemoteService>(),
+          ),
+        ),
+        RepositoryProvider<HoroscopeLocalDataSource>(
+          create: (context) => HoroscopeLocalDataSource(
+            context.repository<HoroscopeStorage>(),
+          ),
+        ),
+        RepositoryProvider<HoroscopeRepository>(
           create: (context) => HoroscopeRepository(
-            HoroscopeRemoteDataSource(
-              HoroscopeRemoteService(
-                context.repository<HttpManager>(),
-              ),
-            ),
-            HoroscopeLocalDataSource(
-              HoroscopeStorage(
-                context.repository<SharedPreferences>(),
-              ),
-            ),
+            context.repository<HoroscopeRemoteDataSource>(),
+            context.repository<HoroscopeLocalDataSource>(),
             context.repository<AnalyticsService>(),
             context.repository<AuthRepository>(),
           ),
         ),
-      ];
-  static List<RepositoryProvider> get horoscope2RepositoryProviders => [
-        RepositoryProvider(
+        RepositoryProvider<DislikeHoroscopeUseCase>(
           create: (context) => DislikeHoroscopeUseCase(
               context.repository<HoroscopeRepository>()),
         ),
-        RepositoryProvider(
+        RepositoryProvider<GetDailyHoroscopeUseCase>(
           create: (context) => GetDailyHoroscopeUseCase(
               context.repository<HoroscopeRepository>()),
         ),
-        RepositoryProvider(
+        RepositoryProvider<GetWeeklyHoroscopeUseCase>(
           create: (context) => GetWeeklyHoroscopeUseCase(
               context.repository<HoroscopeRepository>()),
         ),
-        RepositoryProvider(
+        RepositoryProvider<GetMonthlyHoroscopeUseCase>(
           create: (context) => GetMonthlyHoroscopeUseCase(
               context.repository<HoroscopeRepository>()),
         ),
-        RepositoryProvider(
+        RepositoryProvider<GetYearlyHoroscopeUseCase>(
           create: (context) => GetYearlyHoroscopeUseCase(
               context.repository<HoroscopeRepository>()),
         ),
-        RepositoryProvider(
+        RepositoryProvider<GetDefaultHoroscopeSignUseCase>(
           create: (context) => GetDefaultHoroscopeSignUseCase(
               context.repository<HoroscopeRepository>()),
         ),
-        RepositoryProvider(
+        RepositoryProvider<LikeHoroscopeUseCase>(
           create: (context) =>
               LikeHoroscopeUseCase(context.repository<HoroscopeRepository>()),
         ),
-        RepositoryProvider(
+        RepositoryProvider<ShareHoroscopeUseCase>(
           create: (context) =>
               ShareHoroscopeUseCase(context.repository<HoroscopeRepository>()),
         ),
-        RepositoryProvider(
+        RepositoryProvider<UndislikeHoroscopeUseCase>(
           create: (context) => UndislikeHoroscopeUseCase(
               context.repository<HoroscopeRepository>()),
         ),
-        RepositoryProvider(
+        RepositoryProvider<UnlikeHoroscopeUseCase>(
           create: (context) =>
               UnlikeHoroscopeUseCase(context.repository<HoroscopeRepository>()),
         ),
-        RepositoryProvider(
+        RepositoryProvider<ViewHoroscopeUseCase>(
           create: (context) =>
               ViewHoroscopeUseCase(context.repository<HoroscopeRepository>()),
         ),
       ];
-  static BlocProvider horoscopeBlocProvider({
+  static BlocProvider<HoroscopeBloc> horoscopeBlocProvider({
     @required Widget child,
     @required HoroscopeType type,
   }) =>
@@ -97,7 +107,7 @@ class HoroscopeProvider {
           getYearlyHoroscopeUseCase:
               context.repository<GetYearlyHoroscopeUseCase>(),
           type: type,
-        ),
+        )..add(GetHoroscopeEvent()),
         child: child,
       );
 }

@@ -16,7 +16,7 @@ class HomeRemoteService with RemoteService {
       'Authorization': 'Bearer $token',
     };
     Map<String, String> query = {
-      'language': language.value,
+      'language': language?.value,
     };
     var call =
         await _httpManager.get(path: HOME, headers: headers, query: query);
