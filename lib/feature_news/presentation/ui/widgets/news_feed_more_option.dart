@@ -11,10 +11,12 @@ import 'package:samachar_hub/core/extensions/view.dart';
 
 class NewsFeedMoreOption extends StatelessWidget {
   final NewsFeedUIModel feed;
+  final BuildContext context;
 
   const NewsFeedMoreOption({
     Key key,
     @required this.feed,
+    @required this.context,
   }) : super(key: key);
   @override
   Widget build(BuildContext context) {
@@ -31,78 +33,90 @@ class NewsFeedMoreOption extends StatelessWidget {
               style: Theme.of(context).textTheme.bodyText2,
             ),
             trailing: BlocBuilder<FollowUnFollowBloc, FollowUnFollowState>(
+                cubit: this.context.bloc<FollowUnFollowBloc>(),
                 builder: (context, state) {
-              return OutlineButton.icon(
-                icon: state is FollowUnFollowInProgressState
-                    ? Icon(
-                        Icons.donut_large,
-                        color: Theme.of(context).accentColor,
-                        size: 16,
-                      )
-                    : Icon(
-                        feed.newsSourceUIModel.source.isFollowed
-                            ? Icons.check
-                            : Icons.add,
-                        size: 16,
-                      ),
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.horizontal(
-                  left: Radius.circular(12),
-                  right: Radius.circular(12),
-                )),
-                visualDensity: VisualDensity.compact,
-                onPressed: () {
-                  if (feed.newsSourceUIModel.source.isFollowed) {
-                    feed.newsSourceUIModel.unfollow();
-                    context
-                        .bloc<FollowUnFollowBloc>()
-                        .add(FollowUnFollowUnFollowEvent());
-                  } else {
-                    feed.newsSourceUIModel.follow();
-                    context
-                        .bloc<FollowUnFollowBloc>()
-                        .add(FollowUnFollowFollowEvent());
-                  }
-                  Navigator.pop(context);
-                },
-                label: Text(feed.newsSourceUIModel.source.isFollowed
-                    ? 'Following'
-                    : 'Follow'),
-              );
-            }),
+                  return OutlineButton.icon(
+                    icon: state is FollowUnFollowInProgressState
+                        ? Icon(
+                            Icons.donut_large,
+                            color: Theme.of(context).accentColor,
+                            size: 16,
+                          )
+                        : Icon(
+                            feed.newsSourceUIModel.source.isFollowed
+                                ? Icons.check
+                                : Icons.add,
+                            size: 16,
+                          ),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.horizontal(
+                      left: Radius.circular(12),
+                      right: Radius.circular(12),
+                    )),
+                    visualDensity: VisualDensity.compact,
+                    onPressed: () {
+                      if (feed.newsSourceUIModel.source.isFollowed) {
+                        feed.newsSourceUIModel.unfollow();
+                        this
+                            .context
+                            .bloc<FollowUnFollowBloc>()
+                            .add(FollowUnFollowUnFollowEvent());
+                      } else {
+                        feed.newsSourceUIModel.follow();
+                        this
+                            .context
+                            .bloc<FollowUnFollowBloc>()
+                            .add(FollowUnFollowFollowEvent());
+                      }
+                      Navigator.pop(context);
+                    },
+                    label: Text(feed.newsSourceUIModel.source.isFollowed
+                        ? 'Following'
+                        : 'Follow'),
+                  );
+                }),
           ),
           Divider(),
           BlocBuilder<BookmarkUnBookmarkBloc, BookmarkUnBookmarkState>(
+              cubit: this.context.bloc<BookmarkUnBookmarkBloc>(),
               builder: (context, state) {
-            return ListTile(
-              visualDensity: VisualDensity.compact,
-              leading: Icon(
-                Icons.save_alt,
-                size: 18,
-              ),
-              title: Text(
-                feed.feedEntity.isBookmarked ? 'Remove bookmark' : 'Bookmark',
-                style: Theme.of(context).textTheme.bodyText2,
-              ),
-              trailing: state is BookmarkInProgress
-                  ? Icon(
-                      Icons.donut_large,
-                      color: Theme.of(context).accentColor,
-                      size: 16,
-                    )
-                  : null,
-              onTap: () {
-                if (feed.feedEntity.isBookmarked) {
-                  feed.unbookmark();
-                  context.bloc<BookmarkUnBookmarkBloc>().add(UnBookmarkNews());
-                } else {
-                  feed.bookmark();
-                  context.bloc<BookmarkUnBookmarkBloc>().add(BookmarkNews());
-                }
-                Navigator.pop(context);
-              },
-            );
-          }),
+                return ListTile(
+                  visualDensity: VisualDensity.compact,
+                  leading: Icon(
+                    Icons.save_alt,
+                    size: 18,
+                  ),
+                  title: Text(
+                    feed.feedEntity.isBookmarked
+                        ? 'Remove bookmark'
+                        : 'Bookmark',
+                    style: Theme.of(context).textTheme.bodyText2,
+                  ),
+                  trailing: state is BookmarkInProgress
+                      ? Icon(
+                          Icons.donut_large,
+                          color: Theme.of(context).accentColor,
+                          size: 16,
+                        )
+                      : null,
+                  onTap: () {
+                    if (feed.feedEntity.isBookmarked) {
+                      feed.unbookmark();
+                      this
+                          .context
+                          .bloc<BookmarkUnBookmarkBloc>()
+                          .add(UnBookmarkNews());
+                    } else {
+                      feed.bookmark();
+                      this
+                          .context
+                          .bloc<BookmarkUnBookmarkBloc>()
+                          .add(BookmarkNews());
+                    }
+                    Navigator.pop(context);
+                  },
+                );
+              }),
           ListTile(
             visualDensity: VisualDensity.compact,
             leading: Icon(
@@ -121,7 +135,7 @@ class NewsFeedMoreOption extends StatelessWidget {
                       data: feed.feedEntity.link,
                       contentType: 'news_feed')
                   .then((value) {
-                context.bloc<ShareBloc>().add(Share());
+                this.context.bloc<ShareBloc>().add(Share());
                 return value;
               });
               Navigator.pop(context);
@@ -168,7 +182,7 @@ class NewsFeedMoreOption extends StatelessWidget {
               style: Theme.of(context).textTheme.bodyText2,
             ),
             onTap: () {
-              context.bloc<DislikeBloc>().add(DislikeEvent());
+              this.context.bloc<DislikeBloc>().add(DislikeEvent());
               Navigator.pop(context);
             },
           ),

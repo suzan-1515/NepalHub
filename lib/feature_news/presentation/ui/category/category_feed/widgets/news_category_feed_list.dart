@@ -38,25 +38,19 @@ class _NewsCategoryFeedListState extends State<NewsCategoryFeedList> {
   Widget build(BuildContext context) {
     return BlocConsumer<NewsCategoryFeedBloc, NewsCategoryFeedState>(
         cubit: _newsCategoryFeedBloc,
+        listenWhen: (previous, current) =>
+            !(current is NewsCategoryFeedLoadingState) ||
+            !(current is NewsCategoryFeedMoreLoadingState),
         listener: (context, state) {
-          if (state is NewsCategoryFeedInitialState) {
-            _newsCategoryFeedBloc.add(GetCategoryNewsEvent());
-          } else if (!(state is NewsCategoryFeedLoadingState)) {
-            _refreshCompleter?.complete();
-            _refreshCompleter = Completer();
-          }
+          _refreshCompleter?.complete();
+          _refreshCompleter = Completer();
           if (state is NewsCategoryFeedErrorState) {
-            context.showMessage(state.message);
-          } else if (state is NewsCategoryFeedRefreshErrorState) {
             context.showMessage(state.message);
           }
         },
         buildWhen: (previous, current) =>
-            (current is NewsCategoryFeedInitialState ||
-                current is NewsCategoryFeedLoadSuccessState ||
-                current is NewsCategoryFeedEmptyState ||
-                current is NewsCategoryFeedErrorState ||
-                current is NewsCategoryFeedLoadingState),
+            !(current is NewsCategoryFeedErrorState) ||
+            !(current is NewsCategoryFeedMoreLoadingState),
         builder: (context, state) {
           if (state is NewsCategoryFeedLoadSuccessState) {
             return NewsListBuilder(
@@ -70,11 +64,11 @@ class _NewsCategoryFeedListState extends State<NewsCategoryFeedList> {
                 text: state.message,
               ),
             );
-          } else if (state is NewsCategoryFeedErrorState) {
+          } else if (state is NewsCategoryFeedLoadErrorState) {
             return Center(
               child: ErrorDataView(
                 onRetry: () =>
-                    _newsCategoryFeedBloc.add(RetryCategoryNewsEvent()),
+                    _newsCategoryFeedBloc.add(GetCategoryNewsEvent()),
               ),
             );
           }

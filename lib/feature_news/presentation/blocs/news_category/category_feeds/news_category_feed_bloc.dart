@@ -26,10 +26,12 @@ class NewsCategoryFeedBloc
 
   SortBy _sortBy;
   NewsSourceUIModel _source;
+  int _page = 1;
 
   SortBy get sortBy => _sortBy;
   NewsSourceUIModel get sourceModel => _source;
   NewsCategoryUIModel get categoryModel => _categoryModel;
+  int get page => _page;
 
   StreamSubscription _newsFilterBlocSubscription;
 
@@ -46,10 +48,10 @@ class NewsCategoryFeedBloc
       this._source = _newsFilterBloc.selectedSource;
       if (state is SourceChangedState) {
         this._source = state.source;
-        this.add(RefreshCategoryNewsEvent());
+        this.add(GetCategoryNewsEvent());
       } else if (state is SortByChangedState) {
         this._sortBy = state.sortBy;
-        this.add(RefreshCategoryNewsEvent());
+        this.add(GetCategoryNewsEvent());
       }
     });
   }
@@ -70,96 +72,68 @@ class NewsCategoryFeedBloc
       yield* _mapGetMoreCategoryNewsEventToState(event);
     } else if (event is RefreshCategoryNewsEvent) {
       yield* _mapRefreshCategoryNewsToState(event);
-    } else if (event is RetryCategoryNewsEvent) {
-      yield* _mapRetryCategoryNewsToState(event);
     }
   }
 
   Stream<NewsCategoryFeedState> _mapRefreshCategoryNewsToState(
       RefreshCategoryNewsEvent event) async* {
-    final currentState = state;
-    if (!(currentState is NewsCategoryFeedRefreshingState)) {
-      yield NewsCategoryFeedRefreshingState();
-      try {
-        final List<NewsFeedEntity> newsList = await _newsByCategoryUseCase.call(
-          GetNewsByCategoryUseCaseParams(
-              category: categoryModel.category,
-              source: sourceModel?.source,
-              sortBy: sortBy,
-              page: 1,
-              language: event.language),
-        );
-        if (newsList != null && newsList.isNotEmpty) {
-          yield NewsCategoryFeedLoadSuccessState(
-              feeds: newsList.toUIModels, hasMore: true);
-        } else {
-          if (currentState is NewsCategoryFeedLoadSuccessState) {
-            yield currentState.copyWith(hasMore: false);
-          } else
-            yield NewsCategoryFeedEmptyState(
-                message: 'News feed not available.');
-        }
-      } catch (e) {
-        log('News by category load error.', error: e);
-        if (currentState is NewsCategoryFeedLoadSuccessState) {
-          yield NewsCategoryFeedRefreshErrorState(
-              message: 'Unable to load data. Try again later.');
-        } else
-          yield NewsCategoryFeedErrorState(
-              message:
-                  'Unable to load data. Make sure you are connected to Internet.');
+    if (state is NewsCategoryFeedLoadingState) return;
+    try {
+      final List<NewsFeedEntity> newsList = await _newsByCategoryUseCase.call(
+        GetNewsByCategoryUseCaseParams(
+            category: categoryModel.category,
+            source: sourceModel?.source,
+            sortBy: sortBy,
+            page: 1,
+            language: event.language),
+      );
+      _page = 1;
+      if (newsList != null && newsList.isNotEmpty) {
+        yield NewsCategoryFeedLoadSuccessState(
+            feeds: newsList.toUIModels, hasMore: true);
+      } else {
+        yield NewsCategoryFeedErrorState(message: 'Unable to refresh');
       }
-    }
-  }
-
-  Stream<NewsCategoryFeedState> _mapRetryCategoryNewsToState(
-      RetryCategoryNewsEvent event) async* {
-    final currentState = state;
-    if (currentState is NewsCategoryFeedErrorState) {
-      add(GetCategoryNewsEvent());
+    } catch (e) {
+      log('News by category refresh error.', error: e);
+      yield NewsCategoryFeedErrorState(
+          message:
+              'Unable to refresh data. Make sure you are connected to Internet.');
     }
   }
 
   Stream<NewsCategoryFeedState> _mapGetMoreCategoryNewsEventToState(
       GetMoreCategoryNewsEvent event) async* {
     final currentState = state;
-    if (currentState is NewsCategoryFeedLoadSuccessState ||
-        !(currentState is NewsCategoryFeedMoreLoadingState)) {
-      yield NewsCategoryFeedMoreLoadingState();
-      try {
-        final List<NewsFeedEntity> newsList = await _newsByCategoryUseCase.call(
-          GetNewsByCategoryUseCaseParams(
-              category: categoryModel.category,
-              source: sourceModel?.source,
-              sortBy: sortBy,
-              page: event.page,
-              language: event.language),
-        );
-        if (newsList != null && newsList.isNotEmpty) {
-          if (currentState is NewsCategoryFeedLoadSuccessState) {
-            yield currentState.copyWith(
-                feeds: currentState.feeds + newsList.toUIModels);
-          } else
-            yield NewsCategoryFeedLoadSuccessState(
-                feeds: newsList.toUIModels, hasMore: true);
-        } else {
-          if (currentState is NewsCategoryFeedLoadSuccessState) {
-            yield currentState.copyWith(hasMore: false);
-          } else
-            yield NewsCategoryFeedEmptyState(
-                message: 'News feed not available.');
-        }
-      } catch (e) {
-        log('News by category load more cache error.', error: e);
-        yield NewsCategoryFeedLoadMoreErrorState(
-            message: 'Error loading data from server. Try again later.');
+    if (currentState is NewsCategoryFeedMoreLoadingState) return;
+    yield NewsCategoryFeedMoreLoadingState();
+    try {
+      final List<NewsFeedEntity> newsList = await _newsByCategoryUseCase.call(
+        GetNewsByCategoryUseCaseParams(
+            category: categoryModel.category,
+            source: sourceModel?.source,
+            sortBy: sortBy,
+            page: page + 1,
+            language: event.language),
+      );
+      if (newsList == null || newsList.isEmpty) {
         if (currentState is NewsCategoryFeedLoadSuccessState) {
           yield currentState.copyWith(hasMore: false);
+        }
+      } else {
+        _page = _page + 1;
+        if (currentState is NewsCategoryFeedLoadSuccessState) {
+          yield currentState.copyWith(
+              feeds: currentState.feeds + newsList.toUIModels);
         } else
-          yield NewsCategoryFeedErrorState(
-              message:
-                  'Unable to load data. Make sure you are connected to internet.');
+          yield NewsCategoryFeedLoadSuccessState(
+              feeds: newsList.toUIModels, hasMore: true);
       }
+    } catch (e) {
+      log('News by category load more cache error.', error: e);
+      yield NewsCategoryFeedErrorState(
+          message:
+              'Unable to load data. Make sure you are connected to internet.');
     }
   }
 
@@ -168,12 +142,13 @@ class NewsCategoryFeedBloc
     if (state is NewsCategoryFeedLoadingState) return;
     yield NewsCategoryFeedLoadingState();
     try {
+      _page = 1;
       final List<NewsFeedEntity> newsList = await _newsByCategoryUseCase.call(
         GetNewsByCategoryUseCaseParams(
           category: categoryModel.category,
           source: sourceModel?.source,
           sortBy: sortBy,
-          page: 1,
+          page: page,
           language: event.language,
         ),
       );
@@ -184,7 +159,7 @@ class NewsCategoryFeedBloc
             feeds: newsList.toUIModels, hasMore: true);
     } catch (e) {
       log('News by category load error.', error: e);
-      yield NewsCategoryFeedErrorState(
+      yield NewsCategoryFeedLoadErrorState(
           message:
               'Unable to load data. Make sure you are connected to internet.');
     }

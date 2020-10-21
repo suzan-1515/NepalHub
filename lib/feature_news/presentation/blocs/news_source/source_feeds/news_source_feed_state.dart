@@ -2,35 +2,35 @@ part of 'news_source_feed_bloc.dart';
 
 abstract class NewsSourceFeedState extends Equatable {}
 
-class InitialState extends NewsSourceFeedState {
+class NewsSourceFeedInitialState extends NewsSourceFeedState {
   final NewsSourceUIModel sourceModel;
-  InitialState({@required this.sourceModel});
+  NewsSourceFeedInitialState({@required this.sourceModel});
 
   @override
   List<Object> get props => [sourceModel.source];
 }
 
-class LoadingState extends NewsSourceFeedState {
+class NewsSourceFeedLoadingState extends NewsSourceFeedState {
   @override
   List<Object> get props => [];
 }
 
-class MoreLoadingState extends NewsSourceFeedState {
+class NewsSourceFeedMoreLoadingState extends NewsSourceFeedState {
   @override
   List<Object> get props => [];
 }
 
-class LoadSuccessState extends NewsSourceFeedState {
+class NewsSourceFeedLoadSuccessState extends NewsSourceFeedState {
   final List<NewsFeedUIModel> feeds;
   final bool hasMore;
 
-  LoadSuccessState({this.feeds, this.hasMore});
+  NewsSourceFeedLoadSuccessState({this.feeds, this.hasMore});
 
-  LoadSuccessState copyWith({
+  NewsSourceFeedLoadSuccessState copyWith({
     List<NewsFeedUIModel> feeds,
     bool hasMore,
   }) =>
-      LoadSuccessState(
+      NewsSourceFeedLoadSuccessState(
         feeds: feeds ?? this.feeds,
         hasMore: hasMore ?? this.hasMore,
       );
@@ -39,42 +39,28 @@ class LoadSuccessState extends NewsSourceFeedState {
   List<Object> get props => [feeds, hasMore];
 }
 
-class EmptyState extends NewsSourceFeedState {
+class NewsSourceFeedEmptyState extends NewsSourceFeedState {
   final String message;
 
-  EmptyState({this.message});
+  NewsSourceFeedEmptyState({this.message});
 
   @override
   List<Object> get props => [message];
 }
 
-class ErrorState extends NewsSourceFeedState {
+class NewsSourceFeedErrorState extends NewsSourceFeedState {
   final String message;
 
-  ErrorState({this.message});
+  NewsSourceFeedErrorState({this.message});
 
   @override
   List<Object> get props => [message];
 }
 
-class LoadMoreErrorState extends NewsSourceFeedState {
+class NewsSourceFeedLoadErrorState extends NewsSourceFeedState {
   final String message;
 
-  LoadMoreErrorState({this.message});
-
-  @override
-  List<Object> get props => [message];
-}
-
-class RefreshingState extends NewsSourceFeedState {
-  @override
-  List<Object> get props => [];
-}
-
-class RefreshErrorState extends NewsSourceFeedState {
-  final String message;
-
-  RefreshErrorState({this.message});
+  NewsSourceFeedLoadErrorState({this.message});
 
   @override
   List<Object> get props => [message];

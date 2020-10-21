@@ -34,6 +34,7 @@ class NewsRemoteService implements RemoteService {
     };
     final Map<String, dynamic> queryParams = {
       'type': 'latest',
+      'parent_id': 'null',
       '_start': page.start,
       '_limit': page.limit,
       'language': language.value
@@ -186,6 +187,7 @@ class NewsRemoteService implements RemoteService {
     };
     final Map<String, dynamic> queryParams = {
       'type': 'recent',
+      'parent_id': 'null',
       '_start': page.start.toString(),
       '_limit': page.limit.toString(),
       'language': language?.value

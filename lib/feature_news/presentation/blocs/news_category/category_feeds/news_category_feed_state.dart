@@ -50,33 +50,19 @@ class NewsCategoryFeedEmptyState extends NewsCategoryFeedState {
   List<Object> get props => [message];
 }
 
+class NewsCategoryFeedLoadErrorState extends NewsCategoryFeedState {
+  final String message;
+
+  NewsCategoryFeedLoadErrorState({this.message});
+
+  @override
+  List<Object> get props => [message];
+}
+
 class NewsCategoryFeedErrorState extends NewsCategoryFeedState {
   final String message;
 
   NewsCategoryFeedErrorState({this.message});
-
-  @override
-  List<Object> get props => [message];
-}
-
-class NewsCategoryFeedLoadMoreErrorState extends NewsCategoryFeedState {
-  final String message;
-
-  NewsCategoryFeedLoadMoreErrorState({this.message});
-
-  @override
-  List<Object> get props => [message];
-}
-
-class NewsCategoryFeedRefreshingState extends NewsCategoryFeedState {
-  @override
-  List<Object> get props => [];
-}
-
-class NewsCategoryFeedRefreshErrorState extends NewsCategoryFeedState {
-  final String message;
-
-  NewsCategoryFeedRefreshErrorState({this.message});
 
   @override
   List<Object> get props => [message];

@@ -25,10 +25,12 @@ class NewsTopicFeedBloc extends Bloc<NewsTopicFeedEvent, NewsTopicFeedState> {
 
   SortBy _sortBy;
   NewsSourceUIModel _source;
+  int _page = 1;
 
   SortBy get sortBy => _sortBy;
 
   NewsSourceUIModel get sourceModel => _source;
+  int get page => _page;
 
   NewsTopicUIModel get topicModel => _topicModel;
   StreamSubscription _newsFilterBlocSubscription;
@@ -40,7 +42,7 @@ class NewsTopicFeedBloc extends Bloc<NewsTopicFeedEvent, NewsTopicFeedState> {
       : this._newsByTopicUseCase = newsByTopicUseCase,
         this._topicModel = topicModel,
         this._newsFilterBloc = newsFilterBloc,
-        super(InitialState(topicModel: topicModel)) {
+        super(NewsTopicFeedInitialState(topicModel: topicModel)) {
     this._sortBy = _newsFilterBloc.selectedSortBy;
     this._source = _newsFilterBloc.selectedSource;
     this._newsFilterBlocSubscription = this._newsFilterBloc.listen((state) {
@@ -70,98 +72,12 @@ class NewsTopicFeedBloc extends Bloc<NewsTopicFeedEvent, NewsTopicFeedState> {
       yield* _mapGetMoreTopicNewsEventToState(event);
     } else if (event is RefreshTopicNewsEvent) {
       yield* _mapRefreshTopicNewsToState(event);
-    } else if (event is RetryTopicNewsEvent) {
-      yield* _mapRetryTopicNewsToState(event);
     }
   }
 
   Stream<NewsTopicFeedState> _mapRefreshTopicNewsToState(
       RefreshTopicNewsEvent event) async* {
-    final currentState = state;
-    if (!(currentState is RefreshingState)) {
-      yield RefreshingState();
-      try {
-        final List<NewsFeedEntity> newsList = await _newsByTopicUseCase.call(
-          GetNewsByTopicUseCaseParams(
-              topic: topicModel.topic,
-              source: sourceModel?.source,
-              sortBy: sortBy,
-              page: 1),
-        );
-        if (newsList != null && newsList.isNotEmpty) {
-          yield LoadSuccessState(feeds: newsList.toUIModels, hasMore: true);
-        } else {
-          if (currentState is LoadSuccessState) {
-            yield currentState.copyWith(hasMore: false);
-          } else
-            yield EmptyState(message: 'News feed not available.');
-        }
-      } catch (e) {
-        log('News by topic load error.', error: e);
-        if (currentState is LoadSuccessState) {
-          yield RefreshErrorState(
-              message: 'Unable to load data. Try again later.');
-        } else
-          yield ErrorState(
-              message:
-                  'Unable to load data. Make sure you are connected to Internet.');
-      }
-    }
-  }
-
-  Stream<NewsTopicFeedState> _mapRetryTopicNewsToState(
-      RetryTopicNewsEvent event) async* {
-    final currentState = state;
-    if (currentState is ErrorState) {
-      add(GetTopicNewsEvent());
-    }
-  }
-
-  Stream<NewsTopicFeedState> _mapGetMoreTopicNewsEventToState(
-      GetMoreTopicNewsEvent event) async* {
-    final currentState = state;
-    if (currentState is LoadSuccessState ||
-        !(currentState is MoreLoadingState)) {
-      yield MoreLoadingState();
-      try {
-        final List<NewsFeedEntity> newsList = await _newsByTopicUseCase.call(
-          GetNewsByTopicUseCaseParams(
-              topic: topicModel.topic,
-              source: sourceModel?.source,
-              sortBy: sortBy,
-              page: event.page,
-              language: event.language),
-        );
-        if (newsList != null && newsList.isNotEmpty) {
-          if (currentState is LoadSuccessState) {
-            yield currentState.copyWith(
-                feeds: currentState.feeds + newsList.toUIModels);
-          } else
-            yield LoadSuccessState(feeds: newsList.toUIModels, hasMore: true);
-        } else {
-          if (currentState is LoadSuccessState) {
-            yield currentState.copyWith(hasMore: false);
-          } else
-            yield EmptyState(message: 'News feed not available.');
-        }
-      } catch (e) {
-        log('News by topic load more cache error.', error: e);
-        yield LoadMoreErrorState(
-            message: 'Error loading data from server. Try again later.');
-        if (currentState is LoadSuccessState) {
-          yield currentState.copyWith(hasMore: false);
-        } else
-          yield ErrorState(
-              message:
-                  'Unable to load data. Make sure you are connected to Internet.');
-      }
-    }
-  }
-
-  Stream<NewsTopicFeedState> _mapGetTopicNewsEventToState(
-      GetTopicNewsEvent event) async* {
-    if (state is LoadingState) return;
-    yield LoadingState();
+    if (state is NewsTopicFeedLoadingState) return;
     try {
       final List<NewsFeedEntity> newsList = await _newsByTopicUseCase.call(
         GetNewsByTopicUseCaseParams(
@@ -169,16 +85,80 @@ class NewsTopicFeedBloc extends Bloc<NewsTopicFeedEvent, NewsTopicFeedState> {
           source: sourceModel?.source,
           sortBy: sortBy,
           page: 1,
+        ),
+      );
+      if (newsList != null && newsList.isNotEmpty) {
+        yield NewsTopicFeedLoadSuccessState(
+            feeds: newsList.toUIModels, hasMore: true);
+      } else {
+        yield NewsTopicFeedErrorState(message: 'Unable to refresh data.');
+      }
+    } catch (e) {
+      log('News by topic load error.', error: e);
+      yield NewsTopicFeedErrorState(
+          message:
+              'Unable to load data. Make sure you are connected to Internet.');
+    }
+  }
+
+  Stream<NewsTopicFeedState> _mapGetMoreTopicNewsEventToState(
+      GetMoreTopicNewsEvent event) async* {
+    final currentState = state;
+    if (currentState is NewsTopicFeedMoreLoadingState) return;
+    yield NewsTopicFeedMoreLoadingState();
+    try {
+      final List<NewsFeedEntity> newsList = await _newsByTopicUseCase.call(
+        GetNewsByTopicUseCaseParams(
+            topic: topicModel.topic,
+            source: sourceModel?.source,
+            sortBy: sortBy,
+            page: page + 1,
+            language: event.language),
+      );
+      if (newsList != null && newsList.isNotEmpty) {
+        _page = _page + 1;
+        if (currentState is NewsTopicFeedLoadSuccessState) {
+          yield currentState.copyWith(
+              feeds: currentState.feeds + newsList.toUIModels);
+        } else
+          yield NewsTopicFeedLoadSuccessState(
+              feeds: newsList.toUIModels, hasMore: true);
+      } else {
+        if (currentState is NewsTopicFeedLoadSuccessState) {
+          yield currentState.copyWith(hasMore: false);
+        }
+      }
+    } catch (e) {
+      log('News by topic load more cache error.', error: e);
+      yield NewsTopicFeedErrorState(
+          message:
+              'Unable to load data. Make sure you are connected to Internet.');
+    }
+  }
+
+  Stream<NewsTopicFeedState> _mapGetTopicNewsEventToState(
+      GetTopicNewsEvent event) async* {
+    if (state is NewsTopicFeedLoadingState) return;
+    yield NewsTopicFeedLoadingState();
+    try {
+      _page = 1;
+      final List<NewsFeedEntity> newsList = await _newsByTopicUseCase.call(
+        GetNewsByTopicUseCaseParams(
+          topic: topicModel.topic,
+          source: sourceModel?.source,
+          sortBy: sortBy,
+          page: page,
           language: event.language,
         ),
       );
       if (newsList == null || newsList.isEmpty)
-        yield EmptyState(message: 'News feed not available.');
+        yield NewsTopicFeedEmptyState(message: 'News feed not available.');
       else
-        yield LoadSuccessState(feeds: newsList.toUIModels, hasMore: true);
+        yield NewsTopicFeedLoadSuccessState(
+            feeds: newsList.toUIModels, hasMore: true);
     } catch (e) {
       log('News by topic load error.', error: e);
-      yield ErrorState(
+      yield NewsTopicFeedLoadErrorState(
           message:
               'Unable to load data. Make sure you are connected to internet.');
     }

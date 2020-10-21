@@ -23,7 +23,7 @@ class AuthorAndBookmark extends StatelessWidget {
         SizedBox(width: 6),
         RichText(
           text: TextSpan(
-            text: 'By ${feedUIModel.feedEntity.author}',
+            text: 'By ${feedUIModel.feedEntity.source.title}',
             style: Theme.of(context).textTheme.bodyText2.copyWith(fontSize: 13),
             children: <TextSpan>[
               TextSpan(

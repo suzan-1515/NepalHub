@@ -38,41 +38,37 @@ class _NewsTopicFeedListState extends State<NewsTopicFeedList> {
   Widget build(BuildContext context) {
     return BlocConsumer<NewsTopicFeedBloc, NewsTopicFeedState>(
         cubit: _newsTopicFeedBloc,
+        listenWhen: (previous, current) =>
+            !(current is NewsTopicFeedLoadingState) ||
+            !(current is NewsTopicFeedMoreLoadingState),
         listener: (context, state) {
-          if (state is InitialState) {
-            _newsTopicFeedBloc.add(GetTopicNewsEvent());
-          } else if (!(state is LoadingState)) {
-            _refreshCompleter?.complete();
-            _refreshCompleter = Completer();
-          }
-          if (state is ErrorState) {
-            context.showMessage(state.message);
-          } else if (state is RefreshErrorState) {
+          _refreshCompleter?.complete();
+          _refreshCompleter = Completer();
+
+          if (state is NewsTopicFeedErrorState) {
             context.showMessage(state.message);
           }
         },
-        buildWhen: (previous, current) => (current is InitialState ||
-            current is LoadSuccessState ||
-            current is EmptyState ||
-            current is ErrorState ||
-            current is LoadingState),
+        buildWhen: (previous, current) =>
+            !(current is NewsTopicFeedErrorState) ||
+            !(current is NewsTopicFeedMoreLoadingState),
         builder: (context, state) {
-          if (state is LoadSuccessState) {
+          if (state is NewsTopicFeedLoadSuccessState) {
             return NewsListBuilder(
               data: state.feeds,
               onRefresh: _onRefresh,
               hasMore: state.hasMore,
             );
-          } else if (state is EmptyState) {
+          } else if (state is NewsTopicFeedEmptyState) {
             return Center(
               child: EmptyDataView(
                 text: state.message,
               ),
             );
-          } else if (state is ErrorState) {
+          } else if (state is NewsTopicFeedErrorState) {
             return Center(
               child: ErrorDataView(
-                onRetry: () => _newsTopicFeedBloc.add(RetryTopicNewsEvent()),
+                onRetry: () => _newsTopicFeedBloc.add(GetTopicNewsEvent()),
               ),
             );
           }

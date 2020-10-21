@@ -38,39 +38,36 @@ class _NewsSourceFeedListState extends State<NewsSourceFeedList> {
   Widget build(BuildContext context) {
     return BlocConsumer<NewsSourceFeedBloc, NewsSourceFeedState>(
         cubit: _newsSourceFeedBloc,
+        listenWhen: (previous, current) =>
+            !(current is NewsSourceFeedLoadingState) ||
+            !(current is NewsSourceFeedMoreLoadingState),
         listener: (context, state) {
-          if (!(state is LoadingState)) {
-            _refreshCompleter?.complete();
-            _refreshCompleter = Completer();
-          }
-          if (state is ErrorState) {
-            context.showMessage(state.message);
-          } else if (state is RefreshErrorState) {
+          _refreshCompleter?.complete();
+          _refreshCompleter = Completer();
+          if (state is NewsSourceFeedErrorState) {
             context.showMessage(state.message);
           }
         },
-        buildWhen: (previous, current) => (current is InitialState ||
-            current is LoadSuccessState ||
-            current is EmptyState ||
-            current is ErrorState ||
-            current is LoadingState),
+        buildWhen: (previous, current) =>
+            !(current is NewsSourceFeedErrorState) ||
+            !(current is NewsSourceFeedMoreLoadingState),
         builder: (context, state) {
-          if (state is LoadSuccessState) {
+          if (state is NewsSourceFeedLoadSuccessState) {
             return NewsListBuilder(
               data: state.feeds,
               onRefresh: _onRefresh,
               hasMore: state.hasMore,
             );
-          } else if (state is EmptyState) {
+          } else if (state is NewsSourceFeedEmptyState) {
             return Center(
               child: EmptyDataView(
                 text: state.message,
               ),
             );
-          } else if (state is ErrorState) {
+          } else if (state is NewsSourceFeedErrorState) {
             return Center(
               child: ErrorDataView(
-                onRetry: () => _newsSourceFeedBloc.add(RetrySourceNewsEvent()),
+                onRetry: () => _newsSourceFeedBloc.add(GetSourceNewsEvent()),
               ),
             );
           }

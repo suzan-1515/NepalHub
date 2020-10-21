@@ -86,7 +86,10 @@ class NewsDetailScreen extends StatelessWidget {
                       visualDensity: VisualDensity.compact,
                       icon: Icon(Icons.more_vert),
                       onPressed: () => context.showBottomSheet(
-                        child: NewsFeedMoreOption(feed: feedUIModel),
+                        child: NewsFeedMoreOption(
+                          feed: feedUIModel,
+                          context: context,
+                        ),
                       ),
                     ),
                   ],

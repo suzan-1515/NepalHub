@@ -12,11 +12,10 @@ import 'package:samachar_hub/feature_news/presentation/ui/details/widgets/round_
 
 class Share extends StatelessWidget {
   final NewsFeedUIModel feedUIModel;
-  final BuildContext context;
 
-  const Share({Key key, this.feedUIModel, this.context}) : super(key: key);
+  const Share({Key key, this.feedUIModel}) : super(key: key);
 
-  Widget _buildLikeButton() {
+  Widget _buildLikeButton(BuildContext context) {
     return BlocConsumer<LikeUnlikeBloc, LikeUnlikeState>(
         listener: (context, state) {},
         builder: (context, state) {
@@ -41,7 +40,7 @@ class Share extends StatelessWidget {
         });
   }
 
-  Widget _buildFacebookShareButton() {
+  Widget _buildFacebookShareButton(BuildContext context) {
     return RoundIconButton(
       color: Color.fromARGB(255, 66, 103, 178),
       icon: FontAwesomeIcons.facebookF,
@@ -59,7 +58,7 @@ class Share extends StatelessWidget {
     );
   }
 
-  Widget _buildTwitterShareButton() {
+  Widget _buildTwitterShareButton(BuildContext context) {
     return RoundIconButton(
       color: Color.fromARGB(255, 29, 161, 242),
       icon: FontAwesomeIcons.twitter,
@@ -77,7 +76,7 @@ class Share extends StatelessWidget {
     );
   }
 
-  Widget _buildSystemShareButton() {
+  Widget _buildSystemShareButton(BuildContext context) {
     return RoundIconButton(
       color: Theme.of(context).primaryColor,
       icon: Icons.share,
@@ -108,11 +107,11 @@ class Share extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              _buildLikeButton(),
+              _buildLikeButton(context),
               Container(height: 42, child: VerticalDivider()),
-              _buildFacebookShareButton(),
-              _buildTwitterShareButton(),
-              _buildSystemShareButton(),
+              _buildFacebookShareButton(context),
+              _buildTwitterShareButton(context),
+              _buildSystemShareButton(context),
             ],
           ),
         ],

@@ -59,6 +59,8 @@ class NewsFeedUIModel {
         topics: newsTopicUIModels.map((e) => e.topic).toList(),
       );
 
+  set newsFeedEntity(NewsFeedEntity newsFeedEntity) => _feed = newsFeedEntity;
+
   String get formattedLikeCount =>
       NumberFormat.compact().format(feedEntity.likeCount);
   String get formattedCommentCount =>

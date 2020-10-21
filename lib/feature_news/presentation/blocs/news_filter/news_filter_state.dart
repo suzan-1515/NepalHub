@@ -44,7 +44,7 @@ class SourceChangedState extends NewsFilterState {
   SourceChangedState({this.source});
 
   @override
-  List<Object> get props => [source.source];
+  List<Object> get props => [source];
 }
 
 class SortByChangedState extends NewsFilterState {

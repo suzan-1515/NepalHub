@@ -7,22 +7,16 @@ abstract class NewsTopicFeedEvent extends Equatable {
 class GetTopicNewsEvent extends NewsTopicFeedEvent {
   final Language language;
 
-  GetTopicNewsEvent({this.language});
+  GetTopicNewsEvent({this.language = Language.NEPALI});
   @override
   List<Object> get props => [language];
 }
 
 class GetMoreTopicNewsEvent extends NewsTopicFeedEvent {
-  final int page;
   final Language language;
 
-  GetMoreTopicNewsEvent(this.page, {this.language});
+  GetMoreTopicNewsEvent({this.language = Language.NEPALI});
 
-  @override
-  List<Object> get props => [];
-}
-
-class RetryTopicNewsEvent extends NewsTopicFeedEvent {
   @override
   List<Object> get props => [];
 }

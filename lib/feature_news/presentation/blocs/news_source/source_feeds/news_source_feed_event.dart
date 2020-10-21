@@ -13,12 +13,11 @@ class GetSourceNewsEvent extends NewsSourceFeedEvent {
 }
 
 class GetMoreSourceNewsEvent extends NewsSourceFeedEvent {
-  final int page;
   final Language language;
-  const GetMoreSourceNewsEvent({this.page, this.language = Language.NEPALI});
+  const GetMoreSourceNewsEvent({this.language = Language.NEPALI});
 
   @override
-  List<Object> get props => [page, language];
+  List<Object> get props => [language];
 }
 
 class RetrySourceNewsEvent extends NewsSourceFeedEvent {

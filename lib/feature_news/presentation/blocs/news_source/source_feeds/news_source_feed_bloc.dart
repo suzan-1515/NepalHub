@@ -24,9 +24,11 @@ class NewsSourceFeedBloc
 
   SortBy _sortBy;
   SortBy get sortBy => _sortBy;
+  int _page = 1;
 
   NewsSourceUIModel _sourceModel;
   NewsSourceUIModel get sourceModel => _sourceModel;
+  int get page => _page;
 
   StreamSubscription _newsFilterBlocSubscription;
 
@@ -37,7 +39,7 @@ class NewsSourceFeedBloc
       : this._newsBySourceUseCase = newsBySourceUseCase,
         this._sourceModel = sourceModel,
         this._newsFilterBloc = newsFilterBloc,
-        super(InitialState(sourceModel: sourceModel)) {
+        super(NewsSourceFeedInitialState(sourceModel: sourceModel)) {
     this._sortBy = _newsFilterBloc.selectedSortBy;
     this._newsFilterBlocSubscription = this._newsFilterBloc.listen((state) {
       if (state is SourceChangedState) {
@@ -66,113 +68,90 @@ class NewsSourceFeedBloc
       yield* _mapGetMoreSourceNewsEventToState(event);
     } else if (event is RefreshSourceNewsEvent) {
       yield* _mapRefreshSourceNewsToState(event);
-    } else if (event is RetrySourceNewsEvent) {
-      yield* _mapRetrySourceNewsToState(event);
     }
   }
 
   Stream<NewsSourceFeedState> _mapRefreshSourceNewsToState(
       RefreshSourceNewsEvent event) async* {
-    final currentState = state;
-    if (!(currentState is RefreshingState)) {
-      yield RefreshingState();
-      try {
-        final List<NewsFeedEntity> newsList = await _newsBySourceUseCase.call(
-          GetNewsBySourceUseCaseParams(
-              source: sourceModel.source,
-              sortBy: sortBy,
-              page: 1,
-              language: event.language),
-        );
-        if (newsList != null && newsList.isNotEmpty) {
-          yield LoadSuccessState(feeds: newsList.toUIModels, hasMore: true);
-        } else {
-          if (currentState is LoadSuccessState) {
-            yield currentState.copyWith(hasMore: false);
-          } else
-            yield EmptyState(message: 'News feed not available.');
-        }
-      } catch (e) {
-        log('News by source load error.', error: e);
-        if (currentState is LoadSuccessState) {
-          yield RefreshErrorState(
-              message: 'Unable to load data. Try again later.');
-        } else
-          yield ErrorState(
-              message:
-                  'Unable to load data. Make sure you are connected to Internet.');
+    if (state is NewsSourceFeedLoadingState) return;
+    try {
+      final List<NewsFeedEntity> newsList = await _newsBySourceUseCase.call(
+        GetNewsBySourceUseCaseParams(
+            source: sourceModel.source,
+            sortBy: sortBy,
+            page: 1,
+            language: event.language),
+      );
+      if (newsList != null && newsList.isNotEmpty) {
+        yield NewsSourceFeedLoadSuccessState(
+            feeds: newsList.toUIModels, hasMore: true);
+      } else {
+        yield NewsSourceFeedErrorState(message: 'Unable to refresh.');
       }
-    }
-  }
-
-  Stream<NewsSourceFeedState> _mapRetrySourceNewsToState(
-      RetrySourceNewsEvent event) async* {
-    final currentState = state;
-    if (currentState is ErrorState) {
-      add(GetSourceNewsEvent());
+    } catch (e) {
+      log('News by source refresh error.', error: e);
+      yield NewsSourceFeedErrorState(
+          message:
+              'Unable to load data. Make sure you are connected to Internet.');
     }
   }
 
   Stream<NewsSourceFeedState> _mapGetMoreSourceNewsEventToState(
       GetMoreSourceNewsEvent event) async* {
     final currentState = state;
-    if (currentState is LoadSuccessState ||
-        !(currentState is MoreLoadingState)) {
-      yield MoreLoadingState();
-      try {
-        final List<NewsFeedEntity> newsList = await _newsBySourceUseCase.call(
-          GetNewsBySourceUseCaseParams(
-              source: sourceModel.source,
-              sortBy: sortBy,
-              page: event.page,
-              language: event.language),
-        );
-        if (newsList != null && newsList.isNotEmpty) {
-          if (currentState is LoadSuccessState) {
-            yield currentState.copyWith(
-                feeds: currentState.feeds + newsList.toUIModels);
-          } else
-            yield LoadSuccessState(feeds: newsList.toUIModels, hasMore: true);
-        } else {
-          if (currentState is LoadSuccessState) {
-            yield currentState.copyWith(hasMore: false);
-          } else
-            yield EmptyState(message: 'News feed not available.');
-        }
-      } catch (e) {
-        log('News by source load more cache error.', error: e);
-        yield LoadMoreErrorState(
-            message: 'Error loading data from server. Try again later.');
-        if (currentState is LoadSuccessState) {
-          yield currentState.copyWith(hasMore: false);
+    if (currentState is NewsSourceFeedLoadSuccessState) return;
+    yield NewsSourceFeedMoreLoadingState();
+    try {
+      final List<NewsFeedEntity> newsList = await _newsBySourceUseCase.call(
+        GetNewsBySourceUseCaseParams(
+            source: sourceModel.source,
+            sortBy: sortBy,
+            page: page + 1,
+            language: event.language),
+      );
+      if (newsList != null && newsList.isNotEmpty) {
+        _page = _page + 1;
+        if (currentState is NewsSourceFeedLoadSuccessState) {
+          yield currentState.copyWith(
+              feeds: currentState.feeds + newsList.toUIModels);
         } else
-          yield ErrorState(
-              message:
-                  'Unable to load data. Make sure you are connected to internet.');
+          yield NewsSourceFeedLoadSuccessState(
+              feeds: newsList.toUIModels, hasMore: true);
+      } else {
+        if (currentState is NewsSourceFeedLoadSuccessState) {
+          yield currentState.copyWith(hasMore: false);
+        }
       }
+    } catch (e) {
+      log('News by source load more cache error.', error: e);
+      yield NewsSourceFeedErrorState(
+          message:
+              'Unable to load data. Make sure you are connected to internet.');
     }
   }
 
   Stream<NewsSourceFeedState> _mapGetSourceNewsEventToState(
       GetSourceNewsEvent event) async* {
-    if (state is LoadingState) return;
-    yield LoadingState();
+    if (state is NewsSourceFeedLoadingState) return;
+    yield NewsSourceFeedLoadingState();
     try {
+      _page = 1;
       final List<NewsFeedEntity> newsList = await _newsBySourceUseCase.call(
         GetNewsBySourceUseCaseParams(
           source: sourceModel.source,
           sortBy: sortBy,
-          page: 1,
+          page: page,
           language: event.language,
         ),
       );
       if (newsList == null || newsList.isEmpty)
-        yield EmptyState(message: 'News feed not available.');
+        yield NewsSourceFeedEmptyState(message: 'News feed not available.');
       else
-        yield LoadSuccessState(feeds: newsList.toUIModels, hasMore: true);
+        yield NewsSourceFeedLoadSuccessState(
+            feeds: newsList.toUIModels, hasMore: true);
     } catch (e) {
       log('News by source load error.', error: e);
-      yield ErrorState(
+      yield NewsSourceFeedLoadErrorState(
           message:
               'Unable to load data. Make sure you are connected to internet.');
     }

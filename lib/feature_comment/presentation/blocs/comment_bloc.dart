@@ -101,9 +101,11 @@ class CommentBloc extends Bloc<CommentEvent, CommentState> {
           page: 1,
         ),
       );
+      _page = 1;
       if (comments != null || comments.isNotEmpty) {
-        _page = 1;
         yield CommentLoadSuccess(comments.toUIModels);
+      } else {
+        yield CommentError(message: 'Unable to refresh data');
       }
     } catch (e) {
       log('Comment refresh error of thread id: $_threadId and thread type: $_threadType.',

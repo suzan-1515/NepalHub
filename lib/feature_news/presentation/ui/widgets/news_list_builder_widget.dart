@@ -82,7 +82,7 @@ class _NewsListBuilderState extends State<NewsListBuilder> {
     return RefreshIndicator(
       onRefresh: widget.onRefresh,
       child: ListView.builder(
-        itemCount: widget.hasMore ? widget.data.length + 1 : widget.data,
+        itemCount: widget.hasMore ? widget.data.length + 1 : widget.data.length,
         itemBuilder: (_, int index) {
           if (_shouldShowLoadMore(index))
             return Center(

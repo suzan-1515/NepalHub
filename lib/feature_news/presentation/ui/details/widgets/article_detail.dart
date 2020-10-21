@@ -63,7 +63,9 @@ class ArticleDetail extends StatelessWidget {
             ReadMore(context: context, feedUIModel: feedUIModel),
             SizedBox(height: 8),
             Divider(),
-            Share(feedUIModel: feedUIModel),
+            Share(
+              feedUIModel: feedUIModel,
+            ),
             SizedBox(height: 16),
             Disclaimer(feedUIModel: feedUIModel),
             RelatedNews(

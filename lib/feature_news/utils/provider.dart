@@ -395,4 +395,44 @@ class NewsProvider {
         ],
         child: child,
       );
+  static MultiBlocProvider feedMoreOptionMultiBlocProvider({
+    @required Widget child,
+    @required NewsFeedUIModel feedUIModel,
+  }) =>
+      MultiBlocProvider(
+        providers: [
+          BlocProvider<newsSource.FollowUnFollowBloc>(
+            create: (context) => newsSource.FollowUnFollowBloc(
+              newsSourceUIModel: feedUIModel.newsSourceUIModel,
+              followNewsSourceUseCase:
+                  context.repository<FollowNewsSourceUseCase>(),
+              unFollowNewsSourceUseCase:
+                  context.repository<UnFollowNewsSourceUseCase>(),
+            ),
+          ),
+          BlocProvider<BookmarkUnBookmarkBloc>(
+            create: (context) => BookmarkUnBookmarkBloc(
+              newsFeedUIModel: feedUIModel,
+              addBookmarkNewsUseCase: context.repository<BookmarkNewsUseCase>(),
+              removeBookmarkNewsUseCase:
+                  context.repository<UnBookmarkNewsUseCase>(),
+            ),
+          ),
+          BlocProvider<ShareBloc>(
+            create: (context) => ShareBloc(
+              feedUIModel: feedUIModel,
+              shareNewsFeedUseCase: context.repository<ShareNewsUseCase>(),
+            ),
+          ),
+          BlocProvider<DislikeBloc>(
+            create: (context) => DislikeBloc(
+              newsFeedUIModel: feedUIModel,
+              dislikeNewsFeedUseCase: context.repository<DislikeNewsUseCase>(),
+              undislikeNewsFeedUseCase:
+                  context.repository<UndislikeNewsUseCase>(),
+            ),
+          ),
+        ],
+        child: child,
+      );
 }

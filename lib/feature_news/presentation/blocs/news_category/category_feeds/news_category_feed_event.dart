@@ -14,22 +14,11 @@ class GetCategoryNewsEvent extends NewsCategoryFeedEvent {
 
 class GetMoreCategoryNewsEvent extends NewsCategoryFeedEvent {
   final Language language;
-  final int page;
 
-  GetMoreCategoryNewsEvent(
-      {this.language = Language.NEPALI, @required this.page});
+  GetMoreCategoryNewsEvent({this.language = Language.NEPALI});
 
   @override
-  List<Object> get props => [language, page];
-}
-
-class RetryCategoryNewsEvent extends NewsCategoryFeedEvent {
-  final Language language;
-  final int page;
-
-  RetryCategoryNewsEvent({this.language = Language.NEPALI, this.page = 1});
-  @override
-  List<Object> get props => [language, page];
+  List<Object> get props => [language];
 }
 
 class RefreshCategoryNewsEvent extends NewsCategoryFeedEvent {
