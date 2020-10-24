@@ -1,10 +1,10 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
 import 'package:samachar_hub/feature_news/presentation/blocs/news_topic/news_topic_bloc.dart';
 import 'package:samachar_hub/feature_news/presentation/ui/following/topic/followed_news_topic_list.dart';
 import 'package:samachar_hub/feature_news/presentation/ui/following/widgets/section_title.dart';
-import 'package:samachar_hub/feature_news/utils/provider.dart';
 
 class FollowedNewsTopicSection extends StatefulWidget {
   const FollowedNewsTopicSection({
@@ -17,11 +17,10 @@ class FollowedNewsTopicSection extends StatefulWidget {
 }
 
 class _FollowedNewsTopicSectionState extends State<FollowedNewsTopicSection> {
-  NewsTopicBloc _newsTopicBloc;
+  NewsTopicBloc _newsTopicBloc = GetIt.I.get<NewsTopicBloc>();
   @override
   void initState() {
     super.initState();
-    _newsTopicBloc = NewsProvider.topicBlocProvider(context: context);
     _newsTopicBloc.add(GetFollowedTopicsEvent());
   }
 

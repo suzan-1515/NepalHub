@@ -4,6 +4,7 @@ import 'package:samachar_hub/core/services/services.dart';
 import 'package:samachar_hub/feature_horoscope/domain/entities/horoscope_type.dart';
 import 'package:samachar_hub/feature_horoscope/presentation/ui/widgets/horoscope_list.dart';
 import 'package:samachar_hub/feature_horoscope/utils/provider.dart';
+import 'package:samachar_hub/feature_main/presentation/blocs/settings/settings_cubit.dart';
 
 class HoroscopeScreen extends StatefulWidget {
   @override
@@ -20,7 +21,20 @@ class _HoroscopeScreenState extends State<HoroscopeScreen>
     Tab(key: ValueKey<HoroscopeType>(HoroscopeType.YEARLY), text: 'Yearly'),
   ];
 
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(length: _tabs.length, vsync: this);
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _tabController.dispose();
+  }
+
   Widget _buildBody() {
+    final settings = context.bloc<SettingsCubit>().settings;
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: Column(

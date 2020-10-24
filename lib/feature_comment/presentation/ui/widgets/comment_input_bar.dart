@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get_it/get_it.dart';
 import 'package:samachar_hub/core/services/services.dart';
 import 'package:samachar_hub/feature_auth/domain/entities/user_entity.dart';
 import 'package:samachar_hub/feature_auth/presentation/blocs/auth_bloc.dart';
@@ -27,7 +28,7 @@ class _CommentInputBarState extends State<CommentInputBar> {
     if (user != null && !user.isAnonymous) {
       return context.bloc<CommentPostBloc>().add(PostCommentEvent(comment));
     }
-    context.repository<NavigationService>().loginRedirect(context);
+    GetIt.I.get<NavigationService>().loginRedirect(context);
   }
 
   @override

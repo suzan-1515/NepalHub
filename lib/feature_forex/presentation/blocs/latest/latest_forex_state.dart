@@ -19,6 +19,8 @@ class ForexLoadSuccessState extends ForexState {
     @required this.forexList,
     @required this.defaultForex,
   });
+  @override
+  List<Object> get props => [forexList, defaultForex];
 }
 
 class ForexEmptyState extends ForexState {

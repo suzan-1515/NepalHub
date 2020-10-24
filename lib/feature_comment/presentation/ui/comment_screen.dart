@@ -13,15 +13,11 @@ class CommentScreen extends StatelessWidget {
   final String threadId;
   final CommentThreadType threadType;
   final String threadTitle;
-  final int likeCount;
-  final int commentCount;
   const CommentScreen(
       {Key key,
       @required this.threadId,
       @required this.threadType,
-      @required this.threadTitle,
-      this.likeCount,
-      this.commentCount})
+      @required this.threadTitle})
       : super(key: key);
 
   Widget _buildBody(BuildContext context) {
@@ -32,14 +28,13 @@ class CommentScreen extends StatelessWidget {
             [
           SliverToBoxAdapter(
             child: Header(
-              title: context.bloc<CommentBloc>().threadTitle,
+              title: threadTitle,
             ),
           ),
           SliverToBoxAdapter(
             child: LikeAndCommentStats(
-              likeCount: '${context.bloc<CommentBloc>().likeCount ?? 0} Likes',
-              commentCount:
-                  '${context.bloc<CommentBloc>().commentCount ?? 0} Comments',
+              likeCount: 0,
+              commentCount: 0,
             ),
           ),
         ],
@@ -52,10 +47,7 @@ class CommentScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return CommentProvider.commentBlocProvider(
       threadId: threadId,
-      threadTitle: threadTitle,
       threadType: threadType,
-      likeCount: likeCount,
-      commentCount: commentCount,
       child: Scaffold(
         backgroundColor: Theme.of(context).backgroundColor,
         appBar: AppBar(

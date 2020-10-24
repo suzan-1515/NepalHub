@@ -67,9 +67,7 @@ class _HomeFeedListState extends State<HomeFeedList> {
       child: BlocConsumer<HomeCubit, HomeState>(
           cubit: _homeCubit,
           listener: (context, state) {
-            if (state is HomeInitialState) {
-              _homeCubit.getHomeFeed();
-            } else if (!(state is HomeLoadingState)) {
+            if (!(state is HomeLoadingState)) {
               _refreshCompleter?.complete();
               _refreshCompleter = Completer();
             }

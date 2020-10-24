@@ -18,23 +18,14 @@ class CommentBloc extends Bloc<CommentEvent, CommentState> {
   final UseCase _getCommentsUseCase;
   final String _threadId;
   final CommentThreadType _threadType;
-  final String _threadTitle;
-  final int _likeCount;
-  final int _commentCount;
 
   CommentBloc(
       {@required UseCase getCommentsUseCase,
       @required String threadId,
-      @required String threadTitle,
-      int likeCount,
-      int commentCount,
       @required CommentThreadType threadType})
       : _getCommentsUseCase = getCommentsUseCase,
         _threadId = threadId,
         _threadType = threadType,
-        _threadTitle = threadTitle,
-        _likeCount = likeCount,
-        _commentCount = commentCount,
         assert(getCommentsUseCase != null, 'GetCommentUseCase cannot be null'),
         assert(threadId != null && threadId.isNotEmpty,
             'Thread id cannot be null or empty'),
@@ -44,9 +35,6 @@ class CommentBloc extends Bloc<CommentEvent, CommentState> {
   int _page = 1;
 
   String get threadId => _threadId;
-  String get threadTitle => _threadTitle;
-  int get likeCount => _likeCount;
-  int get commentCount => _commentCount;
   CommentThreadType get threadType => _threadType;
   int get page => _page;
 

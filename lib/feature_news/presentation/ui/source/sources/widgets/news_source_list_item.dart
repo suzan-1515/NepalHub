@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get_it/get_it.dart';
 import 'package:samachar_hub/core/services/services.dart';
+import 'package:samachar_hub/core/widgets/cached_image_widget.dart';
 import 'package:samachar_hub/feature_news/presentation/blocs/news_source/follow_unfollow/follow_un_follow_bloc.dart'
     as sourceFollowUnfollow;
 import 'package:samachar_hub/feature_news/presentation/models/news_source.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:samachar_hub/feature_news/presentation/ui/widgets/follow_unfollow_button.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -23,7 +23,7 @@ class NewsSourceListItem extends StatelessWidget {
       color: Colors.transparent,
       child: ListTile(
         onTap: () {
-          context.repository<NavigationService>().toNewsSourceFeedScreen(
+          GetIt.I.get<NavigationService>().toNewsSourceFeedScreen(
               context: context, source: sourceUIModel.source);
         },
         leading: Container(
@@ -38,12 +38,9 @@ class NewsSourceListItem extends StatelessWidget {
               ],
               color: Theme.of(context).cardColor,
               borderRadius: BorderRadius.all(Radius.circular(6))),
-          child: CachedNetworkImage(
-            imageUrl: sourceUIModel.source.icon,
-            errorWidget: (context, url, error) => Opacity(
-                opacity: 0.7, child: Icon(FontAwesomeIcons.exclamationCircle)),
-            progressIndicatorBuilder: (context, url, progress) =>
-                Center(child: CircularProgressIndicator()),
+          child: CachedImage(
+            sourceUIModel.source.icon,
+            tag: sourceUIModel.source.code,
           ),
         ),
         title: Padding(

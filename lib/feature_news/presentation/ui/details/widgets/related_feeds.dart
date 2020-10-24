@@ -17,9 +17,7 @@ class RelatedNews extends StatelessWidget {
       feedUIModel: feedUIModel,
       child: BlocConsumer<RelatedNewsBloc, RelatedNewsState>(
           listener: (context, state) {
-            if (state is InitialState) {
-              context.bloc<RelatedNewsBloc>().add(GetRelatedNewsEvent());
-            } else if (state is LoadErrorState) {
+            if (state is LoadErrorState) {
               context.showMessage(state.message);
             }
           },

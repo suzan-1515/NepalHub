@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
 import 'package:samachar_hub/core/services/services.dart';
 import 'package:samachar_hub/core/widgets/progress_widget.dart';
 import 'package:samachar_hub/feature_forex/presentation/blocs/latest/latest_forex_bloc.dart';
@@ -7,6 +8,7 @@ import 'package:samachar_hub/feature_forex/presentation/blocs/timeline/forex_tim
 import 'package:samachar_hub/feature_forex/presentation/ui/widgets/forex_graph.dart';
 import 'package:samachar_hub/feature_forex/presentation/ui/widgets/forex_list.dart';
 import 'package:samachar_hub/feature_forex/utils/provider.dart';
+import 'package:samachar_hub/feature_main/presentation/blocs/settings/settings_cubit.dart';
 
 class ForexScreen extends StatelessWidget {
   Widget _buildDefaultCurrencyStat(BuildContext context) {
@@ -16,15 +18,8 @@ class ForexScreen extends StatelessWidget {
       builder: (context, state) {
         if (state is ForexLoadSuccessState) {
           return ForexProvider.forexTimelineBlocProvider(
-            currencyId: state.defaultForex.forexEntity.currency.id,
-            child: BlocConsumer<ForexTimelineBloc, ForexTimelineState>(
-              listener: (context, state) {
-                if (state is ForexTimelineInitialState) {
-                  context
-                      .bloc<ForexTimelineBloc>()
-                      .add(GetForexTimelineEvent());
-                }
-              },
+            forexUIModel: state.defaultForex,
+            child: BlocBuilder<ForexTimelineBloc, ForexTimelineState>(
               builder: (context, state) {
                 if (state is ForexTimelineLoadSuccessState) {
                   return ForexGraph(
@@ -53,31 +48,44 @@ class ForexScreen extends StatelessWidget {
             child: _buildDefaultCurrencyStat(context),
           ),
         ],
-        body: ForexList(),
+        body: const ForexList(),
       ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
+    final settingsCubit = context.bloc<SettingsCubit>();
     return ForexProvider.forexBlocProvider(
-      child: Scaffold(
-        backgroundColor: Theme.of(context).backgroundColor,
-        appBar: AppBar(
-          title: Text('Forex'),
-          actions: <Widget>[
-            IconButton(
-              icon: Icon(Icons.settings),
-              onPressed: () {
-                context
-                    .repository<NavigationService>()
-                    .toSettingsScreen(context: context);
-              },
-            ),
-          ],
-        ),
-        body: SafeArea(
-          child: _buildContent(context),
+      defaultCurrencyCode: settingsCubit.settings.defaultForexCurrency,
+      child: BlocListener<SettingsCubit, SettingsState>(
+        listenWhen: (previous, current) =>
+            current is SettingsDefaultForexCurrencyChangedState,
+        listener: (context, state) {
+          if (state is SettingsDefaultForexCurrencyChangedState) {
+            context
+                .bloc<ForexBloc>()
+                .add(RefreshLatestForexEvent(defaultCurrencyCode: state.value));
+          }
+        },
+        child: Scaffold(
+          backgroundColor: Theme.of(context).backgroundColor,
+          appBar: AppBar(
+            title: Text('Forex'),
+            actions: <Widget>[
+              IconButton(
+                icon: Icon(Icons.settings),
+                onPressed: () {
+                  GetIt.I
+                      .get<NavigationService>()
+                      .toSettingsScreen(context: context);
+                },
+              ),
+            ],
+          ),
+          body: SafeArea(
+            child: _buildContent(context),
+          ),
         ),
       ),
     );

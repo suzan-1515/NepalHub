@@ -12,8 +12,9 @@ class ForexRemoteDataSource with RemoteDataSource {
 
   @override
   Future<ForexModel> dislike(
-      {@required String forexId, @required String token}) {
-    throw UnimplementedError();
+      {@required String forexId, @required String token}) async {
+    var response = await _remoteService.dislike(forexId: forexId, token: token);
+    return ForexModel.fromMap(response);
   }
 
   @override
@@ -21,8 +22,9 @@ class ForexRemoteDataSource with RemoteDataSource {
       {@required Language language, @required String token}) async {
     var response =
         await _remoteService.fetchCurrencies(language: language, token: token);
-    final List<ForexCurrencyModel> currencies =
-        response.map((e) => ForexCurrencyModel.fromMap(e)).toList();
+    final List<ForexCurrencyModel> currencies = response
+        .map<ForexCurrencyModel>((e) => ForexCurrencyModel.fromMap(e))
+        .toList();
     return currencies;
   }
 
@@ -39,7 +41,7 @@ class ForexRemoteDataSource with RemoteDataSource {
       token: token,
     );
     final List<ForexModel> forexList =
-        response.map((e) => ForexModel.fromMap(e)).toList();
+        response.map<ForexModel>((e) => ForexModel.fromMap(e)).toList();
     return forexList;
   }
 
@@ -51,7 +53,7 @@ class ForexRemoteDataSource with RemoteDataSource {
       token: token,
     );
     final List<ForexModel> forexList =
-        response.map((e) => ForexModel.fromMap(e)).toList();
+        response.map<ForexModel>((e) => ForexModel.fromMap(e)).toList();
     return forexList;
   }
 
@@ -78,7 +80,9 @@ class ForexRemoteDataSource with RemoteDataSource {
   @override
   Future<ForexModel> undislike(
       {@required String forexId, @required String token}) async {
-    throw UnimplementedError();
+    var response =
+        await _remoteService.undislike(forexId: forexId, token: token);
+    return ForexModel.fromMap(response);
   }
 
   @override

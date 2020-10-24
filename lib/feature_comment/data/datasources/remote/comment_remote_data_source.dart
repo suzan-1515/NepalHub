@@ -25,7 +25,7 @@ class CommentRemoteDataSource with RemoteDataSource {
     var response = await _remoteService.fetchComments(
         threadId: threadId, threadType: threadType, page: page, token: token);
     final List<CommentModel> comments =
-        response.map((e) => CommentModel.fromMap(e)).toList();
+        response.map<CommentModel>((e) => CommentModel.fromMap(e)).toList();
 
     return comments;
   }

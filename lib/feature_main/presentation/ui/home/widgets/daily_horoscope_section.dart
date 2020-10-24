@@ -1,6 +1,7 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
 import 'package:samachar_hub/core/models/language.dart';
 import 'package:samachar_hub/core/services/services.dart';
 import 'package:samachar_hub/core/widgets/cached_image_widget.dart';
@@ -31,9 +32,8 @@ class DailyHoroscope extends StatelessWidget {
           ),
         ),
       ],
-      onSelected: (value) => context
-          .repository<NavigationService>()
-          .toSettingsScreen(context: context),
+      onSelected: (value) =>
+          GetIt.I.get<NavigationService>().toSettingsScreen(context: context),
     );
   }
 
@@ -110,12 +110,8 @@ class DailyHoroscope extends StatelessWidget {
         borderRadius: BorderRadius.circular(6),
       ),
       child: InkWell(
-        onTap: () => context.repository<NavigationService>().toHoroscopeDetail(
-            context,
-            sign,
-            signIcon,
-            horoscope,
-            horoscopeUIModel.horoscopeEntity),
+        onTap: () => GetIt.I.get<NavigationService>().toHoroscopeDetail(context,
+            sign, signIcon, horoscope, horoscopeUIModel.horoscopeEntity),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -132,6 +128,7 @@ class DailyHoroscope extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final settingsCubit = context.bloc<SettingsCubit>();
     return HoroscopeProvider.horoscopeBlocProvider(
       type: HoroscopeType.DAILY,
       child: FadeInUp(
@@ -140,23 +137,16 @@ class DailyHoroscope extends StatelessWidget {
               (current is SettingsDefaultHoroscopeSignChangedState),
           listener: (context, state) {
             if (state is SettingsDefaultHoroscopeSignChangedState) {
-              context.bloc<HoroscopeBloc>().add(
-                    RefreshHoroscopeEvent(),
-                  );
+              context.bloc<HoroscopeBloc>().add(RefreshHoroscopeEvent());
             }
           },
-          child: BlocConsumer<HoroscopeBloc, HoroscopeState>(
-            listener: (context, state) {
-              if (state is HoroscopeInitialState) {
-                context.bloc<HoroscopeBloc>().add(GetHoroscopeEvent());
-              }
-            },
+          child: BlocBuilder<HoroscopeBloc, HoroscopeState>(
             buildWhen: (previous, current) => !(current is HoroscopeErrorState),
             builder: (context, state) {
               if (state is HoroscopeLoadSuccessState) {
                 homeUIModel.shouldShowDailyHoroscopeSection = true;
-                return _buildCard(
-                    context, state.horoscope, state.defaultSignIndex);
+                return _buildCard(context, state.horoscope,
+                    settingsCubit.settings.defaultHoroscopeSign);
               }
               homeUIModel.shouldShowDailyHoroscopeSection = false;
               return SizedBox.shrink();

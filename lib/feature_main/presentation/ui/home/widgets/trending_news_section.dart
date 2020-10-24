@@ -1,7 +1,7 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
 import 'package:samachar_hub/core/services/services.dart';
 import 'package:samachar_hub/feature_main/presentation/models/home/trending_news_model.dart';
 import 'package:samachar_hub/feature_main/presentation/ui/widgets/section_heading.dart';
@@ -43,7 +43,7 @@ class _TrendingNewsSectionState extends State<TrendingNewsSection> {
             title: 'Trending News',
             subtitle: 'Current trending stories around you',
             onTap: () =>
-                context.repository<NavigationService>().toTrendingNews(context),
+                GetIt.I.get<NavigationService>().toTrendingNews(context),
           ),
           CarouselSlider(
               items: widgets,

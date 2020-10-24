@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
 import 'package:samachar_hub/core/services/services.dart';
 import 'package:samachar_hub/feature_main/presentation/ui/more_menu/widgets/more_menu_list_item.dart';
 import 'package:samachar_hub/core/extensions/view.dart';
@@ -22,24 +23,22 @@ class MenuList extends StatelessWidget {
         MoreMenuListItem(
           title: 'Bookmarks',
           icon: FontAwesomeIcons.bookmark,
-          onTap: () => context
-              .repository<NavigationService>()
+          onTap: () => GetIt.I
+              .get<NavigationService>()
               .toBookmarkedNewsScreen(context: context),
         ),
         Divider(),
         MoreMenuListItem(
           title: 'Forex',
           icon: FontAwesomeIcons.chartLine,
-          onTap: () =>
-              context.repository<NavigationService>().toForexScreen(context),
+          onTap: () => GetIt.I.get<NavigationService>().toForexScreen(context),
         ),
         Divider(),
         MoreMenuListItem(
           title: 'Horoscope',
           icon: FontAwesomeIcons.starOfDavid,
-          onTap: () => context
-              .repository<NavigationService>()
-              .toHoroscopeScreen(context),
+          onTap: () =>
+              GetIt.I.get<NavigationService>().toHoroscopeScreen(context),
         ),
         Divider(),
         MoreMenuListItem(

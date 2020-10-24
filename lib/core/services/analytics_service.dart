@@ -138,7 +138,7 @@ class AnalyticsService {
   }
 
   // Settings
-  Future logNewsReadMode({@required String mode}) {
+  Future logNewsReadMode({@required int mode}) {
     return _analytics
         .logEvent(name: 'news_read_mode', parameters: {'mode': mode});
   }

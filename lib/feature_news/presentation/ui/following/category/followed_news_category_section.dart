@@ -1,6 +1,7 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
 import 'package:samachar_hub/core/services/services.dart';
 import 'package:samachar_hub/feature_news/presentation/blocs/news_category/news_category_bloc.dart';
 import 'package:samachar_hub/feature_news/presentation/ui/following/category/followed_news_category_list.dart';
@@ -24,7 +25,7 @@ class _FollowedNewsCategorySectionState
   @override
   void initState() {
     super.initState();
-    _newsCategoryBloc = NewsProvider.categoryBlocProvider(context: context);
+    _newsCategoryBloc = GetIt.I.get<NewsCategoryBloc>();
     _newsCategoryBloc.add(GetFollowedCategories());
   }
 
@@ -65,8 +66,8 @@ class _FollowedNewsCategorySectionState
               ViewAllButton(
                   context: context,
                   onTap: () {
-                    context
-                        .repository<NavigationService>()
+                    GetIt.I
+                        .get<NavigationService>()
                         .toFollowedNewsCategoryScreen(context);
                   }),
             ],

@@ -12,14 +12,14 @@ class SettingsRepository with Repository {
   @override
   Future enableCommentNotification(bool value) {
     return _localDataSource.commentNotification(value).then(
-          (value) => _analyticsService.logCommentNotification(notify: value),
+          (_) => _analyticsService.logCommentNotification(notify: value),
         );
   }
 
   @override
   Future enableDailyMorningHoroscopeNotification(bool value) {
     return _localDataSource.dailyMorningHoroscopeNotification(value).then(
-          (value) => _analyticsService.logHoroscopeDailyMorningNotificatoon(
+          (_) => _analyticsService.logHoroscopeDailyMorningNotificatoon(
               notify: value),
         );
   }
@@ -27,7 +27,7 @@ class SettingsRepository with Repository {
   @override
   Future enableDailyMorningNewsNotification(bool value) {
     return _localDataSource.dailyMorningNewsNotification(value).then(
-          (value) =>
+          (_) =>
               _analyticsService.logNewsDailyMorningNotificatoon(notify: value),
         );
   }
@@ -35,28 +35,28 @@ class SettingsRepository with Repository {
   @override
   Future enableMessageNotification(bool value) {
     return _localDataSource.messageNotification(value).then(
-          (value) => _analyticsService.logMessageNotification(notify: value),
+          (_) => _analyticsService.logMessageNotification(notify: value),
         );
   }
 
   @override
   Future enableNewsNotification(bool value) {
     return _localDataSource.newsNotification(value).then(
-          (value) => _analyticsService.logNewsNotificatoon(notify: value),
+          (_) => _analyticsService.logNewsNotificatoon(notify: value),
         );
   }
 
   @override
   Future enableOtherNotification(bool value) {
     return _localDataSource.otherNotification(value).then(
-          (value) => _analyticsService.logOtherNotificatoon(notify: value),
+          (_) => _analyticsService.logOtherNotificatoon(notify: value),
         );
   }
 
   @override
   Future enableTrendingNotification(bool value) {
     return _localDataSource.trendingNotification(value).then(
-          (value) => _analyticsService.logTrendingNotificatoon(notify: value),
+          (_) => _analyticsService.logTrendingNotificatoon(notify: value),
         );
   }
 
@@ -85,30 +85,28 @@ class SettingsRepository with Repository {
   @override
   Future setDarkMode(bool value) {
     return _localDataSource.darkMode(value).then(
-          (value) => _analyticsService.logDarkMode(enable: value),
+          (_) => _analyticsService.logDarkMode(enable: value),
         );
   }
 
   @override
   Future setDefaultForexCurrency(String value) {
     return _localDataSource.defaultForexCurrency(value).then(
-          (value) =>
-              _analyticsService.logDefaultForexCurrency(currencyId: value),
+          (_) => _analyticsService.logDefaultForexCurrency(currencyId: value),
         );
   }
 
   @override
   Future setDefaultHoroscopeSign(int value) {
     return _localDataSource.defaultHoroscopeSign(value).then(
-          (value) =>
-              _analyticsService.logDefaultHoroscopeSign(signIndex: value),
+          (_) => _analyticsService.logDefaultHoroscopeSign(signIndex: value),
         );
   }
 
   @override
   Future setNewsReadMode(int value) {
     return _localDataSource.newsReadMode(value).then(
-          (value) => _analyticsService.logNewsReadMode(mode: value),
+          (_) => _analyticsService.logNewsReadMode(mode: value),
         );
   }
 
@@ -116,13 +114,13 @@ class SettingsRepository with Repository {
   Future setPitchBlackMode(bool value) {
     return _localDataSource
         .pitchBlackMode(value)
-        .then((value) => _analyticsService.logPitchBlackMode(value: value));
+        .then((_) => _analyticsService.logPitchBlackMode(value: value));
   }
 
   @override
   Future setSystemTheme(bool value) {
     return _localDataSource
         .systemTheme(value)
-        .then((value) => _analyticsService.logUseSystemTheme(value: value));
+        .then((_) => _analyticsService.logUseSystemTheme(value: value));
   }
 }

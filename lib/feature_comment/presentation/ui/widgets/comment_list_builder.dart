@@ -1,16 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:samachar_hub/core/usecases/usecase.dart';
 import 'package:samachar_hub/core/widgets/progress_widget.dart';
-import 'package:samachar_hub/feature_comment/domain/usecases/delete_comment_use_case.dart';
-import 'package:samachar_hub/feature_comment/domain/usecases/like_comment_use_case.dart';
-import 'package:samachar_hub/feature_comment/domain/usecases/unlike_comment_use_case.dart';
-import 'package:samachar_hub/feature_comment/presentation/blocs/delete/delete_cubit.dart';
-import 'package:samachar_hub/feature_comment/presentation/blocs/like_unlike/like_unlike_bloc.dart';
 import 'package:samachar_hub/feature_comment/presentation/models/comment_model.dart';
 import 'package:samachar_hub/feature_comment/presentation/ui/widgets/comment_item.dart';
+import 'package:samachar_hub/feature_comment/utils/providers.dart';
 
-class CommentListBuilder extends StatefulWidget {
+class CommentListBuilder extends StatelessWidget {
   const CommentListBuilder({
     Key key,
     @required this.onRefresh,
@@ -26,53 +20,23 @@ class CommentListBuilder extends StatefulWidget {
   final List<CommentUIModel> data;
   final bool hasMore;
 
-  @override
-  _CommentListBuilderState createState() => _CommentListBuilderState();
-}
-
-class _CommentListBuilderState extends State<CommentListBuilder> {
-  UseCase _likeCommentUseCase;
-  UseCase _unlikeCommentUseCase;
-  UseCase _deleteCommentUseCase;
-
-  bool _shouldShowLoadMore(index) =>
-      widget.hasMore && (index == widget.data.length);
-
-  @override
-  void initState() {
-    super.initState();
-    _likeCommentUseCase = context.repository<LikeCommentUseCase>();
-    _unlikeCommentUseCase = context.repository<UnlikeCommentUseCase>();
-    _deleteCommentUseCase = context.repository<DeleteCommentUseCase>();
-  }
+  bool _shouldShowLoadMore(index) => hasMore && (index == data.length);
 
   @override
   Widget build(BuildContext context) {
     return RefreshIndicator(
-      onRefresh: widget.onRefresh,
+      onRefresh: onRefresh,
       child: ListView.builder(
-        itemCount: widget.hasMore ? widget.data.length + 1 : widget.data,
+        itemCount: hasMore ? data.length + 1 : data.length,
         itemBuilder: (_, int index) {
           if (_shouldShowLoadMore(index))
             return Center(
               child: ProgressView(),
             );
 
-          var comment = widget.data[index];
-          return MultiBlocProvider(
-            providers: [
-              BlocProvider<LikeUnlikeBloc>(
-                create: (context) => LikeUnlikeBloc(
-                    likeCommentUseCase: _likeCommentUseCase,
-                    unlikeCommentUseCase: _unlikeCommentUseCase,
-                    commentUIModel: comment),
-              ),
-              BlocProvider<CommentDeleteCubit>(
-                create: (context) => CommentDeleteCubit(
-                    deleteCommentUseCase: _deleteCommentUseCase,
-                    commentUIModel: comment),
-              ),
-            ],
+          var comment = data[index];
+          return CommentProvider.commentItemBlocProvider(
+            commentUIModel: comment,
             child: CommentListItem(
               commentUIModel: comment,
             ),

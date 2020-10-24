@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
 import 'package:samachar_hub/core/services/services.dart';
 import 'package:samachar_hub/feature_main/presentation/models/home/home_model.dart';
 import 'package:samachar_hub/feature_main/presentation/ui/widgets/section_heading.dart';
 import 'package:samachar_hub/feature_news/presentation/blocs/news_category/news_category_bloc.dart';
 import 'package:samachar_hub/feature_news/presentation/ui/widgets/news_menu_item.dart';
-import 'package:samachar_hub/feature_news/utils/provider.dart';
 
 class NewsCategoryMenuSection extends StatefulWidget {
   const NewsCategoryMenuSection({
@@ -26,7 +26,7 @@ class _NewsCategoryMenuSectionState extends State<NewsCategoryMenuSection>
   @override
   void initState() {
     super.initState();
-    _newsCategoryBloc = NewsProvider.categoryBlocProvider(context: context);
+    _newsCategoryBloc = GetIt.I.get<NewsCategoryBloc>();
     _newsCategoryBloc.add(GetFollowedCategories());
   }
 
@@ -57,8 +57,8 @@ class _NewsCategoryMenuSectionState extends State<NewsCategoryMenuSection>
                 SectionHeading(
                   title: 'Discover',
                   subtitle: 'Get the latest news on your favourite category',
-                  onTap: () => context
-                      .repository<NavigationService>()
+                  onTap: () => GetIt.I
+                      .get<NavigationService>()
                       .toFollowedNewsCategoryScreen(context),
                 ),
                 LimitedBox(
@@ -75,8 +75,8 @@ class _NewsCategoryMenuSectionState extends State<NewsCategoryMenuSection>
                         return NewsMenuItem(
                           title: categoryModel.category.title,
                           icon: categoryModel.category.icon,
-                          onTap: () => context
-                              .repository<NavigationService>()
+                          onTap: () => GetIt.I
+                              .get<NavigationService>()
                               .toNewsCategoryFeedScreen(
                                   context, categoryModel.category),
                         );

@@ -6,6 +6,7 @@ import 'package:samachar_hub/core/widgets/progress_widget.dart';
 import 'package:samachar_hub/feature_forex/presentation/blocs/latest/latest_forex_bloc.dart';
 import 'package:samachar_hub/core/extensions/view.dart';
 import 'package:samachar_hub/feature_forex/presentation/ui/widgets/forex_list_builder.dart';
+import 'package:samachar_hub/feature_main/presentation/blocs/settings/settings_cubit.dart';
 
 class ForexList extends StatelessWidget {
   const ForexList({
@@ -16,9 +17,7 @@ class ForexList extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocConsumer<ForexBloc, ForexState>(
       listener: (context, state) {
-        if (state is ForexInitialState) {
-          context.bloc<ForexBloc>().add(GetLatestForexEvent());
-        } else if (state is ForexErrorState) {
+        if (state is ForexErrorState) {
           context.showMessage(state.message);
         } else if (state is ForexLoadErrorState) {
           context.showMessage(state.message);
@@ -41,9 +40,11 @@ class ForexList extends StatelessWidget {
           return Center(
             child: ErrorDataView(
               message: state.message,
-              onRetry: () => context.bloc<ForexBloc>().add(
-                    GetLatestForexEvent(),
-                  ),
+              onRetry: () => context.bloc<ForexBloc>().add(GetLatestForexEvent(
+                  defaultCurrencyCode: context
+                      .bloc<SettingsCubit>()
+                      .settings
+                      .defaultForexCurrency)),
             ),
           );
         }

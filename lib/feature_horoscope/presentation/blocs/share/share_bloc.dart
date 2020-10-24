@@ -7,22 +7,23 @@ import 'package:meta/meta.dart';
 import 'package:samachar_hub/core/usecases/usecase.dart';
 import 'package:samachar_hub/feature_horoscope/domain/entities/horoscope_entity.dart';
 import 'package:samachar_hub/feature_horoscope/domain/usecases/share_horoscope_use_case.dart';
+import 'package:samachar_hub/feature_horoscope/presentation/models/horoscope_model.dart';
 
 part 'share_event.dart';
 part 'share_state.dart';
 
 class ShareBloc extends Bloc<ShareEvent, ShareState> {
   final UseCase _shareHoroscopeUseCase;
-  final HoroscopeEntity _horoscopeEntity;
+  final HoroscopeUIModel _horoscopeUIModel;
 
   ShareBloc({
-    @required UseCase shareNewsFeedUseCase,
-    @required HoroscopeEntity horoscopeEntity,
-  })  : _shareHoroscopeUseCase = shareNewsFeedUseCase,
-        _horoscopeEntity = horoscopeEntity,
+    @required UseCase shareHoroscopeUseCase,
+    @required HoroscopeUIModel horoscopeUIModel,
+  })  : _shareHoroscopeUseCase = shareHoroscopeUseCase,
+        _horoscopeUIModel = horoscopeUIModel,
         super(ShareInitial());
 
-  HoroscopeEntity get horoscopeEntity => _horoscopeEntity;
+  HoroscopeUIModel get horoscopeUIModel => _horoscopeUIModel;
 
   @override
   Stream<ShareState> mapEventToState(
@@ -33,8 +34,11 @@ class ShareBloc extends Bloc<ShareEvent, ShareState> {
     if (event is Share) {
       yield ShareInProgress();
       try {
-        await _shareHoroscopeUseCase.call(
-            ShareHoroscopeUseCaseParams(horoscopeEntity: horoscopeEntity));
+        final HoroscopeEntity horoscopeEntity =
+            await _shareHoroscopeUseCase.call(ShareHoroscopeUseCaseParams(
+                horoscopeEntity: horoscopeUIModel.horoscopeEntity));
+        if (horoscopeEntity != null)
+          horoscopeUIModel.horoscopeEntity = horoscopeEntity;
         yield ShareSuccess(message: 'Horoscope shared successfully.');
       } catch (e) {
         log('Horoscope share error.', error: e);

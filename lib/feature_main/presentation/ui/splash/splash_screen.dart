@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
 import 'package:samachar_hub/core/services/navigation_service.dart';
 import 'package:samachar_hub/feature_auth/presentation/blocs/auth_bloc.dart';
 
@@ -22,9 +23,9 @@ class _SplashScreenState extends State<SplashScreen> {
     return BlocListener<AuthBloc, AuthState>(
       listener: (context, state) {
         if (state is AuthSuccessState)
-          context.repository<NavigationService>().toHomeScreen(context);
+          GetIt.I.get<NavigationService>().toHomeScreen(context);
         else if (state is AuthErrorState)
-          context.repository<NavigationService>().toLoginScreen(context);
+          GetIt.I.get<NavigationService>().toLoginScreen(context);
       },
       child: SplashView(),
     );

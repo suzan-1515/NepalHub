@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
 import 'package:samachar_hub/core/services/services.dart';
 import 'package:samachar_hub/feature_news/presentation/models/news_feed.dart';
 import 'package:samachar_hub/core/widgets/cached_image_widget.dart';
@@ -21,8 +22,8 @@ class NewsCompactView extends StatelessWidget {
       margin: EdgeInsets.symmetric(horizontal: 4, vertical: 6),
       elevation: 0,
       child: InkWell(
-        onTap: () => context
-            .repository<NavigationService>()
+        onTap: () => GetIt.I
+            .get<NavigationService>()
             .toFeedDetail(feedUIModel.feedEntity, context),
         child: ClipRRect(
           borderRadius: BorderRadius.all(Radius.circular(6.0)),
@@ -32,8 +33,8 @@ class NewsCompactView extends StatelessWidget {
               CachedImage(
                   feedUIModel.feedEntity.isValidImage
                       ? feedUIModel.feedEntity.image
-                      : null,
-                  tag: feedUIModel.tag),
+                      : '',
+                  tag: feedUIModel.feedEntity.hashCode.toString()),
               Positioned(
                 bottom: 0,
                 right: 0,
@@ -71,7 +72,8 @@ class NewsCompactView extends StatelessWidget {
                               child: CachedNetworkImage(
                                 fit: BoxFit.cover,
                                 imageUrl: feedUIModel
-                                    .newsSourceUIModel.source.favicon ?? '',
+                                        .newsSourceUIModel.source.favicon ??
+                                    '',
                                 placeholder: (context, _) =>
                                     Icon(FontAwesomeIcons.image),
                                 errorWidget: (context, url, error) =>

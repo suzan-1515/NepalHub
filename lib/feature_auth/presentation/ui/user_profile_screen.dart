@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_advanced_networkimage/provider.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
 import 'package:samachar_hub/core/services/services.dart';
 import 'package:samachar_hub/feature_auth/domain/entities/user_entity.dart';
 import 'package:samachar_hub/feature_auth/presentation/blocs/auth_bloc.dart';
@@ -40,8 +41,8 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
   Widget _buildLogoutButton(BuildContext context, UserEntity user) {
     return BlocListener<AuthBloc, AuthState>(
       listener: (context, state) {
-        if (state is AuthSuccessState) {
-          context.repository<NavigationService>().toLoginScreen(context);
+        if (state is AuthLogoutState) {
+          GetIt.I.get<NavigationService>().toLoginScreen(context);
         }
       },
       child: IgnorePointer(

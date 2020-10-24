@@ -1,6 +1,6 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
 import 'package:samachar_hub/core/services/services.dart';
 import 'package:samachar_hub/feature_news/presentation/models/news_feed.dart';
 import 'package:samachar_hub/feature_news/presentation/ui/details/widgets/heading.dart';
@@ -34,8 +34,8 @@ class RelatedNewsList extends StatelessWidget {
               final feed = data[index ~/ 2];
               return RelatedNewsListItem(
                 feedUIModel: feed,
-                onTap: () => context
-                    .repository<NavigationService>()
+                onTap: () => GetIt.I
+                    .get<NavigationService>()
                     .toFeedDetail(feed.feedEntity, context),
               );
             }) +

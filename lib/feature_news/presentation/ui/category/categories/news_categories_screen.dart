@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 import 'package:samachar_hub/feature_news/presentation/blocs/news_category/news_category_bloc.dart';
 import 'package:samachar_hub/feature_news/presentation/ui/category/categories/widgets/news_category_list.dart';
 import 'package:samachar_hub/core/widgets/empty_data_widget.dart';
@@ -6,7 +7,6 @@ import 'package:samachar_hub/core/widgets/error_data_widget.dart';
 import 'package:samachar_hub/core/widgets/progress_widget.dart';
 import 'package:samachar_hub/core/extensions/view.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:samachar_hub/feature_news/utils/provider.dart';
 
 class NewsCategoriesScreen extends StatefulWidget {
   @override
@@ -18,7 +18,7 @@ class _NewsCategoriesScreenState extends State<NewsCategoriesScreen> {
   @override
   void initState() {
     super.initState();
-    _newsCategoryBloc = NewsProvider.categoryBlocProvider(context: context);
+    _newsCategoryBloc = GetIt.I.get<NewsCategoryBloc>();
     _newsCategoryBloc.add(GetCategories());
   }
 
@@ -31,9 +31,7 @@ class _NewsCategoriesScreenState extends State<NewsCategoriesScreen> {
   Widget _buildCategoryList() {
     return BlocConsumer<NewsCategoryBloc, NewsCategoryState>(
         listener: (context, state) {
-      if (state is Initial) {
-        context.bloc<NewsCategoryBloc>().add(GetCategories());
-      } else if (state is Error) {
+      if (state is Error) {
         context.showMessage(state.message);
       }
     }, builder: (context, state) {

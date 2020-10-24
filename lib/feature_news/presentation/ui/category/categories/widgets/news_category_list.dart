@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:get_it/get_it.dart';
 import 'package:samachar_hub/core/usecases/usecase.dart';
 import 'package:samachar_hub/feature_news/domain/usecases/follow_news_category_use_case.dart';
 import 'package:samachar_hub/feature_news/domain/usecases/unfollow_news_category_use_case.dart';
@@ -34,10 +35,8 @@ class _NewsCategoryListState extends State<NewsCategoryList> {
   void initState() {
     super.initState();
     _refreshCompleter = Completer<void>();
-    _followNewsCategoryUseCase =
-        context.repository<FollowNewsCategoryUseCase>();
-    _unfollowNewsCategoryUseCase =
-        context.repository<UnFollowNewsCategoryUseCase>();
+    _followNewsCategoryUseCase = GetIt.I.get<FollowNewsCategoryUseCase>();
+    _unfollowNewsCategoryUseCase = GetIt.I.get<UnFollowNewsCategoryUseCase>();
   }
 
   @override

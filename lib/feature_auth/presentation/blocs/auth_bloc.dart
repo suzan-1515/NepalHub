@@ -120,7 +120,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   ) async* {
     try {
       await _logoutUseCase.call(LogoutUseCaseParams(userEntity: currentUser));
-      yield AuthSuccessState(currentUser);
+      yield AuthLogoutState();
     } catch (e) {
       log('Error logout : ', error: e);
       yield AuthErrorState(message: 'Unable to logout.');

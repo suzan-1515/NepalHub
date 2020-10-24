@@ -1,6 +1,7 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
 import 'package:samachar_hub/core/services/services.dart';
 import 'package:samachar_hub/core/widgets/empty_data_widget.dart';
 import 'package:samachar_hub/core/widgets/error_data_widget.dart';
@@ -18,9 +19,7 @@ class FollowedNewsSourceList extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocConsumer<NewsSourceBloc, NewsSourceState>(
       listener: (context, state) {
-        if (state is InitialState) {
-          context.bloc<NewsSourceBloc>().add(GetFollowedSourcesEvent());
-        } else if (state is ErrorState) {
+        if (state is ErrorState) {
           context.showMessage(state.message);
         }
       },
@@ -41,10 +40,8 @@ class FollowedNewsSourceList extends StatelessWidget {
                     title: sourceModel.source.title,
                     icon: sourceModel.source.icon,
                     onTap: () {
-                      context
-                          .repository<NavigationService>()
-                          .toNewsSourceFeedScreen(
-                              context: context, source: sourceModel.source);
+                      GetIt.I.get<NavigationService>().toNewsSourceFeedScreen(
+                          context: context, source: sourceModel.source);
                     },
                   );
                 },

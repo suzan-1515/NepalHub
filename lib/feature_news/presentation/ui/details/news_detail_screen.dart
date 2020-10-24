@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 import 'package:samachar_hub/core/services/services.dart';
 import 'package:samachar_hub/core/widgets/comment_bar_placeholder_widget.dart';
 import 'package:samachar_hub/core/widgets/empty_data_widget.dart';
@@ -25,7 +26,8 @@ import 'package:samachar_hub/feature_news/utils/provider.dart';
 class NewsDetailScreen extends StatelessWidget {
   final NewsFeedEntity feedEntity;
 
-  const NewsDetailScreen({Key key, this.feedEntity}) : super(key: key);
+  const NewsDetailScreen({Key key, @required this.feedEntity})
+      : super(key: key);
   Widget _buildBody(BuildContext context, NewsFeedUIModel feedUIModel) {
     return OrientationBuilder(
       builder: (_, Orientation orientation) {
@@ -38,7 +40,7 @@ class NewsDetailScreen extends StatelessWidget {
                   Expanded(
                     child: CachedImage(
                       feedUIModel.feedEntity.image,
-                      tag: feedUIModel.tag,
+                      tag: feedUIModel.feedEntity.hashCode.toString(),
                     ),
                   ),
                   Expanded(
@@ -63,7 +65,7 @@ class NewsDetailScreen extends StatelessWidget {
                       children: [
                         CachedImage(
                           feedUIModel.feedEntity.image,
-                          tag: feedUIModel.tag,
+                          tag: feedUIModel.feedEntity.hashCode.toString(),
                         ),
                         Container(
                           decoration: BoxDecoration(
@@ -113,16 +115,14 @@ class NewsDetailScreen extends StatelessWidget {
         likeUnlikeBloc.LikeUnlikeState>(
       builder: (context, state) => CommentBar(
         likeCount: feedUIModel?.formattedLikeCount ?? '0',
-        onCommentTap: () => context
-            .repository<NavigationService>()
-            .toCommentsScreen(
-                context: context,
-                threadTitle: feedUIModel.feedEntity.title,
-                threadId: feedUIModel.feedEntity.id,
-                threadType: CommentThreadType.NEWS_FEED),
+        onCommentTap: () => GetIt.I.get<NavigationService>().toCommentsScreen(
+            context: context,
+            threadTitle: feedUIModel.feedEntity.title,
+            threadId: feedUIModel.feedEntity.id,
+            threadType: CommentThreadType.NEWS_FEED),
         onShareTap: () {
-          context
-              .repository<ShareService>()
+          GetIt.I
+              .get<ShareService>()
               .share(
                 threadId: feedUIModel.feedEntity.id,
                 data: feedUIModel.feedEntity.link,
@@ -176,11 +176,7 @@ class NewsDetailScreen extends StatelessWidget {
         body: BlocConsumer<newsDetailBloc.NewsDetailBloc,
                 newsDetailBloc.NewsDetailState>(
             listener: (context, state) {
-              if (state is newsDetailBloc.InitialState) {
-                context
-                    .bloc<newsDetailBloc.NewsDetailBloc>()
-                    .add(newsDetailBloc.GetNewsDetailEvent());
-              } else if (state is newsDetailBloc.ErrorState) {
+              if (state is newsDetailBloc.ErrorState) {
                 context.showMessage(state.message);
               } else if (state is newsDetailBloc.LoadErrorState) {
                 context.showMessage(state.message);

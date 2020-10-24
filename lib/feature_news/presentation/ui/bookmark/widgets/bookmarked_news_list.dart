@@ -39,9 +39,7 @@ class _BookmarkedNewsListState extends State<BookmarkedNewsList> {
     return BlocConsumer<BookmarkNewsBloc, BookmarkNewsState>(
         cubit: _bookmarkNewsBloc,
         listener: (context, state) {
-          if (state is InitialState) {
-            _bookmarkNewsBloc.add(GetBookmarkedNews());
-          } else if (!(state is LoadingState)) {
+          if (!(state is LoadingState)) {
             _refreshCompleter?.complete();
             _refreshCompleter = Completer();
           }

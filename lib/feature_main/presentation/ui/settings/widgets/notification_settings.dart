@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
 import 'package:samachar_hub/core/constants/notification_channels.dart';
 import 'package:samachar_hub/core/services/services.dart';
 import 'package:samachar_hub/feature_main/domain/entities/settings_entity.dart';
@@ -9,14 +10,13 @@ class NotificationSettings extends StatelessWidget {
   const NotificationSettings({
     Key key,
     @required this.context,
-    @required this.settingsEntity,
   }) : super(key: key);
 
   final BuildContext context;
-  final SettingsEntity settingsEntity;
 
   @override
   Widget build(BuildContext context) {
+    final settingsCubit = context.bloc<SettingsCubit>();
     return Padding(
       padding: const EdgeInsets.only(left: 16.0, top: 16.0),
       child: Column(
@@ -44,7 +44,8 @@ class NotificationSettings extends StatelessWidget {
               BlocBuilder<SettingsCubit, SettingsState>(
                 buildWhen: (previous, current) =>
                     current is SettingsTrendingNotificationChangedState ||
-                    current is SettingsInitialState,
+                    current is SettingsInitialState ||
+                    current is SettingsLoadSuccess,
                 builder: (context, state) {
                   if (state is SettingsTrendingNotificationChangedState) {
                     return TrendingNotificationSwitch(
@@ -53,7 +54,7 @@ class NotificationSettings extends StatelessWidget {
                   return TrendingNotificationSwitch(
                       context: context,
                       initialValue:
-                          settingsEntity.trendingNotifications ?? true);
+                          settingsCubit.settings.trendingNotifications ?? true);
                 },
               ),
             ],
@@ -82,7 +83,8 @@ class NotificationSettings extends StatelessWidget {
               BlocBuilder<SettingsCubit, SettingsState>(
                 buildWhen: (previous, current) =>
                     current is SettingsCommentNotificationChangedState ||
-                    current is SettingsInitialState,
+                    current is SettingsInitialState ||
+                    current is SettingsLoadSuccess,
                 builder: (context, state) {
                   if (state is SettingsCommentNotificationChangedState) {
                     return CommentNotificationSwitch(
@@ -91,7 +93,7 @@ class NotificationSettings extends StatelessWidget {
                   return CommentNotificationSwitch(
                       context: context,
                       initialValue:
-                          settingsEntity.commentNotifications ?? true);
+                          settingsCubit.settings.commentNotifications ?? true);
                 },
               ),
             ],
@@ -120,7 +122,8 @@ class NotificationSettings extends StatelessWidget {
               BlocBuilder<SettingsCubit, SettingsState>(
                 buildWhen: (previous, current) =>
                     current is SettingsMessageNotificationChangedState ||
-                    current is SettingsInitialState,
+                    current is SettingsInitialState ||
+                    current is SettingsLoadSuccess,
                 builder: (context, state) {
                   if (state is SettingsMessageNotificationChangedState) {
                     return MessageNotificationSwitch(
@@ -129,7 +132,7 @@ class NotificationSettings extends StatelessWidget {
                   return MessageNotificationSwitch(
                       context: context,
                       initialValue:
-                          settingsEntity.messageNotifications ?? true);
+                          settingsCubit.settings.messageNotifications ?? true);
                 },
               ),
             ],
@@ -158,7 +161,8 @@ class NotificationSettings extends StatelessWidget {
               BlocBuilder<SettingsCubit, SettingsState>(
                 buildWhen: (previous, current) =>
                     current is SettingsOtherNotificationChangedState ||
-                    current is SettingsInitialState,
+                    current is SettingsInitialState ||
+                    current is SettingsLoadSuccess,
                 builder: (context, state) {
                   if (state is SettingsOtherNotificationChangedState) {
                     return OtherNotificationSwitch(
@@ -166,7 +170,8 @@ class NotificationSettings extends StatelessWidget {
                   }
                   return OtherNotificationSwitch(
                       context: context,
-                      initialValue: settingsEntity.otherNotifications ?? true);
+                      initialValue:
+                          settingsCubit.settings.otherNotifications ?? true);
                 },
               ),
             ],
@@ -195,19 +200,15 @@ class OtherNotificationSwitch extends StatelessWidget {
       onChanged: (value) {
         context.bloc<SettingsCubit>().setOtherNotifications(value);
         if (value) {
-          context
-              .repository<NotificationService>()
+          GetIt.I
+              .get<NotificationService>()
               .subscribe(NotificationChannels.kOtherNotifications, 1);
-          context
-              .repository<AnalyticsService>()
-              .logOtherNotificatoon(notify: true);
+          GetIt.I.get<AnalyticsService>().logOtherNotificatoon(notify: true);
         } else
-          context
-              .repository<NotificationService>()
+          GetIt.I
+              .get<NotificationService>()
               .unSubscribe(NotificationChannels.kOtherNotifications);
-        context
-            .repository<AnalyticsService>()
-            .logOtherNotificatoon(notify: false);
+        GetIt.I.get<AnalyticsService>().logOtherNotificatoon(notify: false);
       },
       activeColor: Theme.of(context).accentColor,
     );
@@ -231,19 +232,15 @@ class MessageNotificationSwitch extends StatelessWidget {
       onChanged: (value) {
         context.bloc<SettingsCubit>().setMessageNotifications(value);
         if (value) {
-          context
-              .repository<NotificationService>()
+          GetIt.I
+              .get<NotificationService>()
               .subscribe(NotificationChannels.kMessageNotifications, 1);
-          context
-              .repository<AnalyticsService>()
-              .logMessageNotification(notify: true);
+          GetIt.I.get<AnalyticsService>().logMessageNotification(notify: true);
         } else
-          context
-              .repository<NotificationService>()
+          GetIt.I
+              .get<NotificationService>()
               .unSubscribe(NotificationChannels.kMessageNotifications);
-        context
-            .repository<AnalyticsService>()
-            .logMessageNotification(notify: false);
+        GetIt.I.get<AnalyticsService>().logMessageNotification(notify: false);
       },
       activeColor: Theme.of(context).accentColor,
     );
@@ -267,19 +264,15 @@ class CommentNotificationSwitch extends StatelessWidget {
       onChanged: (value) {
         context.bloc<SettingsCubit>().setCommentNotifications(value);
         if (value) {
-          context
-              .repository<NotificationService>()
+          GetIt.I
+              .get<NotificationService>()
               .subscribe(NotificationChannels.kCommentNotifications, 1);
-          context
-              .repository<AnalyticsService>()
-              .logCommentNotification(notify: true);
+          GetIt.I.get<AnalyticsService>().logCommentNotification(notify: true);
         } else
-          context
-              .repository<NotificationService>()
+          GetIt.I
+              .get<NotificationService>()
               .unSubscribe(NotificationChannels.kCommentNotifications);
-        context
-            .repository<AnalyticsService>()
-            .logCommentNotification(notify: false);
+        GetIt.I.get<AnalyticsService>().logCommentNotification(notify: false);
       },
       activeColor: Theme.of(context).accentColor,
     );
@@ -303,19 +296,15 @@ class TrendingNotificationSwitch extends StatelessWidget {
       onChanged: (value) {
         context.bloc<SettingsCubit>().setTrendingNotifications(value);
         if (value) {
-          context
-              .repository<NotificationService>()
+          GetIt.I
+              .get<NotificationService>()
               .subscribe(NotificationChannels.kTrendingNotifications, 1);
-          context
-              .repository<AnalyticsService>()
-              .logTrendingNotificatoon(notify: true);
+          GetIt.I.get<AnalyticsService>().logTrendingNotificatoon(notify: true);
         } else
-          context
-              .repository<NotificationService>()
+          GetIt.I
+              .get<NotificationService>()
               .unSubscribe(NotificationChannels.kTrendingNotifications);
-        context
-            .repository<AnalyticsService>()
-            .logTrendingNotificatoon(notify: false);
+        GetIt.I.get<AnalyticsService>().logTrendingNotificatoon(notify: false);
       },
       activeColor: Theme.of(context).accentColor,
     );

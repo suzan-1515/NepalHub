@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get_it/get_it.dart';
 import 'package:samachar_hub/core/models/language.dart';
 import 'package:samachar_hub/core/services/services.dart';
 import 'package:samachar_hub/feature_forex/presentation/models/forex_model.dart';
@@ -27,8 +27,7 @@ class OtherMenuSection extends StatelessWidget {
       child: Material(
         color: Colors.transparent,
         child: InkWell(
-          onTap: () =>
-              context.repository<NavigationService>().toForexScreen(context),
+          onTap: () => GetIt.I.get<NavigationService>().toForexScreen(context),
           child: Padding(
             padding: const EdgeInsets.all(8),
             child: Row(
@@ -86,9 +85,8 @@ class OtherMenuSection extends StatelessWidget {
       child: Material(
         color: Colors.transparent,
         child: InkWell(
-          onTap: () => context
-              .repository<NavigationService>()
-              .toHoroscopeScreen(context),
+          onTap: () =>
+              GetIt.I.get<NavigationService>().toHoroscopeScreen(context),
           child: Padding(
             padding: const EdgeInsets.all(8),
             child: Row(

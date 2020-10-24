@@ -8,6 +8,7 @@ import 'package:samachar_hub/core/usecases/usecase.dart';
 import 'package:samachar_hub/feature_forex/domain/entities/forex_entity.dart';
 import 'package:samachar_hub/feature_forex/domain/usecases/like_forex_use_case.dart';
 import 'package:samachar_hub/feature_forex/domain/usecases/unlike_forex_use_case.dart';
+import 'package:samachar_hub/feature_forex/presentation/models/forex_model.dart';
 
 part 'like_unlike_event.dart';
 part 'like_unlike_state.dart';
@@ -15,18 +16,18 @@ part 'like_unlike_state.dart';
 class LikeUnlikeBloc extends Bloc<LikeUnlikeEvent, LikeUnlikeState> {
   final UseCase _likeForexUseCase;
   final UseCase _unLikeForexUseCase;
-  final ForexEntity _forexEntity;
+  final ForexUIModel _forexUIModel;
 
   LikeUnlikeBloc({
-    @required UseCase likeNewsFeedUseCase,
-    @required UseCase unLikeNewsFeedUseCase,
-    @required ForexEntity forexEntity,
-  })  : _likeForexUseCase = likeNewsFeedUseCase,
-        _unLikeForexUseCase = unLikeNewsFeedUseCase,
-        _forexEntity = forexEntity,
+    @required UseCase likeForexUseCase,
+    @required UseCase unLikeForexUseCase,
+    @required ForexUIModel forexUIModel,
+  })  : _likeForexUseCase = likeForexUseCase,
+        _unLikeForexUseCase = unLikeForexUseCase,
+        _forexUIModel = forexUIModel,
         super(InitialState());
 
-  ForexEntity get forexEntity => _forexEntity;
+  ForexUIModel get forexUIModel => _forexUIModel;
 
   @override
   Stream<LikeUnlikeState> mapEventToState(
@@ -37,8 +38,9 @@ class LikeUnlikeBloc extends Bloc<LikeUnlikeEvent, LikeUnlikeState> {
     if (event is LikeEvent) {
       yield InProgressState();
       try {
-        await _likeForexUseCase
-            .call(LikeForexUseCaseParams(forexEntity: forexEntity));
+        final ForexEntity forexEntity = await _likeForexUseCase.call(
+            LikeForexUseCaseParams(forexEntity: forexUIModel.forexEntity));
+        if (forexEntity != null) forexUIModel.forexEntity = forexEntity;
         yield LikedState(message: 'Forex liked successfully.');
       } catch (e) {
         log('Forex like error.', error: e);
@@ -47,8 +49,9 @@ class LikeUnlikeBloc extends Bloc<LikeUnlikeEvent, LikeUnlikeState> {
     } else if (event is UnlikeEvent) {
       yield InProgressState();
       try {
-        await _unLikeForexUseCase
-            .call(UnlikeForexUseCaseParams(forexEntity: forexEntity));
+        final ForexEntity forexEntity = await _unLikeForexUseCase.call(
+            UnlikeForexUseCaseParams(forexEntity: forexUIModel.forexEntity));
+        if (forexEntity != null) forexUIModel.forexEntity = forexEntity;
         yield UnlikedState(message: 'Forex unliked successfully.');
       } catch (e) {
         log('Forex unlike error.', error: e);

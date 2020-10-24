@@ -7,22 +7,23 @@ import 'package:meta/meta.dart';
 import 'package:samachar_hub/core/usecases/usecase.dart';
 import 'package:samachar_hub/feature_forex/domain/entities/forex_entity.dart';
 import 'package:samachar_hub/feature_forex/domain/usecases/view_forex_use_case.dart';
+import 'package:samachar_hub/feature_forex/presentation/models/forex_model.dart';
 
 part 'view_event.dart';
 part 'view_state.dart';
 
 class ViewBloc extends Bloc<ViewEvent, ViewState> {
-  final UseCase _viewNewsFeedUseCase;
-  final ForexEntity _forexEntity;
+  final UseCase _viewForexUseCase;
+  final ForexUIModel _forexUIModel;
 
   ViewBloc({
-    @required UseCase viewNewsFeedUseCase,
-    @required ForexEntity forexEntity,
-  })  : _viewNewsFeedUseCase = viewNewsFeedUseCase,
-        _forexEntity = forexEntity,
+    @required UseCase viewForexUseCase,
+    @required ForexUIModel forexUIModel,
+  })  : _viewForexUseCase = viewForexUseCase,
+        _forexUIModel = forexUIModel,
         super(ViewInitial());
 
-  ForexEntity get forexEntity => _forexEntity;
+  ForexUIModel get forexUIModel => _forexUIModel;
 
   @override
   Stream<ViewState> mapEventToState(
@@ -33,8 +34,9 @@ class ViewBloc extends Bloc<ViewEvent, ViewState> {
     if (event is View) {
       yield ViewInProgress();
       try {
-        await _viewNewsFeedUseCase
-            .call(ViewForexUseCaseParams(forexEntity: forexEntity));
+        final ForexEntity forexEntity = await _viewForexUseCase.call(
+            ViewForexUseCaseParams(forexEntity: forexUIModel.forexEntity));
+        if (forexEntity != null) forexUIModel.forexEntity = forexEntity;
         yield ViewSuccess(message: 'Forex viewd successfully.');
       } catch (e) {
         log('Forex view error.', error: e);

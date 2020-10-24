@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 import 'package:samachar_hub/core/services/services.dart';
 import 'package:samachar_hub/feature_news/presentation/models/news_feed.dart';
 import 'package:samachar_hub/feature_news/presentation/ui/widgets/article_info_widget.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:samachar_hub/core/widgets/cached_image_widget.dart';
 
 class NewsListView extends StatelessWidget {
@@ -21,8 +21,8 @@ class NewsListView extends StatelessWidget {
         borderRadius: BorderRadius.circular(6),
       ),
       child: InkWell(
-        onTap: () => context
-            .repository<NavigationService>()
+        onTap: () => GetIt.I
+            .get<NavigationService>()
             .toFeedDetail(feedUIModel.feedEntity, context),
         child: Padding(
           padding: const EdgeInsets.all(8.0),
@@ -63,7 +63,7 @@ class NewsListView extends StatelessWidget {
                       child: ClipRRect(
                         borderRadius: BorderRadius.all(Radius.circular(6)),
                         child: CachedImage(feedUIModel.feedEntity.image,
-                            tag: feedUIModel.tag),
+                            tag: feedUIModel.feedEntity.hashCode.toString()),
                       ),
                     ),
                   ),

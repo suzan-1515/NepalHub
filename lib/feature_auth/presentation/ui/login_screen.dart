@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_signin_button/flutter_signin_button.dart';
+import 'package:get_it/get_it.dart';
 import 'package:samachar_hub/core/services/services.dart';
 import 'package:samachar_hub/core/widgets/progress_widget.dart';
 import 'package:samachar_hub/feature_auth/presentation/blocs/auth_bloc.dart';
@@ -115,13 +116,11 @@ class LoginScreen extends StatelessWidget {
               if (state is AuthErrorState) {
                 context.showMessage(state.message);
               } else if (state is AuthSuccessState) {
-                context
-                    .repository<CrashAnalyticsService>()
+                GetIt.I
+                    .get<CrashAnalyticsService>()
                     .setUser(userId: state.user.id);
-                context
-                    .repository<NotificationService>()
-                    .setEmail(state.user.email);
-                context.repository<NavigationService>().toHomeScreen(context);
+                GetIt.I.get<NotificationService>().setEmail(state.user.email);
+                GetIt.I.get<NavigationService>().toHomeScreen(context);
               }
             },
             buildWhen: (previous, current) => !(current is AuthSuccessState),

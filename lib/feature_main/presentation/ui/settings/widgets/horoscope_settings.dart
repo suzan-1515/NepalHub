@@ -1,22 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:get_it/get_it.dart';
 import 'package:samachar_hub/core/constants/notification_channels.dart';
 import 'package:samachar_hub/core/models/language.dart';
 import 'package:samachar_hub/core/services/services.dart';
 import 'package:samachar_hub/feature_horoscope/domain/entities/horoscope_entity.dart';
-import 'package:samachar_hub/feature_main/domain/entities/settings_entity.dart';
 import 'package:samachar_hub/feature_main/presentation/blocs/settings/settings_cubit.dart';
 
 class HoroscopeSettings extends StatelessWidget {
   const HoroscopeSettings({
     Key key,
     @required this.context,
-    @required this.settingsEntity,
   }) : super(key: key);
 
   final BuildContext context;
-  final SettingsEntity settingsEntity;
 
   Widget _buildSignsDropDown(int selectedIndex) {
     return DropdownButton<int>(
@@ -44,7 +42,7 @@ class HoroscopeSettings extends StatelessWidget {
       onChanged: (value) {
         context.bloc<SettingsCubit>().setShowDailyMorningHoroscope(value);
         if (value) {
-          context.repository<NotificationService>().scheduleNotificationDaily(
+          GetIt.I.get<NotificationService>().scheduleNotificationDaily(
               NotificationChannels.kMorningHoroscopeId,
               'Good Morning 🌅',
               'Your daily horoscope is here. Click to read. 📰',
@@ -52,16 +50,16 @@ class HoroscopeSettings extends StatelessWidget {
               NotificationChannels.kMorningHoroscopeChannelName,
               NotificationChannels.kMorningHoroscopeChannelDesc,
               Time(7, 0, 0));
-          context
-              .repository<AnalyticsService>()
+          GetIt.I
+              .get<AnalyticsService>()
               .logHoroscopeDailyMorningNotificatoon(notify: true);
         } else {
-          context
-              .repository<NotificationService>()
+          GetIt.I
+              .get<NotificationService>()
               .flutterLocalNotificationsPlugin
               .cancel(NotificationChannels.kMorningHoroscopeId);
-          context
-              .repository<AnalyticsService>()
+          GetIt.I
+              .get<AnalyticsService>()
               .logHoroscopeDailyMorningNotificatoon(notify: false);
         }
       },
@@ -71,6 +69,7 @@ class HoroscopeSettings extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final settingsCubit = context.bloc<SettingsCubit>();
     return Padding(
       padding: const EdgeInsets.only(left: 16.0, top: 16.0),
       child: Column(
@@ -85,14 +84,15 @@ class HoroscopeSettings extends StatelessWidget {
               ),
               BlocBuilder<SettingsCubit, SettingsState>(
                   buildWhen: (previous, current) =>
-                      (current is SettingsInitialState) ||
-                      (current is SettingsDefaultHoroscopeSignChangedState),
+                      current is SettingsInitialState ||
+                      current is SettingsLoadSuccess ||
+                      current is SettingsDefaultHoroscopeSignChangedState,
                   builder: (context, state) {
                     if (state is SettingsDefaultHoroscopeSignChangedState) {
                       return _buildSignsDropDown(state.value);
                     }
                     return _buildSignsDropDown(
-                        settingsEntity.defaultHoroscopeSign ?? 0);
+                        settingsCubit.settings.defaultHoroscopeSign ?? 0);
                   }),
             ],
           ),
@@ -107,6 +107,7 @@ class HoroscopeSettings extends StatelessWidget {
               BlocBuilder<SettingsCubit, SettingsState>(
                 buildWhen: (previous, current) =>
                     (current is SettingsInitialState) ||
+                    (current is SettingsLoadSuccess) ||
                     (current
                         is SettingsDailyMorningHoroscopeNotificationChangedState),
                 builder: (context, state) {
@@ -115,7 +116,7 @@ class HoroscopeSettings extends StatelessWidget {
                     return _buildNotificationSwitch(state.value);
                   }
                   return _buildNotificationSwitch(
-                      settingsEntity.showDailyMorningHoroscope ?? true);
+                      settingsCubit.settings.showDailyMorningHoroscope ?? true);
                 },
               ),
             ],

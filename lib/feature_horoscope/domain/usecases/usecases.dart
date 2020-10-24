@@ -1,6 +1,5 @@
 export 'dislike_horoscope_use_case.dart';
 export 'get_daily_horoscope_use_case.dart';
-export 'get_default_horoscope_sign_use_case.dart';
 export 'get_monthly_horoscope_use_case.dart';
 export 'get_weekly_horoscope_use_case.dart';
 export 'get_yearly_horoscope_use_case.dart';

@@ -26,3 +26,19 @@ class AuthErrorState extends AuthState {
   @override
   List<Object> get props => [message];
 }
+
+class AuthUnauthorisedState extends AuthState {
+  final String message;
+
+  AuthUnauthorisedState({this.message});
+  @override
+  List<Object> get props => [message];
+}
+
+class AuthLogoutState extends AuthState {
+  final String message;
+
+  AuthLogoutState({this.message});
+  @override
+  List<Object> get props => [message];
+}

@@ -1,6 +1,7 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
 import 'package:samachar_hub/core/services/services.dart';
 import 'package:samachar_hub/feature_news/presentation/blocs/news_source/news_sources_bloc.dart';
 import 'package:samachar_hub/feature_news/presentation/ui/following/source/followed_news_source_list.dart';
@@ -19,11 +20,10 @@ class FollowedNewsSourceSection extends StatefulWidget {
 }
 
 class _FollowedNewsSourceSectionState extends State<FollowedNewsSourceSection> {
-  NewsSourceBloc _newsSourceBloc;
+  NewsSourceBloc _newsSourceBloc = GetIt.I.get<NewsSourceBloc>();
   @override
   void initState() {
     super.initState();
-    _newsSourceBloc = NewsProvider.sourceBlocProvider(context: context);
     _newsSourceBloc.add(GetFollowedSourcesEvent());
   }
 
@@ -64,8 +64,8 @@ class _FollowedNewsSourceSectionState extends State<FollowedNewsSourceSection> {
               ViewAllButton(
                   context: context,
                   onTap: () {
-                    context
-                        .repository<NavigationService>()
+                    GetIt.I
+                        .get<NavigationService>()
                         .toFollowedNewsSourceScreen(context);
                   }),
             ],

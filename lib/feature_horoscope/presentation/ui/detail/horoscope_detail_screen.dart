@@ -1,26 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_advanced_networkimage/provider.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
 import 'package:samachar_hub/core/services/services.dart';
 import 'package:samachar_hub/core/widgets/comment_bar_widget.dart';
 import 'package:samachar_hub/feature_auth/presentation/blocs/auth_bloc.dart';
 import 'package:samachar_hub/feature_comment/domain/entities/thread_type.dart';
 import 'package:samachar_hub/feature_horoscope/domain/entities/horoscope_entity.dart';
 import 'package:samachar_hub/feature_horoscope/domain/entities/horoscope_type.dart';
-import 'package:samachar_hub/feature_horoscope/domain/usecases/dislike_horoscope_use_case.dart';
-import 'package:samachar_hub/feature_horoscope/domain/usecases/like_horoscope_use_case.dart';
-import 'package:samachar_hub/feature_horoscope/domain/usecases/share_horoscope_use_case.dart';
-import 'package:samachar_hub/feature_horoscope/domain/usecases/undislike_horoscope_use_case.dart';
-import 'package:samachar_hub/feature_horoscope/domain/usecases/unlike_horoscope_use_case.dart';
-import 'package:samachar_hub/feature_horoscope/domain/usecases/view_horoscope_use_case.dart';
-import 'package:samachar_hub/feature_horoscope/presentation/blocs/dislike/dislike_bloc.dart';
 import 'package:samachar_hub/feature_horoscope/presentation/blocs/like_unlike/like_unlike_bloc.dart';
 import 'package:samachar_hub/feature_horoscope/presentation/blocs/share/share_bloc.dart';
-import 'package:samachar_hub/feature_horoscope/presentation/blocs/view/view_bloc.dart';
 import 'package:samachar_hub/feature_horoscope/presentation/models/horoscope_model.dart';
 import 'package:samachar_hub/feature_horoscope/presentation/extensions/horoscope_extensions.dart';
+import 'package:samachar_hub/feature_horoscope/utils/provider.dart';
 
-class HoroscopeDetailScreen extends StatefulWidget {
+class HoroscopeDetailScreen extends StatelessWidget {
   final String sign;
   final String signIcon;
   final String zodiac;
@@ -33,51 +27,39 @@ class HoroscopeDetailScreen extends StatefulWidget {
     @required this.zodiac,
     @required this.horoscopeEntity,
   }) : super(key: key);
-  @override
-  _HoroscopeDetailScreenState createState() => _HoroscopeDetailScreenState();
-}
 
-class _HoroscopeDetailScreenState extends State<HoroscopeDetailScreen> {
-  HoroscopeUIModel _horoscopeUIModel;
-
-  @override
-  void initState() {
-    super.initState();
-    this._horoscopeUIModel = widget.horoscopeEntity.toUIModel;
-  }
-
-  Widget _buildContent(BuildContext context) {
+  Widget _buildContent(
+      BuildContext context, HoroscopeUIModel horoscopeUIModel) {
     return Row(
       mainAxisSize: MainAxisSize.max,
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         Hero(
-          tag: widget.sign,
+          tag: sign,
           child: CircleAvatar(
             backgroundColor: Theme.of(context).canvasColor,
-            backgroundImage:
-                AdvancedNetworkImage(widget.signIcon, useDiskCache: true),
+            backgroundImage: AdvancedNetworkImage(signIcon, useDiskCache: true),
           ),
         ),
         SizedBox(width: 8),
         Expanded(
           child: RichText(
             text: TextSpan(
-                text: widget.sign,
+                text: sign,
                 style: Theme.of(context)
                     .textTheme
                     .subtitle1
                     .copyWith(fontWeight: FontWeight.w700),
                 children: [
                   TextSpan(
-                      text: '\n${_horoscopeUIModel.formattedDate}',
+                      text: '\n${horoscopeUIModel.formattedDate}',
                       style: Theme.of(context)
                           .textTheme
                           .bodyText2
                           .copyWith(fontStyle: FontStyle.italic)),
                   TextSpan(
-                      text: '\n\n${widget.zodiac}',
+                      text: '\n\n$zodiac',
                       style: Theme.of(context).textTheme.subtitle1),
                 ]),
           ),
@@ -101,40 +83,39 @@ class _HoroscopeDetailScreenState extends State<HoroscopeDetailScreen> {
     );
   }
 
-  Widget _buildCommentBar() {
+  Widget _buildCommentBar(
+      BuildContext context, HoroscopeUIModel horoscopeUIModel) {
     final user = context.bloc<AuthBloc>().currentUser;
     return BlocBuilder<LikeUnlikeBloc, LikeUnlikeState>(
       builder: (context, state) {
         return CommentBar(
-          likeCount: _horoscopeUIModel?.formattedLikeCount ?? '0',
-          onCommentTap: () => context
-              .repository<NavigationService>()
-              .toCommentsScreen(
-                  context: context,
-                  threadTitle:
-                      '${_horoscopeUIModel.horoscopeEntity.type.value.toUpperCase()} Horoscope - ${widget.sign}',
-                  threadId: _horoscopeUIModel.horoscopeEntity.id,
-                  threadType: CommentThreadType.HOROSCOPE),
+          likeCount: horoscopeUIModel?.formattedLikeCount ?? '0',
+          onCommentTap: () => GetIt.I.get<NavigationService>().toCommentsScreen(
+              context: context,
+              threadTitle:
+                  '${horoscopeUIModel.horoscopeEntity.type.value.toUpperCase()} Horoscope - ${sign}',
+              threadId: horoscopeUIModel.horoscopeEntity.id,
+              threadType: CommentThreadType.HOROSCOPE),
           onShareTap: () {
-            context
-                .repository<ShareService>()
+            GetIt.I
+                .get<ShareService>()
                 .share(
-                    threadId: _horoscopeUIModel.horoscopeEntity.id,
+                    threadId: horoscopeUIModel.horoscopeEntity.id,
                     data:
-                        '${_horoscopeUIModel.horoscopeEntity.title}\n${widget.sign}\n${widget.zodiac}\n#nepal_hub',
+                        '${horoscopeUIModel.horoscopeEntity.title}\n$sign\n$zodiac\n#nepal_hub',
                     contentType: 'horoscope')
                 .then((value) => context.bloc<ShareBloc>().add(Share()));
           },
-          commentCount: _horoscopeUIModel?.formattedCommentCount ?? '0',
-          isLiked: _horoscopeUIModel?.horoscopeEntity?.isLiked ?? false,
-          shareCount: _horoscopeUIModel?.formattedShareCount ?? '0',
+          commentCount: horoscopeUIModel?.formattedCommentCount ?? '0',
+          isLiked: horoscopeUIModel?.horoscopeEntity?.isLiked ?? false,
+          shareCount: horoscopeUIModel?.formattedShareCount ?? '0',
           userAvatar: user?.avatar,
           onLikeTap: () {
-            if (_horoscopeUIModel.horoscopeEntity.isLiked) {
-              _horoscopeUIModel.unlike();
+            if (horoscopeUIModel.horoscopeEntity.isLiked) {
+              horoscopeUIModel.unlike();
               context.bloc<LikeUnlikeBloc>().add(UnlikeEvent());
             } else {
-              _horoscopeUIModel.like();
+              horoscopeUIModel.like();
               context.bloc<LikeUnlikeBloc>().add(LikeEvent());
             }
           },
@@ -145,48 +126,20 @@ class _HoroscopeDetailScreenState extends State<HoroscopeDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
-      providers: [
-        BlocProvider<LikeUnlikeBloc>(
-          create: (context) => LikeUnlikeBloc(
-            horoscopeEntity: _horoscopeUIModel.horoscopeEntity,
-            likeNewsFeedUseCase: context.repository<LikeHoroscopeUseCase>(),
-            unLikeNewsFeedUseCase: context.repository<UnlikeHoroscopeUseCase>(),
-          ),
-        ),
-        BlocProvider<DislikeBloc>(
-          create: (context) => DislikeBloc(
-            horoscopeEntity: _horoscopeUIModel.horoscopeEntity,
-            dislikeHoroscopeUseCase:
-                context.repository<DislikeHoroscopeUseCase>(),
-            undislikeHoroscopeUseCase:
-                context.repository<UndislikeHoroscopeUseCase>(),
-          ),
-        ),
-        BlocProvider<ShareBloc>(
-          create: (context) => ShareBloc(
-            horoscopeEntity: _horoscopeUIModel.horoscopeEntity,
-            shareNewsFeedUseCase: context.repository<ShareHoroscopeUseCase>(),
-          ),
-        ),
-        BlocProvider<ViewBloc>(
-          create: (context) => ViewBloc(
-            horoscopeEntity: _horoscopeUIModel.horoscopeEntity,
-            viewNewsFeedUseCase: context.repository<ViewHoroscopeUseCase>(),
-          )..add(View()),
-        ),
-      ],
+    final horoscopeUIModel = horoscopeEntity.toUIModel;
+    return HoroscopeProvider.horoscopeDetailBlocProvider(
+      horoscopeUIModel: horoscopeUIModel,
       child: Scaffold(
         backgroundColor: Theme.of(context).backgroundColor,
         appBar: AppBar(
           title: Text(
-              '${_horoscopeUIModel.horoscopeEntity.type.value.toUpperCase()} Horoscope - ${widget.sign}'),
+              '${horoscopeEntity.type.value.toUpperCase()} Horoscope - $sign'),
           actions: <Widget>[
             IconButton(
               icon: Icon(Icons.settings),
               onPressed: () {
-                context
-                    .repository<NavigationService>()
+                GetIt.I
+                    .get<NavigationService>()
                     .toSettingsScreen(context: context);
               },
             ),
@@ -195,13 +148,15 @@ class _HoroscopeDetailScreenState extends State<HoroscopeDetailScreen> {
         body: SafeArea(
           child: Padding(
             padding: const EdgeInsets.all(16.0),
-            child: SingleChildScrollView(
-              child: _buildContent(context),
+            child: Builder(
+              builder: (BuildContext context) => SingleChildScrollView(
+                child: _buildContent(context, horoscopeUIModel),
+              ),
             ),
           ),
         ),
         bottomNavigationBar: BottomAppBar(
-          child: _buildCommentBar(),
+          child: _buildCommentBar(context, horoscopeUIModel),
         ),
       ),
     );

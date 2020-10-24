@@ -2,6 +2,7 @@ import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
 import 'package:samachar_hub/core/services/services.dart';
 import 'package:samachar_hub/feature_news/presentation/blocs/like_unlike/like_unlike_bloc.dart';
 import 'package:samachar_hub/feature_news/presentation/blocs/share/share_bloc.dart'
@@ -16,36 +17,34 @@ class Share extends StatelessWidget {
   const Share({Key key, this.feedUIModel}) : super(key: key);
 
   Widget _buildLikeButton(BuildContext context) {
-    return BlocConsumer<LikeUnlikeBloc, LikeUnlikeState>(
-        listener: (context, state) {},
-        builder: (context, state) {
-          return RoundIconButton(
-            color: Theme.of(context).accentColor.withOpacity(0.7),
-            icon: feedUIModel.feedEntity.isLiked
-                ? FontAwesomeIcons.solidThumbsUp
-                : FontAwesomeIcons.thumbsUp,
-            onTap: () {
-              if (feedUIModel.feedEntity.isLiked) {
-                feedUIModel.unlike();
-                context.bloc<LikeUnlikeBloc>().add(UnlikeEvent());
-              } else {
-                feedUIModel.like();
-                context.bloc<LikeUnlikeBloc>().add(LikeEvent());
-              }
-            },
-            text: feedUIModel.feedEntity.likeCount == 0
-                ? 'Like'
-                : '${feedUIModel.formattedLikeCount}',
-          );
-        });
+    return BlocBuilder<LikeUnlikeBloc, LikeUnlikeState>(
+      builder: (context, state) => RoundIconButton(
+        color: Theme.of(context).accentColor.withOpacity(0.7),
+        icon: feedUIModel.feedEntity.isLiked
+            ? FontAwesomeIcons.solidThumbsUp
+            : FontAwesomeIcons.thumbsUp,
+        onTap: () {
+          if (feedUIModel.feedEntity.isLiked) {
+            feedUIModel.unlike();
+            context.bloc<LikeUnlikeBloc>().add(UnlikeEvent());
+          } else {
+            feedUIModel.like();
+            context.bloc<LikeUnlikeBloc>().add(LikeEvent());
+          }
+        },
+        text: feedUIModel.feedEntity.likeCount == 0
+            ? 'Like'
+            : '${feedUIModel.formattedLikeCount}',
+      ),
+    );
   }
 
   Widget _buildFacebookShareButton(BuildContext context) {
     return RoundIconButton(
       color: Color.fromARGB(255, 66, 103, 178),
       icon: FontAwesomeIcons.facebookF,
-      onTap: () => context
-          .repository<ShareService>()
+      onTap: () => GetIt.I
+          .get<ShareService>()
           .shareToFacebook(
               threadId: feedUIModel.feedEntity.id,
               title: feedUIModel.feedEntity.title,
@@ -62,8 +61,8 @@ class Share extends StatelessWidget {
     return RoundIconButton(
       color: Color.fromARGB(255, 29, 161, 242),
       icon: FontAwesomeIcons.twitter,
-      onTap: () => context
-          .repository<ShareService>()
+      onTap: () => GetIt.I
+          .get<ShareService>()
           .shareToTwitter(
               threadId: feedUIModel.feedEntity.id,
               title: feedUIModel.feedEntity.title,
@@ -80,8 +79,8 @@ class Share extends StatelessWidget {
     return RoundIconButton(
       color: Theme.of(context).primaryColor,
       icon: Icons.share,
-      onTap: () => context
-          .repository<ShareService>()
+      onTap: () => GetIt.I
+          .get<ShareService>()
           .share(
               threadId: feedUIModel.feedEntity.id,
               data:

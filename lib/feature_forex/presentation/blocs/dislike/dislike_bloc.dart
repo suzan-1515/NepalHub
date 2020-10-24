@@ -8,6 +8,7 @@ import 'package:samachar_hub/core/usecases/usecase.dart';
 import 'package:samachar_hub/feature_forex/domain/entities/forex_entity.dart';
 import 'package:samachar_hub/feature_forex/domain/usecases/dislike_forex_use_case.dart';
 import 'package:samachar_hub/feature_forex/domain/usecases/undislike_forex_use_case.dart';
+import 'package:samachar_hub/feature_forex/presentation/models/forex_model.dart';
 
 part 'dislike_event.dart';
 part 'dislike_state.dart';
@@ -15,18 +16,18 @@ part 'dislike_state.dart';
 class DislikeBloc extends Bloc<DislikeUndislikeEvent, DislikeState> {
   final UseCase _dislikeForexUseCase;
   final UseCase _undislikeForexUseCase;
-  final ForexEntity _forexEntity;
+  final ForexUIModel _forexUIModel;
 
   DislikeBloc({
     @required UseCase dislikeForexUseCase,
     @required UseCase undislikeForexUseCase,
-    @required ForexEntity forexEntity,
+    @required ForexUIModel forexUIModel,
   })  : _dislikeForexUseCase = dislikeForexUseCase,
         _undislikeForexUseCase = undislikeForexUseCase,
-        _forexEntity = forexEntity,
+        _forexUIModel = forexUIModel,
         super(DislikeInitial());
 
-  ForexEntity get forexEntity => _forexEntity;
+  ForexUIModel get forexUIModel => _forexUIModel;
 
   @override
   Stream<DislikeState> mapEventToState(
@@ -37,8 +38,9 @@ class DislikeBloc extends Bloc<DislikeUndislikeEvent, DislikeState> {
     if (event is DislikeEvent) {
       yield DislikeInProgress();
       try {
-        await _dislikeForexUseCase
-            .call(DislikeForexUseCaseParams(forexEntity: forexEntity));
+        final ForexEntity forexEntity = await _dislikeForexUseCase.call(
+            DislikeForexUseCaseParams(forexEntity: forexUIModel.forexEntity));
+        if (forexEntity != null) forexUIModel.forexEntity = forexEntity;
         yield DislikeSuccess(message: 'Feed disliked successfully.');
       } catch (e) {
         log('Forex dislike error.', error: e);
@@ -47,8 +49,9 @@ class DislikeBloc extends Bloc<DislikeUndislikeEvent, DislikeState> {
     } else if (event is UndislikeEvent) {
       yield DislikeInProgress();
       try {
-        await _undislikeForexUseCase
-            .call(UndislikeForexUseCaseParams(forexEntity: forexEntity));
+        final ForexEntity forexEntity = await _undislikeForexUseCase.call(
+            UndislikeForexUseCaseParams(forexEntity: forexUIModel.forexEntity));
+        if (forexEntity != null) forexUIModel.forexEntity = forexEntity;
         yield UndislikeSuccess(message: 'News forex undisliked successfully.');
       } catch (e) {
         log('Forex undislike error.', error: e);

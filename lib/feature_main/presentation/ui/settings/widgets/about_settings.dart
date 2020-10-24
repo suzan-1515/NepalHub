@@ -1,22 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:launch_review/launch_review.dart';
 import 'package:samachar_hub/core/services/services.dart';
 import 'package:samachar_hub/core/utils/desclaimer.dart';
-import 'package:samachar_hub/feature_main/domain/entities/settings_entity.dart';
+import 'package:samachar_hub/feature_main/presentation/blocs/settings/settings_cubit.dart';
 
 class AboutSettings extends StatelessWidget {
   const AboutSettings({
     Key key,
     @required this.context,
-    @required this.settingsEntity,
   }) : super(key: key);
 
   final BuildContext context;
-  final SettingsEntity settingsEntity;
 
   @override
   Widget build(BuildContext context) {
+    final settingsCubit = context.bloc<SettingsCubit>();
     return Padding(
       padding: const EdgeInsets.only(left: 4, top: 4),
       child: Column(
@@ -25,7 +25,7 @@ class AboutSettings extends StatelessWidget {
           SizedBox(height: 8),
           ListTile(
             dense: true,
-            onTap: () => context.repository<NavigationService>().toWebViewScreen(
+            onTap: () => GetIt.I.get<NavigationService>().toWebViewScreen(
                 'Privacy Policy',
                 'https://suzan-1515.github.io/Samachar-Hub/privacy-policy.html',
                 context),

@@ -8,6 +8,7 @@ import 'package:samachar_hub/core/usecases/usecase.dart';
 import 'package:samachar_hub/feature_horoscope/domain/entities/horoscope_entity.dart';
 import 'package:samachar_hub/feature_horoscope/domain/usecases/like_horoscope_use_case.dart';
 import 'package:samachar_hub/feature_horoscope/domain/usecases/unlike_horoscope_use_case.dart';
+import 'package:samachar_hub/feature_horoscope/presentation/models/horoscope_model.dart';
 
 part 'like_unlike_event.dart';
 part 'like_unlike_state.dart';
@@ -15,18 +16,18 @@ part 'like_unlike_state.dart';
 class LikeUnlikeBloc extends Bloc<LikeUnlikeEvent, LikeUnlikeState> {
   final UseCase _likeHoroscopeUseCase;
   final UseCase _unLikeHoroscopeUseCase;
-  final HoroscopeEntity _horoscopeEntity;
+  final HoroscopeUIModel _horoscopeUIModel;
 
   LikeUnlikeBloc({
-    @required UseCase likeNewsFeedUseCase,
-    @required UseCase unLikeNewsFeedUseCase,
-    @required HoroscopeEntity horoscopeEntity,
-  })  : _likeHoroscopeUseCase = likeNewsFeedUseCase,
-        _unLikeHoroscopeUseCase = unLikeNewsFeedUseCase,
-        _horoscopeEntity = horoscopeEntity,
+    @required UseCase likeHoroscopeUseCase,
+    @required UseCase unLikeHoroscopeUseCase,
+    @required HoroscopeUIModel horoscopeUIModel,
+  })  : _likeHoroscopeUseCase = likeHoroscopeUseCase,
+        _unLikeHoroscopeUseCase = unLikeHoroscopeUseCase,
+        _horoscopeUIModel = horoscopeUIModel,
         super(InitialState());
 
-  HoroscopeEntity get horoscopeEntity => _horoscopeEntity;
+  HoroscopeUIModel get horoscopeUIModel => _horoscopeUIModel;
 
   @override
   Stream<LikeUnlikeState> mapEventToState(
@@ -37,8 +38,11 @@ class LikeUnlikeBloc extends Bloc<LikeUnlikeEvent, LikeUnlikeState> {
     if (event is LikeEvent) {
       yield InProgressState();
       try {
-        await _likeHoroscopeUseCase
-            .call(LikeHoroscopeUseCaseParams(horoscopeEntity: horoscopeEntity));
+        final HoroscopeEntity horoscopeEntity =
+            await _likeHoroscopeUseCase.call(LikeHoroscopeUseCaseParams(
+                horoscopeEntity: horoscopeUIModel.horoscopeEntity));
+        if (horoscopeEntity != null)
+          horoscopeUIModel.horoscopeEntity = horoscopeEntity;
         yield LikedState(message: 'Horoscope liked successfully.');
       } catch (e) {
         log('Horoscope like error.', error: e);
@@ -47,8 +51,11 @@ class LikeUnlikeBloc extends Bloc<LikeUnlikeEvent, LikeUnlikeState> {
     } else if (event is UnlikeEvent) {
       yield InProgressState();
       try {
-        await _unLikeHoroscopeUseCase.call(
-            UnlikeHoroscopeUseCaseParams(horoscopeEntity: horoscopeEntity));
+        final HoroscopeEntity horoscopeEntity =
+            await _unLikeHoroscopeUseCase.call(UnlikeHoroscopeUseCaseParams(
+                horoscopeEntity: horoscopeUIModel.horoscopeEntity));
+        if (horoscopeEntity != null)
+          horoscopeUIModel.horoscopeEntity = horoscopeEntity;
         yield UnlikedState(message: 'Horoscope unliked successfully.');
       } catch (e) {
         log('Horoscope unlike error.', error: e);

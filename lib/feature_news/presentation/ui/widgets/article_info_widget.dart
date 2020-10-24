@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
 import 'package:samachar_hub/core/services/services.dart';
 import 'package:samachar_hub/feature_comment/domain/entities/thread_type.dart';
 import 'package:samachar_hub/feature_news/presentation/blocs/like_unlike/like_unlike_bloc.dart';
@@ -173,13 +174,11 @@ class NewsFeedOptions extends StatelessWidget {
               FontAwesomeIcons.comment,
               size: 16,
             ),
-            onPressed: () => context
-                .repository<NavigationService>()
-                .toCommentsScreen(
-                    context: context,
-                    threadTitle: feedUIModel.feedEntity.title,
-                    threadId: feedUIModel.feedEntity.id,
-                    threadType: CommentThreadType.NEWS_FEED),
+            onPressed: () => GetIt.I.get<NavigationService>().toCommentsScreen(
+                context: context,
+                threadTitle: feedUIModel.feedEntity.title,
+                threadId: feedUIModel.feedEntity.id,
+                threadType: CommentThreadType.NEWS_FEED),
           ),
           Spacer(),
           IconButton(

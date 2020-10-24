@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
 import 'package:samachar_hub/core/services/services.dart';
 import 'package:samachar_hub/feature_main/presentation/ui/widgets/section_heading.dart';
 import 'package:samachar_hub/feature_news/presentation/models/news_topic.dart';
@@ -31,8 +31,8 @@ class NewsTopicsSection extends StatelessWidget {
             children: items
                 .map((e) => NewsTagItem(
                       title: e.topic.title,
-                      onTap: (value) => context
-                          .repository<NavigationService>()
+                      onTap: (value) => GetIt.I
+                          .get<NavigationService>()
                           .toNewsTopicFeedScreen(
                               context: context, topicEntity: e.topic),
                     ))

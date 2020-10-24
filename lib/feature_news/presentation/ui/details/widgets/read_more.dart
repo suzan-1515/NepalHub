@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
 import 'package:samachar_hub/core/services/services.dart';
 import 'package:samachar_hub/core/utils/link_utils.dart';
 import 'package:samachar_hub/feature_main/presentation/blocs/settings/settings_cubit.dart';
@@ -40,10 +41,10 @@ class ReadMore extends StatelessWidget {
             child: OutlineButton.icon(
               onPressed: () {
                 final int newsReadMode =
-                    context.bloc<SettingsCubit>().settings.newsReadMode;
+                    context.bloc<SettingsCubit>().settings.newsReadMode ?? 0;
                 if (newsReadMode == 2)
                   return LinkUtils.openLink(feedUIModel.feedEntity.link);
-                context.repository<NavigationService>().toWebViewScreen(
+                GetIt.I.get<NavigationService>().toWebViewScreen(
                       feedUIModel.feedEntity.title,
                       feedUIModel.feedEntity.link,
                       context,

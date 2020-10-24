@@ -1,20 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:get_it/get_it.dart';
 import 'package:samachar_hub/core/constants/notification_channels.dart';
 import 'package:samachar_hub/core/services/services.dart';
-import 'package:samachar_hub/feature_main/domain/entities/settings_entity.dart';
 import 'package:samachar_hub/feature_main/presentation/blocs/settings/settings_cubit.dart';
 
 class NewsSettings extends StatelessWidget {
   const NewsSettings({
     Key key,
     @required this.context,
-    @required this.settingsEntity,
   }) : super(key: key);
 
   final BuildContext context;
-  final SettingsEntity settingsEntity;
 
   Widget _buildMorningNotificationSwitch(bool initialValue) {
     return Switch(
@@ -22,7 +20,7 @@ class NewsSettings extends StatelessWidget {
       onChanged: (value) {
         context.bloc<SettingsCubit>().setShowDailyMorningNews(value);
         if (value) {
-          context.repository<NotificationService>().scheduleNotificationDaily(
+          GetIt.I.get<NotificationService>().scheduleNotificationDaily(
               NotificationChannels.kMorningNewsId,
               'Good Morning  🌅',
               'Your personalised daily news is ready. Click to read. 📰',
@@ -30,16 +28,16 @@ class NewsSettings extends StatelessWidget {
               NotificationChannels.kMorningNewsChannelName,
               NotificationChannels.kMorningNewsChannelDesc,
               Time(7, 0, 0));
-          context
-              .repository<AnalyticsService>()
+          GetIt.I
+              .get<AnalyticsService>()
               .logNewsDailyMorningNotificatoon(notify: true);
         } else {
-          context
-              .repository<NotificationService>()
+          GetIt.I
+              .get<NotificationService>()
               .flutterLocalNotificationsPlugin
               .cancel(NotificationChannels.kMorningNewsId);
-          context
-              .repository<AnalyticsService>()
+          GetIt.I
+              .get<AnalyticsService>()
               .logNewsDailyMorningNotificatoon(notify: false);
         }
       },
@@ -53,19 +51,15 @@ class NewsSettings extends StatelessWidget {
       onChanged: (value) {
         context.bloc<SettingsCubit>().setNewsNotifications(value);
         if (value) {
-          context
-              .repository<NotificationService>()
+          GetIt.I
+              .get<NotificationService>()
               .subscribe(NotificationChannels.kNewsNotifications, 1);
-          context
-              .repository<AnalyticsService>()
-              .logNewsNotificatoon(notify: true);
+          GetIt.I.get<AnalyticsService>().logNewsNotificatoon(notify: true);
         } else
-          context
-              .repository<NotificationService>()
+          GetIt.I
+              .get<NotificationService>()
               .unSubscribe(NotificationChannels.kNewsNotifications);
-        context
-            .repository<AnalyticsService>()
-            .logNewsNotificatoon(notify: false);
+        GetIt.I.get<AnalyticsService>().logNewsNotificatoon(notify: false);
       },
       activeColor: Theme.of(context).accentColor,
     );
@@ -73,6 +67,7 @@ class NewsSettings extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final settingsCubit = context.bloc<SettingsCubit>();
     return Padding(
       padding: const EdgeInsets.only(left: 16.0, top: 16.0),
       child: Column(
@@ -89,14 +84,15 @@ class NewsSettings extends StatelessWidget {
                 buildWhen: (previous, current) =>
                     current
                         is SettingsDailyMorningNewsNotificationChangedState ||
-                    current is SettingsInitialState,
+                    current is SettingsInitialState ||
+                    current is SettingsLoadSuccess,
                 builder: (context, state) {
                   if (state
                       is SettingsDailyMorningNewsNotificationChangedState) {
                     return _buildMorningNotificationSwitch(state.value);
                   }
                   return _buildMorningNotificationSwitch(
-                      settingsEntity.showDailyMorningNews ?? true);
+                      settingsCubit.settings.showDailyMorningNews ?? true);
                 },
               ),
             ],
@@ -125,13 +121,14 @@ class NewsSettings extends StatelessWidget {
               BlocBuilder<SettingsCubit, SettingsState>(
                 buildWhen: (previous, current) =>
                     current is SettingsNewsNotificationChangedState ||
-                    current is SettingsInitialState,
+                    current is SettingsInitialState ||
+                    current is SettingsLoadSuccess,
                 builder: (context, state) {
                   if (state is SettingsNewsNotificationChangedState) {
                     return _buildNewsNotificationSwitch(state.value);
                   }
                   return _buildNewsNotificationSwitch(
-                      settingsEntity.newsNotifications ?? true);
+                      settingsCubit.settings.newsNotifications ?? true);
                 },
               ),
             ],

@@ -4,6 +4,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get_it/get_it.dart';
 import 'package:samachar_hub/core/services/services.dart';
 import 'package:samachar_hub/feature_main/presentation/blocs/main/main_cubit.dart';
 import 'package:samachar_hub/feature_main/presentation/ui/home/home_screen.dart';
@@ -27,14 +28,14 @@ class _MainScreenState extends State<MainScreen> {
 
   _initDynamicLinks() {
     _dynamicLinkSubscription =
-        context.repository<DynamicLinkService>().linkStream.listen((event) {
+        GetIt.I.get<DynamicLinkService>().linkStream.listen((event) {
       log('[MainScreen] dybamic link received: ${event.path}');
       if (event.path.contains('horoscope')) {
         log('[MainScreen] Navigate to horocope screen');
-        context.repository<NavigationService>().toHoroscopeScreen(context);
+        GetIt.I.get<NavigationService>().toHoroscopeScreen(context);
       } else if (event.path.contains('forex')) {
         log('[MainScreen] Navigate to forex screen');
-        context.repository<NavigationService>().toForexScreen(context);
+        GetIt.I.get<NavigationService>().toForexScreen(context);
       }
     }, onError: (e) {
       log('[MainScreen] already subscribed');

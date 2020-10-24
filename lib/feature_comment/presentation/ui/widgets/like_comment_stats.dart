@@ -7,8 +7,8 @@ class LikeAndCommentStats extends StatelessWidget {
     @required this.commentCount,
   }) : super(key: key);
 
-  final String likeCount;
-  final String commentCount;
+  final int likeCount;
+  final int commentCount;
 
   @override
   Widget build(BuildContext context) {

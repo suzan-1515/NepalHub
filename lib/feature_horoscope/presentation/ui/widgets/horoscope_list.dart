@@ -16,9 +16,7 @@ class HoroscopeList extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocConsumer<HoroscopeBloc, HoroscopeState>(
       listener: (context, state) {
-        if (state is HoroscopeInitialState) {
-          context.bloc<HoroscopeBloc>().add(GetHoroscopeEvent());
-        } else if (state is HoroscopeErrorState) {
+        if (state is HoroscopeErrorState) {
           context.showMessage(state.message);
         } else if (state is HoroscopeLoadErrorState) {
           context.showMessage(state.message);
@@ -29,7 +27,6 @@ class HoroscopeList extends StatelessWidget {
         if (state is HoroscopeLoadSuccessState) {
           return HoroscopeListBuilder(
             horoscopeUIModel: state.horoscope,
-            defaultSignIndex: state.defaultSignIndex,
           );
         } else if (state is HoroscopeEmptyState) {
           return Center(

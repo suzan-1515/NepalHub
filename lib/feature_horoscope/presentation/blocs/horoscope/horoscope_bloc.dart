@@ -23,20 +23,17 @@ class HoroscopeBloc extends Bloc<HoroscopeEvent, HoroscopeState> {
   final UseCase _getWeeklyHoroscopeUseCase;
   final UseCase _getMonthlyHoroscopeUseCase;
   final UseCase _getYearlyHoroscopeUseCase;
-  final UseCase _getDefaultHoroscopeSignIndex;
   final HoroscopeType _type;
   HoroscopeBloc({
     @required UseCase getDailyHoroscopeUseCase,
     @required UseCase getWeeklyHoroscopeUseCase,
     @required UseCase getMonthlyHoroscopeUseCase,
     @required UseCase getYearlyHoroscopeUseCase,
-    @required UseCase getDefaultHoroscopeSignIndex,
     @required HoroscopeType type,
   })  : _getDailyHoroscopeUseCase = getDailyHoroscopeUseCase,
         _getWeeklyHoroscopeUseCase = getWeeklyHoroscopeUseCase,
         _getMonthlyHoroscopeUseCase = getMonthlyHoroscopeUseCase,
         _getYearlyHoroscopeUseCase = getYearlyHoroscopeUseCase,
-        _getDefaultHoroscopeSignIndex = getDefaultHoroscopeSignIndex,
         _type = type,
         super(HoroscopeInitialState());
 
@@ -91,15 +88,10 @@ class HoroscopeBloc extends Bloc<HoroscopeEvent, HoroscopeState> {
           break;
       }
 
-      final int defaultSignIndex =
-          await _getDefaultHoroscopeSignIndex.call(NoParams());
-
       if (horoscope == null) {
         yield HoroscopeEmptyState(message: 'Horoscope data not available.');
       } else {
-        yield HoroscopeLoadSuccessState(
-            horoscope: horoscope.toUIModel,
-            defaultSignIndex: defaultSignIndex ?? 0);
+        yield HoroscopeLoadSuccessState(horoscope: horoscope.toUIModel);
       }
     } catch (e) {
       log('Latest horoscope load error: ', error: e);
@@ -144,12 +136,9 @@ class HoroscopeBloc extends Bloc<HoroscopeEvent, HoroscopeState> {
           );
           break;
       }
-      final int defaultSignIndex =
-          await _getDefaultHoroscopeSignIndex.call(NoParams());
+
       if (horoscope == null) {
-        yield HoroscopeLoadSuccessState(
-            horoscope: horoscope.toUIModel,
-            defaultSignIndex: defaultSignIndex ?? 0);
+        yield HoroscopeLoadSuccessState(horoscope: horoscope.toUIModel);
       }
     } catch (e) {
       log('Refresh horoscope refresh error: ', error: e);

@@ -39,9 +39,7 @@ class _CommentListState extends State<CommentList> {
     return BlocConsumer<CommentBloc, CommentState>(
         cubit: _commentBloc,
         listener: (context, state) {
-          if (state is CommentInitial) {
-            _commentBloc.add(GetCommentsEvent());
-          } else if (!(state is CommentLoading)) {
+          if (!(state is CommentLoading)) {
             _refreshCompleter?.complete();
             _refreshCompleter = Completer();
           }

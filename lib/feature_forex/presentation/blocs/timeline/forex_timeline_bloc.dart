@@ -16,14 +16,15 @@ part 'forex_timeline_state.dart';
 
 class ForexTimelineBloc extends Bloc<ForexTimelineEvent, ForexTimelineState> {
   final UseCase _getForexTimelineUseCase;
-  final String _currencyId;
+  final ForexUIModel _forexUIModel;
   ForexTimelineBloc(
-      {@required UseCase getForexTimelineUseCase, @required String currencyId})
+      {@required UseCase getForexTimelineUseCase,
+      @required ForexUIModel forexUIModel})
       : _getForexTimelineUseCase = getForexTimelineUseCase,
-        _currencyId = currencyId,
+        _forexUIModel = forexUIModel,
         super(ForexTimelineInitialState());
 
-  String get currencyId => _currencyId;
+  ForexUIModel get forexUIModel => _forexUIModel;
 
   @override
   Stream<ForexTimelineState> mapEventToState(
@@ -35,7 +36,9 @@ class ForexTimelineBloc extends Bloc<ForexTimelineEvent, ForexTimelineState> {
       try {
         final List<ForexEntity> forexList = await _getForexTimelineUseCase.call(
           GetForexTimelineUseCaseParams(
-              language: event.language, currencyId: currencyId, numOfDays: 30),
+              language: event.language,
+              currencyId: forexUIModel.forexEntity.currency.id,
+              numOfDays: 30),
         );
         if (forexList == null || forexList.isEmpty) {
           yield ForexTimelineEmptyState(message: 'Forex data not available.');
@@ -43,7 +46,7 @@ class ForexTimelineBloc extends Bloc<ForexTimelineEvent, ForexTimelineState> {
           yield ForexTimelineLoadSuccessState(forexList: forexList.toUIModels);
         }
       } catch (e) {
-        log('Forex ($currencyId) timeline load error: ', error: e);
+        log('Forex ($forexUIModel) timeline load error: ', error: e);
         yield ForexTimelineLoadErrorState(
             message:
                 'Unable to load data. Make sure you are connected to Internet.');

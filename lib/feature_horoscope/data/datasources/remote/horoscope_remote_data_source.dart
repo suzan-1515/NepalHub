@@ -11,8 +11,10 @@ class HoroscopeRemoteDataSource with RemoteDataSource {
 
   @override
   Future<HoroscopeModel> dislike(
-      {@required String horoscopeId, @required String token}) {
-    throw UnimplementedError();
+      {@required String horoscopeId, @required String token}) async {
+    var response =
+        await _remoteService.dislike(horoscopeId: horoscopeId, token: token);
+    return HoroscopeModel.fromMap(response);
   }
 
   @override
@@ -38,7 +40,9 @@ class HoroscopeRemoteDataSource with RemoteDataSource {
   @override
   Future<HoroscopeModel> undislike(
       {@required String horoscopeId, @required String token}) async {
-    throw UnimplementedError();
+    var response =
+        await _remoteService.undislike(horoscopeId: horoscopeId, token: token);
+    return HoroscopeModel.fromMap(response);
   }
 
   @override

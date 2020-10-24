@@ -46,37 +46,29 @@ class AuthorAndBookmark extends StatelessWidget {
             padding: EdgeInsets.symmetric(horizontal: 16),
             child: Column(
               children: <Widget>[
-                BlocConsumer<BookmarkUnBookmarkBloc, BookmarkUnBookmarkState>(
-                  listener: (context, state) {},
-                  builder: (context, state) {
-                    if (state is BookmarkSuccess) {
-                      feedUIModel.bookmark();
-                    } else if (state is UnbookmarkSuccess) {
-                      feedUIModel.unbookmark();
-                    }
-                    return IconButton(
-                      icon: Icon(
-                        feedUIModel.feedEntity.isBookmarked
-                            ? FontAwesomeIcons.solidHeart
-                            : FontAwesomeIcons.heart,
-                        size: 36,
-                        color: Theme.of(context).accentColor,
-                      ),
-                      onPressed: () {
-                        if (feedUIModel.feedEntity.isBookmarked) {
-                          feedUIModel.unbookmark();
-                          context
-                              .bloc<BookmarkUnBookmarkBloc>()
-                              .add(UnBookmarkNews());
-                        } else {
-                          feedUIModel.unbookmark();
-                          context
-                              .bloc<BookmarkUnBookmarkBloc>()
-                              .add(BookmarkNews());
-                        }
-                      },
-                    );
-                  },
+                BlocBuilder<BookmarkUnBookmarkBloc, BookmarkUnBookmarkState>(
+                  builder: (context, state) => IconButton(
+                    icon: Icon(
+                      feedUIModel.feedEntity.isBookmarked
+                          ? FontAwesomeIcons.solidHeart
+                          : FontAwesomeIcons.heart,
+                      size: 36,
+                      color: Theme.of(context).accentColor,
+                    ),
+                    onPressed: () {
+                      if (feedUIModel.feedEntity.isBookmarked) {
+                        feedUIModel.unbookmark();
+                        context
+                            .bloc<BookmarkUnBookmarkBloc>()
+                            .add(UnBookmarkNews());
+                      } else {
+                        feedUIModel.bookmark();
+                        context
+                            .bloc<BookmarkUnBookmarkBloc>()
+                            .add(BookmarkNews());
+                      }
+                    },
+                  ),
                 ),
                 SizedBox(height: 4),
                 Text('Bookmark', textAlign: TextAlign.center)

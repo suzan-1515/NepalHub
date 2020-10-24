@@ -1,10 +1,8 @@
 import 'package:animate_do/animate_do.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_advanced_networkimage/provider.dart';
 import 'package:flutter_advanced_networkimage/transition.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get_it/get_it.dart';
 import 'package:samachar_hub/core/services/services.dart';
 import 'package:samachar_hub/feature_main/presentation/models/home/corona_model.dart';
 import 'package:samachar_hub/feature_main/presentation/ui/home/widgets/corona_case_item.dart';
@@ -23,8 +21,7 @@ class CoronaSection extends StatelessWidget {
         margin: const EdgeInsets.all(4),
         elevation: 2,
         child: InkWell(
-          onTap: () =>
-              context.repository<NavigationService>().toCoronaScreen(context),
+          onTap: () => GetIt.I.get<NavigationService>().toCoronaScreen(context),
           child: Container(
             padding: const EdgeInsets.all(8),
             child: Column(
@@ -92,6 +89,8 @@ class CoronaSection extends StatelessWidget {
         TransitionToImage(
           image: AdvancedNetworkImage(
             data.coronaEntity.country.flag,
+            width: 24,
+            height: 24,
           ),
           width: 24,
           height: 24,

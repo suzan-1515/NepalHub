@@ -5,6 +5,7 @@ import 'package:samachar_hub/feature_forex/data/services/remote_service.dart';
 
 class ForexRemoteService with RemoteService {
   static const LIKE = '/forexes/like';
+  static const DISLIKE = '/forexes/dislike';
   static const SHARE = '/forexes/share';
   static const VIEW = '/forexes/view';
   static const LATEST = '/forexes/today';
@@ -15,9 +16,14 @@ class ForexRemoteService with RemoteService {
   ForexRemoteService(this._httpManager);
 
   @override
-  Future dislike({@required String forexId, @required String token}) {
-    // TODO: implement dislike
-    throw UnimplementedError();
+  Future dislike({@required String forexId, @required String token}) async {
+    Map<String, String> headers = {
+      'Authorization': 'Bearer $token',
+    };
+    var path = '$DISLIKE/$forexId';
+    var call = await _httpManager.post(path: path, headers: headers);
+
+    return call;
   }
 
   @override
@@ -27,7 +33,7 @@ class ForexRemoteService with RemoteService {
       'Authorization': 'Bearer $token',
     };
     Map<String, String> query = {
-      'language': language.value,
+      'currency.language': language.value,
     };
 
     var call =
@@ -64,7 +70,7 @@ class ForexRemoteService with RemoteService {
     Map<String, dynamic> query = {
       'currency.id': currencyId,
       'currency.language': language.value,
-      '_limit': numOfDays,
+      '_limit': numOfDays.toString(),
     };
     var call =
         await _httpManager.get(path: TIMELINE, query: query, headers: headers);
@@ -95,9 +101,14 @@ class ForexRemoteService with RemoteService {
   }
 
   @override
-  Future undislike({@required String forexId, @required String token}) {
-    // TODO: implement undislike
-    throw UnimplementedError();
+  Future undislike({@required String forexId, @required String token}) async {
+    Map<String, String> headers = {
+      'Authorization': 'Bearer $token',
+    };
+    var path = '$DISLIKE/$forexId';
+    var call = await _httpManager.delete(url: path, headers: headers);
+
+    return call;
   }
 
   @override

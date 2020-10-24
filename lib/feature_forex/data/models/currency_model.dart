@@ -34,7 +34,7 @@ class ForexCurrencyModel extends CurrencyEntity {
         language: (json["language"] as String).toLanguage,
         createdAt: DateTime.parse(json["created_at"]),
         updatedAt: DateTime.parse(json["updated_at"]),
-        icon: json["icon"],
+        icon: json["icon"]["url"],
       );
 
   Map<String, dynamic> toMap() => {
@@ -44,6 +44,6 @@ class ForexCurrencyModel extends CurrencyEntity {
         "language": language.value,
         "created_at": createdAt.toIso8601String(),
         "updated_at": updatedAt.toIso8601String(),
-        "icon": icon,
+        "icon": {"url": icon},
       };
 }

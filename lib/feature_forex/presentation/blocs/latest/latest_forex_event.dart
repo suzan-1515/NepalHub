@@ -9,16 +9,20 @@ abstract class ForexEvent extends Equatable {
 
 class GetLatestForexEvent extends ForexEvent {
   final Language language;
+  final String defaultCurrencyCode;
 
-  GetLatestForexEvent({this.language = Language.ENGLISH});
+  GetLatestForexEvent(
+      {this.language = Language.ENGLISH, @required this.defaultCurrencyCode});
   @override
-  List<Object> get props => [language];
+  List<Object> get props => [language, defaultCurrencyCode];
 }
 
 class RefreshLatestForexEvent extends ForexEvent {
   final Language language;
+  final String defaultCurrencyCode;
 
-  RefreshLatestForexEvent({this.language = Language.ENGLISH});
+  RefreshLatestForexEvent(
+      {this.language = Language.ENGLISH, @required this.defaultCurrencyCode});
   @override
-  List<Object> get props => [language];
+  List<Object> get props => [language, defaultCurrencyCode];
 }

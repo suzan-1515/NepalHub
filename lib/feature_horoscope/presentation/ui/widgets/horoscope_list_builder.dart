@@ -1,6 +1,6 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
 import 'package:samachar_hub/core/models/language.dart';
 import 'package:samachar_hub/core/services/services.dart';
 import 'package:samachar_hub/feature_horoscope/domain/entities/horoscope_entity.dart';
@@ -13,14 +13,10 @@ class HoroscopeListBuilder extends StatelessWidget {
   const HoroscopeListBuilder({
     Key key,
     @required this.horoscopeUIModel,
-    @required this.defaultSignIndex,
   })  : assert(horoscopeUIModel != null, 'Horoscope cannot be null'),
-        assert(
-            defaultSignIndex != null, 'Default horoscope sign cannot be null'),
         super(key: key);
 
   final HoroscopeUIModel horoscopeUIModel;
-  final int defaultSignIndex;
 
   @override
   Widget build(BuildContext context) {
@@ -42,8 +38,8 @@ class HoroscopeListBuilder extends StatelessWidget {
             zodiac: horoscopeUIModel.horoscopeEntity
                 .horoscopeByIndex(0, Language.NEPALI),
             signIcon: HOROSCOPE_ICONS[0],
-            onTap: (sign, zodiac, signIcon) => context
-                .repository<NavigationService>()
+            onTap: (sign, zodiac, signIcon) => GetIt.I
+                .get<NavigationService>()
                 .toHoroscopeDetail(context, sign, signIcon, zodiac,
                     horoscopeUIModel.horoscopeEntity),
           ),
@@ -54,8 +50,8 @@ class HoroscopeListBuilder extends StatelessWidget {
             zodiac: horoscopeUIModel.horoscopeEntity
                 .horoscopeByIndex(1, Language.NEPALI),
             signIcon: HOROSCOPE_ICONS[1],
-            onTap: (sign, zodiac, signIcon) => context
-                .repository<NavigationService>()
+            onTap: (sign, zodiac, signIcon) => GetIt.I
+                .get<NavigationService>()
                 .toHoroscopeDetail(context, sign, signIcon, zodiac,
                     horoscopeUIModel.horoscopeEntity),
           ),
@@ -66,8 +62,8 @@ class HoroscopeListBuilder extends StatelessWidget {
             zodiac: horoscopeUIModel.horoscopeEntity
                 .horoscopeByIndex(2, Language.NEPALI),
             signIcon: HOROSCOPE_ICONS[2],
-            onTap: (sign, zodiac, signIcon) => context
-                .repository<NavigationService>()
+            onTap: (sign, zodiac, signIcon) => GetIt.I
+                .get<NavigationService>()
                 .toHoroscopeDetail(context, sign, signIcon, zodiac,
                     horoscopeUIModel.horoscopeEntity),
           ),
@@ -78,8 +74,8 @@ class HoroscopeListBuilder extends StatelessWidget {
             zodiac: horoscopeUIModel.horoscopeEntity
                 .horoscopeByIndex(3, Language.NEPALI),
             signIcon: HOROSCOPE_ICONS[3],
-            onTap: (sign, zodiac, signIcon) => context
-                .repository<NavigationService>()
+            onTap: (sign, zodiac, signIcon) => GetIt.I
+                .get<NavigationService>()
                 .toHoroscopeDetail(context, sign, signIcon, zodiac,
                     horoscopeUIModel.horoscopeEntity),
           ),
@@ -90,8 +86,8 @@ class HoroscopeListBuilder extends StatelessWidget {
             zodiac: horoscopeUIModel.horoscopeEntity
                 .horoscopeByIndex(4, Language.NEPALI),
             signIcon: HOROSCOPE_ICONS[4],
-            onTap: (sign, zodiac, signIcon) => context
-                .repository<NavigationService>()
+            onTap: (sign, zodiac, signIcon) => GetIt.I
+                .get<NavigationService>()
                 .toHoroscopeDetail(context, sign, signIcon, zodiac,
                     horoscopeUIModel.horoscopeEntity),
           ),
@@ -102,8 +98,8 @@ class HoroscopeListBuilder extends StatelessWidget {
             zodiac: horoscopeUIModel.horoscopeEntity
                 .horoscopeByIndex(5, Language.NEPALI),
             signIcon: HOROSCOPE_ICONS[5],
-            onTap: (sign, zodiac, signIcon) => context
-                .repository<NavigationService>()
+            onTap: (sign, zodiac, signIcon) => GetIt.I
+                .get<NavigationService>()
                 .toHoroscopeDetail(context, sign, signIcon, zodiac,
                     horoscopeUIModel.horoscopeEntity),
           ),
@@ -114,8 +110,8 @@ class HoroscopeListBuilder extends StatelessWidget {
             zodiac: horoscopeUIModel.horoscopeEntity
                 .horoscopeByIndex(6, Language.NEPALI),
             signIcon: HOROSCOPE_ICONS[6],
-            onTap: (sign, zodiac, signIcon) => context
-                .repository<NavigationService>()
+            onTap: (sign, zodiac, signIcon) => GetIt.I
+                .get<NavigationService>()
                 .toHoroscopeDetail(context, sign, signIcon, zodiac,
                     horoscopeUIModel.horoscopeEntity),
           ),
@@ -126,8 +122,8 @@ class HoroscopeListBuilder extends StatelessWidget {
             zodiac: horoscopeUIModel.horoscopeEntity
                 .horoscopeByIndex(7, Language.NEPALI),
             signIcon: HOROSCOPE_ICONS[7],
-            onTap: (sign, zodiac, signIcon) => context
-                .repository<NavigationService>()
+            onTap: (sign, zodiac, signIcon) => GetIt.I
+                .get<NavigationService>()
                 .toHoroscopeDetail(context, sign, signIcon, zodiac,
                     horoscopeUIModel.horoscopeEntity),
           ),
@@ -138,8 +134,8 @@ class HoroscopeListBuilder extends StatelessWidget {
             zodiac: horoscopeUIModel.horoscopeEntity
                 .horoscopeByIndex(8, Language.NEPALI),
             signIcon: HOROSCOPE_ICONS[8],
-            onTap: (sign, zodiac, signIcon) => context
-                .repository<NavigationService>()
+            onTap: (sign, zodiac, signIcon) => GetIt.I
+                .get<NavigationService>()
                 .toHoroscopeDetail(context, sign, signIcon, zodiac,
                     horoscopeUIModel.horoscopeEntity),
           ),
@@ -150,8 +146,8 @@ class HoroscopeListBuilder extends StatelessWidget {
             zodiac: horoscopeUIModel.horoscopeEntity
                 .horoscopeByIndex(9, Language.NEPALI),
             signIcon: HOROSCOPE_ICONS[9],
-            onTap: (sign, zodiac, signIcon) => context
-                .repository<NavigationService>()
+            onTap: (sign, zodiac, signIcon) => GetIt.I
+                .get<NavigationService>()
                 .toHoroscopeDetail(context, sign, signIcon, zodiac,
                     horoscopeUIModel.horoscopeEntity),
           ),
@@ -162,8 +158,8 @@ class HoroscopeListBuilder extends StatelessWidget {
             zodiac: horoscopeUIModel.horoscopeEntity
                 .horoscopeByIndex(10, Language.NEPALI),
             signIcon: HOROSCOPE_ICONS[10],
-            onTap: (sign, zodiac, signIcon) => context
-                .repository<NavigationService>()
+            onTap: (sign, zodiac, signIcon) => GetIt.I
+                .get<NavigationService>()
                 .toHoroscopeDetail(context, sign, signIcon, zodiac,
                     horoscopeUIModel.horoscopeEntity),
           ),
@@ -174,8 +170,8 @@ class HoroscopeListBuilder extends StatelessWidget {
             zodiac: horoscopeUIModel.horoscopeEntity
                 .horoscopeByIndex(11, Language.NEPALI),
             signIcon: HOROSCOPE_ICONS[11],
-            onTap: (sign, zodiac, signIcon) => context
-                .repository<NavigationService>()
+            onTap: (sign, zodiac, signIcon) => GetIt.I
+                .get<NavigationService>()
                 .toHoroscopeDetail(context, sign, signIcon, zodiac,
                     horoscopeUIModel.horoscopeEntity),
           ),

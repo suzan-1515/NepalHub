@@ -7,22 +7,23 @@ import 'package:meta/meta.dart';
 import 'package:samachar_hub/core/usecases/usecase.dart';
 import 'package:samachar_hub/feature_horoscope/domain/entities/horoscope_entity.dart';
 import 'package:samachar_hub/feature_horoscope/domain/usecases/view_horoscope_use_case.dart';
+import 'package:samachar_hub/feature_horoscope/presentation/models/horoscope_model.dart';
 
 part 'view_event.dart';
 part 'view_state.dart';
 
 class ViewBloc extends Bloc<ViewEvent, ViewState> {
   final UseCase _viewNewsFeedUseCase;
-  final HoroscopeEntity _horoscopeEntity;
+  final HoroscopeUIModel _horoscopeEntity;
 
   ViewBloc({
-    @required UseCase viewNewsFeedUseCase,
-    @required HoroscopeEntity horoscopeEntity,
-  })  : _viewNewsFeedUseCase = viewNewsFeedUseCase,
-        _horoscopeEntity = horoscopeEntity,
+    @required UseCase viewHoroscopeUseCase,
+    @required HoroscopeUIModel horoscopeUIModel,
+  })  : _viewNewsFeedUseCase = viewHoroscopeUseCase,
+        _horoscopeEntity = horoscopeUIModel,
         super(ViewInitial());
 
-  HoroscopeEntity get horoscopeEntity => _horoscopeEntity;
+  HoroscopeUIModel get horoscopeUIModel => _horoscopeEntity;
 
   @override
   Stream<ViewState> mapEventToState(
@@ -32,8 +33,11 @@ class ViewBloc extends Bloc<ViewEvent, ViewState> {
     if (event is View) {
       yield ViewInProgress();
       try {
-        await _viewNewsFeedUseCase
-            .call(ViewHoroscopeUseCaseParams(horoscopeEntity: horoscopeEntity));
+        final HoroscopeEntity horoscopeEntity = await _viewNewsFeedUseCase.call(
+            ViewHoroscopeUseCaseParams(
+                horoscopeEntity: horoscopeUIModel.horoscopeEntity));
+        if (horoscopeEntity != null)
+          horoscopeUIModel.horoscopeEntity = horoscopeEntity;
         yield ViewSuccess(message: 'Horoscope viewd successfully.');
       } catch (e) {
         log('Horoscope view error.', error: e);

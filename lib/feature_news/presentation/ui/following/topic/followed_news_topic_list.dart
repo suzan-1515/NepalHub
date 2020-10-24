@@ -1,6 +1,7 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
 import 'package:samachar_hub/core/services/services.dart';
 import 'package:samachar_hub/core/widgets/empty_data_widget.dart';
 import 'package:samachar_hub/core/widgets/error_data_widget.dart';
@@ -39,10 +40,8 @@ class FollowedNewsTopicList extends StatelessWidget {
                     title: topicModel.topic.title,
                     icon: topicModel.topic.icon,
                     onTap: () {
-                      context
-                          .repository<NavigationService>()
-                          .toNewsTopicFeedScreen(
-                              context: context, topicEntity: topicModel.topic);
+                      GetIt.I.get<NavigationService>().toNewsTopicFeedScreen(
+                          context: context, topicEntity: topicModel.topic);
                     },
                   );
                 },

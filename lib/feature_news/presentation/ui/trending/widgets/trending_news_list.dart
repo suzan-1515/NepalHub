@@ -28,6 +28,7 @@ class _TrendingNewsListState extends State<TrendingNewsList> {
     super.initState();
     _refreshCompleter = Completer<void>();
     _newsBloc = context.bloc<FeedBloc>();
+    _newsBloc.add(GetNewsEvent(newsType: NewsType.TRENDING));
   }
 
   Future<void> _onRefresh() {
@@ -40,9 +41,7 @@ class _TrendingNewsListState extends State<TrendingNewsList> {
     return BlocConsumer<FeedBloc, FeedState>(
         cubit: _newsBloc,
         listener: (context, state) {
-          if (state is InitialState) {
-            _newsBloc.add(GetNewsEvent(newsType: NewsType.TRENDING));
-          } else if (!(state is LoadingState)) {
+          if (!(state is LoadingState)) {
             _refreshCompleter?.complete();
             _refreshCompleter = Completer();
           }

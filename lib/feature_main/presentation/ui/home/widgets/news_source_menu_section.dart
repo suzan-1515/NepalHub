@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
 import 'package:samachar_hub/core/services/services.dart';
 import 'package:samachar_hub/feature_main/presentation/models/home/home_model.dart';
 import 'package:samachar_hub/feature_main/presentation/ui/widgets/section_heading.dart';
 import 'package:samachar_hub/feature_news/presentation/blocs/news_source/news_sources_bloc.dart';
 import 'package:samachar_hub/feature_news/presentation/ui/widgets/news_menu_item.dart';
-import 'package:samachar_hub/feature_news/utils/provider.dart';
 
 class NewsSourceMenuSection extends StatefulWidget {
   const NewsSourceMenuSection({
@@ -25,7 +25,7 @@ class _NewsSourceMenuSectionState extends State<NewsSourceMenuSection>
   @override
   void initState() {
     super.initState();
-    _newsSourceBloc = NewsProvider.sourceBlocProvider(context: context);
+    _newsSourceBloc = GetIt.I.get<NewsSourceBloc>();
     _newsSourceBloc.add(GetFollowedSourcesEvent());
   }
 
@@ -56,8 +56,8 @@ class _NewsSourceMenuSectionState extends State<NewsSourceMenuSection>
                 SectionHeading(
                   title: 'Discover',
                   subtitle: 'Get the latest news on your favourite source',
-                  onTap: () => context
-                      .repository<NavigationService>()
+                  onTap: () => GetIt.I
+                      .get<NavigationService>()
                       .toFollowedNewsSourceScreen(context),
                 ),
                 LimitedBox(
@@ -74,8 +74,8 @@ class _NewsSourceMenuSectionState extends State<NewsSourceMenuSection>
                         return NewsMenuItem(
                           title: sourceModel.source.title,
                           icon: sourceModel.source.icon,
-                          onTap: () => context
-                              .repository<NavigationService>()
+                          onTap: () => GetIt.I
+                              .get<NavigationService>()
                               .toNewsSourceFeedScreen(
                                   context: context, source: sourceModel.source),
                         );

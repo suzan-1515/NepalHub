@@ -28,6 +28,7 @@ class _LatestNewsListState extends State<LatestNewsList> {
     super.initState();
     _refreshCompleter = Completer<void>();
     _feedBloc = context.bloc<FeedBloc>();
+    _feedBloc.add(GetNewsEvent(newsType: NewsType.LATEST));
   }
 
   Future<void> _onRefresh() {
@@ -39,11 +40,7 @@ class _LatestNewsListState extends State<LatestNewsList> {
   Widget build(BuildContext context) {
     return BlocConsumer<FeedBloc, FeedState>(
         listener: (context, state) {
-          if (state is InitialState) {
-            context
-                .bloc<FeedBloc>()
-                .add(GetNewsEvent(newsType: NewsType.LATEST));
-          } else if (!(state is LoadingState)) {
+          if (!(state is LoadingState)) {
             _refreshCompleter?.complete();
             _refreshCompleter = Completer();
           }

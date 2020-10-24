@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
 import 'package:samachar_hub/core/services/services.dart';
 import 'package:samachar_hub/feature_news/presentation/blocs/bookmarks/bookmark_unbookmark/bookmark_un_bookmark_bloc.dart';
 import 'package:samachar_hub/feature_news/presentation/blocs/dislike/dislike_bloc.dart';
@@ -128,8 +129,8 @@ class NewsFeedMoreOption extends StatelessWidget {
               style: Theme.of(context).textTheme.bodyText2,
             ),
             onTap: () {
-              context
-                  .repository<ShareService>()
+              GetIt.I
+                  .get<ShareService>()
                   .share(
                       threadId: feed.feedEntity.id,
                       data: feed.feedEntity.link,
@@ -153,7 +154,7 @@ class NewsFeedMoreOption extends StatelessWidget {
             ),
             onTap: () {
               Navigator.pop(context);
-              context.repository<NavigationService>().toNewsSourceFeedScreen(
+              GetIt.I.get<NavigationService>().toNewsSourceFeedScreen(
                   source: feed.newsSourceUIModel.source, context: context);
             },
           ),

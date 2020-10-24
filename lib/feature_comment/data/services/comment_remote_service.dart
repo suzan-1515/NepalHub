@@ -37,8 +37,8 @@ class CommentRemoteService with RemoteService {
     Map<String, dynamic> query = {
       'thread_id': threadId,
       'thread_type': threadType,
-      '_start': page.start,
-      '_limit': page.limit,
+      '_start': page.start.toString(),
+      '_limit': page.limit.toString(),
     };
     var call =
         await _httpManager.get(path: FETCH, headers: headers, query: query);

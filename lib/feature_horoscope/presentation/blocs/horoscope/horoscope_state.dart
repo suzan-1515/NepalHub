@@ -13,15 +13,13 @@ class HoroscopeLoadingState extends HoroscopeState {}
 
 class HoroscopeLoadSuccessState extends HoroscopeState {
   final HoroscopeUIModel horoscope;
-  final int defaultSignIndex;
 
   const HoroscopeLoadSuccessState({
     @required this.horoscope,
-    @required this.defaultSignIndex,
   });
 
   @override
-  List<Object> get props => [horoscope.horoscopeEntity, defaultSignIndex];
+  List<Object> get props => [horoscope.horoscopeEntity];
 }
 
 class HoroscopeEmptyState extends HoroscopeState {

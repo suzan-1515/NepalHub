@@ -26,28 +26,28 @@ class NewsReadMode extends StatelessWidget {
           title: Text('Default'),
           dense: true,
           onChanged: (bool value) {
-            context.bloc<SettingsCubit>().setNewsReadMode(0);
+            settingsBloc.setNewsReadMode(0);
             Navigator.pop(context);
           },
-          value: settingsBloc.settings.newsReadMode == 0,
+          value: (settingsBloc.settings.newsReadMode ?? 0) == 0,
         ),
         CheckboxListTile(
           title: Text('Summary'),
           dense: true,
           onChanged: (bool value) {
-            context.bloc<SettingsCubit>().setNewsReadMode(1);
+            settingsBloc.setNewsReadMode(1);
             Navigator.pop(context);
           },
-          value: settingsBloc.settings.newsReadMode == 1,
+          value: (settingsBloc.settings.newsReadMode ?? 0) == 1,
         ),
         CheckboxListTile(
           title: Text('Full News'),
           dense: true,
           onChanged: (bool value) {
-            context.bloc<SettingsCubit>().setNewsReadMode(2);
+            settingsBloc.setNewsReadMode(2);
             Navigator.pop(context);
           },
-          value: settingsBloc.settings.newsReadMode == 2,
+          value: (settingsBloc.settings.newsReadMode ?? 0) == 2,
         ),
       ],
     );

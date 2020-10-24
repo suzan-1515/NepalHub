@@ -1,5 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_advanced_networkimage/provider.dart';
+import 'package:flutter_advanced_networkimage/transition.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class NewsMenuItem extends StatelessWidget {
@@ -38,19 +40,17 @@ class NewsMenuItem extends StatelessWidget {
                   alignment: Alignment.center,
                   decoration: BoxDecoration(
                       color: Colors.grey[100], shape: BoxShape.circle),
-                  child: CachedNetworkImage(
+                  child: TransitionToImage(
                     width: 24,
                     height: 24,
                     fit: BoxFit.cover,
-                    imageUrl: icon,
-                    placeholder: (context, _) => Icon(FontAwesomeIcons.image),
-                    errorWidget: (context, url, error) => Icon(
-                      FontAwesomeIcons.image,
-                      color: Colors.black12,
-                    ),
-                    progressIndicatorBuilder: (context, url, progress) =>
+                    placeholder: Icon(FontAwesomeIcons.image),
+                    loadingWidgetBuilder: (context, progress, imageData) =>
                         CircularProgressIndicator(
-                      value: progress.progress,
+                      value: progress,
+                    ),
+                    image: AdvancedNetworkImage(
+                      icon,
                     ),
                   ),
                 ),

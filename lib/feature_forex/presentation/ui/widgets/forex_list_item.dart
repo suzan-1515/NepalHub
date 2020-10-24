@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_advanced_networkimage/provider.dart';
 import 'package:flutter_advanced_networkimage/transition.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get_it/get_it.dart';
 import 'package:samachar_hub/core/services/services.dart';
 import 'package:samachar_hub/feature_forex/presentation/models/forex_model.dart';
 
@@ -21,8 +21,8 @@ class ForexListItem extends StatelessWidget {
     return Material(
       color: Colors.transparent,
       child: InkWell(
-        onTap: () => context
-            .repository<NavigationService>()
+        onTap: () => GetIt.I
+            .get<NavigationService>()
             .toForexDetailScreen(context, data.forexEntity),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.start,
@@ -51,7 +51,7 @@ class ForexListItem extends StatelessWidget {
             Expanded(
               flex: 3,
               child: Text(
-                '${data.forexEntity.currency} (${data.forexEntity.currency.code})',
+                '${data.forexEntity.currency.title} (${data.forexEntity.currency.code})',
                 style: Theme.of(context).textTheme.bodyText1,
               ),
             ),
