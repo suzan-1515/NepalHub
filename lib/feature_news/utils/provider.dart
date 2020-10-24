@@ -217,138 +217,6 @@ class NewsProvider {
             )..add(GetTopicNewsEvent()));
   }
 
-  static List<RepositoryProvider> get newsRepositoryProviders => [
-        RepositoryProvider<NewsRemoteService>(
-          create: (context) => NewsRemoteService(
-            GetIt.I.get<HttpManager>(),
-          ),
-        ),
-        RepositoryProvider<NewsRemoteDataSource>(
-          create: (context) => NewsRemoteDataSource(
-            GetIt.I.get<NewsRemoteService>(),
-          ),
-        ),
-        RepositoryProvider<NewsRepository>(
-          create: (context) => NewsRepository(
-            remoteDataSource: GetIt.I.get<NewsRemoteDataSource>(),
-            networkInfo: GetIt.I.get<NetworkInfo>(),
-            analyticsService: GetIt.I.get<AnalyticsService>(),
-            authRepository: GetIt.I.get<AuthRepository>(),
-          ),
-        ),
-        RepositoryProvider<BookmarkNewsUseCase>(
-          create: (context) =>
-              BookmarkNewsUseCase(GetIt.I.get<NewsRepository>()),
-        ),
-        RepositoryProvider<DislikeNewsUseCase>(
-          create: (context) =>
-              DislikeNewsUseCase(GetIt.I.get<NewsRepository>()),
-        ),
-        RepositoryProvider<FollowNewsCategoryUseCase>(
-          create: (context) =>
-              FollowNewsCategoryUseCase(GetIt.I.get<NewsRepository>()),
-        ),
-        RepositoryProvider<FollowNewsSourceUseCase>(
-          create: (context) =>
-              FollowNewsSourceUseCase(GetIt.I.get<NewsRepository>()),
-        ),
-        RepositoryProvider<FollowNewsTopicUseCase>(
-          create: (context) =>
-              FollowNewsTopicUseCase(GetIt.I.get<NewsRepository>()),
-        ),
-        RepositoryProvider<GetBookmarkedNewsUseCase>(
-          create: (context) =>
-              GetBookmarkedNewsUseCase(GetIt.I.get<NewsRepository>()),
-        ),
-        RepositoryProvider<GetFollowedNewsCategoriesUseCase>(
-          create: (context) =>
-              GetFollowedNewsCategoriesUseCase(GetIt.I.get<NewsRepository>()),
-        ),
-        RepositoryProvider<GetFollowedNewsSourcesUseCase>(
-          create: (context) =>
-              GetFollowedNewsSourcesUseCase(GetIt.I.get<NewsRepository>()),
-        ),
-        RepositoryProvider<GetFollowedNewsTopicsUseCase>(
-          create: (context) =>
-              GetFollowedNewsTopicsUseCase(GetIt.I.get<NewsRepository>()),
-        ),
-        RepositoryProvider<GetLatestNewsUseCase>(
-          create: (context) =>
-              GetLatestNewsUseCase(GetIt.I.get<NewsRepository>()),
-        ),
-        RepositoryProvider<GetNewsByCategoryUseCase>(
-          create: (context) =>
-              GetNewsByCategoryUseCase(GetIt.I.get<NewsRepository>()),
-        ),
-        RepositoryProvider<GetNewsBySourceUseCase>(
-          create: (context) =>
-              GetNewsBySourceUseCase(GetIt.I.get<NewsRepository>()),
-        ),
-        RepositoryProvider<GetNewsByTopicUseCase>(
-          create: (context) =>
-              GetNewsByTopicUseCase(GetIt.I.get<NewsRepository>()),
-        ),
-        RepositoryProvider<GetNewsCategoriesUseCase>(
-          create: (context) =>
-              GetNewsCategoriesUseCase(GetIt.I.get<NewsRepository>()),
-        ),
-        RepositoryProvider<GetNewsDetailUseCase>(
-          create: (context) =>
-              GetNewsDetailUseCase(GetIt.I.get<NewsRepository>()),
-        ),
-        RepositoryProvider<GetNewsSourcesUseCase>(
-          create: (context) =>
-              GetNewsSourcesUseCase(GetIt.I.get<NewsRepository>()),
-        ),
-        RepositoryProvider<GetNewsTopicsUseCase>(
-          create: (context) =>
-              GetNewsTopicsUseCase(GetIt.I.get<NewsRepository>()),
-        ),
-        RepositoryProvider<GetRecentNewsUseCase>(
-          create: (context) =>
-              GetRecentNewsUseCase(GetIt.I.get<NewsRepository>()),
-        ),
-        RepositoryProvider<GetRelatedNewsUseCase>(
-          create: (context) =>
-              GetRelatedNewsUseCase(GetIt.I.get<NewsRepository>()),
-        ),
-        RepositoryProvider<GetTrendingNewsUseCase>(
-          create: (context) =>
-              GetTrendingNewsUseCase(GetIt.I.get<NewsRepository>()),
-        ),
-        RepositoryProvider<LikeNewsUseCase>(
-          create: (context) => LikeNewsUseCase(GetIt.I.get<NewsRepository>()),
-        ),
-        RepositoryProvider<ShareNewsUseCase>(
-          create: (context) => ShareNewsUseCase(GetIt.I.get<NewsRepository>()),
-        ),
-        RepositoryProvider<UnBookmarkNewsUseCase>(
-          create: (context) =>
-              UnBookmarkNewsUseCase(GetIt.I.get<NewsRepository>()),
-        ),
-        RepositoryProvider<UndislikeNewsUseCase>(
-          create: (context) =>
-              UndislikeNewsUseCase(GetIt.I.get<NewsRepository>()),
-        ),
-        RepositoryProvider<UnFollowNewsCategoryUseCase>(
-          create: (context) =>
-              UnFollowNewsCategoryUseCase(GetIt.I.get<NewsRepository>()),
-        ),
-        RepositoryProvider<UnFollowNewsSourceUseCase>(
-          create: (context) =>
-              UnFollowNewsSourceUseCase(GetIt.I.get<NewsRepository>()),
-        ),
-        RepositoryProvider<UnFollowNewsTopicUseCase>(
-          create: (context) =>
-              UnFollowNewsTopicUseCase(GetIt.I.get<NewsRepository>()),
-        ),
-        RepositoryProvider<UnlikeNewsUseCase>(
-          create: (context) => UnlikeNewsUseCase(GetIt.I.get<NewsRepository>()),
-        ),
-        RepositoryProvider<ViewNewsUseCase>(
-          create: (context) => ViewNewsUseCase(GetIt.I.get<NewsRepository>()),
-        ),
-      ];
   static BlocProvider<FeedBloc> feedBlocProvider({
     @required Widget child,
   }) =>
@@ -393,6 +261,7 @@ class NewsProvider {
         create: (context) => GetIt.I.get<NewsDetailBloc>(param1: feedUIModel),
         child: child,
       );
+
   static MultiBlocProvider detailMultiBlocProvider({
     @required Widget child,
     @required NewsFeedUIModel feedUIModel,
@@ -427,6 +296,7 @@ class NewsProvider {
         ],
         child: child,
       );
+
   static BlocProvider<RelatedNewsBloc> relatedNewsBlocProvider({
     @required Widget child,
     @required NewsFeedUIModel feedUIModel,
@@ -435,6 +305,7 @@ class NewsProvider {
         create: (context) => GetIt.I.get<RelatedNewsBloc>(param1: feedUIModel),
         child: child,
       );
+
   static BlocProvider<BookmarkNewsBloc> bookmarkBlocProvider({
     @required Widget child,
   }) =>
@@ -462,6 +333,7 @@ class NewsProvider {
         ],
         child: child,
       );
+
   static MultiBlocProvider sourceFeedBlocProvider(
           {@required Widget child,
           @required NewsSourceUIModel newsSourceUIModel}) =>

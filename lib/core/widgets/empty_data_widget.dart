@@ -19,6 +19,7 @@ class EmptyDataView extends StatelessWidget {
         Text(
           text,
           style: Theme.of(context).textTheme.bodyText2,
+          textAlign: TextAlign.center,
         ),
       ],
     );

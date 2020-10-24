@@ -67,50 +67,6 @@ class CommentProvider {
     );
   }
 
-  static List<RepositoryProvider> get commentRepositoryProviders => [
-        RepositoryProvider<CommentRemoteService>(
-          create: (context) => CommentRemoteService(
-            context.repository<HttpManager>(),
-          ),
-        ),
-        RepositoryProvider<CommentRemoteDataSource>(
-          create: (context) => CommentRemoteDataSource(
-            context.repository<CommentRemoteService>(),
-          ),
-        ),
-        RepositoryProvider<CommentRepository>(
-          create: (context) => CommentRepository(
-            context.repository<CommentRemoteDataSource>(),
-            context.repository<AnalyticsService>(),
-            context.repository<AuthRepository>(),
-          ),
-        ),
-        RepositoryProvider<DeleteCommentUseCase>(
-          create: (context) =>
-              DeleteCommentUseCase(context.repository<CommentRepository>()),
-        ),
-        RepositoryProvider<GetCommentsUseCase>(
-          create: (context) =>
-              GetCommentsUseCase(context.repository<CommentRepository>()),
-        ),
-        RepositoryProvider<LikeCommentUseCase>(
-          create: (context) =>
-              LikeCommentUseCase(context.repository<CommentRepository>()),
-        ),
-        RepositoryProvider<UnlikeCommentUseCase>(
-          create: (context) =>
-              UnlikeCommentUseCase(context.repository<CommentRepository>()),
-        ),
-        RepositoryProvider<UpdateCommentUseCase>(
-          create: (context) =>
-              UpdateCommentUseCase(context.repository<CommentRepository>()),
-        ),
-        RepositoryProvider<PostCommentUseCase>(
-          create: (context) =>
-              PostCommentUseCase(context.repository<CommentRepository>()),
-        ),
-      ];
-
   static MultiBlocProvider commentBlocProvider(
           {@required Widget child,
           @required String threadId,

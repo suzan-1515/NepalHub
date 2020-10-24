@@ -12,9 +12,9 @@ class HomeUIModel {
   RecentNewsUIModel recentNewsUIModel;
   TrendingNewsUIModel trendingNewsUIModel;
   List<NewsTopicUIModel> newsTopicUIModels;
-  bool _showNewsCategory = true;
-  bool _showNewsSource = true;
-  bool _showDailyHoroscope = true;
+  bool showNewsCategory = true;
+  bool showNewsSource = true;
+  bool showDailyHoroscope = true;
 
   HomeUIModel({
     @required this.coronaUIModel,
@@ -30,15 +30,4 @@ class HomeUIModel {
   bool get hasTrendingNews => trendingNewsUIModel != null;
   bool get hasRecentNews => recentNewsUIModel != null;
   bool get hasNewsTopics => newsTopicUIModels != null;
-
-  set shouldShowNewsCategorySection(bool value) => _showNewsCategory = value;
-  set shouldShowNewsSourceSection(bool value) => _showNewsSource = value;
-
-  bool get shouldShowNewsCategorySection => _showNewsCategory;
-  bool get shouldShowNewsSourceSection => _showNewsSource;
-
-  set shouldShowDailyHoroscopeSection(bool value) =>
-      _showDailyHoroscope = value;
-
-  bool get shouldShowDailyHoroscopeSection => _showDailyHoroscope;
 }

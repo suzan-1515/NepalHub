@@ -144,11 +144,11 @@ class DailyHoroscope extends StatelessWidget {
             buildWhen: (previous, current) => !(current is HoroscopeErrorState),
             builder: (context, state) {
               if (state is HoroscopeLoadSuccessState) {
-                homeUIModel.shouldShowDailyHoroscopeSection = true;
+                homeUIModel.showDailyHoroscope = true;
                 return _buildCard(context, state.horoscope,
                     settingsCubit.settings.defaultHoroscopeSign);
               }
-              homeUIModel.shouldShowDailyHoroscopeSection = false;
+              homeUIModel.showDailyHoroscope = false;
               return SizedBox.shrink();
             },
           ),

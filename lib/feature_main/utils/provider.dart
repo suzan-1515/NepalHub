@@ -43,27 +43,6 @@ class HomeProvider {
     );
   }
 
-  static List<RepositoryProvider> get homeRepositoryProviders => [
-        RepositoryProvider<HomeRemoteService>(
-          create: (context) =>
-              HomeRemoteService(context.repository<HttpManager>()),
-        ),
-        RepositoryProvider<HomeRemoteDataSource>(
-          create: (context) =>
-              HomeRemoteDataSource(context.repository<HomeRemoteService>()),
-        ),
-        RepositoryProvider<HomeRepository>(
-          create: (context) => HomeRepository(
-              context.repository<HomeRemoteDataSource>(),
-              context.repository<AnalyticsService>(),
-              context.repository<AuthRepository>()),
-        ),
-        RepositoryProvider<GetHomeFeedUseCase>(
-          create: (context) =>
-              GetHomeFeedUseCase(context.repository<HomeRepository>()),
-        ),
-      ];
-
   static BlocProvider<HomeCubit> homeBlocProvider({@required Widget child}) =>
       BlocProvider<HomeCubit>(
         create: (context) => GetIt.I.get<HomeCubit>(),
@@ -138,95 +117,6 @@ class SettingsProvider {
               GetIt.I.get<SetTrendingNotificationStatusUseCase>(),
         )..getSettings());
   }
-
-  static List<RepositoryProvider> get settingsRepositoryProviders => [
-        RepositoryProvider<SettingsStorage>(
-          create: (context) => SettingsStorage(
-            sharedPreferences: context.repository<SharedPreferences>(),
-          ),
-        ),
-        RepositoryProvider<SettingsLocalDataSource>(
-          create: (context) => SettingsLocalDataSource(
-            context.repository<SettingsStorage>(),
-          ),
-        ),
-        RepositoryProvider<SettingsRepository>(
-          create: (context) => SettingsRepository(
-            context.repository<SettingsLocalDataSource>(),
-            context.repository<AnalyticsService>(),
-          ),
-        ),
-        RepositoryProvider<GetSettingsUseCase>(
-          create: (context) => GetSettingsUseCase(
-            context.repository<SettingsRepository>(),
-          ),
-        ),
-        RepositoryProvider<SetCommentNotificationStatusUseCase>(
-          create: (context) => SetCommentNotificationStatusUseCase(
-            context.repository<SettingsRepository>(),
-          ),
-        ),
-        RepositoryProvider<SetDarkModeUseCase>(
-          create: (context) => SetDarkModeUseCase(
-            context.repository<SettingsRepository>(),
-          ),
-        ),
-        RepositoryProvider<SetDefaultForexCurrencyUseCase>(
-          create: (context) => SetDefaultForexCurrencyUseCase(
-            context.repository<SettingsRepository>(),
-          ),
-        ),
-        RepositoryProvider<SetDefaultHoroscopeSignUseCase>(
-          create: (context) => SetDefaultHoroscopeSignUseCase(
-            context.repository<SettingsRepository>(),
-          ),
-        ),
-        RepositoryProvider<SetMessageNotificationStatusUseCase>(
-          create: (context) => SetMessageNotificationStatusUseCase(
-            context.repository<SettingsRepository>(),
-          ),
-        ),
-        RepositoryProvider<SetMorningHoroscopeNotificationStatusUseCase>(
-          create: (context) => SetMorningHoroscopeNotificationStatusUseCase(
-            context.repository<SettingsRepository>(),
-          ),
-        ),
-        RepositoryProvider<SetMorningNewsNotificationStatusUseCase>(
-          create: (context) => SetMorningNewsNotificationStatusUseCase(
-            context.repository<SettingsRepository>(),
-          ),
-        ),
-        RepositoryProvider<SetNewsNotificationStatusUseCase>(
-          create: (context) => SetNewsNotificationStatusUseCase(
-            context.repository<SettingsRepository>(),
-          ),
-        ),
-        RepositoryProvider<SetNewsReadModeUseCase>(
-          create: (context) => SetNewsReadModeUseCase(
-            context.repository<SettingsRepository>(),
-          ),
-        ),
-        RepositoryProvider<SetOtherNotificationStatusUseCase>(
-          create: (context) => SetOtherNotificationStatusUseCase(
-            context.repository<SettingsRepository>(),
-          ),
-        ),
-        RepositoryProvider<SetPitchBlackModeUseCase>(
-          create: (context) => SetPitchBlackModeUseCase(
-            context.repository<SettingsRepository>(),
-          ),
-        ),
-        RepositoryProvider<SetSystemThemeUseCase>(
-          create: (context) => SetSystemThemeUseCase(
-            context.repository<SettingsRepository>(),
-          ),
-        ),
-        RepositoryProvider<SetTrendingNotificationStatusUseCase>(
-          create: (context) => SetTrendingNotificationStatusUseCase(
-            context.repository<SettingsRepository>(),
-          ),
-        ),
-      ];
 
   static BlocProvider<SettingsCubit> settingsBlocProvider(
           {@required Widget child}) =>

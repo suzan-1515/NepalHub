@@ -89,77 +89,6 @@ class HoroscopeProvider {
             viewHoroscopeUseCase: GetIt.I.get<ViewHoroscopeUseCase>()));
   }
 
-  static List<RepositoryProvider> get horoscopeRepositoryProviders => [
-        RepositoryProvider<HoroscopeStorage>(
-          create: (context) => HoroscopeStorage(
-            context.repository<SharedPreferences>(),
-          ),
-        ),
-        RepositoryProvider<HoroscopeRemoteService>(
-          create: (context) => HoroscopeRemoteService(
-            context.repository<HttpManager>(),
-          ),
-        ),
-        RepositoryProvider<HoroscopeRemoteDataSource>(
-          create: (context) => HoroscopeRemoteDataSource(
-            context.repository<HoroscopeRemoteService>(),
-          ),
-        ),
-        RepositoryProvider<HoroscopeLocalDataSource>(
-          create: (context) => HoroscopeLocalDataSource(
-            context.repository<HoroscopeStorage>(),
-          ),
-        ),
-        RepositoryProvider<HoroscopeRepository>(
-          create: (context) => HoroscopeRepository(
-            context.repository<HoroscopeRemoteDataSource>(),
-            context.repository<HoroscopeLocalDataSource>(),
-            context.repository<AnalyticsService>(),
-            context.repository<AuthRepository>(),
-          ),
-        ),
-        RepositoryProvider<DislikeHoroscopeUseCase>(
-          create: (context) => DislikeHoroscopeUseCase(
-              context.repository<HoroscopeRepository>()),
-        ),
-        RepositoryProvider<GetDailyHoroscopeUseCase>(
-          create: (context) => GetDailyHoroscopeUseCase(
-              context.repository<HoroscopeRepository>()),
-        ),
-        RepositoryProvider<GetWeeklyHoroscopeUseCase>(
-          create: (context) => GetWeeklyHoroscopeUseCase(
-              context.repository<HoroscopeRepository>()),
-        ),
-        RepositoryProvider<GetMonthlyHoroscopeUseCase>(
-          create: (context) => GetMonthlyHoroscopeUseCase(
-              context.repository<HoroscopeRepository>()),
-        ),
-        RepositoryProvider<GetYearlyHoroscopeUseCase>(
-          create: (context) => GetYearlyHoroscopeUseCase(
-              context.repository<HoroscopeRepository>()),
-        ),
-        RepositoryProvider<LikeHoroscopeUseCase>(
-          create: (context) =>
-              LikeHoroscopeUseCase(context.repository<HoroscopeRepository>()),
-        ),
-        RepositoryProvider<ShareHoroscopeUseCase>(
-          create: (context) =>
-              ShareHoroscopeUseCase(context.repository<HoroscopeRepository>()),
-        ),
-        RepositoryProvider<UndislikeHoroscopeUseCase>(
-          create: (context) => UndislikeHoroscopeUseCase(
-              context.repository<HoroscopeRepository>()),
-        ),
-        RepositoryProvider<UnlikeHoroscopeUseCase>(
-          create: (context) =>
-              UnlikeHoroscopeUseCase(context.repository<HoroscopeRepository>()),
-        ),
-        RepositoryProvider<ViewHoroscopeUseCase>(
-          create: (context) =>
-              ViewHoroscopeUseCase(context.repository<HoroscopeRepository>()),
-        ),
-      ];
-
   static BlocProvider<HoroscopeBloc> horoscopeBlocProvider({
     @required Widget child,
     @required HoroscopeType type,
@@ -168,6 +97,7 @@ class HoroscopeProvider {
         create: (context) => GetIt.I.get<HoroscopeBloc>(param1: type),
         child: child,
       );
+
   static MultiBlocProvider horoscopeDetailBlocProvider({
     @required Widget child,
     @required HoroscopeUIModel horoscopeUIModel,

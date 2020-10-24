@@ -44,12 +44,12 @@ class _NewsCategoryMenuSectionState extends State<NewsCategoryMenuSection>
       child: BlocConsumer<NewsCategoryBloc, NewsCategoryState>(
         listener: (context, state) {
           if (state is Empty || state is Error) {
-            widget.homeUIModel.shouldShowNewsCategorySection = false;
+            widget.homeUIModel.showNewsCategory = false;
           }
         },
         builder: (context, state) {
           if (state is LoadSuccess) {
-            widget.homeUIModel.shouldShowNewsCategorySection = true;
+            widget.homeUIModel.showNewsCategory = true;
             return Column(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.stretch,

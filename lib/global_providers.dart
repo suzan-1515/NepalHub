@@ -1,5 +1,4 @@
 import 'package:data_connection_checker/data_connection_checker.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get_it/get_it.dart';
 import 'package:samachar_hub/core/handlers/notification_handler.dart';
@@ -69,46 +68,4 @@ class GlobalProvider {
     HomeProvider.setup();
     SettingsProvider.setup();
   }
-
-  static List<RepositoryProvider> get coreRepositoryProviders => [
-        RepositoryProvider<PreferenceService>(
-          create: (context) =>
-              PreferenceService(context.repository<SharedPreferences>()),
-        ),
-        RepositoryProvider<HttpManager>(
-          create: (context) => AppHttpManager(),
-        ),
-        RepositoryProvider<NetworkInfo>(
-          create: (context) => NetworkInfoImpl(DataConnectionChecker()),
-        ),
-        RepositoryProvider<CrashAnalyticsService>(
-          create: (context) => CrashAnalyticsService(),
-        ),
-        RepositoryProvider<AnalyticsService>(
-          create: (context) => AnalyticsService(),
-        ),
-        RepositoryProvider<DynamicLinkService>(
-          create: (context) => DynamicLinkService(),
-        ),
-        RepositoryProvider<NavigationService>(
-          create: (context) => NavigationService(),
-        ),
-        RepositoryProvider<InAppMessagingService>(
-          create: (context) => InAppMessagingService(),
-        ),
-        RepositoryProvider<ShareService>(
-          create: (context) =>
-              ShareService(context.repository<AnalyticsService>()),
-        ),
-        RepositoryProvider<NotificationService>(
-          create: (context) =>
-              NotificationService(FlutterLocalNotificationsPlugin()),
-        ),
-        RepositoryProvider<NotificationHandler>(
-          lazy: false,
-          create: (context) => NotificationHandler(
-              context.repository<NotificationService>(),
-              context.repository<PreferenceService>()),
-        ),
-      ];
 }

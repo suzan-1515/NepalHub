@@ -90,72 +90,6 @@ class ForexProvider {
             viewForexUseCase: GetIt.I.get<ViewForexUseCase>()));
   }
 
-  static List<RepositoryProvider> get forexRepositoryProviders => [
-        RepositoryProvider<ForexStorage>(
-          create: (context) => ForexStorage(
-            context.repository<SharedPreferences>(),
-          ),
-        ),
-        RepositoryProvider<ForexRemoteService>(
-          create: (context) => ForexRemoteService(
-            context.repository<HttpManager>(),
-          ),
-        ),
-        RepositoryProvider<ForexRemoteDataSource>(
-          create: (context) => ForexRemoteDataSource(
-            context.repository<ForexRemoteService>(),
-          ),
-        ),
-        RepositoryProvider<ForexLocalDataSource>(
-          create: (context) => ForexLocalDataSource(
-            context.repository<ForexStorage>(),
-          ),
-        ),
-        RepositoryProvider<ForexRepository>(
-          create: (context) => ForexRepository(
-            context.repository<ForexRemoteDataSource>(),
-            context.repository<ForexLocalDataSource>(),
-            context.repository<AnalyticsService>(),
-            context.repository<AuthRepository>(),
-          ),
-        ),
-        RepositoryProvider<DislikeForexUseCase>(
-          create: (context) =>
-              DislikeForexUseCase(context.repository<ForexRepository>()),
-        ),
-        RepositoryProvider<GetForexCurrenciesUseCase>(
-          create: (context) =>
-              GetForexCurrenciesUseCase(context.repository<ForexRepository>()),
-        ),
-        RepositoryProvider<GetForexTimelineUseCase>(
-          create: (context) =>
-              GetForexTimelineUseCase(context.repository<ForexRepository>()),
-        ),
-        RepositoryProvider<GetLatestForexUseCase>(
-          create: (context) =>
-              GetLatestForexUseCase(context.repository<ForexRepository>()),
-        ),
-        RepositoryProvider<LikeForexUseCase>(
-          create: (context) =>
-              LikeForexUseCase(context.repository<ForexRepository>()),
-        ),
-        RepositoryProvider<ShareForexUseCase>(
-          create: (context) =>
-              ShareForexUseCase(context.repository<ForexRepository>()),
-        ),
-        RepositoryProvider<UndislikeForexUseCase>(
-          create: (context) =>
-              UndislikeForexUseCase(context.repository<ForexRepository>()),
-        ),
-        RepositoryProvider<UnlikeForexUseCase>(
-          create: (context) =>
-              UnlikeForexUseCase(context.repository<ForexRepository>()),
-        ),
-        RepositoryProvider<ViewForexUseCase>(
-          create: (context) =>
-              ViewForexUseCase(context.repository<ForexRepository>()),
-        ),
-      ];
   static BlocProvider<ForexBloc> forexBlocProvider({
     @required Widget child,
     @required String defaultCurrencyCode,
@@ -165,6 +99,7 @@ class ForexProvider {
             GetIt.I.get<ForexBloc>(param1: defaultCurrencyCode),
         child: child,
       );
+
   static BlocProvider<ForexTimelineBloc> forexTimelineBlocProvider(
           {@required Widget child, @required ForexUIModel forexUIModel}) =>
       BlocProvider<ForexTimelineBloc>(
@@ -172,12 +107,14 @@ class ForexProvider {
             GetIt.I.get<ForexTimelineBloc>(param1: forexUIModel),
         child: child,
       );
+
   static BlocProvider<ForexCurrencyBloc> forexCurrencyBlocProvider(
           {@required Widget child}) =>
       BlocProvider<ForexCurrencyBloc>(
         create: (context) => GetIt.I.get<ForexCurrencyBloc>(),
         child: child,
       );
+
   static MultiBlocProvider forexDetailBlocProvider({
     @required Widget child,
     @required ForexUIModel forexUIModel,
