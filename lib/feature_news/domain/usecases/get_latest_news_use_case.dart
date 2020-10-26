@@ -3,8 +3,8 @@ import 'dart:developer';
 import 'package:equatable/equatable.dart';
 import 'package:samachar_hub/core/models/language.dart';
 import 'package:samachar_hub/core/usecases/usecase.dart';
-import 'package:samachar_hub/feature_news/domain/models/news_feed.dart';
-import 'package:samachar_hub/feature_news/domain/models/sort.dart';
+import 'package:samachar_hub/feature_news/domain/entities/news_feed_entity.dart';
+import 'package:samachar_hub/feature_news/domain/entities/sort.dart';
 import 'package:samachar_hub/feature_news/domain/repository/repository.dart';
 
 class GetLatestNewsUseCase

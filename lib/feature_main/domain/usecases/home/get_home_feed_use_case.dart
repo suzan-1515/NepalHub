@@ -16,7 +16,9 @@ class GetHomeFeedUseCase
   @override
   Future<HomeEntity> call(GetHomeFeedUseCaseParams params) {
     try {
-      return this._repository.getHomeFeed(language: params.language);
+      return this._repository.getHomeFeed(
+          language: params.language,
+          defaultForexCurrencyCode: params.defaultForexCurrencyCode);
     } catch (e) {
       log('GetHomeFeedUseCase unsuccessful.', error: e);
       throw e;
@@ -26,8 +28,10 @@ class GetHomeFeedUseCase
 
 class GetHomeFeedUseCaseParams extends Equatable {
   final Language language;
+  final String defaultForexCurrencyCode;
 
-  GetHomeFeedUseCaseParams({@required this.language});
+  GetHomeFeedUseCaseParams(
+      {@required this.language, this.defaultForexCurrencyCode});
   @override
-  List<Object> get props => [language];
+  List<Object> get props => [language, defaultForexCurrencyCode];
 }

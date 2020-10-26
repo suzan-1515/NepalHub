@@ -7,7 +7,8 @@ import 'package:samachar_hub/feature_news/presentation/blocs/dislike/dislike_blo
 import 'package:samachar_hub/feature_news/presentation/blocs/news_source/follow_unfollow/follow_un_follow_bloc.dart';
 import 'package:samachar_hub/feature_news/presentation/blocs/share/share_bloc.dart';
 import 'package:samachar_hub/feature_news/presentation/models/news_feed.dart';
-import 'package:samachar_hub/feature_news/presentation/ui/widgets/report_article.dart';
+import 'package:samachar_hub/feature_report/domain/entities/report_thread_type.dart';
+import 'package:samachar_hub/feature_report/presentation/ui/report.dart';
 import 'package:samachar_hub/core/extensions/view.dart';
 
 class NewsFeedMoreOption extends StatelessWidget {
@@ -200,9 +201,9 @@ class NewsFeedMoreOption extends StatelessWidget {
             onTap: () {
               // Navigator.pop(context);
               context.showBottomSheet(
-                child: ReportArticle(
-                  articleId: feed.feedEntity.id,
-                  articleType: 'news',
+                child: Report(
+                  threadId: feed.feedEntity.id,
+                  threadType: ReportThreadType.NEWS_FEED,
                 ),
               );
             },

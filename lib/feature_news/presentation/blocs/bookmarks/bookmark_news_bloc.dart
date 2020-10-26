@@ -5,7 +5,7 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
 import 'package:samachar_hub/core/usecases/usecase.dart';
-import 'package:samachar_hub/feature_news/domain/models/news_feed.dart';
+import 'package:samachar_hub/feature_news/domain/entities/news_feed_entity.dart';
 import 'package:samachar_hub/feature_news/domain/usecases/get_bookmarked_news_use_case.dart';
 import 'package:samachar_hub/feature_news/presentation/extensions/news_extensions.dart';
 import 'package:samachar_hub/feature_news/presentation/models/news_feed.dart';

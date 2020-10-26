@@ -1,7 +1,7 @@
 import 'package:meta/meta.dart';
 import 'package:equatable/equatable.dart';
 import 'package:samachar_hub/core/models/language.dart';
-import 'package:samachar_hub/feature_news/domain/models/news_category.dart';
+import 'package:samachar_hub/feature_news/domain/entities/news_category_entity.dart';
 import 'package:validators/validators.dart' as Validator;
 
 class NewsTopicEntity extends Equatable {

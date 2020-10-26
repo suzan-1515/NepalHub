@@ -15,6 +15,8 @@ import 'package:samachar_hub/feature_comment/presentation/blocs/comment_post/com
 import 'package:samachar_hub/feature_comment/presentation/blocs/delete/delete_cubit.dart';
 import 'package:samachar_hub/feature_comment/presentation/blocs/like_unlike/like_unlike_bloc.dart';
 import 'package:samachar_hub/feature_comment/presentation/models/comment_model.dart';
+import 'package:samachar_hub/feature_stats/presentation/blocs/thread_stats_cubit.dart';
+import 'package:samachar_hub/feature_stats/domain/entities/thread_type.dart';
 
 class CommentProvider {
   CommentProvider._();
@@ -80,6 +82,10 @@ class CommentProvider {
           BlocProvider<CommentPostBloc>(
             create: (context) => GetIt.I
                 .get<CommentPostBloc>(param1: threadId, param2: threadType),
+          ),
+          BlocProvider<ThreadStatsCubit>(
+            create: (context) => GetIt.I.get<ThreadStatsCubit>(
+                param1: threadId, param2: threadType.value.toThreadType),
           ),
         ],
         child: child,

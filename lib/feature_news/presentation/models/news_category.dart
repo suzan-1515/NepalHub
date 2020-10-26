@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:intl/intl.dart';
-import 'package:samachar_hub/feature_news/domain/models/news_category.dart';
+import 'package:samachar_hub/feature_news/domain/entities/news_category_entity.dart';
 
 class NewsCategoryUIModel {
   NewsCategoryEntity category;

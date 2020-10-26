@@ -22,6 +22,8 @@ class CommentLoadSuccess extends CommentState {
           {List<CommentUIModel> comments, bool hasMore = true}) =>
       CommentLoadSuccess(comments ?? this.comments,
           hasMore: hasMore ?? this.hasMore);
+  @override
+  List<Object> get props => [comments, hasMore];
 }
 
 class CommentLoadEmpty extends CommentState {

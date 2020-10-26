@@ -39,6 +39,7 @@ class CommentRemoteService with RemoteService {
       'thread_type': threadType,
       '_start': page.start.toString(),
       '_limit': page.limit.toString(),
+      '_sort': 'updated_at:DESC',
     };
     var call =
         await _httpManager.get(path: FETCH, headers: headers, query: query);

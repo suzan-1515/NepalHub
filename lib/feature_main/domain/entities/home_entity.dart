@@ -1,8 +1,12 @@
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
 import 'package:samachar_hub/core/models/language.dart';
-import 'package:samachar_hub/feature_news/domain/models/news_feed.dart';
-import 'package:samachar_hub/feature_news/domain/models/news_topic.dart';
+import 'package:samachar_hub/feature_forex/domain/entities/forex_entity.dart';
+import 'package:samachar_hub/feature_horoscope/domain/entities/horoscope_entity.dart';
+import 'package:samachar_hub/feature_news/domain/entities/news_category_entity.dart';
+import 'package:samachar_hub/feature_news/domain/entities/news_feed_entity.dart';
+import 'package:samachar_hub/feature_news/domain/entities/news_source_entity.dart';
+import 'package:samachar_hub/feature_news/domain/entities/news_topic_entity.dart';
 
 class HomeEntity extends Equatable {
   HomeEntity({
@@ -10,14 +14,22 @@ class HomeEntity extends Equatable {
     @required this.trendingNews,
     @required this.recentNews,
     @required this.latestNews,
+    @required this.newsCategories,
+    @required this.newsSources,
     @required this.newsTopics,
+    @required this.horoscope,
+    @required this.forexe,
   });
 
   final CoronaEntity corona;
   final List<NewsFeedEntity> trendingNews;
   final List<NewsFeedEntity> recentNews;
   final List<NewsFeedEntity> latestNews;
+  final List<NewsCategoryEntity> newsCategories;
+  final List<NewsSourceEntity> newsSources;
   final List<NewsTopicEntity> newsTopics;
+  final HoroscopeEntity horoscope;
+  final ForexEntity forexe;
 
   HomeEntity copyWith({
     CoronaEntity corona,
@@ -25,6 +37,10 @@ class HomeEntity extends Equatable {
     List<NewsFeedEntity> recentNews,
     List<NewsFeedEntity> latestNews,
     List<NewsTopicEntity> newsTopics,
+    List<NewsCategoryEntity> newsCategories,
+    List<NewsSourceEntity> newsSources,
+    HoroscopeEntity horoscope,
+    ForexEntity forexe,
   }) =>
       HomeEntity(
         corona: corona ?? this.corona,
@@ -32,11 +48,24 @@ class HomeEntity extends Equatable {
         recentNews: recentNews ?? this.recentNews,
         latestNews: latestNews ?? this.latestNews,
         newsTopics: newsTopics ?? this.newsTopics,
+        newsCategories: newsCategories ?? this.newsCategories,
+        newsSources: newsTopics ?? this.newsSources,
+        horoscope: horoscope ?? this.horoscope,
+        forexe: forexe ?? this.forexe,
       );
 
   @override
-  List<Object> get props =>
-      [corona, trendingNews, recentNews, latestNews, newsTopics];
+  List<Object> get props => [
+        corona,
+        trendingNews,
+        recentNews,
+        latestNews,
+        newsTopics,
+        newsSources,
+        newsCategories,
+        forexe,
+        horoscope
+      ];
 }
 
 class CoronaEntity {

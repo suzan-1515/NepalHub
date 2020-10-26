@@ -51,6 +51,23 @@ class ForexTimelineBloc extends Bloc<ForexTimelineEvent, ForexTimelineState> {
             message:
                 'Unable to load data. Make sure you are connected to Internet.');
       }
+    } else if (event is RefreshForexTimelineEvent) {
+      try {
+        final List<ForexEntity> forexList = await _getForexTimelineUseCase.call(
+          GetForexTimelineUseCaseParams(
+              language: event.language,
+              currencyId: event.forexUIModel.forexEntity.currency.id,
+              numOfDays: 30),
+        );
+        if (forexList != null && forexList.isNotEmpty) {
+          yield ForexTimelineLoadSuccessState(forexList: forexList.toUIModels);
+        }
+      } catch (e) {
+        log('Forex ($forexUIModel) timeline load error: ', error: e);
+        yield ForexTimelineLoadErrorState(
+            message:
+                'Unable to load data. Make sure you are connected to Internet.');
+      }
     }
   }
 }

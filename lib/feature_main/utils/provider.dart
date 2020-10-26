@@ -37,15 +37,19 @@ class HomeProvider {
     GetIt.I.registerLazySingleton<GetHomeFeedUseCase>(
       () => GetHomeFeedUseCase(GetIt.I.get<HomeRepository>()),
     );
-    GetIt.I.registerFactory<HomeCubit>(
-      () => HomeCubit(getHomeFeedUseCase: GetIt.I.get<GetHomeFeedUseCase>())
-        ..getHomeFeed(),
+    GetIt.I.registerFactoryParam<HomeCubit, String, void>(
+      (param1, param2) =>
+          HomeCubit(getHomeFeedUseCase: GetIt.I.get<GetHomeFeedUseCase>())
+            ..getHomeFeed(defaultForexCurrencyCode: param1),
     );
   }
 
-  static BlocProvider<HomeCubit> homeBlocProvider({@required Widget child}) =>
+  static BlocProvider<HomeCubit> homeBlocProvider(
+          {@required Widget child,
+          @required String defaultForexCurrencyCode}) =>
       BlocProvider<HomeCubit>(
-        create: (context) => GetIt.I.get<HomeCubit>(),
+        create: (context) =>
+            GetIt.I.get<HomeCubit>(param1: defaultForexCurrencyCode),
         child: child,
       );
 }

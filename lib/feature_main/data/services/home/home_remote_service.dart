@@ -11,12 +11,15 @@ class HomeRemoteService with RemoteService {
 
   @override
   Future fetchHomeFeed(
-      {@required Language language, @required String token}) async {
+      {@required Language language,
+      @required String defaultForexCurrencyCode,
+      @required String token}) async {
     Map<String, String> headers = {
       'Authorization': 'Bearer $token',
     };
     Map<String, String> query = {
       'language': language?.value,
+      'forex_currency_code': defaultForexCurrencyCode,
     };
     var call =
         await _httpManager.get(path: HOME, headers: headers, query: query);

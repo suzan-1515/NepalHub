@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:samachar_hub/core/exceptions/app_exceptions.dart';
@@ -25,13 +23,15 @@ class AuthRemoteDataSource with RemoteDataSource {
       {@required String identifier, @required String password}) async {
     var userProfileResponse = await _remoteService.loginWithEmail(
         identifier: identifier, password: password);
-    return UserModel.fromMap(userProfileResponse);
+    userProfileResponse['user']['jwt'] = userProfileResponse['jwt'];
+    return UserModel.fromMap(userProfileResponse['user']);
   }
 
   @override
   Future<UserModel> signup({@required String uid}) async {
     var userProfileResponse = await _remoteService.signup(uid: uid);
-    return UserModel.fromMap(userProfileResponse);
+    userProfileResponse['user']['jwt'] = userProfileResponse['jwt'];
+    return UserModel.fromMap(userProfileResponse['user']);
   }
 
   @override
@@ -44,7 +44,9 @@ class AuthRemoteDataSource with RemoteDataSource {
       );
     else
       userModel = await login(uid: userCredential.user.uid);
-    return userModel;
+    return userModel.copyWith(
+        isNew: userCredential.additionalUserInfo.isNewUser,
+        isAnonymous: userCredential.user.isAnonymous);
   }
 
   @override
@@ -57,7 +59,9 @@ class AuthRemoteDataSource with RemoteDataSource {
       );
     else
       userModel = await login(uid: userCredential.user.uid);
-    return userModel;
+    return userModel.copyWith(
+        isNew: userCredential.additionalUserInfo.isNewUser,
+        isAnonymous: userCredential.user.isAnonymous);
   }
 
   @override
@@ -70,7 +74,9 @@ class AuthRemoteDataSource with RemoteDataSource {
       );
     else
       userModel = await login(uid: userCredential.user.uid);
-    return userModel;
+    return userModel.copyWith(
+        isNew: userCredential.additionalUserInfo.isNewUser,
+        isAnonymous: userCredential.user.isAnonymous);
   }
 
   @override
@@ -89,6 +95,7 @@ class AuthRemoteDataSource with RemoteDataSource {
   @override
   Future<UserModel> login({String uid}) async {
     var userProfileResponse = await _remoteService.login(uid: uid);
-    return UserModel.fromMap(userProfileResponse);
+    userProfileResponse['user']['jwt'] = userProfileResponse['jwt'];
+    return UserModel.fromMap(userProfileResponse['user']);
   }
 }

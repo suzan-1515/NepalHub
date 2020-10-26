@@ -8,6 +8,8 @@ import 'package:samachar_hub/core/usecases/usecase.dart';
 import 'package:samachar_hub/feature_comment/domain/entities/comment_entity.dart';
 import 'package:samachar_hub/feature_comment/domain/entities/thread_type.dart';
 import 'package:samachar_hub/feature_comment/domain/usecases/post_comment_use_case.dart';
+import 'package:samachar_hub/feature_comment/presentation/extensions/comment_entity_extension.dart';
+import 'package:samachar_hub/feature_comment/presentation/models/comment_model.dart';
 
 part 'comment_post_event.dart';
 part 'comment_post_state.dart';
@@ -27,7 +29,7 @@ class CommentPostBloc extends Bloc<CommentPostEvent, CommentPostState> {
         assert(threadId != null && threadId.isNotEmpty,
             'Thread id cannot be null or empty'),
         assert(threadType != null, 'Comment thread type cannot be null'),
-        super(InitialState());
+        super(CommentPostInitialState());
 
   String get threadId => _threadId;
   CommentThreadType get threadType => _threadType;
@@ -36,8 +38,9 @@ class CommentPostBloc extends Bloc<CommentPostEvent, CommentPostState> {
   Stream<CommentPostState> mapEventToState(
     CommentPostEvent event,
   ) async* {
-    if (state is ProgressState) return;
+    if (state is CommentPostProgressState) return;
     if (event is PostCommentEvent) {
+      yield CommentPostProgressState();
       try {
         final CommentEntity commentEntity = await _postCommentUseCase.call(
           PostCommentUseCaseParams(
@@ -46,10 +49,10 @@ class CommentPostBloc extends Bloc<CommentPostEvent, CommentPostState> {
             comment: event.comment,
           ),
         );
-        yield SuccessState(message: 'Comment posted successfully.');
+        yield CommentPostSuccessState(commentUIModel: commentEntity.toUIModel);
       } catch (e) {
         log('Comment post error: ', error: e);
-        yield ErrorState(message: 'Unable to post comment.');
+        yield CommentPostErrorState(message: 'Unable to post comment.');
       }
     }
   }

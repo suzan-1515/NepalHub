@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
-import 'package:samachar_hub/feature_news/domain/models/news_source.dart';
+import 'package:samachar_hub/feature_news/domain/entities/news_source_entity.dart';
 
 class NewsSourceUIModel {
   NewsSourceEntity source;

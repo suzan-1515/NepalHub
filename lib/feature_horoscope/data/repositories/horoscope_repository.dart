@@ -21,8 +21,15 @@ class HoroscopeRepository with Repository {
 
   @override
   Future<HoroscopeEntity> dislike(HoroscopeEntity feed) {
-    // TODO: implement dislike
-    throw UnimplementedError();
+    return _horoscopeRemoteDataSource
+        .dislike(
+      horoscopeId: feed.id,
+      token: _authRepository.getUserToken(),
+    )
+        .then((value) {
+      _analyticsService.logHoroscopeDisLike(horoscopeId: feed.id);
+      return value;
+    });
   }
 
   @override
@@ -40,8 +47,15 @@ class HoroscopeRepository with Repository {
 
   @override
   Future<HoroscopeEntity> undislike(HoroscopeEntity feed) {
-    // TODO: implement undislike
-    throw UnimplementedError();
+    return _horoscopeRemoteDataSource
+        .undislike(
+      horoscopeId: feed.id,
+      token: _authRepository.getUserToken(),
+    )
+        .then((value) {
+      _analyticsService.logHoroscopeUndisLike(horoscopeId: feed.id);
+      return value;
+    });
   }
 
   @override

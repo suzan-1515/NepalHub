@@ -16,12 +16,16 @@ class HomeCubit extends Cubit<HomeState> {
       : _getHomeFeedUseCase = getHomeFeedUseCase,
         super(HomeInitialState());
 
-  getHomeFeed() async {
+  getHomeFeed(
+      {Language language = Language.NEPALI,
+      String defaultForexCurrencyCode}) async {
     if (state is HomeLoadingState) return;
     emit(HomeLoadingState());
     try {
-      final homeEntity = await _getHomeFeedUseCase
-          .call(GetHomeFeedUseCaseParams(language: null));
+      final homeEntity = await _getHomeFeedUseCase.call(
+          GetHomeFeedUseCaseParams(
+              language: language,
+              defaultForexCurrencyCode: defaultForexCurrencyCode));
       if (homeEntity == null) {
         emit(HomeEmptyState(message: 'Data not available.'));
       } else {
@@ -35,11 +39,15 @@ class HomeCubit extends Cubit<HomeState> {
     }
   }
 
-  refreshHomeFeed() async {
+  refreshHomeFeed(
+      {Language language = Language.NEPALI,
+      String defaultForexCurrencyCode = 'USD'}) async {
     if (state is HomeLoadingState) return;
     try {
-      final homeEntity = await _getHomeFeedUseCase
-          .call(GetHomeFeedUseCaseParams(language: null));
+      final homeEntity = await _getHomeFeedUseCase.call(
+          GetHomeFeedUseCaseParams(
+              language: language,
+              defaultForexCurrencyCode: defaultForexCurrencyCode));
       if (homeEntity != null) {
         emit(HomeLoadSuccessState(homeModel: homeEntity.toUIModel));
       } else {

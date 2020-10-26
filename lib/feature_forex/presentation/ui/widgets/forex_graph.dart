@@ -9,27 +9,22 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:samachar_hub/feature_forex/presentation/models/forex_model.dart';
 import 'package:samachar_hub/feature_forex/presentation/ui/widgets/label.dart';
 
-class ForexGraph extends StatefulWidget {
+class ForexGraph extends StatelessWidget {
   final List<ForexUIModel> timeline;
 
   const ForexGraph({
     @required this.timeline,
   }) : assert(timeline != null);
 
-  @override
-  _ForexGraphState createState() => _ForexGraphState();
-}
-
-class _ForexGraphState extends State<ForexGraph> {
   String _getXTitle(double value) {
     int index = value.toInt();
     DateFormat formatter = DateFormat('MMMd');
-    return formatter.format(widget.timeline[index].forexEntity.publishedAt);
+    return formatter.format(timeline[index].forexEntity.publishedAt);
   }
 
   String _getYTitle(double value) {
     int index = value.toInt();
-    var data = widget.timeline[index];
+    var data = timeline[index];
     return '${(data.forexEntity.buying + data.forexEntity.selling) / 2}';
   }
 
@@ -46,7 +41,7 @@ class _ForexGraphState extends State<ForexGraph> {
         children: <Widget>[
           Flexible(
             child: Text(
-              widget.timeline?.first?.forexEntity?.currency?.title ?? 'Forex',
+              timeline?.first?.forexEntity?.currency?.title ?? 'Forex',
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
               style: Theme.of(context).textTheme.subtitle1,
@@ -54,13 +49,14 @@ class _ForexGraphState extends State<ForexGraph> {
           ),
           const SizedBox(height: 8.0),
           Text(
-            'Last Updated: ${_formatLastUpdatedDate(widget.timeline?.last?.forexEntity?.publishedAt) ?? DateFormat('dd MMM, yyyy').format(DateTime.now())}',
+            'Last Updated: ${_formatLastUpdatedDate(timeline?.last?.forexEntity?.publishedAt) ?? DateFormat('dd MMM, yyyy').format(DateTime.now())}',
             style: Theme.of(context).textTheme.caption,
           ),
           const SizedBox(height: 20.0),
           Padding(
             padding: const EdgeInsets.only(right: 8.0),
-            child: SizedBox(width: double.infinity, child: _buildGraph()),
+            child:
+                SizedBox(width: double.infinity, child: _buildGraph(context)),
           ),
           _buildLabelRow(),
           const SizedBox(height: 20.0),
@@ -81,22 +77,17 @@ class _ForexGraphState extends State<ForexGraph> {
     );
   }
 
-  LineChart _buildGraph() {
+  LineChart _buildGraph(BuildContext context) {
     final double labelSize = 40.0;
-    final double maxX = (widget.timeline.length.toDouble() - 1.0).toDouble();
-    final double maxY = widget.timeline
-        .map((e) => e.forexEntity.selling)
-        .reduce(math.max)
-        .toDouble();
-    final double minY = widget.timeline
-        .map((e) => e.forexEntity.buying)
-        .reduce(math.min)
-        .toDouble();
+    final double maxX = (timeline.length.toDouble() - 1.0).toDouble();
+    final double maxY =
+        timeline.map((e) => e.forexEntity.selling).reduce(math.max).toDouble();
+    final double minY =
+        timeline.map((e) => e.forexEntity.buying).reduce(math.min).toDouble();
     final double verticalInterval = (maxX ~/ 4).toDouble();
     final double horizontalInterval = ((maxY - minY) / 4.0);
-    final List<double> xValues = widget.timeline
-        .map((data) => widget.timeline.indexOf(data).toDouble())
-        .toList();
+    final List<double> xValues =
+        timeline.map((data) => timeline.indexOf(data).toDouble()).toList();
 
     return LineChart(
       LineChartData(
@@ -164,15 +155,12 @@ class _ForexGraphState extends State<ForexGraph> {
         lineBarsData: [
           _buildLineData(
             xValues: xValues,
-            yValues:
-                widget.timeline.map((data) => data.forexEntity.buying).toList(),
+            yValues: timeline.map((data) => data.forexEntity.buying).toList(),
             color: Colors.green,
           ),
           _buildLineData(
             xValues: xValues,
-            yValues: widget.timeline
-                .map((data) => data.forexEntity.selling)
-                .toList(),
+            yValues: timeline.map((data) => data.forexEntity.selling).toList(),
             color: Colors.red,
           ),
         ],

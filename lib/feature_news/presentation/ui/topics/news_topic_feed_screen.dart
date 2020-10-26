@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_advanced_networkimage/provider.dart';
-import 'package:samachar_hub/feature_news/domain/models/news_topic.dart';
+import 'package:samachar_hub/feature_news/domain/entities/news_topic_entity.dart';
 import 'package:samachar_hub/feature_news/presentation/blocs/news_topic/topic_feeds/news_topic_feed_bloc.dart';
 import 'package:samachar_hub/feature_news/presentation/blocs/news_topic/follow_unfollow/follow_un_follow_bloc.dart';
 import 'package:samachar_hub/feature_news/presentation/models/news_topic.dart';

@@ -4,10 +4,10 @@ import 'package:samachar_hub/feature_news/data/models/news_category_model.dart';
 import 'package:samachar_hub/feature_news/data/models/news_feed_model.dart';
 import 'package:samachar_hub/feature_news/data/models/news_source_model.dart';
 import 'package:samachar_hub/feature_news/data/models/news_topic_model.dart';
-import 'package:samachar_hub/feature_news/domain/models/news_category.dart';
-import 'package:samachar_hub/feature_news/domain/models/news_feed.dart';
-import 'package:samachar_hub/feature_news/domain/models/news_source.dart';
-import 'package:samachar_hub/feature_news/domain/models/sort.dart';
+import 'package:samachar_hub/feature_news/domain/entities/news_category_entity.dart';
+import 'package:samachar_hub/feature_news/domain/entities/news_feed_entity.dart';
+import 'package:samachar_hub/feature_news/domain/entities/news_source_entity.dart';
+import 'package:samachar_hub/feature_news/domain/entities/sort.dart';
 
 mixin RemoteDataSource {
   Future<List<NewsFeedModel>> fetchLatestNews(

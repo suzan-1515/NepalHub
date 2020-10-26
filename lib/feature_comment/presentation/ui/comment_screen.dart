@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:samachar_hub/feature_comment/domain/entities/thread_type.dart';
-import 'package:samachar_hub/feature_comment/presentation/blocs/comment_bloc.dart';
 import 'package:samachar_hub/feature_comment/presentation/ui/widgets/comment_input_bar.dart';
 import 'package:samachar_hub/feature_comment/presentation/ui/widgets/comment_list.dart';
 import 'package:samachar_hub/feature_comment/presentation/ui/widgets/header.dart';
 import 'package:samachar_hub/feature_comment/presentation/ui/widgets/like_comment_stats.dart';
 import 'package:samachar_hub/feature_comment/utils/providers.dart';
+import 'package:samachar_hub/feature_stats/presentation/blocs/thread_stats_cubit.dart';
 
 class CommentScreen extends StatelessWidget {
   final String threadId;
@@ -32,9 +32,21 @@ class CommentScreen extends StatelessWidget {
             ),
           ),
           SliverToBoxAdapter(
-            child: LikeAndCommentStats(
-              likeCount: 0,
-              commentCount: 0,
+            child: BlocBuilder<ThreadStatsCubit, ThreadStatsState>(
+              builder: (context, state) {
+                if (state is ThreadStatsLoadSuccess) {
+                  return LikeAndCommentStats(
+                    likeCount:
+                        state.threadStatsUIModel.threadStatsEntity.likeCount,
+                    commentCount:
+                        state.threadStatsUIModel.threadStatsEntity.commentCount,
+                  );
+                }
+                return LikeAndCommentStats(
+                  likeCount: 0,
+                  commentCount: 0,
+                );
+              },
             ),
           ),
         ],

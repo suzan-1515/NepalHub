@@ -19,8 +19,15 @@ class ForexRepository with Repository {
 
   @override
   Future<ForexEntity> dislike(ForexEntity feed) {
-    // TODO: implement dislike
-    throw UnimplementedError();
+    return _forexRemoteDataSource
+        .dislike(
+      forexId: feed.id,
+      token: _authRepository.getUserToken(),
+    )
+        .then((value) {
+      _analyticsService.logForexDisLike(forexId: feed.id);
+      return value;
+    });
   }
 
   @override
@@ -80,8 +87,15 @@ class ForexRepository with Repository {
 
   @override
   Future<ForexEntity> undislike(ForexEntity feed) {
-    // TODO: implement undislike
-    throw UnimplementedError();
+    return _forexRemoteDataSource
+        .undislike(
+      forexId: feed.id,
+      token: _authRepository.getUserToken(),
+    )
+        .then((value) {
+      _analyticsService.logForexUndisLike(forexId: feed.id);
+      return value;
+    });
   }
 
   @override

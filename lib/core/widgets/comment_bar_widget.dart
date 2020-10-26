@@ -81,13 +81,19 @@ class CommentBar extends StatelessWidget {
             badgeText: likeCount,
             onTap: onLikeTap,
           ),
-          IconButton(
-            icon: Icon(
-              FontAwesomeIcons.shareAlt,
-              size: 16,
-            ),
-            onPressed: onShareTap,
-          ),
+          (shareCount != null)
+              ? IconBadge(
+                  iconData: FontAwesomeIcons.shareAlt,
+                  badgeText: shareCount,
+                  onTap: onShareTap,
+                )
+              : IconButton(
+                  icon: Icon(
+                    FontAwesomeIcons.shareAlt,
+                    size: 16,
+                  ),
+                  onPressed: onShareTap,
+                ),
         ],
       ),
     );

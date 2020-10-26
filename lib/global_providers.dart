@@ -1,4 +1,5 @@
 import 'package:data_connection_checker/data_connection_checker.dart';
+import 'package:event_bus/event_bus.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get_it/get_it.dart';
 import 'package:samachar_hub/core/handlers/notification_handler.dart';
@@ -12,11 +13,14 @@ import 'package:samachar_hub/feature_forex/utils/provider.dart';
 import 'package:samachar_hub/feature_horoscope/utils/provider.dart';
 import 'package:samachar_hub/feature_main/utils/provider.dart';
 import 'package:samachar_hub/feature_news/utils/provider.dart';
+import 'package:samachar_hub/feature_report/utils/provider.dart';
+import 'package:samachar_hub/feature_stats/utils/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class GlobalProvider {
   GlobalProvider._();
   static setup(SharedPreferences sharedPreferences) {
+    GetIt.I.registerSingleton<EventBus>(EventBus());
     GetIt.I.registerLazySingleton<SharedPreferences>(
       () => sharedPreferences,
     );
@@ -67,5 +71,7 @@ class GlobalProvider {
     NewsProvider.setup();
     HomeProvider.setup();
     SettingsProvider.setup();
+    ReportProvider.setup();
+    ThreadStatsProvider.setup();
   }
 }

@@ -2,7 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:samachar_hub/core/utils/date_time_utils.dart';
-import 'package:samachar_hub/feature_news/domain/models/news_feed.dart';
+import 'package:samachar_hub/feature_news/domain/entities/news_feed_entity.dart';
 import 'package:samachar_hub/feature_news/presentation/models/news_category.dart';
 import 'package:samachar_hub/feature_news/presentation/models/news_source.dart';
 import 'package:samachar_hub/feature_news/presentation/models/news_topic.dart';

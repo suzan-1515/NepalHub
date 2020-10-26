@@ -15,3 +15,14 @@ class GetForexTimelineEvent extends ForexTimelineEvent {
   @override
   List<Object> get props => [language];
 }
+
+class RefreshForexTimelineEvent extends ForexTimelineEvent {
+  final Language language;
+  final ForexUIModel forexUIModel;
+
+  RefreshForexTimelineEvent(
+      {this.language = Language.ENGLISH, this.forexUIModel});
+
+  @override
+  List<Object> get props => [language, forexUIModel];
+}

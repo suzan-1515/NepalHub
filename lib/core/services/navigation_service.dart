@@ -8,10 +8,10 @@ import 'package:samachar_hub/feature_horoscope/domain/entities/horoscope_entity.
 import 'package:samachar_hub/feature_main/presentation/blocs/settings/settings_cubit.dart';
 import 'package:samachar_hub/feature_main/presentation/ui/main/main_screen.dart';
 import 'package:samachar_hub/feature_main/presentation/ui/settings/settings_page.dart';
-import 'package:samachar_hub/feature_news/domain/models/news_category.dart';
-import 'package:samachar_hub/feature_news/domain/models/news_feed.dart';
-import 'package:samachar_hub/feature_news/domain/models/news_source.dart';
-import 'package:samachar_hub/feature_news/domain/models/news_topic.dart';
+import 'package:samachar_hub/feature_news/domain/entities/news_category_entity.dart';
+import 'package:samachar_hub/feature_news/domain/entities/news_feed_entity.dart';
+import 'package:samachar_hub/feature_news/domain/entities/news_source_entity.dart';
+import 'package:samachar_hub/feature_news/domain/entities/news_topic_entity.dart';
 import 'package:samachar_hub/feature_news/presentation/ui/bookmark/bookmark_page.dart';
 import 'package:samachar_hub/feature_news/presentation/ui/category/categories/news_categories_screen.dart';
 import 'package:samachar_hub/feature_news/presentation/ui/category/category_feed/news_category_feed_screen.dart';

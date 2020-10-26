@@ -11,9 +11,13 @@ class HomeRemoteDataSource with RemoteDataSource {
 
   @override
   Future<HomeModel> fetchHomeFeed(
-      {@required Language language, @required String token}) async {
-    var response =
-        await _remoteService.fetchHomeFeed(language: language, token: token);
+      {@required Language language,
+      String defaultForexCurrencyCode,
+      @required String token}) async {
+    var response = await _remoteService.fetchHomeFeed(
+        language: language,
+        defaultForexCurrencyCode: defaultForexCurrencyCode,
+        token: token);
     var feed = HomeModel.fromMap(response);
     return feed;
   }

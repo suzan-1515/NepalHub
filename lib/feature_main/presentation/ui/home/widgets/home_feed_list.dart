@@ -8,6 +8,7 @@ import 'package:samachar_hub/core/widgets/progress_widget.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:samachar_hub/core/extensions/view.dart';
 import 'package:samachar_hub/feature_main/presentation/blocs/main/main_cubit.dart';
+import 'package:samachar_hub/feature_main/presentation/blocs/settings/settings_cubit.dart';
 import 'package:samachar_hub/feature_main/presentation/ui/home/widgets/home_list_builder.dart';
 
 class HomeFeedList extends StatefulWidget {
@@ -47,7 +48,9 @@ class _HomeFeedListState extends State<HomeFeedList> {
   }
 
   Future<void> _onRefresh() {
-    _homeCubit.refreshHomeFeed();
+    _homeCubit.refreshHomeFeed(
+        defaultForexCurrencyCode:
+            context.bloc<SettingsCubit>().settings.defaultForexCurrency);
     return _refreshCompleter.future;
   }
 
@@ -94,7 +97,11 @@ class _HomeFeedListState extends State<HomeFeedList> {
             } else if (state is HomeLoadErrorState) {
               return Center(
                 child: ErrorDataView(
-                  onRetry: () => _homeCubit.getHomeFeed(),
+                  onRetry: () => _homeCubit.getHomeFeed(
+                      defaultForexCurrencyCode: context
+                          .bloc<SettingsCubit>()
+                          .settings
+                          .defaultForexCurrency),
                 ),
               );
             }

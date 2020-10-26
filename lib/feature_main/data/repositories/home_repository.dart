@@ -14,9 +14,11 @@ class HomeRepository with Repository {
   HomeRepository(
       this._remoteDataSource, this._analyticsService, this._authRepository);
   @override
-  Future<HomeEntity> getHomeFeed({@required Language language}) {
+  Future<HomeEntity> getHomeFeed(
+      {@required Language language, String defaultForexCurrencyCode}) {
     return _remoteDataSource.fetchHomeFeed(
       language: language,
+      defaultForexCurrencyCode: defaultForexCurrencyCode,
       token: _authRepository.getUserToken(),
     );
   }

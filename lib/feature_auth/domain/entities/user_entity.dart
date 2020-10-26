@@ -10,9 +10,10 @@ class UserEntity extends Equatable {
   final String token;
   final String avatar;
   final bool isAnonymous;
-  final bool isBlocked;
+  final bool blocked;
+  final bool confirmed;
+  final bool isNew;
   final String method;
-  final bool isNewUser;
   final DateTime createdAt;
   final DateTime updatedAt;
   UserEntity({
@@ -23,8 +24,9 @@ class UserEntity extends Equatable {
     @required this.token,
     @required this.avatar,
     @required this.isAnonymous,
-    @required this.isBlocked,
-    @required this.isNewUser,
+    @required this.blocked,
+    @required this.confirmed,
+    @required this.isNew,
     @required this.method,
     @required this.createdAt,
     @required this.updatedAt,
@@ -40,8 +42,9 @@ class UserEntity extends Equatable {
       token,
       avatar,
       isAnonymous,
-      isBlocked,
-      isNewUser,
+      blocked,
+      confirmed,
+      isNew,
       method,
       createdAt,
       updatedAt,
@@ -56,8 +59,9 @@ class UserEntity extends Equatable {
     String token,
     String avatar,
     bool isAnonymous,
-    bool isBlocked,
-    bool isNewUser,
+    bool blocked,
+    bool confirmed,
+    bool isNew,
     String method,
     DateTime createdAt,
     DateTime updatedAt,
@@ -70,8 +74,9 @@ class UserEntity extends Equatable {
       token: token ?? this.token,
       avatar: avatar ?? this.avatar,
       isAnonymous: isAnonymous ?? this.isAnonymous,
-      isBlocked: isBlocked ?? this.isBlocked,
-      isNewUser: isNewUser ?? this.isNewUser,
+      blocked: blocked ?? this.blocked,
+      confirmed: confirmed ?? this.confirmed,
+      isNew: isNew ?? this.isNew,
       method: method ?? this.method,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,

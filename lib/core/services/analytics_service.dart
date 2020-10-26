@@ -225,6 +225,16 @@ class AnalyticsService {
     return _analytics.logEvent(name: 'forex_like', parameters: {'id': forexId});
   }
 
+  Future logForexDisLike({@required String forexId}) {
+    return _analytics
+        .logEvent(name: 'forex_dislike', parameters: {'id': forexId});
+  }
+
+  Future logForexUndisLike({@required String forexId}) {
+    return _analytics
+        .logEvent(name: 'forex_undislike', parameters: {'id': forexId});
+  }
+
   Future logDefaultForexCurrency({@required String currencyId}) {
     return _analytics.logEvent(
         name: 'default_forex_currency',
@@ -247,6 +257,16 @@ class AnalyticsService {
         .logEvent(name: 'horoscope_like', parameters: {'id': horoscopeId});
   }
 
+  Future logHoroscopeDisLike({@required String horoscopeId}) {
+    return _analytics
+        .logEvent(name: 'horoscope_dislike', parameters: {'id': horoscopeId});
+  }
+
+  Future logHoroscopeUndisLike({@required String horoscopeId}) {
+    return _analytics
+        .logEvent(name: 'horoscope_undislike', parameters: {'id': horoscopeId});
+  }
+
   Future logDefaultHoroscopeSign({@required int signIndex}) {
     return _analytics.logEvent(
         name: 'default_horoscope_sign', parameters: {'sign_index': signIndex});
@@ -255,5 +275,10 @@ class AnalyticsService {
   Future logHoroscopeShare({@required String horoscopeId}) {
     return _analytics
         .logEvent(name: 'horoscope_share', parameters: {'id': horoscopeId});
+  }
+
+  Future logReportPost({@required String reportId}) {
+    return _analytics
+        .logEvent(name: 'report_post', parameters: {'id': reportId});
   }
 }

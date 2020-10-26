@@ -5,11 +5,11 @@ import 'package:samachar_hub/core/network/network_info.dart';
 import 'package:samachar_hub/core/services/services.dart';
 import 'package:samachar_hub/feature_auth/data/repositories/auth_repository.dart';
 import 'package:samachar_hub/feature_news/data/datasource/remote/remote_data_source.dart';
-import 'package:samachar_hub/feature_news/domain/models/news_category.dart';
-import 'package:samachar_hub/feature_news/domain/models/news_feed.dart';
-import 'package:samachar_hub/feature_news/domain/models/news_source.dart';
-import 'package:samachar_hub/feature_news/domain/models/news_topic.dart';
-import 'package:samachar_hub/feature_news/domain/models/sort.dart';
+import 'package:samachar_hub/feature_news/domain/entities/news_category_entity.dart';
+import 'package:samachar_hub/feature_news/domain/entities/news_feed_entity.dart';
+import 'package:samachar_hub/feature_news/domain/entities/news_source_entity.dart';
+import 'package:samachar_hub/feature_news/domain/entities/news_topic_entity.dart';
+import 'package:samachar_hub/feature_news/domain/entities/sort.dart';
 import 'package:samachar_hub/feature_news/domain/repository/repository.dart';
 
 class NewsRepository implements Repository {
@@ -70,7 +70,7 @@ class NewsRepository implements Repository {
       Language language}) async {
     if (!(await _networkInfo.isConnected)) throw NetworkException();
     return _remoteDataSource.fetchNewsByTopic(
-      topicId: topic.id,
+      topicId: topic.title,
       sourceId: source?.id,
       sortBy: sortBy,
       page: page,
@@ -285,7 +285,7 @@ class NewsRepository implements Repository {
   Future<List<NewsFeedEntity>> getRelatedNews(NewsFeedEntity parentFeed) async {
     if (!(await _networkInfo.isConnected)) throw NetworkException();
     return _remoteDataSource.fetchRelatedNews(
-      feedId: parentFeed.id,
+      feedId: parentFeed.uuid,
       token: _authRepository.getUserToken(),
     );
   }

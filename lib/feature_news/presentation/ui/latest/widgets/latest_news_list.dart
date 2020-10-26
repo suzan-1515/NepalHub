@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:samachar_hub/feature_news/domain/models/news_type.dart';
+import 'package:samachar_hub/feature_news/domain/entities/news_type.dart';
 import 'package:samachar_hub/feature_news/presentation/blocs/feed_bloc/feed_bloc.dart';
 import 'package:samachar_hub/feature_news/presentation/ui/widgets/news_list_builder_widget.dart';
 import 'package:samachar_hub/core/widgets/empty_data_widget.dart';

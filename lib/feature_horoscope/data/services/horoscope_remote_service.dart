@@ -5,6 +5,7 @@ import 'package:samachar_hub/feature_horoscope/data/services/remote_service.dart
 
 class HoroscopeRemoteService with RemoteService {
   static const LIKE = '/horoscopes/like';
+  static const DISLIKE = '/horoscopes/dislike';
   static const SHARE = '/horoscopes/share';
   static const VIEW = '/horoscopes/view';
   static const TODAY = '/horoscopes/today';
@@ -38,9 +39,15 @@ class HoroscopeRemoteService with RemoteService {
   }
 
   @override
-  Future undislike({@required String horoscopeId, @required String token}) {
-    // TODO: implement undislike
-    throw UnimplementedError();
+  Future undislike(
+      {@required String horoscopeId, @required String token}) async {
+    Map<String, String> headers = {
+      'Authorization': 'Bearer $token',
+    };
+    var path = '$DISLIKE/$horoscopeId';
+    var call = await _httpManager.delete(url: path, headers: headers);
+
+    return call;
   }
 
   @override
@@ -114,8 +121,13 @@ class HoroscopeRemoteService with RemoteService {
   }
 
   @override
-  Future dislike({String horoscopeId, String token}) {
-    // TODO: implement dislike
-    throw UnimplementedError();
+  Future dislike({String horoscopeId, String token}) async {
+    Map<String, String> headers = {
+      'Authorization': 'Bearer $token',
+    };
+    var path = '$DISLIKE/$horoscopeId';
+    var call = await _httpManager.post(path: path, headers: headers);
+
+    return call;
   }
 }

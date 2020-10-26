@@ -1,21 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get_it/get_it.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:samachar_hub/core/models/language.dart';
 import 'package:samachar_hub/core/services/services.dart';
 import 'package:samachar_hub/feature_forex/presentation/models/forex_model.dart';
 import 'package:samachar_hub/feature_horoscope/presentation/models/horoscope_model.dart';
 import 'package:samachar_hub/feature_horoscope/presentation/extensions/horoscope_extensions.dart';
+import 'package:samachar_hub/feature_main/presentation/blocs/settings/settings_cubit.dart';
 
 class OtherMenuSection extends StatelessWidget {
   final ForexUIModel forexData;
   final HoroscopeUIModel horoscopeData;
-  final int defaultHoroscopeSignIndex;
   const OtherMenuSection({
     Key key,
     this.forexData,
     this.horoscopeData,
-    this.defaultHoroscopeSignIndex,
   }) : super(key: key);
 
   Widget _buildForexMenu(BuildContext context) {
@@ -77,6 +77,7 @@ class OtherMenuSection extends StatelessWidget {
   }
 
   Widget _buildHoroscopeMenu(BuildContext context) {
+    final settingsCubit = context.bloc<SettingsCubit>();
     return Card(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.all(Radius.circular(6)),
@@ -111,7 +112,7 @@ class OtherMenuSection extends StatelessWidget {
                         children: <TextSpan>[
                           TextSpan(
                               text:
-                                  '\n${horoscopeData.horoscopeEntity.signByIndex(defaultHoroscopeSignIndex, Language.NEPALI)}',
+                                  '\n${horoscopeData.horoscopeEntity.signByIndex(settingsCubit.settings.defaultHoroscopeSign ?? 0, Language.NEPALI)}',
                               style: Theme.of(context)
                                   .textTheme
                                   .subtitle2

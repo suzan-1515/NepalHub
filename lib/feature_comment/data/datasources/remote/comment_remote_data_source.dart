@@ -44,8 +44,14 @@ class CommentRemoteDataSource with RemoteDataSource {
       {@required String threadId,
       @required String threadType,
       @required String comment,
-      @required String token}) {
-    throw UnimplementedError();
+      @required String token}) async {
+    var response = await _remoteService.postComment(
+        threadId: threadId,
+        threadType: threadType,
+        comment: comment,
+        token: token);
+
+    return CommentModel.fromMap(response);
   }
 
   @override

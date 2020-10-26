@@ -19,14 +19,14 @@ class LikeAndCommentStats extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
           Text(
-            '$commentCount Comments',
+            '${commentCount ?? 0} Comments',
             style: Theme.of(context).textTheme.bodyText2,
           ),
           SizedBox(
             width: 8,
           ),
           Text(
-            '$likeCount Likes',
+            '${likeCount ?? 0} Likes',
             style: Theme.of(context).textTheme.bodyText2,
           ),
         ],

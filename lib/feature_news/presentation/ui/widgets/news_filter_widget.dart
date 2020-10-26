@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:samachar_hub/core/widgets/sortby_selector.dart';
-import 'package:samachar_hub/feature_news/domain/models/sort.dart';
+import 'package:samachar_hub/feature_news/domain/entities/sort.dart';
 import 'package:samachar_hub/feature_news/presentation/blocs/news_filter/news_filter_bloc.dart';
 import 'package:samachar_hub/feature_news/presentation/models/news_source.dart';
 import 'package:samachar_hub/feature_news/presentation/ui/widgets/news_sources_selector.dart';

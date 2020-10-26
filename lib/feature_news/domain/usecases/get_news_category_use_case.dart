@@ -3,7 +3,7 @@ import 'dart:developer';
 import 'package:equatable/equatable.dart';
 import 'package:samachar_hub/core/models/language.dart';
 import 'package:samachar_hub/core/usecases/usecase.dart';
-import 'package:samachar_hub/feature_news/domain/models/news_category.dart';
+import 'package:samachar_hub/feature_news/domain/entities/news_category_entity.dart';
 import 'package:samachar_hub/feature_news/domain/repository/repository.dart';
 
 class GetNewsCategoriesUseCase

@@ -1,8 +1,8 @@
 import 'package:samachar_hub/core/models/language.dart';
 import 'package:samachar_hub/core/network/http_manager/http_manager.dart';
 import 'package:samachar_hub/feature_news/data/service/remote_service.dart';
-import 'package:samachar_hub/feature_news/domain/models/news_source.dart';
-import 'package:samachar_hub/feature_news/domain/models/sort.dart';
+import 'package:samachar_hub/feature_news/domain/entities/news_source_entity.dart';
+import 'package:samachar_hub/feature_news/domain/entities/sort.dart';
 import 'package:samachar_hub/core/extensions/api_paging.dart';
 
 class NewsRemoteService implements RemoteService {
@@ -10,7 +10,7 @@ class NewsRemoteService implements RemoteService {
   static const String NEWS_CATEGORY = '/news-categories';
   static const String NEWS_SOURCE = '/news-sources';
   static const String NEWS_TOPIC = '/news-topics';
-  static const String NEWS_BOOKMARK = NEWS + '/bookmark';
+  static const String NEWS_BOOKMARK = NEWS + '/bookmarks';
   static const String NEWS_CATEGORY_FOLLOW = NEWS_CATEGORY + '/follow';
   static const String NEWS_SOURCE_FOLLOW = NEWS_SOURCE + '/follow';
   static const String NEWS_TOPIC_FOLLOW = NEWS_TOPIC + '/follow';
@@ -132,7 +132,10 @@ class NewsRemoteService implements RemoteService {
   @override
   Future fetchTopics(
       {Language language = Language.NEPALI, String token}) async {
-    final Map<String, dynamic> queryParams = {'language': language.value};
+    final Map<String, dynamic> queryParams = {
+      '_sort': 'updated_at:DESC',
+      'language': language.value
+    };
     Map<String, String> headers = {
       'Authorization': 'Bearer $token',
     };
@@ -154,7 +157,7 @@ class NewsRemoteService implements RemoteService {
       'Authorization': 'Bearer $token',
     };
     final Map<String, dynamic> queryParams = {
-      'topics.id': topicId,
+      '_q': topicId,
       'source': sourceId,
       '_start': page.start.toString(),
       '_limit': page.limit.toString(),
@@ -375,5 +378,20 @@ class NewsRemoteService implements RemoteService {
     var call = httpManager.get(path: path, headers: headers);
 
     return call;
+  }
+
+  @override
+  Future fetchBookmarkedNews({int page, String token}) {
+    Map<String, String> headers = {
+      'Authorization': 'Bearer $token',
+    };
+    final Map<String, dynamic> queryParams = {
+      '_start': page.start.toString(),
+      '_limit': page.limit.toString(),
+    };
+    var latestNewsCall = httpManager.get(
+        path: NEWS_BOOKMARK, query: queryParams, headers: headers);
+
+    return latestNewsCall;
   }
 }

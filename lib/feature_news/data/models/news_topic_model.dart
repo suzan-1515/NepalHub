@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:meta/meta.dart';
 import 'package:samachar_hub/core/models/language.dart';
 import 'package:samachar_hub/feature_news/data/models/news_category_model.dart';
-import 'package:samachar_hub/feature_news/domain/models/news_topic.dart';
+import 'package:samachar_hub/feature_news/domain/entities/news_topic_entity.dart';
 
 class NewsTopicModel extends NewsTopicEntity {
   NewsTopicModel({

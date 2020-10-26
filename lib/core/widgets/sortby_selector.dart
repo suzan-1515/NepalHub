@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:samachar_hub/feature_news/domain/models/sort.dart';
+import 'package:samachar_hub/feature_news/domain/entities/sort.dart';
 
 class SortBySelector extends StatelessWidget {
   const SortBySelector({

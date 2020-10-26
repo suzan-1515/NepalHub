@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:meta/meta.dart';
 import 'package:samachar_hub/core/models/language.dart';
-import 'package:samachar_hub/feature_news/domain/models/news_source.dart';
+import 'package:samachar_hub/feature_news/domain/entities/news_source_entity.dart';
 
 class NewsSourceModel extends NewsSourceEntity {
   NewsSourceModel({

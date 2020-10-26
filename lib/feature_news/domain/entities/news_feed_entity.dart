@@ -2,10 +2,10 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:samachar_hub/core/models/language.dart';
-import 'package:samachar_hub/feature_news/domain/models/news_category.dart';
-import 'package:samachar_hub/feature_news/domain/models/news_source.dart';
-import 'package:samachar_hub/feature_news/domain/models/news_topic.dart';
-import 'package:samachar_hub/feature_news/domain/models/news_type.dart';
+import 'package:samachar_hub/feature_news/domain/entities/news_category_entity.dart';
+import 'package:samachar_hub/feature_news/domain/entities/news_source_entity.dart';
+import 'package:samachar_hub/feature_news/domain/entities/news_topic_entity.dart';
+import 'package:samachar_hub/feature_news/domain/entities/news_type.dart';
 import 'package:validators/validators.dart' as Validator;
 
 class NewsFeedEntity extends Equatable {

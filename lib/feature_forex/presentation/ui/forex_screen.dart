@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
@@ -19,17 +21,33 @@ class ForexScreen extends StatelessWidget {
         if (state is ForexLoadSuccessState) {
           return ForexProvider.forexTimelineBlocProvider(
             forexUIModel: state.defaultForex,
-            child: BlocBuilder<ForexTimelineBloc, ForexTimelineState>(
-              builder: (context, state) {
-                if (state is ForexTimelineLoadSuccessState) {
-                  return ForexGraph(
-                    timeline: state.forexList,
-                  );
-                } else if (state is ForexTimeLineLoadingState) {
-                  return Center(child: ProgressView());
+            child: BlocListener<SettingsCubit, SettingsState>(
+              listenWhen: (previous, current) =>
+                  current is SettingsDefaultForexCurrencyChangedState,
+              listener: (context, state1) {
+                if (state1 is SettingsDefaultForexCurrencyChangedState) {
+                  var forex = state.forexList.firstWhere(
+                      (element) =>
+                          element.forexEntity.currency.code == state1.value,
+                      orElse: () => state.defaultForex);
+                  context
+                      .bloc<ForexTimelineBloc>()
+                      .add(RefreshForexTimelineEvent(forexUIModel: forex));
                 }
-                return SizedBox.shrink();
               },
+              child: BlocBuilder<ForexTimelineBloc, ForexTimelineState>(
+                builder: (context, state1) {
+                  if (state1 is ForexTimelineLoadSuccessState) {
+                    log('forex: ${state1.forexList.first.forexEntity.currency.code}');
+                    return ForexGraph(
+                      timeline: state1.forexList,
+                    );
+                  } else if (state1 is ForexTimeLineLoadingState) {
+                    return Center(child: ProgressView());
+                  }
+                  return SizedBox.shrink();
+                },
+              ),
             ),
           );
         }
@@ -58,34 +76,23 @@ class ForexScreen extends StatelessWidget {
     final settingsCubit = context.bloc<SettingsCubit>();
     return ForexProvider.forexBlocProvider(
       defaultCurrencyCode: settingsCubit.settings.defaultForexCurrency,
-      child: BlocListener<SettingsCubit, SettingsState>(
-        listenWhen: (previous, current) =>
-            current is SettingsDefaultForexCurrencyChangedState,
-        listener: (context, state) {
-          if (state is SettingsDefaultForexCurrencyChangedState) {
-            context
-                .bloc<ForexBloc>()
-                .add(RefreshLatestForexEvent(defaultCurrencyCode: state.value));
-          }
-        },
-        child: Scaffold(
-          backgroundColor: Theme.of(context).backgroundColor,
-          appBar: AppBar(
-            title: Text('Forex'),
-            actions: <Widget>[
-              IconButton(
-                icon: Icon(Icons.settings),
-                onPressed: () {
-                  GetIt.I
-                      .get<NavigationService>()
-                      .toSettingsScreen(context: context);
-                },
-              ),
-            ],
-          ),
-          body: SafeArea(
-            child: _buildContent(context),
-          ),
+      child: Scaffold(
+        backgroundColor: Theme.of(context).backgroundColor,
+        appBar: AppBar(
+          title: Text('Forex'),
+          actions: <Widget>[
+            IconButton(
+              icon: Icon(Icons.settings),
+              onPressed: () {
+                GetIt.I
+                    .get<NavigationService>()
+                    .toSettingsScreen(context: context);
+              },
+            ),
+          ],
+        ),
+        body: SafeArea(
+          child: _buildContent(context),
         ),
       ),
     );

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:samachar_hub/feature_news/presentation/models/news_feed.dart';
-import 'package:samachar_hub/feature_news/presentation/ui/widgets/report_article.dart';
+import 'package:samachar_hub/feature_report/domain/entities/report_thread_type.dart';
+import 'package:samachar_hub/feature_report/presentation/ui/report.dart';
 import 'package:samachar_hub/core/extensions/view.dart';
 
 class Disclaimer extends StatelessWidget {
@@ -26,9 +27,9 @@ class Disclaimer extends StatelessWidget {
               FlatButton(
                 visualDensity: VisualDensity.compact,
                 onPressed: () => context.showBottomSheet(
-                  child: ReportArticle(
-                    articleId: feedUIModel.feedEntity.id,
-                    articleType: 'news_feed',
+                  child: Report(
+                    threadId: feedUIModel.feedEntity.id,
+                    threadType: ReportThreadType.NEWS_FEED,
                   ),
                 ),
                 child: Row(

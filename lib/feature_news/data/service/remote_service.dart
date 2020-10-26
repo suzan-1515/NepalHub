@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:samachar_hub/core/models/language.dart';
-import 'package:samachar_hub/feature_news/domain/models/sort.dart';
+import 'package:samachar_hub/feature_news/domain/entities/sort.dart';
 
 mixin RemoteService {
   Future<dynamic> fetchLatestNews(
@@ -51,6 +51,8 @@ mixin RemoteService {
       @required int page,
       @required Language language,
       @required String token});
+  Future<dynamic> fetchBookmarkedNews(
+      {@required int page, @required String token});
 
   Future<dynamic> fetchNewsDetail(
       {@required String feedId, @required String token});

@@ -15,6 +15,9 @@ class ForexTimelineLoadSuccessState extends ForexTimelineState {
   final List<ForexUIModel> forexList;
 
   ForexTimelineLoadSuccessState({@required this.forexList});
+
+  @override
+  List<Object> get props => [forexList];
 }
 
 class ForexTimelineLoadErrorState extends ForexTimelineState {

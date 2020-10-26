@@ -5,7 +5,7 @@ import 'package:samachar_hub/feature_news/data/models/news_feed_model.dart';
 import 'package:samachar_hub/feature_news/data/models/news_source_model.dart';
 import 'package:samachar_hub/feature_news/data/models/news_topic_model.dart';
 import 'package:samachar_hub/feature_news/data/service/remote_service.dart';
-import 'package:samachar_hub/feature_news/domain/models/sort.dart';
+import 'package:samachar_hub/feature_news/domain/entities/sort.dart';
 
 class NewsRemoteDataSource implements RemoteDataSource {
   final RemoteService _remoteService;
@@ -206,9 +206,14 @@ class NewsRemoteDataSource implements RemoteDataSource {
   }
 
   @override
-  Future<List<NewsFeedModel>> fetchBookmarkedNews({int page, String token}) {
-    // TODO: implement getBookmarkedNews
-    throw UnimplementedError();
+  Future<List<NewsFeedModel>> fetchBookmarkedNews(
+      {int page, String token}) async {
+    final newsResponse =
+        await _remoteService.fetchBookmarkedNews(page: page, token: token);
+    final List<NewsFeedModel> feeds = newsResponse
+        .map<NewsFeedModel>((e) => NewsFeedModel.fromMap(e))
+        .toList();
+    return feeds;
   }
 
   @override

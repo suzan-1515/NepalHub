@@ -7,23 +7,23 @@ abstract class CommentPostState extends Equatable {
   List<Object> get props => [];
 }
 
-class InitialState extends CommentPostState {}
+class CommentPostInitialState extends CommentPostState {}
 
-class ProgressState extends CommentPostState {}
+class CommentPostProgressState extends CommentPostState {}
 
-class SuccessState extends CommentPostState {
-  final String message;
+class CommentPostSuccessState extends CommentPostState {
+  final CommentUIModel commentUIModel;
 
-  SuccessState({@required this.message});
+  CommentPostSuccessState({@required this.commentUIModel});
 
   @override
-  List<Object> get props => [message];
+  List<Object> get props => [commentUIModel];
 }
 
-class ErrorState extends CommentPostState {
+class CommentPostErrorState extends CommentPostState {
   final String message;
 
-  ErrorState({@required this.message});
+  CommentPostErrorState({@required this.message});
 
   @override
   List<Object> get props => [message];

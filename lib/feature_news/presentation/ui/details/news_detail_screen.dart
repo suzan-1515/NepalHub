@@ -7,7 +7,7 @@ import 'package:samachar_hub/core/widgets/error_data_widget.dart';
 import 'package:samachar_hub/core/widgets/progress_widget.dart';
 import 'package:samachar_hub/feature_auth/presentation/blocs/auth_bloc.dart';
 import 'package:samachar_hub/feature_comment/domain/entities/thread_type.dart';
-import 'package:samachar_hub/feature_news/domain/models/news_feed.dart';
+import 'package:samachar_hub/feature_news/domain/entities/news_feed_entity.dart';
 import 'package:samachar_hub/feature_news/presentation/blocs/like_unlike/like_unlike_bloc.dart'
     as likeUnlikeBloc;
 import 'package:samachar_hub/feature_news/presentation/blocs/news_detail/news_detail_bloc.dart'

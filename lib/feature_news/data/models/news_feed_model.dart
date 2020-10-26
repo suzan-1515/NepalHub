@@ -5,8 +5,8 @@ import 'package:samachar_hub/core/models/language.dart';
 import 'package:samachar_hub/feature_news/data/models/news_category_model.dart';
 import 'package:samachar_hub/feature_news/data/models/news_source_model.dart';
 import 'package:samachar_hub/feature_news/data/models/news_topic_model.dart';
-import 'package:samachar_hub/feature_news/domain/models/news_feed.dart';
-import 'package:samachar_hub/feature_news/domain/models/news_type.dart';
+import 'package:samachar_hub/feature_news/domain/entities/news_feed_entity.dart';
+import 'package:samachar_hub/feature_news/domain/entities/news_type.dart';
 
 class NewsFeedModel extends NewsFeedEntity {
   NewsFeedModel({

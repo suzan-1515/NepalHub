@@ -2,8 +2,12 @@ import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 import 'package:samachar_hub/core/models/language.dart';
+import 'package:samachar_hub/feature_forex/data/models/forex_model.dart';
+import 'package:samachar_hub/feature_horoscope/data/models/horoscope_model.dart';
 import 'package:samachar_hub/feature_main/domain/entities/home_entity.dart';
+import 'package:samachar_hub/feature_news/data/models/news_category_model.dart';
 import 'package:samachar_hub/feature_news/data/models/news_feed_model.dart';
+import 'package:samachar_hub/feature_news/data/models/news_source_model.dart';
 import 'package:samachar_hub/feature_news/data/models/news_topic_model.dart';
 
 class HomeModel extends HomeEntity {
@@ -12,13 +16,22 @@ class HomeModel extends HomeEntity {
     @required List<NewsFeedModel> trendingNews,
     @required List<NewsFeedModel> recentNews,
     @required List<NewsFeedModel> latestNews,
+    @required List<NewsCategoryModel> newsCategories,
+    @required List<NewsSourceModel> newsSources,
     @required List<NewsTopicModel> newsTopics,
+    @required ForexModel forexe,
+    @required HoroscopeModel horoscope,
   }) : super(
-            corona: corona,
-            trendingNews: trendingNews,
-            recentNews: recentNews,
-            latestNews: latestNews,
-            newsTopics: newsTopics);
+          corona: corona,
+          trendingNews: trendingNews,
+          recentNews: recentNews,
+          latestNews: latestNews,
+          newsTopics: newsTopics,
+          newsCategories: newsCategories,
+          newsSources: newsSources,
+          forexe: forexe,
+          horoscope: horoscope,
+        );
   factory HomeModel.fromJson(String str) => HomeModel.fromMap(json.decode(str));
 
   String toJson() => json.encode(toMap());
@@ -33,6 +46,12 @@ class HomeModel extends HomeEntity {
             json["latest_news"].map((x) => NewsFeedModel.fromMap(x))),
         newsTopics: List<NewsTopicModel>.from(
             json["news_topics"].map((x) => NewsTopicModel.fromMap(x))),
+        newsCategories: List<NewsCategoryModel>.from(
+            json["news_categories"].map((x) => NewsCategoryModel.fromMap(x))),
+        newsSources: List<NewsSourceModel>.from(
+            json["news_sources"].map((x) => NewsSourceModel.fromMap(x))),
+        forexe: ForexModel.fromMap(json["forex"]),
+        horoscope: HoroscopeModel.fromMap(json["horoscope"]),
       );
 
   Map<String, dynamic> toMap() => {
@@ -45,6 +64,12 @@ class HomeModel extends HomeEntity {
             latestNews.map((x) => (x as NewsFeedModel).toMap())),
         "news_topics": List<NewsTopicModel>.from(
             newsTopics.map((x) => (x as NewsTopicModel).toMap())),
+        "news_categories": List<NewsCategoryModel>.from(
+            newsCategories.map((x) => (x as NewsCategoryModel).toMap())),
+        "news_sources": List<NewsSourceModel>.from(
+            newsSources.map((x) => (x as NewsSourceModel).toMap())),
+        "forex": (forexe as ForexModel).toMap(),
+        "horoscope": (horoscope as HoroscopeModel).toMap(),
       };
 }
 

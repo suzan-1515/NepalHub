@@ -17,7 +17,7 @@ class AuthRepository with Repository {
   Future<UserEntity> loginWithFacebook() {
     return _authRemoteDataSource.loginWithFacebook().then((value) async {
       await _authLocalDataSource.saveUserToken(token: value.token);
-      if (value.isNewUser)
+      if (value.isNew)
         _analyticsService.logSignUp(method: 'facebook');
       else
         _analyticsService.logLogin(method: 'facebook');
@@ -30,7 +30,7 @@ class AuthRepository with Repository {
   Future<UserEntity> loginWithGoogle() {
     return _authRemoteDataSource.loginWithGoogle().then((value) async {
       await _authLocalDataSource.saveUserToken(token: value.token);
-      if (value.isNewUser)
+      if (value.isNew)
         _analyticsService.logSignUp(method: 'google');
       else
         _analyticsService.logLogin(method: 'google');
@@ -43,7 +43,7 @@ class AuthRepository with Repository {
   Future<UserEntity> loginWithTwitter() {
     return _authRemoteDataSource.loginWithTwitter().then((value) async {
       await _authLocalDataSource.saveUserToken(token: value.token);
-      if (value.isNewUser)
+      if (value.isNew)
         _analyticsService.logSignUp(method: 'twitter');
       else
         _analyticsService.logLogin(method: 'twitter');

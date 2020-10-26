@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:samachar_hub/feature_main/presentation/blocs/settings/settings_cubit.dart';
 import 'package:samachar_hub/feature_main/presentation/ui/home/widgets/home_feed_list.dart';
 import 'package:samachar_hub/feature_main/utils/provider.dart';
 
@@ -15,6 +17,8 @@ class _HomeScreenState extends State<HomeScreen>
     super.build(context);
     var size = MediaQuery.of(context).size;
     return HomeProvider.homeBlocProvider(
+      defaultForexCurrencyCode:
+          context.bloc<SettingsCubit>().settings.defaultForexCurrency,
       child: Container(
         width: size.width,
         height: size.height,
