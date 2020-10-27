@@ -61,8 +61,7 @@ class _HomeFeedListState extends State<HomeFeedList> {
           current is MainNavItemSelectionChangedState,
       listener: (context, state) {
         if (state is MainNavItemSelectionChangedState) {
-          if (state.currentIndex == 0 &&
-              state.previousIndex == state.currentIndex) {
+          if (state.currentIndex == 0 && state.previousIndex == 0) {
             _scrollToTop();
           }
         }

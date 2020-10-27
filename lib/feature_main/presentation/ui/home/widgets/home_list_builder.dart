@@ -67,8 +67,11 @@ class HomeListBuilder extends StatelessWidget {
                 data: data.coronaUIModel,
               ),
             ),
-          if (isEarlyMorning() && data.showDailyHoroscope)
-            SliverToBoxAdapter(child: DailyHoroscope()),
+          if (isEarlyMorning() && data.hasHoroscope)
+            SliverToBoxAdapter(
+                child: DailyHoroscope(
+              horoscopeUIModel: data.horoscopeUIModel,
+            )),
           if (data.hasTrendingNews)
             SliverToBoxAdapter(
                 child: TrendingNewsSection(

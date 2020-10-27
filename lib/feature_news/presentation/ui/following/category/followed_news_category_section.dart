@@ -7,7 +7,6 @@ import 'package:samachar_hub/feature_news/presentation/blocs/news_category/news_
 import 'package:samachar_hub/feature_news/presentation/ui/following/category/followed_news_category_list.dart';
 import 'package:samachar_hub/feature_news/presentation/ui/following/widgets/section_title.dart';
 import 'package:samachar_hub/feature_news/presentation/ui/following/widgets/view_all_button.dart';
-import 'package:samachar_hub/feature_news/utils/provider.dart';
 
 class FollowedNewsCategorySection extends StatefulWidget {
   const FollowedNewsCategorySection({
@@ -48,7 +47,13 @@ class _FollowedNewsCategorySectionState
             crossAxisAlignment: CrossAxisAlignment.stretch,
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
-              SectionTitle(context: context, title: 'News Categories'),
+              SectionTitle(
+                context: context,
+                title: 'News Categories',
+                onRefreshTap: () {
+                  _newsCategoryBloc.add(GetFollowedCategories());
+                },
+              ),
               SizedBox(
                 height: 8,
               ),

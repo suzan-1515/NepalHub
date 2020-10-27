@@ -31,6 +31,7 @@ class NewsTopicsSection extends StatelessWidget {
             children: items
                 .map((e) => NewsTagItem(
                       title: e.topic.title,
+                      icon: e.topic.icon,
                       onTap: (value) => GetIt.I
                           .get<NavigationService>()
                           .toNewsTopicFeedScreen(

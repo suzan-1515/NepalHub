@@ -20,7 +20,6 @@ class HomeUIModel {
   List<NewsCategoryUIModel> newsCategoryUIModels;
   List<NewsSourceUIModel> newsSourceUIModels;
   HoroscopeUIModel horoscopeUIModel;
-  bool showDailyHoroscope = true;
 
   HomeUIModel({
     @required this.coronaUIModel,

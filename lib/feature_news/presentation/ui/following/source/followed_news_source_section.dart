@@ -46,7 +46,13 @@ class _FollowedNewsSourceSectionState extends State<FollowedNewsSourceSection> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
-              SectionTitle(context: context, title: 'News Sources'),
+              SectionTitle(
+                context: context,
+                title: 'News Sources',
+                onRefreshTap: () {
+                  _newsSourceBloc.add(GetFollowedSourcesEvent());
+                },
+              ),
               SizedBox(
                 height: 8,
               ),
