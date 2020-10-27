@@ -24,6 +24,8 @@ class AuthRemoteDataSource with RemoteDataSource {
     var userProfileResponse = await _remoteService.loginWithEmail(
         identifier: identifier, password: password);
     userProfileResponse['user']['jwt'] = userProfileResponse['jwt'];
+    userProfileResponse['user']['is_new'] = true;
+    userProfileResponse['user']['is_anonymous'] = false;
     return UserModel.fromMap(userProfileResponse['user']);
   }
 
@@ -31,6 +33,8 @@ class AuthRemoteDataSource with RemoteDataSource {
   Future<UserModel> signup({@required String uid}) async {
     var userProfileResponse = await _remoteService.signup(uid: uid);
     userProfileResponse['user']['jwt'] = userProfileResponse['jwt'];
+    userProfileResponse['user']['is_new'] = true;
+    userProfileResponse['user']['is_anonymous'] = false;
     return UserModel.fromMap(userProfileResponse['user']);
   }
 
@@ -44,9 +48,7 @@ class AuthRemoteDataSource with RemoteDataSource {
       );
     else
       userModel = await login(uid: userCredential.user.uid);
-    return userModel.copyWith(
-        isNew: userCredential.additionalUserInfo.isNewUser,
-        isAnonymous: userCredential.user.isAnonymous);
+    return userModel;
   }
 
   @override
@@ -59,9 +61,7 @@ class AuthRemoteDataSource with RemoteDataSource {
       );
     else
       userModel = await login(uid: userCredential.user.uid);
-    return userModel.copyWith(
-        isNew: userCredential.additionalUserInfo.isNewUser,
-        isAnonymous: userCredential.user.isAnonymous);
+    return userModel;
   }
 
   @override
@@ -74,9 +74,7 @@ class AuthRemoteDataSource with RemoteDataSource {
       );
     else
       userModel = await login(uid: userCredential.user.uid);
-    return userModel.copyWith(
-        isNew: userCredential.additionalUserInfo.isNewUser,
-        isAnonymous: userCredential.user.isAnonymous);
+    return userModel;
   }
 
   @override
@@ -87,7 +85,7 @@ class AuthRemoteDataSource with RemoteDataSource {
   @override
   Future<UserModel> autoLogin() async {
     final User user = await _remoteService.fetchCurrentUser();
-    if (user == null) throw UnauthorisedException();
+    if (user == null) throw UnAuthenticatedException();
     await user.getIdToken();
     return login(uid: user.uid);
   }
@@ -96,6 +94,8 @@ class AuthRemoteDataSource with RemoteDataSource {
   Future<UserModel> login({String uid}) async {
     var userProfileResponse = await _remoteService.login(uid: uid);
     userProfileResponse['user']['jwt'] = userProfileResponse['jwt'];
+    userProfileResponse['user']['is_new'] = false;
+    userProfileResponse['user']['is_anonymous'] = false;
     return UserModel.fromMap(userProfileResponse['user']);
   }
 }

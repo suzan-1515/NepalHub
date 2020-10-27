@@ -43,3 +43,7 @@ class AppExceptions implements Exception {
 class GenericException extends AppExceptions {
   GenericException({String message}) : super(message: message);
 }
+
+class UnAuthenticatedException extends AppExceptions {
+  UnAuthenticatedException({String message}) : super(message: message);
+}
