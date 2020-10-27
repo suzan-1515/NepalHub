@@ -44,10 +44,10 @@ class NewsSourceFeedBloc
     this._newsFilterBlocSubscription = this._newsFilterBloc.listen((state) {
       if (state is SourceChangedState) {
         if (state.source != null) this._sourceModel = state.source;
-        this.add(RefreshSourceNewsEvent());
+        this.add(GetSourceNewsEvent());
       } else if (state is SortByChangedState) {
         this._sortBy = state.sortBy;
-        this.add(RefreshSourceNewsEvent());
+        this.add(GetSourceNewsEvent());
       }
     });
   }

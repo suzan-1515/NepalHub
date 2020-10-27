@@ -48,10 +48,10 @@ class NewsTopicFeedBloc extends Bloc<NewsTopicFeedEvent, NewsTopicFeedState> {
     this._newsFilterBlocSubscription = this._newsFilterBloc.listen((state) {
       if (state is SourceChangedState) {
         this._source = state.source;
-        this.add(RefreshTopicNewsEvent());
+        this.add(GetTopicNewsEvent());
       } else if (state is SortByChangedState) {
         this._sortBy = state.sortBy;
-        this.add(RefreshTopicNewsEvent());
+        this.add(GetTopicNewsEvent());
       }
     });
   }

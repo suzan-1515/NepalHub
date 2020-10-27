@@ -195,23 +195,24 @@ class NewsProvider {
               followNewsTopicUseCase: GetIt.I.get<FollowNewsTopicUseCase>(),
               unFollowNewsTopicUseCase: GetIt.I.get<UnFollowNewsTopicUseCase>(),
             ));
-    GetIt.I
-        .registerFactoryParam<NewsCategoryFeedBloc, NewsCategoryUIModel, void>(
-            (param1, param2) => NewsCategoryFeedBloc(
-                  categoryModel: param1,
-                  newsByCategoryUseCase:
-                      GetIt.I.get<GetNewsByCategoryUseCase>(),
-                  newsFilterBloc: GetIt.I.get<NewsFilterBloc>(),
-                )..add(GetCategoryNewsEvent()));
-    GetIt.I.registerFactoryParam<NewsSourceFeedBloc, NewsSourceUIModel, void>(
+    GetIt.I.registerFactoryParam<NewsCategoryFeedBloc,
+            NewsCategoryUIModel, NewsFilterBloc>(
+        (param1, param2) => NewsCategoryFeedBloc(
+              categoryModel: param1,
+              newsByCategoryUseCase: GetIt.I.get<GetNewsByCategoryUseCase>(),
+              newsFilterBloc: param2,
+            )..add(GetCategoryNewsEvent()));
+    GetIt.I.registerFactoryParam<NewsSourceFeedBloc,
+            NewsSourceUIModel, NewsFilterBloc>(
         (param1, param2) => NewsSourceFeedBloc(
               sourceModel: param1,
-              newsFilterBloc: GetIt.I.get<NewsFilterBloc>(),
+              newsFilterBloc: param2,
               newsBySourceUseCase: GetIt.I.get<GetNewsBySourceUseCase>(),
             )..add(GetSourceNewsEvent()));
-    GetIt.I.registerFactoryParam<NewsTopicFeedBloc, NewsTopicUIModel, void>(
+    GetIt.I.registerFactoryParam<
+            NewsTopicFeedBloc, NewsTopicUIModel, NewsFilterBloc>(
         (param1, param2) => NewsTopicFeedBloc(
-              newsFilterBloc: GetIt.I.get<NewsFilterBloc>(),
+              newsFilterBloc: param2,
               newsByTopicUseCase: GetIt.I.get<GetNewsByTopicUseCase>(),
               topicModel: param1,
             )..add(GetTopicNewsEvent()));
@@ -327,8 +328,9 @@ class NewsProvider {
                 param1: newsCategoryUIModel),
           ),
           BlocProvider<NewsCategoryFeedBloc>(
-            create: (context) =>
-                GetIt.I.get<NewsCategoryFeedBloc>(param1: newsCategoryUIModel),
+            create: (context) => GetIt.I.get<NewsCategoryFeedBloc>(
+                param1: newsCategoryUIModel,
+                param2: context.bloc<NewsFilterBloc>()),
           ),
         ],
         child: child,
@@ -347,8 +349,9 @@ class NewsProvider {
                 .get<newsSource.FollowUnFollowBloc>(param1: newsSourceUIModel),
           ),
           BlocProvider<NewsSourceFeedBloc>(
-            create: (context) =>
-                GetIt.I.get<NewsSourceFeedBloc>(param1: newsSourceUIModel),
+            create: (context) => GetIt.I.get<NewsSourceFeedBloc>(
+                param1: newsSourceUIModel,
+                param2: context.bloc<NewsFilterBloc>()),
           ),
         ],
         child: child,
@@ -366,8 +369,9 @@ class NewsProvider {
                 .get<newsTopic.FollowUnFollowBloc>(param1: newsTopicUIModel),
           ),
           BlocProvider<NewsTopicFeedBloc>(
-            create: (context) =>
-                GetIt.I.get<NewsTopicFeedBloc>(param1: newsTopicUIModel),
+            create: (context) => GetIt.I.get<NewsTopicFeedBloc>(
+                param1: newsTopicUIModel,
+                param2: context.bloc<NewsFilterBloc>()),
           ),
         ],
         child: child,
