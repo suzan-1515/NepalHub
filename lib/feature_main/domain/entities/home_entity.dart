@@ -12,7 +12,6 @@ class HomeEntity extends Equatable {
   HomeEntity({
     @required this.corona,
     @required this.trendingNews,
-    @required this.recentNews,
     @required this.latestNews,
     @required this.newsCategories,
     @required this.newsSources,
@@ -23,7 +22,6 @@ class HomeEntity extends Equatable {
 
   final CoronaEntity corona;
   final List<NewsFeedEntity> trendingNews;
-  final List<NewsFeedEntity> recentNews;
   final List<NewsFeedEntity> latestNews;
   final List<NewsCategoryEntity> newsCategories;
   final List<NewsSourceEntity> newsSources;
@@ -34,7 +32,6 @@ class HomeEntity extends Equatable {
   HomeEntity copyWith({
     CoronaEntity corona,
     List<NewsFeedEntity> trendingNews,
-    List<NewsFeedEntity> recentNews,
     List<NewsFeedEntity> latestNews,
     List<NewsTopicEntity> newsTopics,
     List<NewsCategoryEntity> newsCategories,
@@ -45,7 +42,6 @@ class HomeEntity extends Equatable {
       HomeEntity(
         corona: corona ?? this.corona,
         trendingNews: trendingNews ?? this.trendingNews,
-        recentNews: recentNews ?? this.recentNews,
         latestNews: latestNews ?? this.latestNews,
         newsTopics: newsTopics ?? this.newsTopics,
         newsCategories: newsCategories ?? this.newsCategories,
@@ -58,7 +54,6 @@ class HomeEntity extends Equatable {
   List<Object> get props => [
         corona,
         trendingNews,
-        recentNews,
         latestNews,
         newsTopics,
         newsSources,

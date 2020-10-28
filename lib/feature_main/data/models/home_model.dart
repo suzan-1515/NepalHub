@@ -14,7 +14,6 @@ class HomeModel extends HomeEntity {
   HomeModel({
     @required CoronaModel corona,
     @required List<NewsFeedModel> trendingNews,
-    @required List<NewsFeedModel> recentNews,
     @required List<NewsFeedModel> latestNews,
     @required List<NewsCategoryModel> newsCategories,
     @required List<NewsSourceModel> newsSources,
@@ -24,7 +23,6 @@ class HomeModel extends HomeEntity {
   }) : super(
           corona: corona,
           trendingNews: trendingNews,
-          recentNews: recentNews,
           latestNews: latestNews,
           newsTopics: newsTopics,
           newsCategories: newsCategories,
@@ -40,8 +38,6 @@ class HomeModel extends HomeEntity {
         corona: CoronaModel.fromMap(json["corona"]),
         trendingNews: List<NewsFeedModel>.from(
             json["trending_news"].map((x) => NewsFeedModel.fromMap(x))),
-        recentNews: List<NewsFeedModel>.from(
-            json["recent_news"].map((x) => NewsFeedModel.fromMap(x))),
         latestNews: List<NewsFeedModel>.from(
             json["latest_news"].map((x) => NewsFeedModel.fromMap(x))),
         newsTopics: List<NewsTopicModel>.from(
@@ -58,8 +54,6 @@ class HomeModel extends HomeEntity {
         "corona": (corona as CoronaModel).toMap(),
         "trending_news": List<NewsFeedModel>.from(
             trendingNews.map((x) => (x as NewsFeedModel).toMap())),
-        "recent_news": List<NewsFeedModel>.from(
-            recentNews.map((x) => (x as NewsFeedModel).toMap())),
         "latest_news": List<NewsFeedModel>.from(
             latestNews.map((x) => (x as NewsFeedModel).toMap())),
         "news_topics": List<NewsTopicModel>.from(
