@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:event_bus/event_bus.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -6,6 +7,7 @@ import 'package:get_it/get_it.dart';
 import 'package:samachar_hub/core/services/services.dart';
 import 'package:samachar_hub/feature_comment/domain/entities/thread_type.dart';
 import 'package:samachar_hub/feature_news/presentation/blocs/like_unlike/like_unlike_bloc.dart';
+import 'package:samachar_hub/feature_news/presentation/events/feed_event.dart';
 import 'package:samachar_hub/feature_news/presentation/models/news_feed.dart';
 import 'package:samachar_hub/feature_news/presentation/ui/widgets/news_feed_more_option.dart';
 import 'package:samachar_hub/core/extensions/view.dart';
@@ -155,9 +157,13 @@ class NewsFeedOptions extends StatelessWidget {
                 if (feedUIModel.feedEntity.isLiked) {
                   feedUIModel.unlike();
                   context.bloc<LikeUnlikeBloc>().add(UnlikeEvent());
+                  GetIt.I.get<EventBus>().fire(NewsFeedEvent(
+                      eventType: 'unlike', feedId: feedUIModel.feedEntity.id));
                 } else {
                   feedUIModel.like();
                   context.bloc<LikeUnlikeBloc>().add(LikeEvent());
+                  GetIt.I.get<EventBus>().fire(NewsFeedEvent(
+                      eventType: 'like', feedId: feedUIModel.feedEntity.id));
                 }
               },
             ),

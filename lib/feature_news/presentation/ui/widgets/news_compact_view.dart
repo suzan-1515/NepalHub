@@ -6,6 +6,7 @@ import 'package:get_it/get_it.dart';
 import 'package:samachar_hub/core/services/services.dart';
 import 'package:samachar_hub/feature_news/presentation/models/news_feed.dart';
 import 'package:samachar_hub/core/widgets/cached_image_widget.dart';
+import 'package:samachar_hub/feature_news/presentation/ui/details/news_detail_screen.dart';
 
 class NewsCompactView extends StatelessWidget {
   final NewsFeedUIModel feedUIModel;
@@ -22,9 +23,7 @@ class NewsCompactView extends StatelessWidget {
       margin: EdgeInsets.symmetric(horizontal: 4, vertical: 6),
       elevation: 0,
       child: InkWell(
-        onTap: () => GetIt.I
-            .get<NavigationService>()
-            .toFeedDetail(feedUIModel.feedEntity, context),
+        onTap: () => NewsDetailScreen.navigate(feedUIModel.feedEntity, context),
         child: ClipRRect(
           borderRadius: BorderRadius.all(Radius.circular(6.0)),
           child: Stack(

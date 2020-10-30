@@ -5,6 +5,7 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
 import 'package:samachar_hub/core/usecases/usecase.dart';
+import 'package:samachar_hub/feature_news/domain/entities/news_feed_entity.dart';
 import 'package:samachar_hub/feature_news/domain/usecases/dislike_news_use_case.dart';
 import 'package:samachar_hub/feature_news/domain/usecases/undislike_news_use_case.dart';
 import 'package:samachar_hub/feature_news/presentation/models/news_feed.dart';
@@ -35,8 +36,10 @@ class DislikeBloc extends Bloc<DislikeUndislikeEvent, DislikeState> {
     if (event is DislikeEvent) {
       yield DislikeInProgress();
       try {
-        await _dislikeNewsFeedUseCase
+        final NewsFeedEntity newsFeedEntity = await _dislikeNewsFeedUseCase
             .call(DislikeNewsUseCaseParams(feed: _newsFeedUIModel.feedEntity));
+        if (newsFeedEntity != null)
+          _newsFeedUIModel.feedEntity = newsFeedEntity;
         yield DislikeSuccess(message: 'Feed disliked successfully.');
       } catch (e) {
         log('News feed dislike error.', error: e);
@@ -45,8 +48,11 @@ class DislikeBloc extends Bloc<DislikeUndislikeEvent, DislikeState> {
     } else if (event is UndislikeEvent) {
       yield DislikeInProgress();
       try {
-        await _undislikeNewsFeedUseCase.call(
-            UndislikeNewsUseCaseParams(feed: _newsFeedUIModel.feedEntity));
+        final NewsFeedEntity newsFeedEntity =
+            await _undislikeNewsFeedUseCase.call(
+                UndislikeNewsUseCaseParams(feed: _newsFeedUIModel.feedEntity));
+        if (newsFeedEntity != null)
+          _newsFeedUIModel.feedEntity = newsFeedEntity;
         yield UndislikeSuccess(message: 'News feed undisliked successfully.');
       } catch (e) {
         log('News feed undislike error.', error: e);

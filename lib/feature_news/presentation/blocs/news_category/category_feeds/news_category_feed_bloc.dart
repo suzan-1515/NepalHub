@@ -131,9 +131,12 @@ class NewsCategoryFeedBloc
       }
     } catch (e) {
       log('News by category load more cache error.', error: e);
-      yield NewsCategoryFeedErrorState(
-          message:
-              'Unable to load data. Make sure you are connected to internet.');
+      if (currentState is NewsCategoryFeedLoadSuccessState) {
+        yield currentState.copyWith(hasMore: false);
+      } else
+        yield NewsCategoryFeedErrorState(
+            message:
+                'Unable to load more data. Make sure you are connected to internet.');
     }
   }
 

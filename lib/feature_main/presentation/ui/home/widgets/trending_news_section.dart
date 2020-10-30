@@ -6,6 +6,7 @@ import 'package:samachar_hub/core/services/services.dart';
 import 'package:samachar_hub/feature_main/presentation/models/home/trending_news_model.dart';
 import 'package:samachar_hub/feature_main/presentation/ui/widgets/section_heading.dart';
 import 'package:samachar_hub/feature_news/presentation/ui/widgets/news_compact_view.dart';
+import 'package:samachar_hub/feature_news/utils/provider.dart';
 
 class TrendingNewsSection extends StatefulWidget {
   final TrendingNewsUIModel trendingNewsUIModel;
@@ -15,7 +16,8 @@ class TrendingNewsSection extends StatefulWidget {
   _TrendingNewsSectionState createState() => _TrendingNewsSectionState();
 }
 
-class _TrendingNewsSectionState extends State<TrendingNewsSection> {
+class _TrendingNewsSectionState extends State<TrendingNewsSection>
+    with AutomaticKeepAliveClientMixin {
   final ValueNotifier<int> _currentCarouselIndex = ValueNotifier<int>(0);
 
   @override
@@ -26,10 +28,13 @@ class _TrendingNewsSectionState extends State<TrendingNewsSection> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     List<Widget> widgets = List<Widget>.generate(
       widget.trendingNewsUIModel.feeds.length,
-      (index) =>
-          NewsCompactView(feedUIModel: widget.trendingNewsUIModel.feeds[index]),
+      (index) => NewsProvider.feedItemBlocProvider(
+          feedUIModel: widget.trendingNewsUIModel.feeds[index],
+          child: NewsCompactView(
+              feedUIModel: widget.trendingNewsUIModel.feeds[index])),
     );
 
     return FadeInUp(
@@ -88,4 +93,7 @@ class _TrendingNewsSectionState extends State<TrendingNewsSection> {
       ),
     );
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }

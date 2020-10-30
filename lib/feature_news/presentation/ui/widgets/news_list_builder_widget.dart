@@ -34,10 +34,12 @@ class NewsListBuilder extends StatelessWidget {
       child: ListView.builder(
         itemCount: hasMore ? data.length + 1 : data.length,
         itemBuilder: (_, int index) {
-          if (_shouldShowLoadMore(index))
+          if (_shouldShowLoadMore(index)) {
+            onLoadMore();
             return Center(
               child: ProgressView(),
             );
+          }
 
           var feed = data[index];
           var view;

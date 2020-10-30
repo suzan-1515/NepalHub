@@ -5,6 +5,7 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
 import 'package:samachar_hub/core/usecases/usecase.dart';
+import 'package:samachar_hub/feature_news/domain/entities/news_feed_entity.dart';
 import 'package:samachar_hub/feature_news/domain/usecases/view_news_use_case.dart';
 import 'package:samachar_hub/feature_news/presentation/models/news_feed.dart';
 
@@ -31,8 +32,9 @@ class ViewBloc extends Bloc<ViewEvent, ViewState> {
     if (event is View) {
       yield ViewInProgress();
       try {
-        await _viewNewsFeedUseCase
+        final NewsFeedEntity newsFeedEntity = await _viewNewsFeedUseCase
             .call(ViewNewsUseCaseParams(feed: _feedUIModel.feedEntity));
+        if (newsFeedEntity != null) _feedUIModel.feedEntity = newsFeedEntity;
         yield ViewSuccess(message: 'Feed viewd successfully.');
       } catch (e) {
         log('News feed view error.', error: e);

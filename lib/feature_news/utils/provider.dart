@@ -144,7 +144,7 @@ class NewsProvider {
         (param1, param2) => ViewBloc(
               feedUIModel: param1,
               viewNewsFeedUseCase: GetIt.I.get<ViewNewsUseCase>(),
-            ));
+            )..add(View()));
     GetIt.I.registerFactoryParam<RelatedNewsBloc, NewsFeedUIModel, void>(
         (param1, param2) => RelatedNewsBloc(
               feed: param1,
@@ -264,28 +264,26 @@ class NewsProvider {
       );
 
   static MultiBlocProvider detailMultiBlocProvider({
+    @required BuildContext masterContext,
     @required Widget child,
     @required NewsFeedUIModel feedUIModel,
   }) =>
       MultiBlocProvider(
         providers: [
-          BlocProvider<LikeUnlikeBloc>(
-            create: (context) =>
-                GetIt.I.get<LikeUnlikeBloc>(param1: feedUIModel),
+          BlocProvider<LikeUnlikeBloc>.value(
+            value: masterContext.bloc<LikeUnlikeBloc>(),
           ),
-          BlocProvider<DislikeBloc>(
-            create: (context) => GetIt.I.get<DislikeBloc>(param1: feedUIModel),
+          BlocProvider<DislikeBloc>.value(
+            value: masterContext.bloc<DislikeBloc>(),
           ),
-          BlocProvider<newsSource.FollowUnFollowBloc>(
-            create: (context) => GetIt.I.get<newsSource.FollowUnFollowBloc>(
-                param1: feedUIModel.newsSourceUIModel),
+          BlocProvider<newsSource.FollowUnFollowBloc>.value(
+            value: masterContext.bloc<newsSource.FollowUnFollowBloc>(),
           ),
-          BlocProvider<BookmarkUnBookmarkBloc>(
-            create: (context) =>
-                GetIt.I.get<BookmarkUnBookmarkBloc>(param1: feedUIModel),
+          BlocProvider<BookmarkUnBookmarkBloc>.value(
+            value: masterContext.bloc<BookmarkUnBookmarkBloc>(),
           ),
-          BlocProvider<ShareBloc>(
-            create: (context) => GetIt.I.get<ShareBloc>(param1: feedUIModel),
+          BlocProvider<ShareBloc>.value(
+            value: masterContext.bloc<ShareBloc>(),
           ),
           BlocProvider<ViewBloc>(
             create: (context) => GetIt.I.get<ViewBloc>(param1: feedUIModel),
@@ -297,6 +295,41 @@ class NewsProvider {
         ],
         child: child,
       );
+
+  // static MultiBlocProvider detailMultiBlocProvider({
+  //   @required Widget child,
+  //   @required NewsFeedUIModel feedUIModel,
+  // }) =>
+  //     MultiBlocProvider(
+  //       providers: [
+  //         BlocProvider<LikeUnlikeBloc>(
+  //           create: (context) =>
+  //               GetIt.I.get<LikeUnlikeBloc>(param1: feedUIModel),
+  //         ),
+  //         BlocProvider<DislikeBloc>(
+  //           create: (context) => GetIt.I.get<DislikeBloc>(param1: feedUIModel),
+  //         ),
+  //         BlocProvider<newsSource.FollowUnFollowBloc>(
+  //           create: (context) => GetIt.I.get<newsSource.FollowUnFollowBloc>(
+  //               param1: feedUIModel.newsSourceUIModel),
+  //         ),
+  //         BlocProvider<BookmarkUnBookmarkBloc>(
+  //           create: (context) =>
+  //               GetIt.I.get<BookmarkUnBookmarkBloc>(param1: feedUIModel),
+  //         ),
+  //         BlocProvider<ShareBloc>(
+  //           create: (context) => GetIt.I.get<ShareBloc>(param1: feedUIModel),
+  //         ),
+  //         BlocProvider<ViewBloc>(
+  //           create: (context) => GetIt.I.get<ViewBloc>(param1: feedUIModel),
+  //         ),
+  //         BlocProvider<NewsDetailBloc>(
+  //           create: (context) =>
+  //               GetIt.I.get<NewsDetailBloc>(param1: feedUIModel),
+  //         ),
+  //       ],
+  //       child: child,
+  //     );
 
   static BlocProvider<RelatedNewsBloc> relatedNewsBlocProvider({
     @required Widget child,

@@ -55,7 +55,7 @@ class RelatedNewsListItem extends StatelessWidget {
                         child: ClipRRect(
                           borderRadius: BorderRadius.all(Radius.circular(6)),
                           child: CachedImage(feedUIModel.feedEntity.image,
-                              tag: feedUIModel.tag),
+                              tag: feedUIModel.feedEntity.hashCode.toString()),
                         ),
                       ),
                     ),

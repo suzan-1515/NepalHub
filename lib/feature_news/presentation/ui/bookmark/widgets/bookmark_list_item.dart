@@ -52,7 +52,8 @@ class BookmarkListItem extends StatelessWidget {
                     aspectRatio: 4 / 3,
                     child: ClipRRect(
                       borderRadius: BorderRadius.all(Radius.circular(6)),
-                      child: CachedImage(feed.feedEntity.image, tag: feed.tag),
+                      child: CachedImage(feed.feedEntity.image,
+                          tag: feed.feedEntity.hashCode.toString()),
                     ),
                   ),
                 ),

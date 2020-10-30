@@ -35,7 +35,6 @@ class _HoroscopeScreenState extends State<HoroscopeScreen>
   }
 
   Widget _buildBody() {
-    final settings = context.bloc<SettingsCubit>().settings;
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: Column(

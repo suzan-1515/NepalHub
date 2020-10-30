@@ -39,7 +39,7 @@ class _NewsTopicFeedListState extends State<NewsTopicFeedList> {
     return BlocConsumer<NewsTopicFeedBloc, NewsTopicFeedState>(
         cubit: _newsTopicFeedBloc,
         listenWhen: (previous, current) =>
-            !(current is NewsTopicFeedLoadingState) ||
+            !(current is NewsTopicFeedLoadingState) &&
             !(current is NewsTopicFeedMoreLoadingState),
         listener: (context, state) {
           _refreshCompleter?.complete();
@@ -50,7 +50,7 @@ class _NewsTopicFeedListState extends State<NewsTopicFeedList> {
           }
         },
         buildWhen: (previous, current) =>
-            !(current is NewsTopicFeedErrorState) ||
+            !(current is NewsTopicFeedErrorState) &&
             !(current is NewsTopicFeedMoreLoadingState),
         builder: (context, state) {
           if (state is NewsTopicFeedLoadSuccessState) {
@@ -58,6 +58,7 @@ class _NewsTopicFeedListState extends State<NewsTopicFeedList> {
               data: state.feeds,
               onRefresh: _onRefresh,
               hasMore: state.hasMore,
+              onLoadMore: () => _newsTopicFeedBloc.add(GetMoreTopicNewsEvent()),
             );
           } else if (state is NewsTopicFeedEmptyState) {
             return Center(

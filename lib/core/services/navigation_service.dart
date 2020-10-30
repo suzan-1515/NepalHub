@@ -113,20 +113,6 @@ class NavigationService {
 
   Future toGoldSilverScreen(BuildContext context) {}
 
-  Future toFeedDetail(NewsFeedEntity feedEntity, BuildContext context) {
-    if (context.read<SettingsCubit>().settings.newsReadMode == 2) {
-      return toWebViewScreen(feedEntity.title, feedEntity.link, context);
-    }
-    return Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => NewsDetailScreen(
-          feedEntity: feedEntity,
-        ),
-      ),
-    );
-  }
-
   Future toFollowedNewsSourceScreen(BuildContext context) {
     return Navigator.of(context).push(
       MaterialPageRoute(

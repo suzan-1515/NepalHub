@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:nepali_utils/nepali_utils.dart';
 
 class DateWeatherSection extends StatelessWidget {
+  const DateWeatherSection();
   @override
   Widget build(BuildContext context) {
     return Padding(

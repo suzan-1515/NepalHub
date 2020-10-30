@@ -10,3 +10,7 @@ abstract class LikeUnlikeEvent extends Equatable {
 class LikeEvent extends LikeUnlikeEvent {}
 
 class UnlikeEvent extends LikeUnlikeEvent {}
+
+class UpdateLikeEvent extends LikeUnlikeEvent {}
+
+class UpdateUnlikeEvent extends LikeUnlikeEvent {}

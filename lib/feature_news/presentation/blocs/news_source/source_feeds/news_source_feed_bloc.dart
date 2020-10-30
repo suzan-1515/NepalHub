@@ -99,7 +99,7 @@ class NewsSourceFeedBloc
   Stream<NewsSourceFeedState> _mapGetMoreSourceNewsEventToState(
       GetMoreSourceNewsEvent event) async* {
     final currentState = state;
-    if (currentState is NewsSourceFeedLoadSuccessState) return;
+    if (currentState is NewsSourceFeedMoreLoadingState) return;
     yield NewsSourceFeedMoreLoadingState();
     try {
       final List<NewsFeedEntity> newsList = await _newsBySourceUseCase.call(
@@ -109,7 +109,11 @@ class NewsSourceFeedBloc
             page: page + 1,
             language: event.language),
       );
-      if (newsList != null && newsList.isNotEmpty) {
+      if (newsList == null || newsList.isEmpty) {
+        if (currentState is NewsSourceFeedLoadSuccessState) {
+          yield currentState.copyWith(hasMore: false);
+        }
+      } else {
         _page = _page + 1;
         if (currentState is NewsSourceFeedLoadSuccessState) {
           yield currentState.copyWith(
@@ -117,16 +121,15 @@ class NewsSourceFeedBloc
         } else
           yield NewsSourceFeedLoadSuccessState(
               feeds: newsList.toUIModels, hasMore: true);
-      } else {
-        if (currentState is NewsSourceFeedLoadSuccessState) {
-          yield currentState.copyWith(hasMore: false);
-        }
       }
     } catch (e) {
       log('News by source load more cache error.', error: e);
-      yield NewsSourceFeedErrorState(
-          message:
-              'Unable to load data. Make sure you are connected to internet.');
+      if (currentState is NewsSourceFeedLoadSuccessState) {
+        yield currentState.copyWith(hasMore: false);
+      } else
+        yield NewsSourceFeedErrorState(
+            message:
+                'Unable to load data. Make sure you are connected to internet.');
     }
   }
 

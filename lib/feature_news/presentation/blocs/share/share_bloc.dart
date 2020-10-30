@@ -5,6 +5,7 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
 import 'package:samachar_hub/core/usecases/usecase.dart';
+import 'package:samachar_hub/feature_news/domain/entities/news_feed_entity.dart';
 import 'package:samachar_hub/feature_news/domain/usecases/share_news_use_case.dart';
 import 'package:samachar_hub/feature_news/presentation/models/news_feed.dart';
 
@@ -31,8 +32,9 @@ class ShareBloc extends Bloc<ShareEvent, ShareState> {
     if (event is Share) {
       yield ShareInProgress();
       try {
-        await _shareNewsFeedUseCase
+        final NewsFeedEntity newsFeedEntity = await _shareNewsFeedUseCase
             .call(ShareNewsUseCaseParams(feed: _feedUIModel.feedEntity));
+        if (newsFeedEntity != null) _feedUIModel.feedEntity = newsFeedEntity;
         yield ShareSuccess(message: 'Feed shared successfully.');
       } catch (e) {
         log('News feed share error.', error: e);

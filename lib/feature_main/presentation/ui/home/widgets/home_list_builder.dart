@@ -11,7 +11,6 @@ import 'package:samachar_hub/feature_main/presentation/ui/home/widgets/latest_ne
 import 'package:samachar_hub/feature_main/presentation/ui/home/widgets/news_category_menu_section.dart';
 import 'package:samachar_hub/feature_main/presentation/ui/home/widgets/news_source_menu_section.dart';
 import 'package:samachar_hub/feature_main/presentation/ui/home/widgets/news_topics_section.dart';
-import 'package:samachar_hub/feature_main/presentation/ui/home/widgets/other_menu_section.dart';
 import 'package:samachar_hub/feature_main/presentation/ui/home/widgets/trending_news_section.dart';
 
 class HomeListBuilder extends StatelessWidget {
@@ -59,7 +58,7 @@ class HomeListBuilder extends StatelessWidget {
               floating: true,
             ),
           ),
-          SliverToBoxAdapter(child: DateWeatherSection()),
+          const SliverToBoxAdapter(child: const DateWeatherSection()),
           if (data.hasCoronaData)
             SliverToBoxAdapter(
               child: CoronaSection(
@@ -71,6 +70,11 @@ class HomeListBuilder extends StatelessWidget {
                 child: DailyHoroscope(
               horoscopeUIModel: data.horoscopeUIModel,
             )),
+          if (data.hasNewsCategories)
+            SliverToBoxAdapter(
+                child: NewsCategoryMenuSection(
+              newsCategoryUIModels: data.newsCategoryUIModels,
+            )),
           if (data.hasTrendingNews)
             SliverToBoxAdapter(
                 child: TrendingNewsSection(
@@ -81,21 +85,17 @@ class HomeListBuilder extends StatelessWidget {
                 child: NewsTopicsSection(
               items: data.newsTopicUIModels,
             )),
-          if (data.hasNewsCategories)
-            SliverToBoxAdapter(
-                child: NewsCategoryMenuSection(
-              newsCategoryUIModels: data.newsCategoryUIModels,
-            )),
+
           // if (data.hasRecentNews)
           //   RecentNewsSection(
           //     recentNewsUIModel: data.recentNewsUIModel,
           //   ),
-          if (data.hasForex && data.hasHoroscope)
-            SliverToBoxAdapter(
-                child: OtherMenuSection(
-              horoscopeData: data.horoscopeUIModel,
-              forexData: data.forexUIModel,
-            )),
+          // if (data.hasForex && data.hasHoroscope)
+          //   SliverToBoxAdapter(
+          //       child: OtherMenuSection(
+          //     horoscopeData: data.horoscopeUIModel,
+          //     forexData: data.forexUIModel,
+          //   )),
           if (data.hasNewsSources)
             SliverToBoxAdapter(
                 child: NewsSourceMenuSection(

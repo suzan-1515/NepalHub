@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:samachar_hub/core/services/services.dart';
 import 'package:samachar_hub/feature_news/presentation/models/news_feed.dart';
+import 'package:samachar_hub/feature_news/presentation/ui/details/news_detail_screen.dart';
 import 'package:samachar_hub/feature_news/presentation/ui/details/widgets/heading.dart';
 import 'package:samachar_hub/feature_news/presentation/ui/related_news/widgets/related_list_item.dart';
 
@@ -34,9 +35,8 @@ class RelatedNewsList extends StatelessWidget {
               final feed = data[index ~/ 2];
               return RelatedNewsListItem(
                 feedUIModel: feed,
-                onTap: () => GetIt.I
-                    .get<NavigationService>()
-                    .toFeedDetail(feed.feedEntity, context),
+                onTap: () =>
+                    NewsDetailScreen.navigate(feed.feedEntity, context),
               );
             }) +
             [

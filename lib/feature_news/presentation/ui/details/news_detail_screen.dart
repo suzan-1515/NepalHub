@@ -7,6 +7,7 @@ import 'package:samachar_hub/core/widgets/error_data_widget.dart';
 import 'package:samachar_hub/core/widgets/progress_widget.dart';
 import 'package:samachar_hub/feature_auth/presentation/blocs/auth_bloc.dart';
 import 'package:samachar_hub/feature_comment/domain/entities/thread_type.dart';
+import 'package:samachar_hub/feature_main/presentation/blocs/settings/settings_cubit.dart';
 import 'package:samachar_hub/feature_news/domain/entities/news_feed_entity.dart';
 import 'package:samachar_hub/feature_news/presentation/blocs/like_unlike/like_unlike_bloc.dart'
     as likeUnlikeBloc;
@@ -25,9 +26,29 @@ import 'package:samachar_hub/feature_news/utils/provider.dart';
 
 class NewsDetailScreen extends StatelessWidget {
   final NewsFeedEntity feedEntity;
+  final BuildContext masterContext;
 
-  const NewsDetailScreen({Key key, @required this.feedEntity})
+  const NewsDetailScreen(
+      {Key key, @required this.feedEntity, @required this.masterContext})
       : super(key: key);
+
+  static Future navigate(NewsFeedEntity feedEntity, BuildContext context) {
+    if (context.bloc<SettingsCubit>().settings.newsReadMode == 2) {
+      return GetIt.I
+          .get<NavigationService>()
+          .toWebViewScreen(feedEntity.title, feedEntity.link, context);
+    }
+    return Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => NewsDetailScreen(
+          feedEntity: feedEntity,
+          masterContext: context,
+        ),
+      ),
+    );
+  }
+
   Widget _buildBody(BuildContext context, NewsFeedUIModel feedUIModel) {
     return OrientationBuilder(
       builder: (_, Orientation orientation) {
@@ -171,6 +192,7 @@ class NewsDetailScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return NewsProvider.detailMultiBlocProvider(
       feedUIModel: feedEntity.toUIModel,
+      masterContext: masterContext,
       child: Scaffold(
         backgroundColor: Theme.of(context).backgroundColor,
         body: BlocConsumer<newsDetailBloc.NewsDetailBloc,

@@ -43,7 +43,8 @@ class ForexTimelineBloc extends Bloc<ForexTimelineEvent, ForexTimelineState> {
         if (forexList == null || forexList.isEmpty) {
           yield ForexTimelineEmptyState(message: 'Forex data not available.');
         } else {
-          yield ForexTimelineLoadSuccessState(forexList: forexList.toUIModels);
+          yield ForexTimelineLoadSuccessState(
+              forexList: forexList.toUIModels.reversed.toList());
         }
       } catch (e) {
         log('Forex ($forexUIModel) timeline load error: ', error: e);
@@ -60,7 +61,8 @@ class ForexTimelineBloc extends Bloc<ForexTimelineEvent, ForexTimelineState> {
               numOfDays: 30),
         );
         if (forexList != null && forexList.isNotEmpty) {
-          yield ForexTimelineLoadSuccessState(forexList: forexList.toUIModels);
+          yield ForexTimelineLoadSuccessState(
+              forexList: forexList.toUIModels.reversed.toList());
         }
       } catch (e) {
         log('Forex ($forexUIModel) timeline load error: ', error: e);

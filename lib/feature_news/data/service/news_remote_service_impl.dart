@@ -37,7 +37,8 @@ class NewsRemoteService implements RemoteService {
       'parent_id': 'null',
       '_start': page.start,
       '_limit': page.limit,
-      'language': language.value
+      'language': language.value,
+      '_sort': 'publishedAt:DESC'
     };
     var latestNewsCall =
         httpManager.get(path: NEWS, query: queryParams, headers: headers);
@@ -60,7 +61,8 @@ class NewsRemoteService implements RemoteService {
       'type': 'trending',
       '_start': page.start.toString(),
       '_limit': limit?.toString() ?? page.limit.toString(),
-      'language': language.value
+      'language': language.value,
+      '_sort': 'publishedAt:DESC'
     };
     var trendingNewsCall =
         httpManager.get(path: NEWS, query: queryParams, headers: headers);
@@ -83,7 +85,8 @@ class NewsRemoteService implements RemoteService {
       'source': sourceId,
       '_start': page.start.toString(),
       '_limit': page.limit.toString(),
-      'language': language.value
+      'language': language.value,
+      '_sort': 'publishedAt:DESC'
     };
     var newsCall =
         httpManager.get(path: NEWS, query: queryParams, headers: headers);
@@ -108,7 +111,8 @@ class NewsRemoteService implements RemoteService {
       'source': sourceId,
       '_start': page.start.toString(),
       '_limit': page.limit.toString(),
-      'language': language.value
+      'language': language.value,
+      '_sort': 'publishedAt:DESC'
     };
     var newsCall =
         httpManager.get(path: NEWS, query: queryParams, headers: headers);
@@ -161,7 +165,8 @@ class NewsRemoteService implements RemoteService {
       'source': sourceId,
       '_start': page.start.toString(),
       '_limit': page.limit.toString(),
-      'language': language.value
+      'language': language.value,
+      '_sort': 'publishedAt:DESC'
     };
     var tagNewsCall =
         httpManager.get(path: NEWS, query: queryParams, headers: headers);
@@ -193,7 +198,8 @@ class NewsRemoteService implements RemoteService {
       'parent_id': 'null',
       '_start': page.start.toString(),
       '_limit': page.limit.toString(),
-      'language': language?.value
+      'language': language?.value,
+      '_sort': 'publishedAt:DESC'
     };
     var latestNewsCall =
         httpManager.get(path: NEWS, query: queryParams, headers: headers);

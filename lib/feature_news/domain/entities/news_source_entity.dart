@@ -56,6 +56,7 @@ class NewsSourceEntity extends Equatable {
         code: code ?? this.code,
         icon: icon ?? this.icon,
         priority: priority ?? this.priority,
+        favicon: favicon ?? this.favicon,
         isFollowed: isFollowed ?? this.isFollowed,
         followerCount: followerCount ?? this.followerCount,
         isBlocked: isBlocked ?? this.isBlocked,

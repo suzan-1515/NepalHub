@@ -115,7 +115,11 @@ class NewsTopicFeedBloc extends Bloc<NewsTopicFeedEvent, NewsTopicFeedState> {
             page: page + 1,
             language: event.language),
       );
-      if (newsList != null && newsList.isNotEmpty) {
+      if (newsList == null || newsList.isEmpty) {
+        if (currentState is NewsTopicFeedLoadSuccessState) {
+          yield currentState.copyWith(hasMore: false);
+        }
+      } else {
         _page = _page + 1;
         if (currentState is NewsTopicFeedLoadSuccessState) {
           yield currentState.copyWith(
@@ -123,16 +127,15 @@ class NewsTopicFeedBloc extends Bloc<NewsTopicFeedEvent, NewsTopicFeedState> {
         } else
           yield NewsTopicFeedLoadSuccessState(
               feeds: newsList.toUIModels, hasMore: true);
-      } else {
-        if (currentState is NewsTopicFeedLoadSuccessState) {
-          yield currentState.copyWith(hasMore: false);
-        }
       }
     } catch (e) {
       log('News by topic load more cache error.', error: e);
-      yield NewsTopicFeedErrorState(
-          message:
-              'Unable to load data. Make sure you are connected to Internet.');
+      if (currentState is NewsTopicFeedLoadSuccessState) {
+        yield currentState.copyWith(hasMore: false);
+      } else
+        yield NewsTopicFeedErrorState(
+            message:
+                'Unable to load data. Make sure you are connected to Internet.');
     }
   }
 

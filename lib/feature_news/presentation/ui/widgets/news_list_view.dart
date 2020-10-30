@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:samachar_hub/core/services/services.dart';
 import 'package:samachar_hub/feature_news/presentation/models/news_feed.dart';
+import 'package:samachar_hub/feature_news/presentation/ui/details/news_detail_screen.dart';
 import 'package:samachar_hub/feature_news/presentation/ui/widgets/article_info_widget.dart';
 import 'package:samachar_hub/core/widgets/cached_image_widget.dart';
 
@@ -21,9 +22,7 @@ class NewsListView extends StatelessWidget {
         borderRadius: BorderRadius.circular(6),
       ),
       child: InkWell(
-        onTap: () => GetIt.I
-            .get<NavigationService>()
-            .toFeedDetail(feedUIModel.feedEntity, context),
+        onTap: () => NewsDetailScreen.navigate(feedUIModel.feedEntity, context),
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Column(

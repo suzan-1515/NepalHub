@@ -5,6 +5,7 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
 import 'package:samachar_hub/core/usecases/usecase.dart';
+import 'package:samachar_hub/feature_news/domain/entities/news_feed_entity.dart';
 import 'package:samachar_hub/feature_news/domain/usecases/bookmark_news_use_case.dart';
 import 'package:samachar_hub/feature_news/domain/usecases/unbookmark_news_use_case.dart';
 import 'package:samachar_hub/feature_news/presentation/models/news_feed.dart';
@@ -37,11 +38,14 @@ class BookmarkUnBookmarkBloc
     if (event is BookmarkNews) {
       yield BookmarkInProgress();
       try {
-        await _addBookmarkNewsUseCase.call(
+        final NewsFeedEntity newsFeedEntity =
+            await _addBookmarkNewsUseCase.call(
           BookmarkNewsUseCaseParams(
             feed: _newsFeedUIModel.feedEntity,
           ),
         );
+        if (newsFeedEntity != null)
+          _newsFeedUIModel.feedEntity = newsFeedEntity;
         yield BookmarkSuccess(message: 'News bookmarked successfully.');
       } catch (e) {
         log('Bookmark news error.', error: e);
@@ -50,11 +54,14 @@ class BookmarkUnBookmarkBloc
     } else if (event is UnBookmarkNews) {
       yield BookmarkInProgress();
       try {
-        await _removeBookmarkNewsUseCase.call(
+        final NewsFeedEntity newsFeedEntity =
+            await _removeBookmarkNewsUseCase.call(
           UnBookmarkNewsUseCaseParams(
             feed: _newsFeedUIModel.feedEntity,
           ),
         );
+        if (newsFeedEntity != null)
+          _newsFeedUIModel.feedEntity = newsFeedEntity;
         yield UnbookmarkSuccess(message: 'News unbookmark successfully.');
       } catch (e) {
         log('Unbookmark news error.', error: e);
