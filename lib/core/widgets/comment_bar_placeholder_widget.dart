@@ -10,8 +10,8 @@ class CommentBarPlaceholder extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Shimmer.fromColors(
-      baseColor: Theme.of(context).backgroundColor,
-      highlightColor: Theme.of(context).canvasColor,
+      baseColor: Theme.of(context).canvasColor,
+      highlightColor: Theme.of(context).highlightColor,
       child: Container(
         decoration: BoxDecoration(
           border: Border(

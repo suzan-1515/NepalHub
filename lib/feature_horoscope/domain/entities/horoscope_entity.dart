@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:intl/intl.dart';
 import 'package:meta/meta.dart';
 import 'package:samachar_hub/core/models/language.dart';
 
@@ -197,6 +198,8 @@ class HoroscopeEntity extends Equatable {
         shareCount,
         viewCount
       ];
+
+  String get formattedDate => DateFormat('dd MMMM, yyyy').format(publishedAt);
 
   @override
   bool get stringify => true;

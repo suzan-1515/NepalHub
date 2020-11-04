@@ -1,6 +1,6 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
-import 'package:samachar_hub/feature_news/presentation/models/news_feed.dart';
+import 'package:samachar_hub/feature_news/domain/entities/news_feed_entity.dart';
 import 'package:samachar_hub/feature_news/presentation/ui/details/widgets/author_and_bookmark.dart';
 import 'package:samachar_hub/feature_news/presentation/ui/details/widgets/disclaimer.dart';
 import 'package:samachar_hub/feature_news/presentation/ui/details/widgets/read_more.dart';
@@ -12,11 +12,11 @@ class ArticleDetail extends StatelessWidget {
   const ArticleDetail({
     Key key,
     @required this.context,
-    @required this.feedUIModel,
+    @required this.feed,
   }) : super(key: key);
 
   final BuildContext context;
-  final NewsFeedUIModel feedUIModel;
+  final NewsFeedEntity feed;
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +32,7 @@ class ArticleDetail extends StatelessWidget {
               height: 16,
             ),
             Text(
-              feedUIModel.feedEntity.title,
+              feed.title,
               style: Theme.of(context).textTheme.headline5.copyWith(
                   fontWeight: FontWeight.w600), //Todo: Use proper style
             ),
@@ -41,35 +41,34 @@ class ArticleDetail extends StatelessWidget {
             ),
             Source(
               context: context,
-              feedUIModel: feedUIModel,
+              feed: feed,
             ),
             SizedBox(
               height: 16,
             ),
             AuthorAndBookmark(
-              feedUIModel: feedUIModel,
+              feed: feed,
               context: context,
             ),
             SizedBox(
               height: 16,
             ),
             Text(
-              feedUIModel.feedEntity.description ??
-                  'Article content not available.',
+              feed.description ?? 'Article content not available.',
               style:
                   Theme.of(context).textTheme.subtitle1.copyWith(height: 1.5),
             ),
             // _buildAdRow(),
-            ReadMore(context: context, feedUIModel: feedUIModel),
+            ReadMore(context: context, feed: feed),
             SizedBox(height: 8),
             Divider(),
             Share(
-              feedUIModel: feedUIModel,
+              feed: feed,
             ),
             SizedBox(height: 16),
-            Disclaimer(feedUIModel: feedUIModel),
+            Disclaimer(feed: feed),
             RelatedNews(
-              feedUIModel: feedUIModel,
+              feed: feed,
             ),
           ],
         ),

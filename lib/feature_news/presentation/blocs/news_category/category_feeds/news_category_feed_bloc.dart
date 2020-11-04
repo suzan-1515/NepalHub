@@ -6,14 +6,12 @@ import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
 import 'package:samachar_hub/core/models/language.dart';
 import 'package:samachar_hub/core/usecases/usecase.dart';
+import 'package:samachar_hub/feature_news/domain/entities/news_category_entity.dart';
 import 'package:samachar_hub/feature_news/domain/entities/news_feed_entity.dart';
+import 'package:samachar_hub/feature_news/domain/entities/news_source_entity.dart';
 import 'package:samachar_hub/feature_news/domain/entities/sort.dart';
 import 'package:samachar_hub/feature_news/domain/usecases/get_news_by_category_use_case.dart';
 import 'package:samachar_hub/feature_news/presentation/blocs/news_filter/news_filter_bloc.dart';
-import 'package:samachar_hub/feature_news/presentation/extensions/news_extensions.dart';
-import 'package:samachar_hub/feature_news/presentation/models/news_category.dart';
-import 'package:samachar_hub/feature_news/presentation/models/news_feed.dart';
-import 'package:samachar_hub/feature_news/presentation/models/news_source.dart';
 
 part 'news_category_feed_event.dart';
 part 'news_category_feed_state.dart';
@@ -22,27 +20,27 @@ class NewsCategoryFeedBloc
     extends Bloc<NewsCategoryFeedEvent, NewsCategoryFeedState> {
   final UseCase _newsByCategoryUseCase;
   final NewsFilterBloc _newsFilterBloc;
-  final NewsCategoryUIModel _categoryModel;
+  final NewsCategoryEntity _categoryEntity;
 
   SortBy _sortBy;
-  NewsSourceUIModel _source;
+  NewsSourceEntity _source;
   int _page = 1;
 
   SortBy get sortBy => _sortBy;
-  NewsSourceUIModel get sourceModel => _source;
-  NewsCategoryUIModel get categoryModel => _categoryModel;
+  NewsSourceEntity get source => _source;
+  NewsCategoryEntity get category => _categoryEntity;
   int get page => _page;
 
   StreamSubscription _newsFilterBlocSubscription;
 
   NewsCategoryFeedBloc(
       {@required UseCase newsByCategoryUseCase,
-      @required NewsCategoryUIModel categoryModel,
+      @required NewsCategoryEntity category,
       @required NewsFilterBloc newsFilterBloc})
       : this._newsByCategoryUseCase = newsByCategoryUseCase,
-        this._categoryModel = categoryModel,
+        this._categoryEntity = category,
         this._newsFilterBloc = newsFilterBloc,
-        super(NewsCategoryFeedInitialState(categoryModel: categoryModel)) {
+        super(NewsCategoryFeedInitialState(category: category)) {
     this._newsFilterBlocSubscription = this._newsFilterBloc.listen((state) {
       this._sortBy = _newsFilterBloc.selectedSortBy;
       this._source = _newsFilterBloc.selectedSource;
@@ -58,7 +56,7 @@ class NewsCategoryFeedBloc
 
   @override
   Future<void> close() {
-    _newsFilterBlocSubscription.cancel();
+    _newsFilterBlocSubscription?.cancel();
     return super.close();
   }
 
@@ -72,6 +70,8 @@ class NewsCategoryFeedBloc
       yield* _mapGetMoreCategoryNewsEventToState(event);
     } else if (event is RefreshCategoryNewsEvent) {
       yield* _mapRefreshCategoryNewsToState(event);
+    } else if (event is FeedChangeEvent) {
+      yield* _mapFeedChangeEventToState(event);
     }
   }
 
@@ -81,16 +81,15 @@ class NewsCategoryFeedBloc
     try {
       final List<NewsFeedEntity> newsList = await _newsByCategoryUseCase.call(
         GetNewsByCategoryUseCaseParams(
-            category: categoryModel.category,
-            source: sourceModel?.source,
+            category: category,
+            source: source,
             sortBy: sortBy,
             page: 1,
             language: event.language),
       );
-      _page = 1;
       if (newsList != null && newsList.isNotEmpty) {
-        yield NewsCategoryFeedLoadSuccessState(
-            feeds: newsList.toUIModels, hasMore: true);
+        _page = 1;
+        yield NewsCategoryFeedLoadSuccessState(feeds: newsList, hasMore: true);
       } else {
         yield NewsCategoryFeedErrorState(message: 'Unable to refresh');
       }
@@ -110,8 +109,8 @@ class NewsCategoryFeedBloc
     try {
       final List<NewsFeedEntity> newsList = await _newsByCategoryUseCase.call(
         GetNewsByCategoryUseCaseParams(
-            category: categoryModel.category,
-            source: sourceModel?.source,
+            category: category,
+            source: source,
             sortBy: sortBy,
             page: page + 1,
             language: event.language),
@@ -119,15 +118,15 @@ class NewsCategoryFeedBloc
       if (newsList == null || newsList.isEmpty) {
         if (currentState is NewsCategoryFeedLoadSuccessState) {
           yield currentState.copyWith(hasMore: false);
-        }
+        } else
+          yield NewsCategoryFeedEmptyState(message: 'News feed not available.');
       } else {
         _page = _page + 1;
         if (currentState is NewsCategoryFeedLoadSuccessState) {
-          yield currentState.copyWith(
-              feeds: currentState.feeds + newsList.toUIModels);
+          yield currentState.copyWith(feeds: currentState.feeds + newsList);
         } else
           yield NewsCategoryFeedLoadSuccessState(
-              feeds: newsList.toUIModels, hasMore: true);
+              feeds: newsList, hasMore: true);
       }
     } catch (e) {
       log('News by category load more cache error.', error: e);
@@ -148,8 +147,8 @@ class NewsCategoryFeedBloc
       _page = 1;
       final List<NewsFeedEntity> newsList = await _newsByCategoryUseCase.call(
         GetNewsByCategoryUseCaseParams(
-          category: categoryModel.category,
-          source: sourceModel?.source,
+          category: category,
+          source: source,
           sortBy: sortBy,
           page: page,
           language: event.language,
@@ -158,13 +157,43 @@ class NewsCategoryFeedBloc
       if (newsList == null || newsList.isEmpty)
         yield NewsCategoryFeedEmptyState(message: 'News feed not available.');
       else
-        yield NewsCategoryFeedLoadSuccessState(
-            feeds: newsList.toUIModels, hasMore: true);
+        yield NewsCategoryFeedLoadSuccessState(feeds: newsList, hasMore: true);
     } catch (e) {
       log('News by category load error.', error: e);
       yield NewsCategoryFeedLoadErrorState(
           message:
               'Unable to load data. Make sure you are connected to internet.');
+    }
+  }
+
+  Stream<NewsCategoryFeedState> _mapFeedChangeEventToState(
+      FeedChangeEvent event) async* {
+    try {
+      final currentState = state;
+      if (currentState is NewsCategoryFeedLoadSuccessState) {
+        if (event.eventType == 'feed') {
+          final feed = (event.data as NewsFeedEntity);
+          final index =
+              currentState.feeds.indexWhere((element) => element.id == feed.id);
+          if (index != -1) {
+            final feeds = List<NewsFeedEntity>.from(currentState.feeds);
+            feeds[index] = feed;
+            yield currentState.copyWith(feeds: feeds);
+          }
+        } else if (event.eventType == 'source') {
+          final source = (event.data as NewsSourceEntity);
+          final feeds = currentState.feeds.map<NewsFeedEntity>((e) {
+            if (e.source.id == source.id) {
+              return e.copyWith(source: source);
+            }
+            return e;
+          }).toList();
+
+          yield currentState.copyWith(feeds: feeds);
+        }
+      }
+    } catch (e) {
+      log('Update change event of ${event.eventType} error: ', error: e);
     }
   }
 }

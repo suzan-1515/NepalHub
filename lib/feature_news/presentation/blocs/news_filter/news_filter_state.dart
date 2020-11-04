@@ -13,7 +13,7 @@ class SourceLoadingState extends NewsFilterState {
 }
 
 class SourceLoadSuccessState extends NewsFilterState {
-  final List<NewsSourceUIModel> sources;
+  final List<NewsSourceEntity> sources;
 
   SourceLoadSuccessState({this.sources});
 
@@ -40,7 +40,7 @@ class SourceEmptyState extends NewsFilterState {
 }
 
 class SourceChangedState extends NewsFilterState {
-  final NewsSourceUIModel source;
+  final NewsSourceEntity source;
   SourceChangedState({this.source});
 
   @override

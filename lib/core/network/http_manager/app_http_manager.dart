@@ -13,12 +13,12 @@ class AppHttpManager implements HttpManager {
   AppHttpManager() {
     BaseOptions options = BaseOptions(
       baseUrl: APIUrlConstants.BASE_API_URL,
-      connectTimeout: 15000,
-      receiveTimeout: 15000,
+      connectTimeout: 20000,
+      receiveTimeout: 20000,
     );
     this.dio = Dio(options);
-    dio.interceptors.add(LogInterceptor(
-        responseBody: true, requestBody: true, requestHeader: true));
+    // dio.interceptors.add(LogInterceptor(
+    //     responseBody: true, requestBody: true, requestHeader: true));
   }
 
   @override

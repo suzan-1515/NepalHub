@@ -4,38 +4,38 @@ abstract class LikeUnlikeState extends Equatable {
   const LikeUnlikeState();
 }
 
-class InitialState extends LikeUnlikeState {
+class NewsLikeInitialState extends LikeUnlikeState {
   @override
   List<Object> get props => [];
 }
 
-class InProgressState extends LikeUnlikeState {
+class NewsLikeInProgressState extends LikeUnlikeState {
   @override
   List<Object> get props => [];
 }
 
-class LikedState extends LikeUnlikeState {
-  final String message;
+class NewsLikeSuccessState extends LikeUnlikeState {
+  final NewsFeedEntity feed;
 
-  LikedState({this.message});
-
-  @override
-  List<Object> get props => [message];
-}
-
-class UnlikedState extends LikeUnlikeState {
-  final String message;
-
-  UnlikedState({this.message});
+  NewsLikeSuccessState({@required this.feed});
 
   @override
-  List<Object> get props => [message];
+  List<Object> get props => [feed];
 }
 
-class ErrorState extends LikeUnlikeState {
+class NewsUnLikeSuccessState extends LikeUnlikeState {
+  final NewsFeedEntity feed;
+
+  NewsUnLikeSuccessState({@required this.feed});
+
+  @override
+  List<Object> get props => [feed];
+}
+
+class NewsLikeErrorState extends LikeUnlikeState {
   final String message;
 
-  ErrorState({this.message});
+  NewsLikeErrorState({this.message});
 
   @override
   List<Object> get props => [message];

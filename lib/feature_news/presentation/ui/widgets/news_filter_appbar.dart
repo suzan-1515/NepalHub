@@ -34,8 +34,7 @@ class NewsFilteringAppBar extends StatelessWidget {
             bottom: PreferredSize(
               preferredSize: Size.fromHeight(kToolbarHeight),
               child: BlocBuilder<NewsFilterBloc, NewsFilterState>(
-                  builder: (context, state) {
-                return IgnorePointer(
+                builder: (context, state) => IgnorePointer(
                   ignoring: state is SourceLoadingState,
                   child: NewsFilterView(
                     sources: context.bloc<NewsFilterBloc>().sources,
@@ -44,8 +43,8 @@ class NewsFilteringAppBar extends StatelessWidget {
                     selectedSortby:
                         context.bloc<NewsFilterBloc>().selectedSortBy,
                   ),
-                );
-              }),
+                ),
+              ),
             )),
       ],
       body: body,

@@ -3,15 +3,16 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_advanced_networkimage/provider.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:samachar_hub/core/widgets/icon_badge_widget.dart';
+import 'package:samachar_hub/core/extensions/number_extensions.dart';
 
 class CommentBar extends StatelessWidget {
   final VoidCallback onLikeTap;
   final VoidCallback onShareTap;
   final VoidCallback onCommentTap;
-  final String commentCount;
+  final int commentCount;
   final bool isLiked;
-  final String likeCount;
-  final String shareCount;
+  final int likeCount;
+  final int shareCount;
   final String userAvatar;
 
   CommentBar({
@@ -61,7 +62,7 @@ class CommentBar extends StatelessWidget {
                       width: 8,
                     ),
                     Text(
-                      '$commentCount Comments',
+                      '${commentCount.compactFormat} Comments',
                       style: Theme.of(context).textTheme.caption,
                     ),
                   ],
@@ -69,22 +70,40 @@ class CommentBar extends StatelessWidget {
               ),
             ),
           ),
-          IconBadge(
-            iconData: FontAwesomeIcons.comment,
-            badgeText: commentCount,
-            onTap: onCommentTap,
-          ),
-          IconBadge(
-            iconData: isLiked
-                ? FontAwesomeIcons.solidThumbsUp
-                : FontAwesomeIcons.thumbsUp,
-            badgeText: likeCount,
-            onTap: onLikeTap,
-          ),
-          (shareCount != null)
+          (commentCount != 0)
+              ? IconBadge(
+                  iconData: FontAwesomeIcons.comment,
+                  badgeText: commentCount.toString(),
+                  onTap: onCommentTap,
+                )
+              : IconButton(
+                  icon: Icon(
+                    FontAwesomeIcons.comment,
+                    size: 16,
+                  ),
+                  onPressed: onCommentTap,
+                ),
+          (likeCount != 0)
+              ? IconBadge(
+                  iconData: isLiked
+                      ? FontAwesomeIcons.solidThumbsUp
+                      : FontAwesomeIcons.thumbsUp,
+                  badgeText: likeCount.compactFormat,
+                  onTap: onLikeTap,
+                )
+              : IconButton(
+                  icon: Icon(
+                    isLiked
+                        ? FontAwesomeIcons.solidThumbsUp
+                        : FontAwesomeIcons.thumbsUp,
+                    size: 16,
+                  ),
+                  onPressed: onLikeTap,
+                ),
+          (shareCount != 0)
               ? IconBadge(
                   iconData: FontAwesomeIcons.shareAlt,
-                  badgeText: shareCount,
+                  badgeText: shareCount.compactFormat,
                   onTap: onShareTap,
                 )
               : IconButton(

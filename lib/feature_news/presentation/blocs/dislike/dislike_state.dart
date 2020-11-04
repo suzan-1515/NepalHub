@@ -15,21 +15,21 @@ class DislikeInProgress extends DislikeState {
 }
 
 class DislikeSuccess extends DislikeState {
-  final String message;
+  final NewsFeedEntity feed;
 
-  DislikeSuccess({this.message});
+  DislikeSuccess({this.feed});
 
   @override
-  List<Object> get props => [message];
+  List<Object> get props => [feed];
 }
 
 class UndislikeSuccess extends DislikeState {
-  final String message;
+  final NewsFeedEntity feed;
 
-  UndislikeSuccess({this.message});
+  UndislikeSuccess({this.feed});
 
   @override
-  List<Object> get props => [message];
+  List<Object> get props => [feed];
 }
 
 class DislikeError extends DislikeState {

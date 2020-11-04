@@ -4,38 +4,52 @@ abstract class NewsCategoryState extends Equatable {
   const NewsCategoryState();
 }
 
-class Initial extends NewsCategoryState {
+class NewsCategoryInitialState extends NewsCategoryState {
   @override
   List<Object> get props => [];
 }
 
-class Loading extends NewsCategoryState {
+class NewsCategoryLoadingState extends NewsCategoryState {
   @override
   List<Object> get props => [];
 }
 
-class LoadSuccess extends NewsCategoryState {
-  final List<NewsCategoryUIModel> categories;
+class NewsCategoryRefreshingState extends NewsCategoryState {
+  @override
+  List<Object> get props => [];
+}
 
-  LoadSuccess(this.categories);
+class NewsCategoryLoadSuccessState extends NewsCategoryState {
+  final List<NewsCategoryEntity> categories;
+
+  NewsCategoryLoadSuccessState(this.categories);
 
   @override
   List<Object> get props => [categories];
 }
 
-class Empty extends NewsCategoryState {
+class NewsCategoryLoadEmptyState extends NewsCategoryState {
   final String message;
 
-  Empty({this.message});
+  NewsCategoryLoadEmptyState({this.message});
 
   @override
   List<Object> get props => [message];
 }
 
-class Error extends NewsCategoryState {
+class NewsCategoryErrorState extends NewsCategoryState {
   final String message;
 
-  Error({this.message});
+  NewsCategoryErrorState({this.message});
+
+  @override
+  List<Object> get props => [message];
+}
+
+class NewsCategoryLoadErrorState extends NewsCategoryState {
+  final String message;
+
+  NewsCategoryLoadErrorState({this.message});
 
   @override
   List<Object> get props => [message];

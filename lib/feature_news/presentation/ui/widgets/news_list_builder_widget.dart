@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:samachar_hub/core/view/content_view_style.dart';
-import 'package:samachar_hub/feature_news/presentation/models/news_feed.dart';
+import 'package:samachar_hub/feature_news/domain/entities/news_feed_entity.dart';
 import 'package:samachar_hub/feature_news/presentation/ui/widgets/news_compact_view.dart';
 import 'package:samachar_hub/feature_news/presentation/ui/widgets/news_list_view.dart';
 import 'package:samachar_hub/feature_news/presentation/ui/widgets/news_thumbnail_view.dart';
 import 'package:samachar_hub/core/widgets/progress_widget.dart';
-import 'package:samachar_hub/feature_news/utils/provider.dart';
 
 class NewsListBuilder extends StatelessWidget {
   const NewsListBuilder({
@@ -21,7 +20,7 @@ class NewsListBuilder extends StatelessWidget {
 
   final Future<void> Function() onRefresh;
   final Function() onLoadMore;
-  final List<NewsFeedUIModel> data;
+  final List<NewsFeedEntity> data;
   final bool hasMore;
   final ContentViewStyle contentViewStyle;
 
@@ -46,24 +45,21 @@ class NewsListBuilder extends StatelessWidget {
           switch (contentViewStyle) {
             case ContentViewStyle.LIST_VIEW:
               view = NewsListView(
-                feedUIModel: feed,
+                feed: feed,
               );
               break;
             case ContentViewStyle.THUMBNAIL_VIEW:
               view = NewsThumbnailView(
-                feedUIModel: feed,
+                feed: feed,
               );
               break;
             case ContentViewStyle.COMPACT_VIEW:
               view = NewsCompactView(
-                feedUIModel: feed,
+                feed: feed,
               );
               break;
           }
-          return NewsProvider.feedItemBlocProvider(
-            feedUIModel: feed,
-            child: view,
-          );
+          return view;
         },
       ),
     );

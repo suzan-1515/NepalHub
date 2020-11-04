@@ -9,7 +9,7 @@ class GetCategories extends NewsCategoryEvent {
 
   GetCategories({this.language = Language.ENGLISH});
   @override
-  List<Object> get props => [];
+  List<Object> get props => [language];
 }
 
 class GetFollowedCategories extends NewsCategoryEvent {
@@ -26,4 +26,14 @@ class RefreshCategories extends NewsCategoryEvent {
   RefreshCategories({this.language = Language.ENGLISH});
   @override
   List<Object> get props => [language];
+}
+
+class UpdateCategoryChangeEvent extends NewsCategoryEvent {
+  final NewsCategoryEntity category;
+  final String eventType;
+
+  UpdateCategoryChangeEvent(
+      {@required this.category, @required this.eventType});
+  @override
+  List<Object> get props => [category, eventType];
 }

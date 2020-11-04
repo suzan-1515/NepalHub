@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:samachar_hub/core/constants/app_constants.dart';
 import 'package:samachar_hub/core/utils/date_time_utils.dart';
 import 'package:samachar_hub/feature_auth/presentation/blocs/auth_bloc.dart';
-import 'package:samachar_hub/feature_main/presentation/models/home/home_model.dart';
+import 'package:samachar_hub/feature_main/domain/entities/home_entity.dart';
 import 'package:samachar_hub/feature_main/presentation/ui/home/widgets/corona_section.dart';
 import 'package:samachar_hub/feature_main/presentation/ui/home/widgets/date_weather_section.dart';
 import 'package:samachar_hub/feature_main/presentation/ui/home/widgets/daily_horoscope_section.dart';
@@ -14,7 +14,7 @@ import 'package:samachar_hub/feature_main/presentation/ui/home/widgets/news_topi
 import 'package:samachar_hub/feature_main/presentation/ui/home/widgets/trending_news_section.dart';
 
 class HomeListBuilder extends StatelessWidget {
-  final HomeUIModel data;
+  final HomeEntity data;
   final Future<void> Function() onRefresh;
   final ScrollController scrollController;
 
@@ -59,31 +59,31 @@ class HomeListBuilder extends StatelessWidget {
             ),
           ),
           const SliverToBoxAdapter(child: const DateWeatherSection()),
-          if (data.hasCoronaData)
+          if (data.corona != null)
             SliverToBoxAdapter(
               child: CoronaSection(
-                data: data.coronaUIModel,
+                data: data.corona,
               ),
             ),
-          if (isEarlyMorning() && data.hasHoroscope)
+          if (isEarlyMorning() && data.horoscope != null)
             SliverToBoxAdapter(
                 child: DailyHoroscope(
-              horoscopeUIModel: data.horoscopeUIModel,
+              data: data.horoscope,
             )),
-          if (data.hasNewsCategories)
+          if (data.newsCategories != null && data.newsCategories.isNotEmpty)
             SliverToBoxAdapter(
                 child: NewsCategoryMenuSection(
-              newsCategoryUIModels: data.newsCategoryUIModels,
+              newsCategories: data.newsCategories,
             )),
-          if (data.hasTrendingNews)
+          if (data.trendingNews != null && data.trendingNews.isNotEmpty)
             SliverToBoxAdapter(
                 child: TrendingNewsSection(
-              trendingNewsUIModel: data.trendingNewsUIModel,
+              trendingNews: data.trendingNews,
             )),
-          if (data.hasNewsTopics)
+          if (data.newsTopics != null && data.newsTopics.isNotEmpty)
             SliverToBoxAdapter(
                 child: NewsTopicsSection(
-              items: data.newsTopicUIModels,
+              items: data.newsTopics,
             )),
 
           // if (data.hasRecentNews)
@@ -96,14 +96,13 @@ class HomeListBuilder extends StatelessWidget {
           //     horoscopeData: data.horoscopeUIModel,
           //     forexData: data.forexUIModel,
           //   )),
-          if (data.hasNewsSources)
+          if (data.newsSources != null && data.newsSources.isNotEmpty)
             SliverToBoxAdapter(
-                child: NewsSourceMenuSection(
-                    newsSourceUIModels: data.newsSourceUIModels)),
+                child: NewsSourceMenuSection(newsSources: data.newsSources)),
 
-          if (data.hasLatestNews)
+          if (data.latestNews != null && data.latestNews.isNotEmpty)
             LatestNewsSection(
-              latestNewsUIModel: data.latestNewsUIModel,
+              latestNews: data.latestNews,
             ),
         ],
       ),

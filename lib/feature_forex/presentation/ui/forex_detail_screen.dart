@@ -49,7 +49,7 @@ class ForexDetailScreen extends StatelessWidget {
     return BlocBuilder<LikeUnlikeBloc, LikeUnlikeState>(
       builder: (context, state) {
         return CommentBar(
-          likeCount: forexUIModel?.formattedLikeCount ?? '0',
+          likeCount: forexUIModel.forexEntity.likeCount ?? 0,
           onCommentTap: () => GetIt.I.get<NavigationService>().toCommentsScreen(
               context: context,
               threadTitle: forexUIModel.forexEntity.currency.title,
@@ -58,9 +58,9 @@ class ForexDetailScreen extends StatelessWidget {
           onShareTap: () {
             context.bloc<ShareBloc>().add(Share());
           },
-          commentCount: forexUIModel?.formattedCommentCount ?? '0',
+          commentCount: forexUIModel.forexEntity.commentCount ?? 0,
           isLiked: forexUIModel?.forexEntity?.isLiked ?? false,
-          shareCount: forexUIModel?.formattedShareCount ?? '0',
+          shareCount: forexUIModel.forexEntity.shareCount ?? 0,
           userAvatar: user?.avatar,
           onLikeTap: () {
             if (forexUIModel.forexEntity.isLiked) {

@@ -13,12 +13,12 @@ class GetNewsFilterSourcesEvent extends NewsFilterEvent {
 }
 
 class NewsFilterSourceChangedEvent extends NewsFilterEvent {
-  final NewsSourceUIModel source;
+  final NewsSourceEntity source;
 
   NewsFilterSourceChangedEvent({this.source});
 
   @override
-  List<Object> get props => [source.source];
+  List<Object> get props => [source];
 }
 
 class NewsFilterSortByChangedEvent extends NewsFilterEvent {

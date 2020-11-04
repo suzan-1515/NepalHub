@@ -12,30 +12,29 @@ class RecentNewsSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SliverList(
-      delegate: SliverChildBuilderDelegate((_, int index) {
-        if (index == 0) {
-          return SectionHeading(
-            title: 'Recent News',
-            subtitle: 'Most recent stories around you',
-          );
-        }
-        var feed = recentNewsUIModel.feeds[index - 1];
-        Widget feedWidget;
-        if (index % 4 == 0) {
-          feedWidget = NewsThumbnailView(
-            feedUIModel: feed,
-          );
-        } else {
-          feedWidget = NewsListView(
-            feedUIModel: feed,
-          );
-        }
-        return NewsProvider.feedItemBlocProvider(
-          feedUIModel: feed,
-          child: feedWidget,
-        );
-      }, childCount: recentNewsUIModel.feeds.length + 1),
+    return NewsProvider.feedItemBlocProvider(
+      child: SliverList(
+        delegate: SliverChildBuilderDelegate((_, int index) {
+          if (index == 0) {
+            return SectionHeading(
+              title: 'Recent News',
+              subtitle: 'Most recent stories around you',
+            );
+          }
+          var feed = recentNewsUIModel.feeds[index - 1];
+          Widget feedWidget;
+          if (index % 4 == 0) {
+            feedWidget = NewsThumbnailView(
+              feed: feed,
+            );
+          } else {
+            feedWidget = NewsListView(
+              feed: feed,
+            );
+          }
+          return feedWidget;
+        }, childCount: recentNewsUIModel.feeds.length + 1),
+      ),
     );
   }
 }

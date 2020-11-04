@@ -89,7 +89,7 @@ class HoroscopeDetailScreen extends StatelessWidget {
     return BlocBuilder<LikeUnlikeBloc, LikeUnlikeState>(
       builder: (context, state) {
         return CommentBar(
-          likeCount: horoscopeUIModel?.formattedLikeCount ?? '0',
+          likeCount: horoscopeUIModel.horoscopeEntity.likeCount ?? 0,
           onCommentTap: () => GetIt.I.get<NavigationService>().toCommentsScreen(
               context: context,
               threadTitle:
@@ -106,9 +106,9 @@ class HoroscopeDetailScreen extends StatelessWidget {
                     contentType: 'horoscope')
                 .then((value) => context.bloc<ShareBloc>().add(Share()));
           },
-          commentCount: horoscopeUIModel?.formattedCommentCount ?? '0',
+          commentCount: horoscopeUIModel.horoscopeEntity.commentCount ?? 0,
           isLiked: horoscopeUIModel?.horoscopeEntity?.isLiked ?? false,
-          shareCount: horoscopeUIModel?.formattedShareCount ?? '0',
+          shareCount: horoscopeUIModel.horoscopeEntity.shareCount ?? 0,
           userAvatar: user?.avatar,
           onLikeTap: () {
             if (horoscopeUIModel.horoscopeEntity.isLiked) {

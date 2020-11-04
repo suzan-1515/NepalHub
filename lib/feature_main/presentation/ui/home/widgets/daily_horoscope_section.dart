@@ -5,14 +5,13 @@ import 'package:get_it/get_it.dart';
 import 'package:samachar_hub/core/models/language.dart';
 import 'package:samachar_hub/core/services/services.dart';
 import 'package:samachar_hub/core/widgets/cached_image_widget.dart';
-import 'package:samachar_hub/feature_horoscope/presentation/models/horoscope_model.dart';
+import 'package:samachar_hub/feature_horoscope/domain/entities/horoscope_entity.dart';
 import 'package:samachar_hub/feature_horoscope/presentation/extensions/horoscope_extensions.dart';
 import 'package:samachar_hub/feature_main/presentation/blocs/settings/settings_cubit.dart';
 
 class DailyHoroscope extends StatelessWidget {
-  final HoroscopeUIModel horoscopeUIModel;
-  const DailyHoroscope({Key key, @required this.horoscopeUIModel})
-      : super(key: key);
+  final HoroscopeEntity data;
+  const DailyHoroscope({Key key, @required this.data}) : super(key: key);
 
   Widget _buildPopupMenu(BuildContext context) {
     return PopupMenuButton<String>(
@@ -91,12 +90,10 @@ class DailyHoroscope extends StatelessWidget {
   }
 
   Widget _buildCard(BuildContext context, int defaultHoroscopeSign) {
-    final sign = horoscopeUIModel.horoscopeEntity
-        .signByIndex(defaultHoroscopeSign, Language.NEPALI);
-    final signIcon =
-        horoscopeUIModel.horoscopeEntity.signIconByIndex(defaultHoroscopeSign);
-    final horoscope = horoscopeUIModel.horoscopeEntity
-        .horoscopeByIndex(defaultHoroscopeSign, Language.NEPALI);
+    final sign = data.signByIndex(defaultHoroscopeSign, Language.NEPALI);
+    final signIcon = data.signIconByIndex(defaultHoroscopeSign);
+    final horoscope =
+        data.horoscopeByIndex(defaultHoroscopeSign, Language.NEPALI);
     return Card(
       clipBehavior: Clip.hardEdge,
       color: Theme.of(context).cardColor,
@@ -106,14 +103,14 @@ class DailyHoroscope extends StatelessWidget {
         borderRadius: BorderRadius.circular(6),
       ),
       child: InkWell(
-        onTap: () => GetIt.I.get<NavigationService>().toHoroscopeDetail(context,
-            sign, signIcon, horoscope, horoscopeUIModel.horoscopeEntity),
+        onTap: () => GetIt.I
+            .get<NavigationService>()
+            .toHoroscopeDetail(context, sign, signIcon, horoscope, data),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            _buildSignRow(
-                context, sign, signIcon, horoscopeUIModel.formattedDate),
+            _buildSignRow(context, sign, signIcon, data.formattedDate),
             Divider(),
             _buildHoroscopeRow(context, horoscope),
           ],

@@ -9,72 +9,54 @@ import 'package:samachar_hub/feature_news/presentation/ui/following/widgets/sect
 import 'package:samachar_hub/feature_news/presentation/ui/following/widgets/view_all_button.dart';
 import 'package:samachar_hub/feature_news/utils/provider.dart';
 
-class FollowedNewsSourceSection extends StatefulWidget {
+class FollowedNewsSourceSection extends StatelessWidget {
   const FollowedNewsSourceSection({
     Key key,
   }) : super(key: key);
 
   @override
-  _FollowedNewsSourceSectionState createState() =>
-      _FollowedNewsSourceSectionState();
-}
-
-class _FollowedNewsSourceSectionState extends State<FollowedNewsSourceSection> {
-  NewsSourceBloc _newsSourceBloc = GetIt.I.get<NewsSourceBloc>();
-  @override
-  void initState() {
-    super.initState();
-    _newsSourceBloc.add(GetFollowedSourcesEvent());
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    _newsSourceBloc?.close();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return FadeInUp(
-      duration: Duration(milliseconds: 200),
-      child: Card(
-        color: Theme.of(context).cardColor,
-        elevation: 1,
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              SectionTitle(
-                context: context,
-                title: 'News Sources',
-                onRefreshTap: () {
-                  _newsSourceBloc.add(GetFollowedSourcesEvent());
-                },
-              ),
-              SizedBox(
-                height: 8,
-              ),
-              Flexible(
-                fit: FlexFit.loose,
-                child: BlocProvider<NewsSourceBloc>.value(
-                  value: _newsSourceBloc,
+    return NewsProvider.sourceBlocProvider(
+      child: FadeInUp(
+        duration: Duration(milliseconds: 200),
+        child: Card(
+          color: Theme.of(context).cardColor,
+          elevation: 1,
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                SectionTitle(
+                  context: context,
+                  title: 'News Sources',
+                  onRefreshTap: () {
+                    context
+                        .bloc<NewsSourceBloc>()
+                        .add(GetFollowedSourcesEvent());
+                  },
+                ),
+                SizedBox(
+                  height: 8,
+                ),
+                Flexible(
+                  fit: FlexFit.loose,
                   child: FollowedNewsSourceList(),
                 ),
-              ),
-              SizedBox(
-                height: 8,
-              ),
-              Divider(),
-              ViewAllButton(
-                  context: context,
-                  onTap: () {
-                    GetIt.I
-                        .get<NavigationService>()
-                        .toFollowedNewsSourceScreen(context);
-                  }),
-            ],
+                SizedBox(
+                  height: 8,
+                ),
+                Divider(),
+                ViewAllButton(
+                    context: context,
+                    onTap: () {
+                      GetIt.I
+                          .get<NavigationService>()
+                          .toFollowedNewsSourceScreen(context);
+                    }),
+              ],
+            ),
           ),
         ),
       ),

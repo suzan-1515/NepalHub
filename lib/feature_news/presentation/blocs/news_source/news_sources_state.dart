@@ -4,38 +4,52 @@ abstract class NewsSourceState extends Equatable {
   const NewsSourceState();
 }
 
-class InitialState extends NewsSourceState {
+class NewsSourceInitialState extends NewsSourceState {
   @override
   List<Object> get props => [];
 }
 
-class LoadingState extends NewsSourceState {
+class NewsSourceLoadingState extends NewsSourceState {
   @override
   List<Object> get props => [];
 }
 
-class LoadSuccessState extends NewsSourceState {
-  final List<NewsSourceUIModel> sources;
+class NewsSourceRefreshingState extends NewsSourceState {
+  @override
+  List<Object> get props => [];
+}
 
-  LoadSuccessState(this.sources);
+class NewsSourceLoadSuccessState extends NewsSourceState {
+  final List<NewsSourceEntity> sources;
+
+  NewsSourceLoadSuccessState(this.sources);
 
   @override
   List<Object> get props => [sources];
 }
 
-class EmptyState extends NewsSourceState {
+class NewsSourceLoadEmptyState extends NewsSourceState {
   final String message;
 
-  EmptyState({this.message});
+  NewsSourceLoadEmptyState({this.message});
 
   @override
   List<Object> get props => [message];
 }
 
-class ErrorState extends NewsSourceState {
+class NewsSourceErrorState extends NewsSourceState {
   final String message;
 
-  ErrorState({this.message});
+  NewsSourceErrorState({this.message});
+
+  @override
+  List<Object> get props => [message];
+}
+
+class NewsSourceLoadErrorState extends NewsSourceState {
+  final String message;
+
+  NewsSourceLoadErrorState({this.message});
 
   @override
   List<Object> get props => [message];

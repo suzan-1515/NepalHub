@@ -14,7 +14,7 @@ part 'related_news_event.dart';
 part 'related_news_state.dart';
 
 class RelatedNewsBloc extends Bloc<RelatedNewsEvent, RelatedNewsState> {
-  final NewsFeedUIModel feed;
+  final NewsFeedEntity feed;
   final UseCase _getRelatedNewsUseCase;
 
   RelatedNewsBloc({this.feed, @required UseCase getRelatedNewsUseCase})
@@ -30,11 +30,11 @@ class RelatedNewsBloc extends Bloc<RelatedNewsEvent, RelatedNewsState> {
       yield LoadingState();
       try {
         final List<NewsFeedEntity> feeds = await _getRelatedNewsUseCase
-            .call(GetRelatedNewsUseCaseParams(feed: feed.feedEntity));
+            .call(GetRelatedNewsUseCaseParams(feed: feed));
         if (feeds == null || feeds.isEmpty)
           yield EmptyState(message: 'Related feed not available.');
         else
-          yield LoadSuccessState(feeds.toUIModels);
+          yield LoadSuccessState(feeds);
       } catch (e) {
         log('Related news load error.', error: e);
         yield LoadErrorState(message: 'Unable to load related feeds.');

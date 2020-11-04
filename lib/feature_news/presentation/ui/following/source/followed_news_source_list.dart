@@ -10,21 +10,32 @@ import 'package:samachar_hub/feature_news/presentation/blocs/news_source/news_so
 import 'package:samachar_hub/feature_news/presentation/ui/widgets/news_menu_item.dart';
 import 'package:samachar_hub/core/extensions/view.dart';
 
-class FollowedNewsSourceList extends StatelessWidget {
+class FollowedNewsSourceList extends StatefulWidget {
   const FollowedNewsSourceList({
     Key key,
   }) : super(key: key);
 
   @override
+  _FollowedNewsSourceListState createState() => _FollowedNewsSourceListState();
+}
+
+class _FollowedNewsSourceListState extends State<FollowedNewsSourceList> {
+  @override
+  void initState() {
+    super.initState();
+    context.bloc<NewsSourceBloc>().add(GetFollowedSourcesEvent());
+  }
+
+  @override
   Widget build(BuildContext context) {
     return BlocConsumer<NewsSourceBloc, NewsSourceState>(
       listener: (context, state) {
-        if (state is ErrorState) {
+        if (state is NewsSourceErrorState) {
           context.showMessage(state.message);
         }
       },
       builder: (context, state) {
-        if (state is LoadSuccessState) {
+        if (state is NewsSourceLoadSuccessState) {
           return FadeInUp(
             duration: Duration(milliseconds: 200),
             child: LimitedBox(
@@ -35,20 +46,20 @@ class FollowedNewsSourceList extends StatelessWidget {
                 scrollDirection: Axis.horizontal,
                 itemCount: state.sources.length,
                 itemBuilder: (_, index) {
-                  var sourceModel = state.sources[index];
+                  var source = state.sources[index];
                   return NewsMenuItem(
-                    title: sourceModel.source.title,
-                    icon: sourceModel.source.icon,
+                    title: source.title,
+                    icon: source.icon,
                     onTap: () {
                       GetIt.I.get<NavigationService>().toNewsSourceFeedScreen(
-                          context: context, source: sourceModel.source);
+                          context: context, source: source);
                     },
                   );
                 },
               ),
             ),
           );
-        } else if (state is ErrorState) {
+        } else if (state is NewsSourceErrorState) {
           return Center(
             child: ErrorDataView(
               message: state.message,
@@ -57,7 +68,7 @@ class FollowedNewsSourceList extends StatelessWidget {
               },
             ),
           );
-        } else if (state is EmptyState) {
+        } else if (state is NewsSourceLoadEmptyState) {
           return Center(
             child: EmptyDataView(
               text: state.message,

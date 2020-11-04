@@ -1,41 +1,41 @@
 part of 'follow_un_follow_bloc.dart';
 
-abstract class FollowUnFollowState extends Equatable {
-  const FollowUnFollowState();
+abstract class TopicFollowUnFollowState extends Equatable {
+  const TopicFollowUnFollowState();
 }
 
-class FollowUnFollowInitialState extends FollowUnFollowState {
+class TopicFollowInitialState extends TopicFollowUnFollowState {
   @override
   List<Object> get props => [];
 }
 
-class FollowUnFollowInProgressState extends FollowUnFollowState {
+class TopicFollowInProgressState extends TopicFollowUnFollowState {
   @override
   List<Object> get props => [];
 }
 
-class FollowUnFollowFollowedState extends FollowUnFollowState {
-  final String message;
+class TopicFollowSuccessState extends TopicFollowUnFollowState {
+  final NewsTopicEntity topic;
 
-  FollowUnFollowFollowedState({this.message});
-
-  @override
-  List<Object> get props => [message];
-}
-
-class FollowUnFollowUnFollowedState extends FollowUnFollowState {
-  final String message;
-
-  FollowUnFollowUnFollowedState({this.message});
+  TopicFollowSuccessState({this.topic});
 
   @override
-  List<Object> get props => [message];
+  List<Object> get props => [topic];
 }
 
-class FollowUnFollowErrorState extends FollowUnFollowState {
+class TopicUnFollowSuccessState extends TopicFollowUnFollowState {
+  final NewsTopicEntity topic;
+
+  TopicUnFollowSuccessState({this.topic});
+
+  @override
+  List<Object> get props => [topic];
+}
+
+class TopicFollowErrorState extends TopicFollowUnFollowState {
   final String message;
 
-  FollowUnFollowErrorState({this.message});
+  TopicFollowErrorState({this.message});
 
   @override
   List<Object> get props => [message];

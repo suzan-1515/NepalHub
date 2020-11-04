@@ -7,6 +7,20 @@ abstract class DislikeUndislikeEvent extends Equatable {
   List<Object> get props => [];
 }
 
-class DislikeEvent extends DislikeUndislikeEvent {}
+class DislikeEvent extends DislikeUndislikeEvent {
+  final NewsFeedEntity feed;
 
-class UndislikeEvent extends DislikeUndislikeEvent {}
+  DislikeEvent({@required this.feed});
+
+  @override
+  List<Object> get props => [feed];
+}
+
+class UndislikeEvent extends DislikeUndislikeEvent {
+  final NewsFeedEntity feed;
+
+  UndislikeEvent({@required this.feed});
+
+  @override
+  List<Object> get props => [feed];
+}

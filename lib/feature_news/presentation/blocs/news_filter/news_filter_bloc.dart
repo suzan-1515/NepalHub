@@ -9,8 +9,6 @@ import 'package:samachar_hub/core/usecases/usecase.dart';
 import 'package:samachar_hub/feature_news/domain/entities/news_source_entity.dart';
 import 'package:samachar_hub/feature_news/domain/entities/sort.dart';
 import 'package:samachar_hub/feature_news/domain/usecases/get_news_sources_use_case.dart';
-import 'package:samachar_hub/feature_news/presentation/models/news_source.dart';
-import 'package:samachar_hub/feature_news/presentation/extensions/news_extensions.dart';
 
 part 'news_filter_event.dart';
 part 'news_filter_state.dart';
@@ -23,8 +21,8 @@ class NewsFilterBloc extends Bloc<NewsFilterEvent, NewsFilterState> {
         super(InitialState());
 
   SortBy selectedSortBy = SortBy.RECENT;
-  NewsSourceUIModel selectedSource;
-  List<NewsSourceUIModel> sources;
+  NewsSourceEntity selectedSource;
+  List<NewsSourceEntity> sources;
 
   @override
   Stream<NewsFilterState> mapEventToState(
@@ -39,7 +37,7 @@ class NewsFilterBloc extends Bloc<NewsFilterEvent, NewsFilterState> {
         if (sources == null || sources.isEmpty) {
           yield SourceEmptyState(message: 'News sources not available');
         } else {
-          this.sources = sources.toUIModels;
+          this.sources = sources;
           yield SourceLoadSuccessState(sources: this.sources);
         }
       } catch (e) {

@@ -1,11 +1,41 @@
 part of 'follow_un_follow_bloc.dart';
 
-abstract class FollowUnFollowEvent extends Equatable {
-  const FollowUnFollowEvent();
+abstract class CategoryFollowUnfollowEvent extends Equatable {
+  const CategoryFollowUnfollowEvent();
   @override
   List<Object> get props => [];
 }
 
-class FollowUnFollowFollowEvent extends FollowUnFollowEvent {}
+class CategoryFollowEvent extends CategoryFollowUnfollowEvent {
+  final NewsCategoryEntity category;
 
-class FollowUnFollowUnFollowEvent extends FollowUnFollowEvent {}
+  CategoryFollowEvent({@required this.category});
+
+  @override
+  List<Object> get props => [category];
+}
+
+class CategoryUnFollowEvent extends CategoryFollowUnfollowEvent {
+  final NewsCategoryEntity category;
+
+  CategoryUnFollowEvent({@required this.category});
+
+  @override
+  List<Object> get props => [category];
+}
+
+class UpdateFollowEvent extends CategoryFollowUnfollowEvent {
+  final NewsCategoryEntity category;
+
+  UpdateFollowEvent({@required this.category});
+  @override
+  List<Object> get props => [category];
+}
+
+class UpdateUnfollowEvent extends CategoryFollowUnfollowEvent {
+  final NewsCategoryEntity category;
+
+  UpdateUnfollowEvent({@required this.category});
+  @override
+  List<Object> get props => [category];
+}

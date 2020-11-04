@@ -394,6 +394,7 @@ class NewsRemoteService implements RemoteService {
     final Map<String, dynamic> queryParams = {
       '_start': page.start.toString(),
       '_limit': page.limit.toString(),
+      '_sort': 'publishedAt:DESC',
     };
     var latestNewsCall = httpManager.get(
         path: NEWS_BOOKMARK, query: queryParams, headers: headers);

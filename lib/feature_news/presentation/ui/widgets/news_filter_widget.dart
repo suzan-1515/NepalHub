@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:samachar_hub/core/widgets/sortby_selector.dart';
+import 'package:samachar_hub/feature_news/domain/entities/news_source_entity.dart';
 import 'package:samachar_hub/feature_news/domain/entities/sort.dart';
 import 'package:samachar_hub/feature_news/presentation/blocs/news_filter/news_filter_bloc.dart';
-import 'package:samachar_hub/feature_news/presentation/models/news_source.dart';
 import 'package:samachar_hub/feature_news/presentation/ui/widgets/news_sources_selector.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -14,15 +14,15 @@ class NewsFilterView extends StatelessWidget {
       @required this.selectedSortby})
       : super(key: key);
 
-  final List<NewsSourceUIModel> sources;
-  final NewsSourceUIModel selectedSource;
+  final List<NewsSourceEntity> sources;
+  final NewsSourceEntity selectedSource;
   final SortBy selectedSortby;
 
   Map<String, String> _getSourceSelectors() {
     Map<String, String> sourceOptions = {};
     sourceOptions['all'] = 'All Sources';
     sources?.forEach(
-      (element) => sourceOptions[element.source.code] = element.source.title,
+      (element) => sourceOptions[element.code] = element.title,
     );
     return sourceOptions;
   }
@@ -51,14 +51,14 @@ class NewsFilterView extends StatelessWidget {
               child: NewsSourcesSelector(
                 onChanged: (value) {
                   final changedSourceModel = sources?.firstWhere(
-                    (element) => element.source.code == value,
+                    (element) => element.code == value,
                     orElse: () => null,
                   );
                   context.bloc<NewsFilterBloc>().add(
                       NewsFilterSourceChangedEvent(source: changedSourceModel));
                 },
                 selections: this._getSourceSelectors(),
-                selectedValue: selectedSource?.source?.code ?? 'all',
+                selectedValue: selectedSource?.code ?? 'all',
               ),
             ),
           ),

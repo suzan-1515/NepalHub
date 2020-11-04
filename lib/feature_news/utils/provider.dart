@@ -9,6 +9,10 @@ import 'package:samachar_hub/feature_auth/data/repositories/auth_repository.dart
 import 'package:samachar_hub/feature_news/data/datasource/remote/news_remote_data_source.dart';
 import 'package:samachar_hub/feature_news/data/repository/news_repository.dart';
 import 'package:samachar_hub/feature_news/data/service/news_remote_service_impl.dart';
+import 'package:samachar_hub/feature_news/domain/entities/news_category_entity.dart';
+import 'package:samachar_hub/feature_news/domain/entities/news_feed_entity.dart';
+import 'package:samachar_hub/feature_news/domain/entities/news_source_entity.dart';
+import 'package:samachar_hub/feature_news/domain/entities/news_topic_entity.dart';
 import 'package:samachar_hub/feature_news/domain/usecases/get_news_category_use_case.dart';
 import 'package:samachar_hub/feature_news/domain/usecases/usecases.dart';
 import 'package:samachar_hub/feature_news/presentation/blocs/bookmarks/bookmark_news_bloc.dart';
@@ -17,13 +21,10 @@ import 'package:samachar_hub/feature_news/presentation/blocs/dislike/dislike_blo
 import 'package:samachar_hub/feature_news/presentation/blocs/feed_bloc/feed_bloc.dart';
 import 'package:samachar_hub/feature_news/presentation/blocs/like_unlike/like_unlike_bloc.dart';
 import 'package:samachar_hub/feature_news/presentation/blocs/news_category/category_feeds/news_category_feed_bloc.dart';
-import 'package:samachar_hub/feature_news/presentation/blocs/news_category/follow_unfollow/follow_un_follow_bloc.dart'
-    as newsCategory;
+import 'package:samachar_hub/feature_news/presentation/blocs/news_category/follow_unfollow/follow_un_follow_bloc.dart';
 import 'package:samachar_hub/feature_news/presentation/blocs/news_detail/news_detail_bloc.dart';
-import 'package:samachar_hub/feature_news/presentation/blocs/news_source/follow_unfollow/follow_un_follow_bloc.dart'
-    as newsSource;
-import 'package:samachar_hub/feature_news/presentation/blocs/news_topic/follow_unfollow/follow_un_follow_bloc.dart'
-    as newsTopic;
+import 'package:samachar_hub/feature_news/presentation/blocs/news_source/follow_unfollow/follow_un_follow_bloc.dart';
+import 'package:samachar_hub/feature_news/presentation/blocs/news_topic/follow_unfollow/follow_un_follow_bloc.dart';
 import 'package:samachar_hub/feature_news/presentation/blocs/news_category/news_category_bloc.dart';
 import 'package:samachar_hub/feature_news/presentation/blocs/news_filter/news_filter_bloc.dart';
 import 'package:samachar_hub/feature_news/presentation/blocs/news_source/news_sources_bloc.dart';
@@ -33,10 +34,7 @@ import 'package:samachar_hub/feature_news/presentation/blocs/news_topic/topic_fe
 import 'package:samachar_hub/feature_news/presentation/blocs/related_news/related_news_bloc.dart';
 import 'package:samachar_hub/feature_news/presentation/blocs/share/share_bloc.dart';
 import 'package:samachar_hub/feature_news/presentation/blocs/view/view_bloc.dart';
-import 'package:samachar_hub/feature_news/presentation/models/news_category.dart';
 import 'package:samachar_hub/feature_news/presentation/models/news_feed.dart';
-import 'package:samachar_hub/feature_news/presentation/models/news_source.dart';
-import 'package:samachar_hub/feature_news/presentation/models/news_topic.dart';
 
 class NewsProvider {
   NewsProvider._();
@@ -110,42 +108,36 @@ class NewsProvider {
         () => ViewNewsUseCase(GetIt.I.get<NewsRepository>()));
 
     GetIt.I.registerFactory<FeedBloc>(() => FeedBloc(
-        latestNewsUseCase: GetIt.I.get<GetLatestNewsUseCase>(),
-        recentNewsUseCase: GetIt.I.get<GetRecentNewsUseCase>(),
-        trendingNewsUseCase: GetIt.I.get<GetTrendingNewsUseCase>()));
-    GetIt.I.registerFactoryParam<NewsDetailBloc, NewsFeedUIModel, void>(
+          latestNewsUseCase: GetIt.I.get<GetLatestNewsUseCase>(),
+          recentNewsUseCase: GetIt.I.get<GetRecentNewsUseCase>(),
+          trendingNewsUseCase: GetIt.I.get<GetTrendingNewsUseCase>(),
+        ));
+    GetIt.I.registerFactoryParam<NewsDetailBloc, NewsFeedEntity, void>(
         (param1, param2) => NewsDetailBloc(
             feed: param1,
             getDetailNewsUseCase: GetIt.I.get<GetNewsDetailUseCase>())
           ..add(GetNewsDetailEvent()));
-    GetIt.I.registerFactoryParam<LikeUnlikeBloc, NewsFeedUIModel, void>(
-        (param1, param2) => LikeUnlikeBloc(
-            newsFeedUIModel: param1,
-            likeNewsFeedUseCase: GetIt.I.get<LikeNewsUseCase>(),
-            unLikeNewsFeedUseCase: GetIt.I.get<UnlikeNewsUseCase>()));
-    GetIt.I.registerFactoryParam<DislikeBloc, NewsFeedUIModel, void>(
-        (param1, param2) => DislikeBloc(
-              newsFeedUIModel: param1,
-              dislikeNewsFeedUseCase: GetIt.I.get<DislikeNewsUseCase>(),
-              undislikeNewsFeedUseCase: GetIt.I.get<UndislikeNewsUseCase>(),
-            ));
-    GetIt.I.registerFactoryParam<BookmarkUnBookmarkBloc, NewsFeedUIModel, void>(
-        (param1, param2) => BookmarkUnBookmarkBloc(
-              newsFeedUIModel: param1,
+    GetIt.I.registerFactory<LikeUnlikeBloc>(() => LikeUnlikeBloc(
+        likeNewsFeedUseCase: GetIt.I.get<LikeNewsUseCase>(),
+        unLikeNewsFeedUseCase: GetIt.I.get<UnlikeNewsUseCase>()));
+    GetIt.I.registerFactory<DislikeBloc>(() => DislikeBloc(
+          dislikeNewsFeedUseCase: GetIt.I.get<DislikeNewsUseCase>(),
+          undislikeNewsFeedUseCase: GetIt.I.get<UndislikeNewsUseCase>(),
+        ));
+    GetIt.I
+        .registerFactory<BookmarkUnBookmarkBloc>(() => BookmarkUnBookmarkBloc(
               addBookmarkNewsUseCase: GetIt.I.get<BookmarkNewsUseCase>(),
               removeBookmarkNewsUseCase: GetIt.I.get<UnBookmarkNewsUseCase>(),
             ));
-    GetIt.I.registerFactoryParam<ShareBloc, NewsFeedUIModel, void>(
-        (param1, param2) => ShareBloc(
-              feedUIModel: param1,
-              shareNewsFeedUseCase: GetIt.I.get<ShareNewsUseCase>(),
-            ));
-    GetIt.I.registerFactoryParam<ViewBloc, NewsFeedUIModel, void>(
+    GetIt.I.registerFactory<ShareBloc>(() => ShareBloc(
+          shareNewsFeedUseCase: GetIt.I.get<ShareNewsUseCase>(),
+        ));
+    GetIt.I.registerFactoryParam<ViewBloc, NewsFeedEntity, void>(
         (param1, param2) => ViewBloc(
-              feedUIModel: param1,
+              feed: param1,
               viewNewsFeedUseCase: GetIt.I.get<ViewNewsUseCase>(),
-            )..add(View()));
-    GetIt.I.registerFactoryParam<RelatedNewsBloc, NewsFeedUIModel, void>(
+            ));
+    GetIt.I.registerFactoryParam<RelatedNewsBloc, NewsFeedEntity, void>(
         (param1, param2) => RelatedNewsBloc(
               feed: param1,
               getRelatedNewsUseCase: GetIt.I.get<GetRelatedNewsUseCase>(),
@@ -153,68 +145,68 @@ class NewsProvider {
     GetIt.I.registerFactory<BookmarkNewsBloc>(() => BookmarkNewsBloc(
           getBookmarkNewsUseCase: GetIt.I.get<GetBookmarkedNewsUseCase>(),
         )..add(GetBookmarkedNews()));
-    GetIt.I.registerFactory<NewsCategoryBloc>(() => NewsCategoryBloc(
-          getNewsCategoriesUseCase: GetIt.I.get<GetNewsCategoriesUseCase>(),
-          getNewsFollowedCategoriesUseCase:
-              GetIt.I.get<GetFollowedNewsCategoriesUseCase>(),
-        ));
-    GetIt.I.registerFactory<NewsSourceBloc>(() => NewsSourceBloc(
-          getNewsFollowedSourcesUseCase:
-              GetIt.I.get<GetFollowedNewsSourcesUseCase>(),
-          getNewsSourcesUseCase: GetIt.I.get<GetNewsSourcesUseCase>(),
-        ));
-    GetIt.I.registerFactory<NewsTopicBloc>(() => NewsTopicBloc(
-          getNewsFollowedTopicsUseCase:
-              GetIt.I.get<GetFollowedNewsTopicsUseCase>(),
-          getNewsTopicsUseCase: GetIt.I.get<GetNewsTopicsUseCase>(),
-        ));
+    GetIt.I.registerFactoryParam<
+            NewsCategoryBloc, CategoryFollowUnFollowBloc, void>(
+        (param1, param2) => NewsCategoryBloc(
+              getNewsCategoriesUseCase: GetIt.I.get<GetNewsCategoriesUseCase>(),
+              getNewsFollowedCategoriesUseCase:
+                  GetIt.I.get<GetFollowedNewsCategoriesUseCase>(),
+              followUnFollowBloc: param1,
+            ));
+    GetIt.I
+        .registerFactoryParam<NewsSourceBloc, SourceFollowUnFollowBloc, void>(
+            (param1, param2) => NewsSourceBloc(
+                  getNewsFollowedSourcesUseCase:
+                      GetIt.I.get<GetFollowedNewsSourcesUseCase>(),
+                  getNewsSourcesUseCase: GetIt.I.get<GetNewsSourcesUseCase>(),
+                  followUnFollowBloc: param1,
+                ));
+    GetIt.I.registerFactoryParam<NewsTopicBloc, TopicFollowUnFollowBloc, void>(
+        (param1, param2) => NewsTopicBloc(
+              getNewsFollowedTopicsUseCase:
+                  GetIt.I.get<GetFollowedNewsTopicsUseCase>(),
+              getNewsTopicsUseCase: GetIt.I.get<GetNewsTopicsUseCase>(),
+              followUnFollowBloc: param1,
+            ));
     GetIt.I.registerFactory<NewsFilterBloc>(() => NewsFilterBloc(
           getNewsSourcesUseCase: GetIt.I.get<GetNewsSourcesUseCase>(),
         )..add(GetNewsFilterSourcesEvent()));
-    GetIt.I.registerFactoryParam<newsCategory.FollowUnFollowBloc,
-            NewsCategoryUIModel, void>(
-        (param1, param2) => newsCategory.FollowUnFollowBloc(
-              newsCategoryUIModel: param1,
-              followNewsCategoryUseCase:
-                  GetIt.I.get<FollowNewsCategoryUseCase>(),
-              unFollowNewsCategoryUseCase:
-                  GetIt.I.get<UnFollowNewsCategoryUseCase>(),
-            ));
-    GetIt.I.registerFactoryParam<newsSource.FollowUnFollowBloc,
-            NewsSourceUIModel, void>(
-        (param1, param2) => newsSource.FollowUnFollowBloc(
-              newsSourceUIModel: param1,
-              followNewsSourceUseCase: GetIt.I.get<FollowNewsSourceUseCase>(),
-              unFollowNewsSourceUseCase:
-                  GetIt.I.get<UnFollowNewsSourceUseCase>(),
-            ));
-    GetIt.I.registerFactoryParam<newsTopic.FollowUnFollowBloc,
-            NewsTopicUIModel, void>(
-        (param1, param2) => newsTopic.FollowUnFollowBloc(
-              newsTopicUIModel: param1,
+    GetIt.I.registerFactory<CategoryFollowUnFollowBloc>(() =>
+        CategoryFollowUnFollowBloc(
+          followNewsCategoryUseCase: GetIt.I.get<FollowNewsCategoryUseCase>(),
+          unFollowNewsCategoryUseCase:
+              GetIt.I.get<UnFollowNewsCategoryUseCase>(),
+        ));
+    GetIt.I.registerFactory<SourceFollowUnFollowBloc>(() =>
+        SourceFollowUnFollowBloc(
+          followNewsSourceUseCase: GetIt.I.get<FollowNewsSourceUseCase>(),
+          unFollowNewsSourceUseCase: GetIt.I.get<UnFollowNewsSourceUseCase>(),
+        ));
+    GetIt.I
+        .registerFactory<TopicFollowUnFollowBloc>(() => TopicFollowUnFollowBloc(
               followNewsTopicUseCase: GetIt.I.get<FollowNewsTopicUseCase>(),
               unFollowNewsTopicUseCase: GetIt.I.get<UnFollowNewsTopicUseCase>(),
             ));
     GetIt.I.registerFactoryParam<NewsCategoryFeedBloc,
-            NewsCategoryUIModel, NewsFilterBloc>(
+            NewsCategoryEntity, NewsFilterBloc>(
         (param1, param2) => NewsCategoryFeedBloc(
-              categoryModel: param1,
+              category: param1,
               newsByCategoryUseCase: GetIt.I.get<GetNewsByCategoryUseCase>(),
               newsFilterBloc: param2,
             )..add(GetCategoryNewsEvent()));
     GetIt.I.registerFactoryParam<NewsSourceFeedBloc,
-            NewsSourceUIModel, NewsFilterBloc>(
+            NewsSourceEntity, NewsFilterBloc>(
         (param1, param2) => NewsSourceFeedBloc(
-              sourceModel: param1,
+              source: param1,
               newsFilterBloc: param2,
               newsBySourceUseCase: GetIt.I.get<GetNewsBySourceUseCase>(),
             )..add(GetSourceNewsEvent()));
     GetIt.I.registerFactoryParam<
-            NewsTopicFeedBloc, NewsTopicUIModel, NewsFilterBloc>(
+            NewsTopicFeedBloc, NewsTopicEntity, NewsFilterBloc>(
         (param1, param2) => NewsTopicFeedBloc(
               newsFilterBloc: param2,
               newsByTopicUseCase: GetIt.I.get<GetNewsByTopicUseCase>(),
-              topicModel: param1,
+              topic: param1,
             )..add(GetTopicNewsEvent()));
   }
 
@@ -228,27 +220,23 @@ class NewsProvider {
 
   static MultiBlocProvider feedItemBlocProvider({
     @required Widget child,
-    @required NewsFeedUIModel feedUIModel,
   }) =>
       MultiBlocProvider(
         providers: [
           BlocProvider<LikeUnlikeBloc>(
-            create: (context) =>
-                GetIt.I.get<LikeUnlikeBloc>(param1: feedUIModel),
-          ),
-          BlocProvider<DislikeBloc>(
-            create: (context) => GetIt.I.get<DislikeBloc>(param1: feedUIModel),
-          ),
-          BlocProvider<newsSource.FollowUnFollowBloc>(
-            create: (context) => GetIt.I.get<newsSource.FollowUnFollowBloc>(
-                param1: feedUIModel.newsSourceUIModel),
+            create: (context) => GetIt.I.get<LikeUnlikeBloc>(),
           ),
           BlocProvider<BookmarkUnBookmarkBloc>(
-            create: (context) =>
-                GetIt.I.get<BookmarkUnBookmarkBloc>(param1: feedUIModel),
+            create: (context) => GetIt.I.get<BookmarkUnBookmarkBloc>(),
+          ),
+          BlocProvider<DislikeBloc>(
+            create: (context) => GetIt.I.get<DislikeBloc>(),
+          ),
+          BlocProvider<SourceFollowUnFollowBloc>(
+            create: (context) => GetIt.I.get<SourceFollowUnFollowBloc>(),
           ),
           BlocProvider<ShareBloc>(
-            create: (context) => GetIt.I.get<ShareBloc>(param1: feedUIModel),
+            create: (context) => GetIt.I.get<ShareBloc>(),
           ),
         ],
         child: child,
@@ -264,79 +252,42 @@ class NewsProvider {
       );
 
   static MultiBlocProvider detailMultiBlocProvider({
-    @required BuildContext masterContext,
     @required Widget child,
-    @required NewsFeedUIModel feedUIModel,
+    @required NewsFeedEntity feed,
   }) =>
       MultiBlocProvider(
         providers: [
-          BlocProvider<LikeUnlikeBloc>.value(
-            value: masterContext.bloc<LikeUnlikeBloc>(),
+          BlocProvider<LikeUnlikeBloc>(
+            create: (context) => GetIt.I.get<LikeUnlikeBloc>(),
           ),
-          BlocProvider<DislikeBloc>.value(
-            value: masterContext.bloc<DislikeBloc>(),
+          BlocProvider<DislikeBloc>(
+            create: (context) => GetIt.I.get<DislikeBloc>(param1: feed),
           ),
-          BlocProvider<newsSource.FollowUnFollowBloc>.value(
-            value: masterContext.bloc<newsSource.FollowUnFollowBloc>(),
+          BlocProvider<SourceFollowUnFollowBloc>(
+            create: (context) => GetIt.I.get<SourceFollowUnFollowBloc>(),
           ),
-          BlocProvider<BookmarkUnBookmarkBloc>.value(
-            value: masterContext.bloc<BookmarkUnBookmarkBloc>(),
+          BlocProvider<BookmarkUnBookmarkBloc>(
+            create: (context) => GetIt.I.get<BookmarkUnBookmarkBloc>(),
           ),
-          BlocProvider<ShareBloc>.value(
-            value: masterContext.bloc<ShareBloc>(),
+          BlocProvider<ShareBloc>(
+            create: (context) => GetIt.I.get<ShareBloc>(),
           ),
           BlocProvider<ViewBloc>(
-            create: (context) => GetIt.I.get<ViewBloc>(param1: feedUIModel),
+            create: (context) => GetIt.I.get<ViewBloc>(param1: feed),
           ),
           BlocProvider<NewsDetailBloc>(
-            create: (context) =>
-                GetIt.I.get<NewsDetailBloc>(param1: feedUIModel),
+            create: (context) => GetIt.I.get<NewsDetailBloc>(param1: feed),
           ),
         ],
         child: child,
       );
 
-  // static MultiBlocProvider detailMultiBlocProvider({
-  //   @required Widget child,
-  //   @required NewsFeedUIModel feedUIModel,
-  // }) =>
-  //     MultiBlocProvider(
-  //       providers: [
-  //         BlocProvider<LikeUnlikeBloc>(
-  //           create: (context) =>
-  //               GetIt.I.get<LikeUnlikeBloc>(param1: feedUIModel),
-  //         ),
-  //         BlocProvider<DislikeBloc>(
-  //           create: (context) => GetIt.I.get<DislikeBloc>(param1: feedUIModel),
-  //         ),
-  //         BlocProvider<newsSource.FollowUnFollowBloc>(
-  //           create: (context) => GetIt.I.get<newsSource.FollowUnFollowBloc>(
-  //               param1: feedUIModel.newsSourceUIModel),
-  //         ),
-  //         BlocProvider<BookmarkUnBookmarkBloc>(
-  //           create: (context) =>
-  //               GetIt.I.get<BookmarkUnBookmarkBloc>(param1: feedUIModel),
-  //         ),
-  //         BlocProvider<ShareBloc>(
-  //           create: (context) => GetIt.I.get<ShareBloc>(param1: feedUIModel),
-  //         ),
-  //         BlocProvider<ViewBloc>(
-  //           create: (context) => GetIt.I.get<ViewBloc>(param1: feedUIModel),
-  //         ),
-  //         BlocProvider<NewsDetailBloc>(
-  //           create: (context) =>
-  //               GetIt.I.get<NewsDetailBloc>(param1: feedUIModel),
-  //         ),
-  //       ],
-  //       child: child,
-  //     );
-
   static BlocProvider<RelatedNewsBloc> relatedNewsBlocProvider({
     @required Widget child,
-    @required NewsFeedUIModel feedUIModel,
+    @required NewsFeedEntity feed,
   }) =>
       BlocProvider<RelatedNewsBloc>(
-        create: (context) => GetIt.I.get<RelatedNewsBloc>(param1: feedUIModel),
+        create: (context) => GetIt.I.get<RelatedNewsBloc>(param1: feed),
         child: child,
       );
 
@@ -348,17 +299,31 @@ class NewsProvider {
         child: child,
       );
 
+  static MultiBlocProvider categoryBlocProvider({@required Widget child}) =>
+      MultiBlocProvider(
+        providers: [
+          BlocProvider<CategoryFollowUnFollowBloc>(
+            create: (context) => GetIt.I.get<CategoryFollowUnFollowBloc>(),
+          ),
+          BlocProvider<NewsCategoryBloc>(
+            create: (context) => GetIt.I.get<NewsCategoryBloc>(
+              param1: context.bloc<CategoryFollowUnFollowBloc>(),
+            ),
+          ),
+        ],
+        child: child,
+      );
+
   static MultiBlocProvider categoryFeedBlocProvider(
           {@required Widget child,
-          @required NewsCategoryUIModel newsCategoryUIModel}) =>
+          @required NewsCategoryEntity newsCategoryUIModel}) =>
       MultiBlocProvider(
         providers: [
           BlocProvider<NewsFilterBloc>(
             create: (context) => GetIt.I.get<NewsFilterBloc>(),
           ),
-          BlocProvider<newsCategory.FollowUnFollowBloc>(
-            create: (context) => GetIt.I.get<newsCategory.FollowUnFollowBloc>(
-                param1: newsCategoryUIModel),
+          BlocProvider<CategoryFollowUnFollowBloc>(
+            create: (context) => GetIt.I.get<CategoryFollowUnFollowBloc>(),
           ),
           BlocProvider<NewsCategoryFeedBloc>(
             create: (context) => GetIt.I.get<NewsCategoryFeedBloc>(
@@ -369,65 +334,67 @@ class NewsProvider {
         child: child,
       );
 
+  static MultiBlocProvider sourceBlocProvider({@required Widget child}) =>
+      MultiBlocProvider(
+        providers: [
+          BlocProvider<SourceFollowUnFollowBloc>(
+            create: (context) => GetIt.I.get<SourceFollowUnFollowBloc>(),
+          ),
+          BlocProvider<NewsSourceBloc>(
+            create: (context) => GetIt.I.get<NewsSourceBloc>(
+              param1: context.bloc<SourceFollowUnFollowBloc>(),
+            ),
+          ),
+        ],
+        child: child,
+      );
+
   static MultiBlocProvider sourceFeedBlocProvider(
-          {@required Widget child,
-          @required NewsSourceUIModel newsSourceUIModel}) =>
+          {@required Widget child, @required NewsSourceEntity source}) =>
       MultiBlocProvider(
         providers: [
           BlocProvider<NewsFilterBloc>(
             create: (context) => GetIt.I.get<NewsFilterBloc>(),
           ),
-          BlocProvider<newsSource.FollowUnFollowBloc>(
-            create: (context) => GetIt.I
-                .get<newsSource.FollowUnFollowBloc>(param1: newsSourceUIModel),
+          BlocProvider<SourceFollowUnFollowBloc>(
+            create: (context) => GetIt.I.get<SourceFollowUnFollowBloc>(),
           ),
           BlocProvider<NewsSourceFeedBloc>(
             create: (context) => GetIt.I.get<NewsSourceFeedBloc>(
-                param1: newsSourceUIModel,
-                param2: context.bloc<NewsFilterBloc>()),
+                param1: source, param2: context.bloc<NewsFilterBloc>()),
           ),
         ],
         child: child,
       );
+
+  static MultiBlocProvider topicBlocProvider({@required Widget child}) =>
+      MultiBlocProvider(
+        providers: [
+          BlocProvider<TopicFollowUnFollowBloc>(
+            create: (context) => GetIt.I.get<TopicFollowUnFollowBloc>(),
+          ),
+          BlocProvider<NewsTopicBloc>(
+            create: (context) => GetIt.I.get<NewsTopicBloc>(
+              param1: context.bloc<TopicFollowUnFollowBloc>(),
+            ),
+          ),
+        ],
+        child: child,
+      );
+
   static MultiBlocProvider topicFeedBlocProvider(
-          {@required Widget child,
-          @required NewsTopicUIModel newsTopicUIModel}) =>
+          {@required Widget child, @required NewsTopicEntity topic}) =>
       MultiBlocProvider(
         providers: [
           BlocProvider<NewsFilterBloc>(
             create: (context) => GetIt.I.get<NewsFilterBloc>(),
           ),
-          BlocProvider<newsTopic.FollowUnFollowBloc>(
-            create: (context) => GetIt.I
-                .get<newsTopic.FollowUnFollowBloc>(param1: newsTopicUIModel),
+          BlocProvider<TopicFollowUnFollowBloc>(
+            create: (context) => GetIt.I.get<TopicFollowUnFollowBloc>(),
           ),
           BlocProvider<NewsTopicFeedBloc>(
             create: (context) => GetIt.I.get<NewsTopicFeedBloc>(
-                param1: newsTopicUIModel,
-                param2: context.bloc<NewsFilterBloc>()),
-          ),
-        ],
-        child: child,
-      );
-  static MultiBlocProvider feedMoreOptionMultiBlocProvider({
-    @required Widget child,
-    @required NewsFeedUIModel feedUIModel,
-  }) =>
-      MultiBlocProvider(
-        providers: [
-          BlocProvider<newsSource.FollowUnFollowBloc>(
-            create: (context) => GetIt.I.get<newsSource.FollowUnFollowBloc>(
-                param1: feedUIModel.newsSourceUIModel),
-          ),
-          BlocProvider<BookmarkUnBookmarkBloc>(
-            create: (context) =>
-                GetIt.I.get<BookmarkUnBookmarkBloc>(param1: feedUIModel),
-          ),
-          BlocProvider<ShareBloc>(
-            create: (context) => GetIt.I.get<ShareBloc>(param1: feedUIModel),
-          ),
-          BlocProvider<DislikeBloc>(
-            create: (context) => GetIt.I.get<DislikeBloc>(param1: feedUIModel),
+                param1: topic, param2: context.bloc<NewsFilterBloc>()),
           ),
         ],
         child: child,

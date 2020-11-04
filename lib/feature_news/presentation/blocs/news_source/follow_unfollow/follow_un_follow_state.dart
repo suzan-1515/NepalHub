@@ -1,43 +1,43 @@
 part of 'follow_un_follow_bloc.dart';
 
-abstract class FollowUnFollowState extends Equatable {
-  const FollowUnFollowState();
+abstract class SourceFollowUnFollowState extends Equatable {
+  const SourceFollowUnFollowState();
 
   @override
   List<Object> get props => [];
 }
 
-class FollowUnFollowInitialState extends FollowUnFollowState {
-  FollowUnFollowInitialState();
+class SourceFollowInitialState extends SourceFollowUnFollowState {
+  SourceFollowInitialState();
 }
 
-class FollowUnFollowInProgressState extends FollowUnFollowState {
+class SourceFollowInProgressState extends SourceFollowUnFollowState {
   @override
   List<Object> get props => [];
 }
 
-class FollowUnFollowFollowedState extends FollowUnFollowState {
-  final String message;
+class SourceFollowSuccessState extends SourceFollowUnFollowState {
+  final NewsSourceEntity source;
 
-  FollowUnFollowFollowedState({this.message});
-
-  @override
-  List<Object> get props => [message];
-}
-
-class FollowUnFollowUnFollowedState extends FollowUnFollowState {
-  final String message;
-
-  FollowUnFollowUnFollowedState({this.message});
+  SourceFollowSuccessState({this.source});
 
   @override
-  List<Object> get props => [message];
+  List<Object> get props => [source];
 }
 
-class FollowUnFollowErrorState extends FollowUnFollowState {
+class SourceUnFollowSuccessState extends SourceFollowUnFollowState {
+  final NewsSourceEntity source;
+
+  SourceUnFollowSuccessState({this.source});
+
+  @override
+  List<Object> get props => [source];
+}
+
+class SourceFollowErrorState extends SourceFollowUnFollowState {
   final String message;
 
-  FollowUnFollowErrorState({this.message});
+  SourceFollowErrorState({this.message});
 
   @override
   List<Object> get props => [message];

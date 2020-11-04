@@ -1,21 +1,23 @@
+import 'package:event_bus/event_bus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:samachar_hub/core/services/services.dart';
 import 'package:samachar_hub/core/widgets/cached_image_widget.dart';
-import 'package:samachar_hub/feature_news/presentation/blocs/news_category/follow_unfollow/follow_un_follow_bloc.dart'
-    as categoryFollowUnfollow;
-import 'package:samachar_hub/feature_news/presentation/models/news_category.dart';
+import 'package:samachar_hub/feature_news/domain/entities/news_category_entity.dart';
+import 'package:samachar_hub/feature_news/presentation/blocs/news_category/follow_unfollow/follow_un_follow_bloc.dart';
+import 'package:samachar_hub/feature_news/presentation/events/feed_event.dart';
 import 'package:samachar_hub/feature_news/presentation/ui/widgets/follow_unfollow_button.dart';
+import 'package:samachar_hub/core/extensions/number_extensions.dart';
 
 class NewsCategoryListItem extends StatelessWidget {
   const NewsCategoryListItem({
     Key key,
-    @required this.categoryUIModel,
+    @required this.category,
   }) : super(key: key);
 
-  final NewsCategoryUIModel categoryUIModel;
+  final NewsCategoryEntity category;
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +27,7 @@ class NewsCategoryListItem extends StatelessWidget {
         onTap: () {
           GetIt.I
               .get<NavigationService>()
-              .toNewsCategoryFeedScreen(context, categoryUIModel.category);
+              .toNewsCategoryFeedScreen(context, category);
         },
         leading: Container(
           width: 84,
@@ -40,51 +42,46 @@ class NewsCategoryListItem extends StatelessWidget {
               color: Theme.of(context).cardColor,
               borderRadius: BorderRadius.all(Radius.circular(6))),
           child: CachedImage(
-            categoryUIModel.category.icon,
-            tag: categoryUIModel.category.code,
+            category.icon,
+            tag: category.code,
           ),
         ),
         title: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Text(
-            categoryUIModel.category.title,
+            category.title,
             style: Theme.of(context).textTheme.subtitle2,
           ),
         ),
         subtitle: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8.0),
-          child: BlocBuilder<categoryFollowUnfollow.FollowUnFollowBloc,
-              categoryFollowUnfollow.FollowUnFollowState>(
-            builder: (context, state) {
-              return Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  Text(
-                    '${categoryUIModel.formattedFollowerCount} Followers',
-                    style: Theme.of(context).textTheme.bodyText2,
-                  ),
-                  FollowUnFollowButton(
-                    isFollowed: categoryUIModel.category.isFollowed,
-                    onTap: () {
-                      if (categoryUIModel.category.isFollowed) {
-                        categoryUIModel.unfollow();
-                        context
-                            .bloc<categoryFollowUnfollow.FollowUnFollowBloc>()
-                            .add(categoryFollowUnfollow
-                                .FollowUnFollowUnFollowEvent());
-                      } else {
-                        categoryUIModel.follow();
-                        context
-                            .bloc<categoryFollowUnfollow.FollowUnFollowBloc>()
-                            .add(categoryFollowUnfollow
-                                .FollowUnFollowFollowEvent());
-                      }
-                    },
-                  ),
-                ],
-              );
-            },
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              Text(
+                '${category.followerCount.compactFormat} Followers',
+                style: Theme.of(context).textTheme.bodyText2,
+              ),
+              FollowUnFollowButton(
+                isFollowed: category.isFollowed,
+                onTap: () {
+                  if (category.isFollowed) {
+                    GetIt.I.get<EventBus>().fire(NewsChangeEvent(
+                        data: category, eventType: 'category_unfollow'));
+                    context
+                        .bloc<CategoryFollowUnFollowBloc>()
+                        .add(CategoryFollowEvent(category: category));
+                  } else {
+                    GetIt.I.get<EventBus>().fire(NewsChangeEvent(
+                        data: category, eventType: 'category_follow'));
+                    context
+                        .bloc<CategoryFollowUnFollowBloc>()
+                        .add(CategoryUnFollowEvent(category: category));
+                  }
+                },
+              ),
+            ],
           ),
         ),
       ),

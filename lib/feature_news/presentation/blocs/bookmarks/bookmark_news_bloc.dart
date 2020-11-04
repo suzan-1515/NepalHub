@@ -7,8 +7,6 @@ import 'package:meta/meta.dart';
 import 'package:samachar_hub/core/usecases/usecase.dart';
 import 'package:samachar_hub/feature_news/domain/entities/news_feed_entity.dart';
 import 'package:samachar_hub/feature_news/domain/usecases/get_bookmarked_news_use_case.dart';
-import 'package:samachar_hub/feature_news/presentation/extensions/news_extensions.dart';
-import 'package:samachar_hub/feature_news/presentation/models/news_feed.dart';
 
 part 'bookmark_news_event.dart';
 part 'bookmark_news_state.dart';
@@ -50,7 +48,7 @@ class BookmarkNewsBloc extends Bloc<BookmarkNewsEvent, BookmarkNewsState> {
       if (newsList == null || newsList.isEmpty)
         yield EmptyState(message: 'You have not bookmarked any news yet.');
       else
-        yield LoadSuccessState(newsList.toUIModels);
+        yield LoadSuccessState(newsList);
     } catch (e) {
       log('Bookmark news load error.', error: e);
       yield LoadErrorState(
@@ -69,8 +67,9 @@ class BookmarkNewsBloc extends Bloc<BookmarkNewsEvent, BookmarkNewsState> {
       );
       if (newsList != null || newsList.isNotEmpty) {
         _page = 1;
-        yield LoadSuccessState(newsList.toUIModels);
-      }
+        yield LoadSuccessState(newsList);
+      } else
+        yield ErrorState(message: 'Unable to refresh.');
     } catch (e) {
       log('Refresh bookmark news load error.', error: e);
       yield ErrorState(
@@ -100,10 +99,9 @@ class BookmarkNewsBloc extends Bloc<BookmarkNewsEvent, BookmarkNewsState> {
       } else {
         _page = _page + 1;
         if (currentState is LoadSuccessState) {
-          yield currentState.copyWith(
-              feeds: currentState.feeds + newsList.toUIModels);
+          yield currentState.copyWith(feeds: currentState.feeds + newsList);
         } else
-          yield LoadSuccessState(newsList.toUIModels);
+          yield LoadSuccessState(newsList);
       }
     } catch (e) {
       log('Load more bookmark news error.', error: e);

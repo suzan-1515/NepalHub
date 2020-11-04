@@ -1,8 +1,6 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
-import 'package:get_it/get_it.dart';
-import 'package:samachar_hub/core/services/services.dart';
-import 'package:samachar_hub/feature_news/presentation/models/news_feed.dart';
+import 'package:samachar_hub/feature_news/domain/entities/news_feed_entity.dart';
 import 'package:samachar_hub/feature_news/presentation/ui/details/news_detail_screen.dart';
 import 'package:samachar_hub/feature_news/presentation/ui/details/widgets/heading.dart';
 import 'package:samachar_hub/feature_news/presentation/ui/related_news/widgets/related_list_item.dart';
@@ -13,7 +11,7 @@ class RelatedNewsList extends StatelessWidget {
     @required this.data,
   }) : super(key: key);
 
-  final List<NewsFeedUIModel> data;
+  final List<NewsFeedEntity> data;
 
   @override
   Widget build(BuildContext context) {
@@ -34,9 +32,8 @@ class RelatedNewsList extends StatelessWidget {
               if (index.isOdd) return Divider();
               final feed = data[index ~/ 2];
               return RelatedNewsListItem(
-                feedUIModel: feed,
-                onTap: () =>
-                    NewsDetailScreen.navigate(feed.feedEntity, context),
+                feed: feed,
+                onTap: () => NewsDetailScreen.navigate(feed, context),
               );
             }) +
             [

@@ -1,12 +1,12 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 
-class NewsFeedEvent extends Equatable {
-  final String feedId;
+class NewsChangeEvent extends Equatable {
+  final Object data;
   final String eventType;
 
-  NewsFeedEvent({@required this.feedId, @required this.eventType});
+  NewsChangeEvent({@required this.data, @required this.eventType});
 
   @override
-  List<Object> get props => [feedId, eventType];
+  List<Object> get props => [data, eventType];
 }

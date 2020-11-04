@@ -15,12 +15,12 @@ class ShareInProgress extends ShareState {
 }
 
 class ShareSuccess extends ShareState {
-  final String message;
+  final NewsFeedEntity feed;
 
-  ShareSuccess({this.message});
+  ShareSuccess({this.feed});
 
   @override
-  List<Object> get props => [message];
+  List<Object> get props => [feed];
 }
 
 class ShareError extends ShareState {

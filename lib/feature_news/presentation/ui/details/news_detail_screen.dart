@@ -5,26 +5,20 @@ import 'package:samachar_hub/core/widgets/comment_bar_placeholder_widget.dart';
 import 'package:samachar_hub/core/widgets/empty_data_widget.dart';
 import 'package:samachar_hub/core/widgets/error_data_widget.dart';
 import 'package:samachar_hub/core/widgets/progress_widget.dart';
-import 'package:samachar_hub/feature_auth/presentation/blocs/auth_bloc.dart';
-import 'package:samachar_hub/feature_comment/domain/entities/thread_type.dart';
 import 'package:samachar_hub/feature_main/presentation/blocs/settings/settings_cubit.dart';
 import 'package:samachar_hub/feature_news/domain/entities/news_feed_entity.dart';
-import 'package:samachar_hub/feature_news/presentation/blocs/like_unlike/like_unlike_bloc.dart'
-    as likeUnlikeBloc;
-import 'package:samachar_hub/feature_news/presentation/blocs/news_detail/news_detail_bloc.dart'
-    as newsDetailBloc;
-import 'package:samachar_hub/feature_news/presentation/blocs/share/share_bloc.dart';
-import 'package:samachar_hub/feature_news/presentation/models/news_feed.dart';
-import 'package:samachar_hub/feature_news/presentation/ui/details/widgets/article_detail.dart';
-import 'package:samachar_hub/feature_news/presentation/ui/widgets/news_feed_more_option.dart';
-import 'package:samachar_hub/feature_news/presentation/extensions/news_extensions.dart';
-import 'package:samachar_hub/core/widgets/cached_image_widget.dart';
-import 'package:samachar_hub/core/widgets/comment_bar_widget.dart';
+import 'package:samachar_hub/feature_news/presentation/blocs/bookmarks/bookmark_unbookmark/bookmark_un_bookmark_bloc.dart';
+import 'package:samachar_hub/feature_news/presentation/blocs/like_unlike/like_unlike_bloc.dart';
+import 'package:samachar_hub/feature_news/presentation/blocs/news_detail/news_detail_bloc.dart';
 import 'package:samachar_hub/core/extensions/view.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:samachar_hub/feature_news/presentation/blocs/news_source/follow_unfollow/follow_un_follow_bloc.dart';
+import 'package:samachar_hub/feature_news/presentation/blocs/view/view_bloc.dart';
+import 'package:samachar_hub/feature_news/presentation/ui/details/widgets/body.dart';
+import 'package:samachar_hub/feature_news/presentation/ui/details/widgets/comment.dart';
 import 'package:samachar_hub/feature_news/utils/provider.dart';
 
-class NewsDetailScreen extends StatelessWidget {
+class NewsDetailScreen extends StatefulWidget {
   final NewsFeedEntity feedEntity;
   final BuildContext masterContext;
 
@@ -41,147 +35,34 @@ class NewsDetailScreen extends StatelessWidget {
     return Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (_) => NewsDetailScreen(
-          feedEntity: feedEntity,
-          masterContext: context,
+        builder: (_) => NewsProvider.detailMultiBlocProvider(
+          feed: feedEntity,
+          child: NewsDetailScreen(
+            feedEntity: feedEntity,
+            masterContext: context,
+          ),
         ),
       ),
     );
   }
 
-  Widget _buildBody(BuildContext context, NewsFeedUIModel feedUIModel) {
-    return OrientationBuilder(
-      builder: (_, Orientation orientation) {
-        switch (orientation) {
-          case Orientation.landscape:
-            return SafeArea(
-              child: Row(
-                mainAxisSize: MainAxisSize.max,
-                children: <Widget>[
-                  Expanded(
-                    child: CachedImage(
-                      feedUIModel.feedEntity.image,
-                      tag: feedUIModel.feedEntity.hashCode.toString(),
-                    ),
-                  ),
-                  Expanded(
-                    child: SingleChildScrollView(
-                      child: ArticleDetail(
-                          context: context, feedUIModel: feedUIModel),
-                    ),
-                  ),
-                ],
-              ),
-            );
-            break;
-          default:
-            return CustomScrollView(
-              slivers: <Widget>[
-                SliverAppBar(
-                  pinned: true,
-                  expandedHeight: MediaQuery.of(context).size.height * 0.3,
-                  flexibleSpace: FlexibleSpaceBar(
-                    background: Stack(
-                      fit: StackFit.expand,
-                      children: [
-                        CachedImage(
-                          feedUIModel.feedEntity.image,
-                          tag: feedUIModel.feedEntity.hashCode.toString(),
-                        ),
-                        Container(
-                          decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              colors: [
-                                Colors.black45,
-                                Colors.black12,
-                                Colors.transparent
-                              ],
-                              begin: Alignment.topCenter,
-                              end: Alignment.bottomCenter,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  actions: [
-                    IconButton(
-                      visualDensity: VisualDensity.compact,
-                      icon: Icon(Icons.more_vert),
-                      onPressed: () => context.showBottomSheet(
-                        child: NewsFeedMoreOption(
-                          feed: feedUIModel,
-                          context: context,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                SliverFillRemaining(
-                  hasScrollBody: false,
-                  child:
-                      ArticleDetail(context: context, feedUIModel: feedUIModel),
-                ),
-              ],
-            );
-            break;
-        }
-      },
-    );
-  }
+  @override
+  _NewsDetailScreenState createState() => _NewsDetailScreenState();
+}
 
-  Widget _buildCommentBar(BuildContext context, NewsFeedUIModel feedUIModel) {
-    final user = context.bloc<AuthBloc>().currentUser;
-    return BlocBuilder<likeUnlikeBloc.LikeUnlikeBloc,
-        likeUnlikeBloc.LikeUnlikeState>(
-      builder: (context, state) => CommentBar(
-        likeCount: feedUIModel?.formattedLikeCount ?? '0',
-        onCommentTap: () => GetIt.I.get<NavigationService>().toCommentsScreen(
-            context: context,
-            threadTitle: feedUIModel.feedEntity.title,
-            threadId: feedUIModel.feedEntity.id,
-            threadType: CommentThreadType.NEWS_FEED),
-        onShareTap: () {
-          GetIt.I
-              .get<ShareService>()
-              .share(
-                threadId: feedUIModel.feedEntity.id,
-                data: feedUIModel.feedEntity.link,
-                contentType: 'news_feed',
-              )
-              .then((value) {
-            context.bloc<ShareBloc>().add(Share());
-            return value;
-          });
-        },
-        commentCount: feedUIModel?.formattedCommentCount ?? '0',
-        isLiked: feedUIModel?.feedEntity?.isLiked ?? false,
-        shareCount: feedUIModel?.formattedShareCount ?? '0',
-        userAvatar: user?.avatar,
-        onLikeTap: () {
-          if (feedUIModel.feedEntity.isLiked) {
-            feedUIModel.unlike();
-            context
-                .bloc<likeUnlikeBloc.LikeUnlikeBloc>()
-                .add(likeUnlikeBloc.UnlikeEvent());
-          } else {
-            feedUIModel.like();
-            context
-                .bloc<likeUnlikeBloc.LikeUnlikeBloc>()
-                .add(likeUnlikeBloc.LikeEvent());
-          }
-        },
-      ),
-    );
+class _NewsDetailScreenState extends State<NewsDetailScreen> {
+  @override
+  void initState() {
+    super.initState();
+    context.bloc<ViewBloc>().add(View());
   }
 
   Widget _buildComment() {
-    return BlocBuilder<newsDetailBloc.NewsDetailBloc,
-        newsDetailBloc.NewsDetailState>(
-      buildWhen: (previous, current) => !(current is newsDetailBloc.ErrorState),
-      builder: (context, state) {
-        if (state is newsDetailBloc.LoadSuccessState) {
-          return _buildCommentBar(context, state.feed);
+    return BlocBuilder<NewsDetailBloc, NewsDetailState>(
+      buildWhen: (previous, current) => !(current is NewsDetailErrorState),
+      builder: (context, detailState) {
+        if (detailState is NewsDetailLoadSuccessState) {
+          return NewsDetailComment(context: context, feed: detailState.feed);
         }
         return const CommentBarPlaceholder();
       },
@@ -190,37 +71,81 @@ class NewsDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return NewsProvider.detailMultiBlocProvider(
-      feedUIModel: feedEntity.toUIModel,
-      masterContext: masterContext,
-      child: Scaffold(
-        backgroundColor: Theme.of(context).backgroundColor,
-        body: BlocConsumer<newsDetailBloc.NewsDetailBloc,
-                newsDetailBloc.NewsDetailState>(
+    return Scaffold(
+      backgroundColor: Theme.of(context).backgroundColor,
+      body: MultiBlocListener(
+        listeners: [
+          BlocListener<LikeUnlikeBloc, LikeUnlikeState>(
             listener: (context, state) {
-              if (state is newsDetailBloc.ErrorState) {
+              if (state is NewsLikeSuccessState) {
+                context
+                    .bloc<NewsDetailBloc>()
+                    .add(FeedChangeEvent(data: state.feed, eventType: 'feed'));
+              } else if (state is NewsUnLikeSuccessState) {
+                context
+                    .bloc<NewsDetailBloc>()
+                    .add(FeedChangeEvent(data: state.feed, eventType: 'feed'));
+              }
+            },
+          ),
+          BlocListener<BookmarkUnBookmarkBloc, BookmarkUnBookmarkState>(
+            listener: (context, state) {
+              if (state is BookmarkSuccess) {
+                context
+                    .bloc<NewsDetailBloc>()
+                    .add(FeedChangeEvent(data: state.feed, eventType: 'feed'));
+              } else if (state is UnbookmarkSuccess) {
+                context
+                    .bloc<NewsDetailBloc>()
+                    .add(FeedChangeEvent(data: state.feed, eventType: 'feed'));
+              }
+            },
+          ),
+          BlocListener<SourceFollowUnFollowBloc, SourceFollowUnFollowState>(
+            listener: (context, state) {
+              if (state is SourceFollowSuccessState) {
+                context.bloc<NewsDetailBloc>().add(
+                    FeedChangeEvent(data: state.source, eventType: 'source'));
+              } else if (state is SourceUnFollowSuccessState) {
+                context.bloc<NewsDetailBloc>().add(
+                    FeedChangeEvent(data: state.source, eventType: 'source'));
+              }
+            },
+          ),
+          BlocListener<NewsDetailBloc, NewsDetailState>(
+            listener: (context, state) {
+              if (state is NewsDetailErrorState) {
                 context.showMessage(state.message);
-              } else if (state is newsDetailBloc.LoadErrorState) {
+              } else if (state is NewsDetailLoadErrorState) {
                 context.showMessage(state.message);
               }
             },
+          ),
+        ],
+        child: BlocBuilder<NewsDetailBloc, NewsDetailState>(
             buildWhen: (previous, current) =>
-                !(current is newsDetailBloc.ErrorState),
+                !(current is NewsDetailErrorState),
             builder: (context, state) {
-              if (state is newsDetailBloc.InitialState) {
-                return _buildBody(context, state.feed);
-              } else if (state is newsDetailBloc.LoadSuccessState) {
-                return _buildBody(context, state.feed);
-              } else if (state is newsDetailBloc.LoadErrorState) {
+              if (state is NewsDetailInitialState) {
+                return NewsDetailBody(
+                    key: ValueKey(state.feed.id),
+                    context: context,
+                    feed: state.feed);
+              } else if (state is NewsDetailLoadSuccessState) {
+                return NewsDetailBody(
+                    key: ValueKey(state.feed.id),
+                    context: context,
+                    feed: state.feed);
+              } else if (state is NewsDetailLoadErrorState) {
                 return Center(
                   child: ErrorDataView(
                     onRetry: () => context
-                        .bloc<newsDetailBloc.NewsDetailBloc>()
-                        .add(newsDetailBloc.GetNewsDetailEvent()),
+                        .bloc<NewsDetailBloc>()
+                        .add(GetNewsDetailEvent()),
                     message: state.message,
                   ),
                 );
-              } else if (state is newsDetailBloc.EmptyState) {
+              } else if (state is NewsDetailEmptyState) {
                 return Center(
                   child: EmptyDataView(
                     text: state.message,
@@ -232,9 +157,9 @@ class NewsDetailScreen extends StatelessWidget {
                 child: ProgressView(),
               );
             }),
-        bottomNavigationBar: BottomAppBar(
-          child: _buildComment(),
-        ),
+      ),
+      bottomNavigationBar: BottomAppBar(
+        child: _buildComment(),
       ),
     );
   }

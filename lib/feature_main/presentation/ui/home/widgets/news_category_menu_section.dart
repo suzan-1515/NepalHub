@@ -2,16 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:samachar_hub/core/services/services.dart';
 import 'package:samachar_hub/feature_main/presentation/ui/widgets/section_heading.dart';
-import 'package:samachar_hub/feature_news/presentation/models/news_category.dart';
+import 'package:samachar_hub/feature_news/domain/entities/news_category_entity.dart';
 import 'package:samachar_hub/feature_news/presentation/ui/widgets/news_menu_item.dart';
 
 class NewsCategoryMenuSection extends StatelessWidget {
   const NewsCategoryMenuSection({
     Key key,
-    @required this.newsCategoryUIModels,
+    @required this.newsCategories,
   }) : super(key: key);
 
-  final List<NewsCategoryUIModel> newsCategoryUIModels;
+  final List<NewsCategoryEntity> newsCategories;
 
   @override
   Widget build(BuildContext context) {
@@ -20,8 +20,7 @@ class NewsCategoryMenuSection extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: <Widget>[
         SectionHeading(
-          title: 'Discover',
-          subtitle: 'Get the latest news on your favourite category',
+          title: 'Top Categories',
           onTap: () => GetIt.I
               .get<NavigationService>()
               .toFollowedNewsCategoryScreen(context),
@@ -33,17 +32,16 @@ class NewsCategoryMenuSection extends StatelessWidget {
             child: ListView.builder(
               itemExtent: 120,
               primary: false,
-              itemCount: newsCategoryUIModels.length,
+              itemCount: newsCategories.length,
               scrollDirection: Axis.horizontal,
               itemBuilder: (context, index) {
-                var categoryModel = newsCategoryUIModels[index];
+                var categoryModel = newsCategories[index];
                 return NewsMenuItem(
-                  title: categoryModel.category.title,
-                  icon: categoryModel.category.icon,
+                  title: categoryModel.title,
+                  icon: categoryModel.icon,
                   onTap: () => GetIt.I
                       .get<NavigationService>()
-                      .toNewsCategoryFeedScreen(
-                          context, categoryModel.category),
+                      .toNewsCategoryFeedScreen(context, categoryModel),
                 );
               },
             ),

@@ -6,11 +6,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:samachar_hub/core/services/services.dart';
 import 'package:samachar_hub/feature_comment/domain/entities/thread_type.dart';
+import 'package:samachar_hub/feature_news/domain/entities/news_feed_entity.dart';
 import 'package:samachar_hub/feature_news/presentation/blocs/like_unlike/like_unlike_bloc.dart';
 import 'package:samachar_hub/feature_news/presentation/events/feed_event.dart';
-import 'package:samachar_hub/feature_news/presentation/models/news_feed.dart';
 import 'package:samachar_hub/feature_news/presentation/ui/widgets/news_feed_more_option.dart';
 import 'package:samachar_hub/core/extensions/view.dart';
+import 'package:samachar_hub/core/extensions/number_extensions.dart';
 
 class NewsFeedCardSourceCategory extends StatelessWidget {
   final String sourceIcon;
@@ -119,10 +120,10 @@ class NewsFeedCardTitleDescription extends StatelessWidget {
 class NewsFeedOptions extends StatelessWidget {
   const NewsFeedOptions({
     Key key,
-    @required this.feedUIModel,
+    @required this.feed,
   }) : super(key: key);
 
-  final NewsFeedUIModel feedUIModel;
+  final NewsFeedEntity feed;
 
   @override
   Widget build(BuildContext context) {
@@ -134,47 +135,17 @@ class NewsFeedOptions extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
-          BlocBuilder<LikeUnlikeBloc, LikeUnlikeState>(
-            builder: (context, state) => FlatButton.icon(
-              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-              label: Text(
-                feedUIModel.feedEntity.likeCount == 0
-                    ? 'Like'
-                    : '${feedUIModel.formattedLikeCount}',
-                style: Theme.of(context).textTheme.overline,
-              ),
-              icon: feedUIModel.feedEntity.isLiked
-                  ? Icon(
-                      FontAwesomeIcons.solidThumbsUp,
-                      size: 16,
-                      color: Theme.of(context).accentColor,
-                    )
-                  : Icon(
-                      FontAwesomeIcons.thumbsUp,
-                      size: 16,
-                    ),
-              onPressed: () {
-                if (feedUIModel.feedEntity.isLiked) {
-                  feedUIModel.unlike();
-                  context.bloc<LikeUnlikeBloc>().add(UnlikeEvent());
-                  GetIt.I.get<EventBus>().fire(NewsFeedEvent(
-                      eventType: 'unlike', feedId: feedUIModel.feedEntity.id));
-                } else {
-                  feedUIModel.like();
-                  context.bloc<LikeUnlikeBloc>().add(LikeEvent());
-                  GetIt.I.get<EventBus>().fire(NewsFeedEvent(
-                      eventType: 'like', feedId: feedUIModel.feedEntity.id));
-                }
-              },
-            ),
-          ),
+          LikeButton(feed: feed),
           FlatButton.icon(
             materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
             label: Text(
-              feedUIModel.feedEntity.commentCount == 0
+              feed.commentCount == 0
                   ? 'Comment'
-                  : '${feedUIModel.formattedCommentCount}',
-              style: Theme.of(context).textTheme.overline,
+                  : '${feed.commentCount.compactFormat}',
+              style: Theme.of(context)
+                  .textTheme
+                  .overline
+                  .copyWith(fontWeight: FontWeight.w700),
             ),
             icon: Icon(
               FontAwesomeIcons.comment,
@@ -182,9 +153,19 @@ class NewsFeedOptions extends StatelessWidget {
             ),
             onPressed: () => GetIt.I.get<NavigationService>().toCommentsScreen(
                 context: context,
-                threadTitle: feedUIModel.feedEntity.title,
-                threadId: feedUIModel.feedEntity.id,
+                threadTitle: feed.title,
+                threadId: feed.id,
                 threadType: CommentThreadType.NEWS_FEED),
+          ),
+          SizedBox(
+            width: 8,
+          ),
+          Text(
+            '${feed.commentCount.compactFormat} views',
+            style: Theme.of(context)
+                .textTheme
+                .overline
+                .copyWith(fontWeight: FontWeight.w800),
           ),
           Spacer(),
           IconButton(
@@ -195,11 +176,57 @@ class NewsFeedOptions extends StatelessWidget {
             onPressed: () => context.showBottomSheet(
                 child: NewsFeedMoreOption(
               context: context,
-              feed: feedUIModel,
+              feed: feed,
             )),
           ),
         ],
       ),
+    );
+  }
+}
+
+class LikeButton extends StatelessWidget {
+  const LikeButton({
+    Key key,
+    @required this.feed,
+  }) : super(key: key);
+
+  final NewsFeedEntity feed;
+
+  @override
+  Widget build(BuildContext context) {
+    return FlatButton.icon(
+      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+      label: Text(
+        feed.likeCount == 0 ? 'Like' : '${feed.likeCount.compactFormat}',
+        style: Theme.of(context)
+            .textTheme
+            .overline
+            .copyWith(fontWeight: FontWeight.w800),
+      ),
+      icon: feed.isLiked
+          ? Icon(
+              FontAwesomeIcons.solidThumbsUp,
+              size: 16,
+              color: Theme.of(context).accentColor,
+            )
+          : Icon(
+              FontAwesomeIcons.thumbsUp,
+              size: 16,
+            ),
+      onPressed: () {
+        if (feed.isLiked) {
+          context.bloc<LikeUnlikeBloc>().add(UnlikeEvent(feed: feed));
+          GetIt.I
+              .get<EventBus>()
+              .fire(NewsChangeEvent(eventType: 'unlike', data: feed));
+        } else {
+          context.bloc<LikeUnlikeBloc>().add(LikeEvent(feed: feed));
+          GetIt.I
+              .get<EventBus>()
+              .fire(NewsChangeEvent(eventType: 'like', data: feed));
+        }
+      },
     );
   }
 }

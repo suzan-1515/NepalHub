@@ -45,3 +45,12 @@ class LoadMoreNewsEvent extends FeedEvent {
   @override
   List<Object> get props => [page, langugage];
 }
+
+class FeedChangeEvent extends FeedEvent {
+  final Object data;
+  final String eventType;
+  const FeedChangeEvent({@required this.data, @required this.eventType});
+
+  @override
+  List<Object> get props => [data, eventType];
+}

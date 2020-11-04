@@ -15,12 +15,12 @@ class ViewInProgress extends ViewState {
 }
 
 class ViewSuccess extends ViewState {
-  final String message;
+  final NewsFeedEntity feed;
 
-  ViewSuccess({this.message});
+  ViewSuccess({this.feed});
 
   @override
-  List<Object> get props => [message];
+  List<Object> get props => [feed];
 }
 
 class ViewError extends ViewState {

@@ -1,41 +1,41 @@
 part of 'follow_un_follow_bloc.dart';
 
-abstract class FollowUnFollowState extends Equatable {
-  const FollowUnFollowState();
+abstract class CategoryFollowUnFollowState extends Equatable {
+  const CategoryFollowUnFollowState();
 }
 
-class FollowUnFollowInitialState extends FollowUnFollowState {
+class CategoryFollowInitialState extends CategoryFollowUnFollowState {
   @override
   List<Object> get props => [];
 }
 
-class FollowUnFollowInProgressState extends FollowUnFollowState {
+class CategoryFollowInProgressState extends CategoryFollowUnFollowState {
   @override
   List<Object> get props => [];
 }
 
-class FollowUnFollowFollowedState extends FollowUnFollowState {
-  final String message;
+class CategoryFollowSuccessState extends CategoryFollowUnFollowState {
+  final NewsCategoryEntity category;
 
-  FollowUnFollowFollowedState({this.message});
-
-  @override
-  List<Object> get props => [message];
-}
-
-class FollowUnFollowUnFollowedState extends FollowUnFollowState {
-  final String message;
-
-  FollowUnFollowUnFollowedState({this.message});
+  CategoryFollowSuccessState({@required this.category});
 
   @override
-  List<Object> get props => [message];
+  List<Object> get props => [category];
 }
 
-class FollowUnFollowErrorstate extends FollowUnFollowState {
+class CategoryUnFollowSuccessState extends CategoryFollowUnFollowState {
+  final NewsCategoryEntity category;
+
+  CategoryUnFollowSuccessState({@required this.category});
+
+  @override
+  List<Object> get props => [category];
+}
+
+class CategoryFollowErrorstate extends CategoryFollowUnFollowState {
   final String message;
 
-  FollowUnFollowErrorstate({this.message});
+  CategoryFollowErrorstate({this.message});
 
   @override
   List<Object> get props => [message];

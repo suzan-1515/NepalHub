@@ -2,16 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:samachar_hub/core/services/services.dart';
 import 'package:samachar_hub/feature_main/presentation/ui/widgets/section_heading.dart';
-import 'package:samachar_hub/feature_news/presentation/models/news_source.dart';
+import 'package:samachar_hub/feature_news/domain/entities/news_source_entity.dart';
 import 'package:samachar_hub/feature_news/presentation/ui/widgets/news_menu_item.dart';
 
 class NewsSourceMenuSection extends StatelessWidget {
   const NewsSourceMenuSection({
     Key key,
-    @required this.newsSourceUIModels,
+    @required this.newsSources,
   }) : super(key: key);
 
-  final List<NewsSourceUIModel> newsSourceUIModels;
+  final List<NewsSourceEntity> newsSources;
 
   @override
   Widget build(BuildContext context) {
@@ -20,8 +20,7 @@ class NewsSourceMenuSection extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: <Widget>[
         SectionHeading(
-          title: 'Discover',
-          subtitle: 'Get the latest news on your favourite source',
+          title: 'Featured Sources',
           onTap: () => GetIt.I
               .get<NavigationService>()
               .toFollowedNewsSourceScreen(context),
@@ -33,17 +32,17 @@ class NewsSourceMenuSection extends StatelessWidget {
             child: ListView.builder(
               itemExtent: 120,
               primary: false,
-              itemCount: newsSourceUIModels.length,
+              itemCount: newsSources.length,
               scrollDirection: Axis.horizontal,
               itemBuilder: (context, index) {
-                var sourceModel = newsSourceUIModels[index];
+                var sourceModel = newsSources[index];
                 return NewsMenuItem(
-                  title: sourceModel.source.title,
-                  icon: sourceModel.source.icon,
+                  title: sourceModel.title,
+                  icon: sourceModel.icon,
                   onTap: () => GetIt.I
                       .get<NavigationService>()
                       .toNewsSourceFeedScreen(
-                          context: context, source: sourceModel.source),
+                          context: context, source: sourceModel),
                 );
               },
             ),

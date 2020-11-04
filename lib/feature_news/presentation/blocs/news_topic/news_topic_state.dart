@@ -4,38 +4,52 @@ abstract class NewsTopicState extends Equatable {
   const NewsTopicState();
 }
 
-class InitialState extends NewsTopicState {
+class NewsTopicInitialState extends NewsTopicState {
   @override
   List<Object> get props => [];
 }
 
-class LoadingState extends NewsTopicState {
+class NewsTopicLoadingState extends NewsTopicState {
   @override
   List<Object> get props => [];
 }
 
-class LoadSuccessState extends NewsTopicState {
-  final List<NewsTopicUIModel> topics;
+class NewsTopicRefreshingState extends NewsTopicState {
+  @override
+  List<Object> get props => [];
+}
 
-  LoadSuccessState(this.topics);
+class NewsTopicLoadSuccessState extends NewsTopicState {
+  final List<NewsTopicEntity> topics;
+
+  NewsTopicLoadSuccessState(this.topics);
 
   @override
   List<Object> get props => [topics];
 }
 
-class EmptyState extends NewsTopicState {
+class NewsTopicLoadEmptyState extends NewsTopicState {
   final String message;
 
-  EmptyState({this.message});
+  NewsTopicLoadEmptyState({this.message});
 
   @override
   List<Object> get props => [message];
 }
 
-class ErrorState extends NewsTopicState {
+class NewsTopicLoadErrorState extends NewsTopicState {
   final String message;
 
-  ErrorState({this.message});
+  NewsTopicLoadErrorState({this.message});
+
+  @override
+  List<Object> get props => [message];
+}
+
+class NewsTopicErrorState extends NewsTopicState {
+  final String message;
+
+  NewsTopicErrorState({this.message});
 
   @override
   List<Object> get props => [message];

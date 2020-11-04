@@ -10,12 +10,11 @@ import 'package:samachar_hub/feature_horoscope/presentation/extensions/horoscope
 extension HomeX on HomeEntity {
   HomeUIModel get toUIModel => HomeUIModel(
       coronaUIModel: this.corona.toUIModel,
-      latestNewsUIModel: LatestNewsUIModel(feeds: this.latestNews.toUIModels),
+      latestNewsUIModel: LatestNewsUIModel(feeds: this.latestNews),
       newsTopicUIModels: this.newsTopics.toUIModels,
       newsCategoryUIModels: this.newsCategories.toUIModels,
       newsSourceUIModels: this.newsSources.toUIModels,
-      trendingNewsUIModel:
-          TrendingNewsUIModel(feeds: this.trendingNews.toUIModels),
+      trendingNewsUIModel: TrendingNewsUIModel(feeds: this.trendingNews),
       forexUIModel: this.forexe.toUIModel,
       horoscopeUIModel: this.horoscope.toUIModel);
 }

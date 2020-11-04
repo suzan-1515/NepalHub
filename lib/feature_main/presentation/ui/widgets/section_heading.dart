@@ -22,22 +22,30 @@ class SectionHeading extends StatelessWidget {
         child: Row(
           children: <Widget>[
             Expanded(
-              child: RichText(
-                text: TextSpan(
-                  text: title,
-                  style: Theme.of(context)
-                      .textTheme
-                      .subtitle1
-                      .copyWith(fontWeight: FontWeight.w600),
-                  children: <TextSpan>[
-                    TextSpan(text: '\n'),
-                    TextSpan(
-                        text: subtitle,
-                        style: Theme.of(context).textTheme.bodyText2)
-                  ],
-                ),
-                softWrap: true,
-              ),
+              child: (subtitle == null)
+                  ? Text(
+                      title,
+                      style: Theme.of(context)
+                          .textTheme
+                          .subtitle1
+                          .copyWith(fontWeight: FontWeight.w600),
+                    )
+                  : RichText(
+                      text: TextSpan(
+                        text: title,
+                        style: Theme.of(context)
+                            .textTheme
+                            .subtitle1
+                            .copyWith(fontWeight: FontWeight.w600),
+                        children: <TextSpan>[
+                          TextSpan(text: '\n'),
+                          TextSpan(
+                              text: subtitle,
+                              style: Theme.of(context).textTheme.bodyText2)
+                        ],
+                      ),
+                      softWrap: true,
+                    ),
             ),
             if (onTap != null)
               IconButton(

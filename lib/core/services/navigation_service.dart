@@ -18,7 +18,8 @@ import 'package:samachar_hub/feature_news/presentation/ui/category/category_feed
 import 'package:samachar_hub/feature_news/presentation/ui/details/news_detail_screen.dart';
 import 'package:samachar_hub/feature_news/presentation/ui/source/source_feed/news_source_feed_screen.dart';
 import 'package:samachar_hub/feature_news/presentation/ui/source/sources/sources_screen.dart';
-import 'package:samachar_hub/feature_news/presentation/ui/topics/news_topic_feed_screen.dart';
+import 'package:samachar_hub/feature_news/presentation/ui/topics/topic_feed/news_topic_feed_screen.dart';
+import 'package:samachar_hub/feature_news/presentation/ui/topics/topics/topics_screen.dart';
 import 'package:samachar_hub/feature_news/presentation/ui/trending/trending_news_screen.dart';
 import 'package:samachar_hub/feature_comment/presentation/ui/comment_screen.dart';
 import 'package:samachar_hub/feature_forex/presentation/ui/forex_detail_screen.dart';
@@ -121,6 +122,14 @@ class NavigationService {
     );
   }
 
+  Future toFollowedNewsTopicScreen(BuildContext context) {
+    return Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => NewsTopicsScreen(),
+      ),
+    );
+  }
+
   Future toNewsCategoryFeedScreen(
       BuildContext context, NewsCategoryEntity categoryEntity) {
     return Navigator.push(
@@ -153,12 +162,12 @@ class NavigationService {
   }
 
   Future toNewsTopicFeedScreen(
-      {@required BuildContext context, @required NewsTopicEntity topicEntity}) {
+      {@required BuildContext context, @required NewsTopicEntity topic}) {
     return Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => NewsTopicFeedScreen(
-          newsTopicEntity: topicEntity,
+          newsTopicEntity: topic,
         ),
       ),
     );

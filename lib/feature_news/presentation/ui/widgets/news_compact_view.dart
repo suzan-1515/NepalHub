@@ -1,16 +1,14 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:get_it/get_it.dart';
-import 'package:samachar_hub/core/services/services.dart';
-import 'package:samachar_hub/feature_news/presentation/models/news_feed.dart';
+import 'package:samachar_hub/feature_news/domain/entities/news_feed_entity.dart';
 import 'package:samachar_hub/core/widgets/cached_image_widget.dart';
+import 'package:samachar_hub/core/extensions/date_time.dart';
 import 'package:samachar_hub/feature_news/presentation/ui/details/news_detail_screen.dart';
 
 class NewsCompactView extends StatelessWidget {
-  final NewsFeedUIModel feedUIModel;
-  NewsCompactView({@required this.feedUIModel});
+  final NewsFeedEntity feed;
+  NewsCompactView({@required this.feed});
 
   @override
   Widget build(BuildContext context) {
@@ -23,17 +21,14 @@ class NewsCompactView extends StatelessWidget {
       margin: EdgeInsets.symmetric(horizontal: 4, vertical: 6),
       elevation: 0,
       child: InkWell(
-        onTap: () => NewsDetailScreen.navigate(feedUIModel.feedEntity, context),
+        onTap: () => NewsDetailScreen.navigate(feed, context),
         child: ClipRRect(
           borderRadius: BorderRadius.all(Radius.circular(6.0)),
           child: Stack(
             fit: StackFit.expand,
             children: <Widget>[
-              CachedImage(
-                  feedUIModel.feedEntity.isValidImage
-                      ? feedUIModel.feedEntity.image
-                      : '',
-                  tag: feedUIModel.feedEntity.hashCode.toString()),
+              CachedImage(feed.isValidImage ? feed.image : '',
+                  tag: '${feed.id}-${feed.type}'),
               Positioned(
                 bottom: 0,
                 right: 0,
@@ -70,9 +65,7 @@ class NewsCompactView extends StatelessWidget {
                               color: Colors.grey[100],
                               child: CachedNetworkImage(
                                 fit: BoxFit.cover,
-                                imageUrl: feedUIModel
-                                        .newsSourceUIModel.source.favicon ??
-                                    '',
+                                imageUrl: feed.source.favicon ?? '',
                                 placeholder: (context, _) =>
                                     Icon(FontAwesomeIcons.image),
                                 errorWidget: (context, url, error) =>
@@ -86,15 +79,14 @@ class NewsCompactView extends StatelessWidget {
                           ),
                           RichText(
                             text: TextSpan(
-                              text: feedUIModel.newsSourceUIModel.source.title,
+                              text: feed.source.title,
                               style: Theme.of(context)
                                   .textTheme
                                   .subtitle2
                                   .copyWith(color: Colors.white),
                               children: <TextSpan>[
                                 TextSpan(
-                                    text:
-                                        '\n${feedUIModel.publishedDateMomentAgo}',
+                                    text: '\n${feed.publishedDate.momentAgo}',
                                     style: Theme.of(context)
                                         .textTheme
                                         .caption
@@ -112,7 +104,7 @@ class NewsCompactView extends StatelessWidget {
                                 borderRadius:
                                     BorderRadius.all(Radius.circular(12))),
                             child: Text(
-                              feedUIModel.feedEntity.category.title,
+                              feed.category.title,
                               style: Theme.of(context)
                                   .textTheme
                                   .caption
@@ -125,7 +117,7 @@ class NewsCompactView extends StatelessWidget {
                         height: 8,
                       ),
                       Text(
-                        feedUIModel.feedEntity.title,
+                        feed.title,
                         maxLines: MediaQuery.of(context).orientation ==
                                 Orientation.portrait
                             ? 2

@@ -10,12 +10,12 @@ class BookmarkUnBookmarkInitial extends BookmarkUnBookmarkState {
 }
 
 class BookmarkSuccess extends BookmarkUnBookmarkState {
-  final String message;
+  final NewsFeedEntity feed;
 
-  const BookmarkSuccess({this.message});
+  const BookmarkSuccess({this.feed});
 
   @override
-  List<Object> get props => [message];
+  List<Object> get props => [feed];
 }
 
 class BookmarkInProgress extends BookmarkUnBookmarkState {
@@ -26,12 +26,12 @@ class BookmarkInProgress extends BookmarkUnBookmarkState {
 }
 
 class UnbookmarkSuccess extends BookmarkUnBookmarkState {
-  final String message;
+  final NewsFeedEntity feed;
 
-  const UnbookmarkSuccess({this.message});
+  const UnbookmarkSuccess({this.feed});
 
   @override
-  List<Object> get props => [message];
+  List<Object> get props => [feed];
 }
 
 class BookmarkUnBookmarkError extends BookmarkUnBookmarkState {

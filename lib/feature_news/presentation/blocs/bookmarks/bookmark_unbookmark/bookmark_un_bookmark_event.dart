@@ -6,6 +6,38 @@ abstract class BookmarkUnBookmarkEvent extends Equatable {
   List<Object> get props => [];
 }
 
-class BookmarkNews extends BookmarkUnBookmarkEvent {}
+class BookmarkNews extends BookmarkUnBookmarkEvent {
+  final NewsFeedEntity feed;
 
-class UnBookmarkNews extends BookmarkUnBookmarkEvent {}
+  BookmarkNews({@required this.feed});
+
+  @override
+  List<Object> get props => [feed];
+}
+
+class UnBookmarkNews extends BookmarkUnBookmarkEvent {
+  final NewsFeedEntity feed;
+
+  UnBookmarkNews({@required this.feed});
+
+  @override
+  List<Object> get props => [feed];
+}
+
+class UpdateBookmarkEvent extends BookmarkUnBookmarkEvent {
+  final NewsFeedEntity feed;
+
+  UpdateBookmarkEvent({@required this.feed});
+
+  @override
+  List<Object> get props => [feed];
+}
+
+class UpdateUnbookmarkEvent extends BookmarkUnBookmarkEvent {
+  final NewsFeedEntity feed;
+
+  UpdateUnbookmarkEvent({@required this.feed});
+
+  @override
+  List<Object> get props => [feed];
+}

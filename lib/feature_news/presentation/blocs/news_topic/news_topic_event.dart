@@ -27,3 +27,12 @@ class RefreshTopicsEvent extends NewsTopicEvent {
   @override
   List<Object> get props => [language];
 }
+
+class UpdateTopicChangeEvent extends NewsTopicEvent {
+  final NewsTopicEntity topic;
+  final String eventType;
+
+  UpdateTopicChangeEvent({@required this.topic, @required this.eventType});
+  @override
+  List<Object> get props => [topic, eventType];
+}

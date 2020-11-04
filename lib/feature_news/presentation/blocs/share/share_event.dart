@@ -6,4 +6,11 @@ abstract class ShareEvent extends Equatable {
   List<Object> get props => [];
 }
 
-class Share extends ShareEvent {}
+class Share extends ShareEvent {
+  final NewsFeedEntity feed;
+
+  Share({@required this.feed});
+
+  @override
+  List<Object> get props => [feed];
+}

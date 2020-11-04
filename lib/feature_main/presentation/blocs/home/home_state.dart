@@ -12,12 +12,12 @@ class HomeInitialState extends HomeState {}
 class HomeLoadingState extends HomeState {}
 
 class HomeLoadSuccessState extends HomeState {
-  final HomeUIModel homeModel;
+  final HomeEntity home;
 
-  HomeLoadSuccessState({@required this.homeModel});
+  HomeLoadSuccessState({@required this.home});
 
   @override
-  List<Object> get props => [homeModel];
+  List<Object> get props => [home];
 }
 
 class HomeEmptyState extends HomeState {

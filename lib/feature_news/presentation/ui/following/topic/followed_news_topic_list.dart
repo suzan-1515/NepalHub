@@ -10,21 +10,32 @@ import 'package:samachar_hub/feature_news/presentation/blocs/news_topic/news_top
 import 'package:samachar_hub/feature_news/presentation/ui/widgets/news_menu_item.dart';
 import 'package:samachar_hub/core/extensions/view.dart';
 
-class FollowedNewsTopicList extends StatelessWidget {
+class FollowedNewsTopicList extends StatefulWidget {
   const FollowedNewsTopicList({
     Key key,
   }) : super(key: key);
 
   @override
+  _FollowedNewsTopicListState createState() => _FollowedNewsTopicListState();
+}
+
+class _FollowedNewsTopicListState extends State<FollowedNewsTopicList> {
+  @override
+  void initState() {
+    super.initState();
+    context.bloc<NewsTopicBloc>().add(GetFollowedTopicsEvent());
+  }
+
+  @override
   Widget build(BuildContext context) {
     return BlocConsumer<NewsTopicBloc, NewsTopicState>(
       listener: (context, state) {
-        if (state is ErrorState) {
+        if (state is NewsTopicLoadErrorState) {
           context.showMessage(state.message);
         }
       },
       builder: (context, state) {
-        if (state is LoadSuccessState) {
+        if (state is NewsTopicLoadSuccessState) {
           return FadeInUp(
             duration: Duration(milliseconds: 200),
             child: LimitedBox(
@@ -35,20 +46,20 @@ class FollowedNewsTopicList extends StatelessWidget {
                 scrollDirection: Axis.horizontal,
                 itemCount: state.topics.length,
                 itemBuilder: (_, index) {
-                  var topicModel = state.topics[index];
+                  var topic = state.topics[index];
                   return NewsMenuItem(
-                    title: topicModel.topic.title,
-                    icon: topicModel.topic.icon,
+                    title: topic.title,
+                    icon: topic.icon,
                     onTap: () {
                       GetIt.I.get<NavigationService>().toNewsTopicFeedScreen(
-                          context: context, topicEntity: topicModel.topic);
+                          context: context, topic: topic);
                     },
                   );
                 },
               ),
             ),
           );
-        } else if (state is ErrorState) {
+        } else if (state is NewsTopicLoadErrorState) {
           return Center(
             child: ErrorDataView(
               message: state.message,
@@ -57,7 +68,7 @@ class FollowedNewsTopicList extends StatelessWidget {
               },
             ),
           );
-        } else if (state is EmptyState) {
+        } else if (state is NewsTopicLoadEmptyState) {
           return Center(
             child: EmptyDataView(
               text: state.message,

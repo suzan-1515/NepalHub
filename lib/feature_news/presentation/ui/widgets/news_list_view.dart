@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:get_it/get_it.dart';
-import 'package:samachar_hub/core/services/services.dart';
-import 'package:samachar_hub/feature_news/presentation/models/news_feed.dart';
+import 'package:samachar_hub/core/extensions/date_time.dart';
+import 'package:samachar_hub/feature_news/domain/entities/news_feed_entity.dart';
 import 'package:samachar_hub/feature_news/presentation/ui/details/news_detail_screen.dart';
 import 'package:samachar_hub/feature_news/presentation/ui/widgets/article_info_widget.dart';
 import 'package:samachar_hub/core/widgets/cached_image_widget.dart';
 
 class NewsListView extends StatelessWidget {
-  final NewsFeedUIModel feedUIModel;
+  final NewsFeedEntity feed;
 
-  NewsListView({@required this.feedUIModel});
+  NewsListView({@required this.feed});
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +21,7 @@ class NewsListView extends StatelessWidget {
         borderRadius: BorderRadius.circular(6),
       ),
       child: InkWell(
-        onTap: () => NewsDetailScreen.navigate(feedUIModel.feedEntity, context),
+        onTap: () => NewsDetailScreen.navigate(feed, context),
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Column(
@@ -30,10 +29,10 @@ class NewsListView extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               NewsFeedCardSourceCategory(
-                category: feedUIModel.feedEntity.category.title,
-                publishedDate: feedUIModel.publishedDateMomentAgo,
-                source: feedUIModel.newsSourceUIModel.source.title,
-                sourceIcon: feedUIModel.newsSourceUIModel.source.favicon,
+                category: feed.category.title,
+                publishedDate: feed.publishedDate.momentAgo,
+                source: feed.source.title,
+                sourceIcon: feed.source.favicon,
               ),
               SizedBox(height: 8),
               Row(
@@ -43,8 +42,8 @@ class NewsListView extends StatelessWidget {
                   Expanded(
                     flex: 4,
                     child: NewsFeedCardTitleDescription(
-                      description: feedUIModel.feedEntity.description,
-                      title: feedUIModel.feedEntity.title,
+                      description: feed.description,
+                      title: feed.title,
                       descriptionMaxLines: MediaQuery.of(context).orientation ==
                               Orientation.portrait
                           ? 2
@@ -61,8 +60,8 @@ class NewsListView extends StatelessWidget {
                       aspectRatio: 4 / 3,
                       child: ClipRRect(
                         borderRadius: BorderRadius.all(Radius.circular(6)),
-                        child: CachedImage(feedUIModel.feedEntity.image,
-                            tag: feedUIModel.feedEntity.hashCode.toString()),
+                        child: CachedImage(feed.image,
+                            tag: '${feed.id}-${feed.type}'),
                       ),
                     ),
                   ),
@@ -70,7 +69,7 @@ class NewsListView extends StatelessWidget {
               ),
               SizedBox(height: 8),
               Divider(),
-              NewsFeedOptions(feedUIModel: feedUIModel),
+              NewsFeedOptions(feed: feed),
             ],
           ),
         ),

@@ -83,7 +83,7 @@ class _HomeFeedListState extends State<HomeFeedList> {
           builder: (context, state) {
             if (state is HomeLoadSuccessState) {
               return HomeListBuilder(
-                data: state.homeModel,
+                data: state.home,
                 onRefresh: _onRefresh,
                 scrollController: _scrollController,
               );

@@ -23,7 +23,16 @@ class GetFollowedSourcesEvent extends NewsSourcesEvent {
 class RefreshSourceEvent extends NewsSourcesEvent {
   final Language language;
 
-  RefreshSourceEvent({this.language = Language.NEPALI});
+  RefreshSourceEvent({this.language = Language.ENGLISH});
   @override
   List<Object> get props => [language];
+}
+
+class UpdateSourceChangeEvent extends NewsSourcesEvent {
+  final NewsSourceEntity source;
+  final String eventType;
+
+  UpdateSourceChangeEvent({@required this.source, @required this.eventType});
+  @override
+  List<Object> get props => [source, eventType];
 }

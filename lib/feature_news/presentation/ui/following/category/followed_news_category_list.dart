@@ -10,21 +10,36 @@ import 'package:samachar_hub/core/extensions/view.dart';
 import 'package:samachar_hub/feature_news/presentation/blocs/news_category/news_category_bloc.dart';
 import 'package:samachar_hub/feature_news/presentation/ui/widgets/news_menu_item.dart';
 
-class FollowedNewsCategoryList extends StatelessWidget {
+class FollowedNewsCategoryList extends StatefulWidget {
   const FollowedNewsCategoryList({
     Key key,
   }) : super(key: key);
 
   @override
+  _FollowedNewsCategoryListState createState() =>
+      _FollowedNewsCategoryListState();
+}
+
+class _FollowedNewsCategoryListState extends State<FollowedNewsCategoryList> {
+  @override
+  void initState() {
+    super.initState();
+    context.bloc<NewsCategoryBloc>().add(GetCategories());
+  }
+
+  @override
   Widget build(BuildContext context) {
     return BlocConsumer<NewsCategoryBloc, NewsCategoryState>(
       listener: (context, state) {
-        if (state is Error) {
+        if (state is NewsCategoryErrorState) {
+          context.showMessage(state.message);
+        } else if (state is NewsCategoryLoadErrorState) {
           context.showMessage(state.message);
         }
       },
+      buildWhen: (previous, current) => !(current is NewsCategoryErrorState),
       builder: (context, state) {
-        if (state is LoadSuccess) {
+        if (state is NewsCategoryLoadSuccessState) {
           return FadeInUp(
             duration: Duration(milliseconds: 200),
             child: LimitedBox(
@@ -37,18 +52,19 @@ class FollowedNewsCategoryList extends StatelessWidget {
                 itemBuilder: (_, index) {
                   var categoryModel = state.categories[index];
                   return NewsMenuItem(
-                    title: categoryModel.category.title,
-                    icon: categoryModel.category.icon,
+                    title: categoryModel.title,
+                    icon: categoryModel.icon,
                     onTap: () {
-                      GetIt.I.get<NavigationService>().toNewsCategoryFeedScreen(
-                          context, categoryModel.category);
+                      GetIt.I
+                          .get<NavigationService>()
+                          .toNewsCategoryFeedScreen(context, categoryModel);
                     },
                   );
                 },
               ),
             ),
           );
-        } else if (state is Error) {
+        } else if (state is NewsCategoryLoadErrorState) {
           return Center(
             child: ErrorDataView(
               message: state.message,
@@ -57,7 +73,7 @@ class FollowedNewsCategoryList extends StatelessWidget {
               },
             ),
           );
-        } else if (state is Empty) {
+        } else if (state is NewsCategoryLoadEmptyState) {
           return Center(
             child: EmptyDataView(
               text: state.message,

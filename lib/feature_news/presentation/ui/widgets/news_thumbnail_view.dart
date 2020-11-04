@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:samachar_hub/feature_news/presentation/models/news_feed.dart';
+import 'package:samachar_hub/feature_news/domain/entities/news_feed_entity.dart';
 import 'package:samachar_hub/feature_news/presentation/ui/details/news_detail_screen.dart';
 import 'package:samachar_hub/feature_news/presentation/ui/widgets/article_info_widget.dart';
 import 'package:samachar_hub/core/widgets/cached_image_widget.dart';
+import 'package:samachar_hub/core/extensions/date_time.dart';
 
 class NewsThumbnailView extends StatelessWidget {
-  final NewsFeedUIModel feedUIModel;
-  NewsThumbnailView({@required this.feedUIModel});
+  final NewsFeedEntity feed;
+  NewsThumbnailView({@required this.feed});
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +20,7 @@ class NewsThumbnailView extends StatelessWidget {
         borderRadius: BorderRadius.circular(6),
       ),
       child: InkWell(
-        onTap: () => NewsDetailScreen.navigate(feedUIModel.feedEntity, context),
+        onTap: () => NewsDetailScreen.navigate(feed, context),
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Column(
@@ -27,10 +28,10 @@ class NewsThumbnailView extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
               NewsFeedCardSourceCategory(
-                category: feedUIModel.feedEntity.category.title,
-                publishedDate: feedUIModel.publishedDateMomentAgo,
-                source: feedUIModel.newsSourceUIModel.source.title,
-                sourceIcon: feedUIModel.newsSourceUIModel.source.favicon,
+                category: feed.category.title,
+                publishedDate: feed.publishedDate.momentAgo,
+                source: feed.source.title,
+                sourceIcon: feed.source.favicon,
               ),
               SizedBox(height: 8),
               AspectRatio(
@@ -40,15 +41,15 @@ class NewsThumbnailView extends StatelessWidget {
                     Radius.circular(6),
                   ),
                   child: CachedImage(
-                    feedUIModel.feedEntity.image,
-                    tag: feedUIModel.feedEntity.hashCode.toString(),
+                    feed.image,
+                    tag: '${feed.id}-${feed.type}',
                   ),
                 ),
               ),
               SizedBox(height: 8),
               NewsFeedCardTitleDescription(
-                description: feedUIModel.feedEntity.description,
-                title: feedUIModel.feedEntity.title,
+                description: feed.description,
+                title: feed.title,
                 descriptionMaxLines:
                     MediaQuery.of(context).orientation == Orientation.portrait
                         ? 2
@@ -56,7 +57,7 @@ class NewsThumbnailView extends StatelessWidget {
               ),
               SizedBox(height: 8),
               Divider(),
-              NewsFeedOptions(feedUIModel: feedUIModel),
+              NewsFeedOptions(feed: feed),
             ],
           ),
         ),

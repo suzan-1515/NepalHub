@@ -20,13 +20,13 @@ class LoadingMoreState extends BookmarkNewsState {
 }
 
 class LoadSuccessState extends BookmarkNewsState {
-  final List<NewsFeedUIModel> feeds;
+  final List<NewsFeedEntity> feeds;
   final bool hasMore;
 
   const LoadSuccessState(this.feeds, {this.hasMore = true});
 
   LoadSuccessState copyWith({
-    List<NewsFeedUIModel> feeds,
+    List<NewsFeedEntity> feeds,
     bool hasMore,
   }) =>
       LoadSuccessState(
