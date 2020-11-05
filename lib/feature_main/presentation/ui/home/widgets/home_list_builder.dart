@@ -11,6 +11,7 @@ import 'package:samachar_hub/feature_main/presentation/ui/home/widgets/latest_ne
 import 'package:samachar_hub/feature_main/presentation/ui/home/widgets/news_category_menu_section.dart';
 import 'package:samachar_hub/feature_main/presentation/ui/home/widgets/news_source_menu_section.dart';
 import 'package:samachar_hub/feature_main/presentation/ui/home/widgets/news_topics_section.dart';
+import 'package:samachar_hub/feature_main/presentation/ui/home/widgets/other_menu_section.dart';
 import 'package:samachar_hub/feature_main/presentation/ui/home/widgets/trending_news_section.dart';
 
 class HomeListBuilder extends StatelessWidget {
@@ -90,12 +91,12 @@ class HomeListBuilder extends StatelessWidget {
           //   RecentNewsSection(
           //     recentNewsUIModel: data.recentNewsUIModel,
           //   ),
-          // if (data.hasForex && data.hasHoroscope)
-          //   SliverToBoxAdapter(
-          //       child: OtherMenuSection(
-          //     horoscopeData: data.horoscopeUIModel,
-          //     forexData: data.forexUIModel,
-          //   )),
+          if (data.forexe != null && data.horoscope != null)
+            SliverToBoxAdapter(
+                child: OtherMenuSection(
+              horoscope: data.horoscope,
+              forex: data.forexe,
+            )),
           if (data.newsSources != null && data.newsSources.isNotEmpty)
             SliverToBoxAdapter(
                 child: NewsSourceMenuSection(newsSources: data.newsSources)),

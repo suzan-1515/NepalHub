@@ -4,20 +4,26 @@ import 'package:get_it/get_it.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:samachar_hub/core/models/language.dart';
 import 'package:samachar_hub/core/services/services.dart';
-import 'package:samachar_hub/feature_forex/presentation/models/forex_model.dart';
-import 'package:samachar_hub/feature_horoscope/presentation/models/horoscope_model.dart';
+import 'package:samachar_hub/feature_forex/domain/entities/forex_entity.dart';
+import 'package:samachar_hub/feature_horoscope/domain/entities/horoscope_entity.dart';
 import 'package:samachar_hub/feature_horoscope/presentation/extensions/horoscope_extensions.dart';
 import 'package:samachar_hub/feature_main/presentation/blocs/settings/settings_cubit.dart';
 
-class OtherMenuSection extends StatelessWidget {
-  final ForexUIModel forexData;
-  final HoroscopeUIModel horoscopeData;
+class OtherMenuSection extends StatefulWidget {
+  final ForexEntity forex;
+  final HoroscopeEntity horoscope;
   const OtherMenuSection({
     Key key,
-    this.forexData,
-    this.horoscopeData,
+    this.forex,
+    this.horoscope,
   }) : super(key: key);
 
+  @override
+  _OtherMenuSectionState createState() => _OtherMenuSectionState();
+}
+
+class _OtherMenuSectionState extends State<OtherMenuSection>
+    with AutomaticKeepAliveClientMixin {
   Widget _buildForexMenu(BuildContext context) {
     return Card(
       shape: RoundedRectangleBorder(
@@ -52,14 +58,14 @@ class OtherMenuSection extends StatelessWidget {
                         children: <TextSpan>[
                           TextSpan(
                               text:
-                                  '\n${forexData.forexEntity.unit} ${forexData.forexEntity.currency.code}=NRs. ${forexData.forexEntity.buying}',
+                                  '\n${widget.forex.unit} ${widget.forex.currency.code}=NRs. ${widget.forex.buying}',
                               style: Theme.of(context)
                                   .textTheme
                                   .subtitle2
                                   .copyWith(color: Colors.white)),
                           TextSpan(text: '\n'),
                           TextSpan(
-                              text: '${forexData.formatttedDate}',
+                              text: '${widget.forex.formatttedDate}',
                               style: Theme.of(context)
                                   .textTheme
                                   .caption
@@ -112,14 +118,14 @@ class OtherMenuSection extends StatelessWidget {
                         children: <TextSpan>[
                           TextSpan(
                               text:
-                                  '\n${horoscopeData.horoscopeEntity.signByIndex(settingsCubit.settings.defaultHoroscopeSign ?? 0, Language.NEPALI)}',
+                                  '\n${widget.horoscope.signByIndex(settingsCubit.settings.defaultHoroscopeSign ?? 0, Language.NEPALI)}',
                               style: Theme.of(context)
                                   .textTheme
                                   .subtitle2
                                   .copyWith(color: Colors.white)),
                           TextSpan(text: '\n'),
                           TextSpan(
-                              text: '${horoscopeData.formattedDate}',
+                              text: '${widget.horoscope.formattedDate}',
                               style: Theme.of(context)
                                   .textTheme
                                   .caption
@@ -138,6 +144,7 @@ class OtherMenuSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return LimitedBox(
       maxHeight: 120,
       child: IntrinsicHeight(
@@ -153,4 +160,7 @@ class OtherMenuSection extends StatelessWidget {
       ),
     );
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }

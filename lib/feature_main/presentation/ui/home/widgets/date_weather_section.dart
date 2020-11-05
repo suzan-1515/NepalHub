@@ -3,10 +3,18 @@ import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 import 'package:nepali_utils/nepali_utils.dart';
 
-class DateWeatherSection extends StatelessWidget {
+class DateWeatherSection extends StatefulWidget {
   const DateWeatherSection();
+
+  @override
+  _DateWeatherSectionState createState() => _DateWeatherSectionState();
+}
+
+class _DateWeatherSectionState extends State<DateWeatherSection>
+    with AutomaticKeepAliveClientMixin {
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Row(
@@ -32,4 +40,7 @@ class DateWeatherSection extends StatelessWidget {
       ),
     );
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }

@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:intl/intl.dart';
 import 'package:meta/meta.dart';
 
 import 'package:samachar_hub/feature_forex/domain/entities/currency_entity.dart';
@@ -84,6 +85,8 @@ class ForexEntity extends Equatable {
         shareCount: shareCount ?? this.shareCount,
         viewCount: viewCount ?? this.viewCount,
       );
+
+  String get formatttedDate => DateFormat('dd MMMM, yyyy').format(publishedAt);
 
   @override
   List<Object> get props => [

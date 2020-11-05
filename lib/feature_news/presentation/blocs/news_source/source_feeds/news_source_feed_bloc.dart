@@ -46,6 +46,8 @@ class NewsSourceFeedBloc
       } else if (state is SortByChangedState) {
         this._sortBy = state.sortBy;
         this.add(GetSourceNewsEvent());
+      } else if (state is SourceLoadSuccessState) {
+        this._newsFilterBloc.selectedSource = _sourceModel;
       }
     });
   }

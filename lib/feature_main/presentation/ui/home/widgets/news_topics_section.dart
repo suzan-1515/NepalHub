@@ -5,7 +5,7 @@ import 'package:samachar_hub/feature_main/presentation/ui/widgets/section_headin
 import 'package:samachar_hub/feature_news/domain/entities/news_topic_entity.dart';
 import 'package:samachar_hub/feature_news/presentation/ui/widgets/news_tag_item.dart';
 
-class NewsTopicsSection extends StatelessWidget {
+class NewsTopicsSection extends StatefulWidget {
   final List<NewsTopicEntity> items;
   const NewsTopicsSection({
     Key key,
@@ -13,7 +13,14 @@ class NewsTopicsSection extends StatelessWidget {
   }) : super(key: key);
 
   @override
+  _NewsTopicsSectionState createState() => _NewsTopicsSectionState();
+}
+
+class _NewsTopicsSectionState extends State<NewsTopicsSection>
+    with AutomaticKeepAliveClientMixin {
+  @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -27,7 +34,7 @@ class NewsTopicsSection extends StatelessWidget {
           child: Wrap(
             spacing: 6.0,
             runSpacing: 6.0,
-            children: items
+            children: widget.items
                 .map((e) => NewsTagItem(
                       title: e.title,
                       icon: e.icon,
@@ -41,4 +48,7 @@ class NewsTopicsSection extends StatelessWidget {
       ],
     );
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }

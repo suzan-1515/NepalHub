@@ -161,7 +161,7 @@ class NewsFeedOptions extends StatelessWidget {
             width: 8,
           ),
           Text(
-            '${feed.commentCount.compactFormat} views',
+            '${feed.viewCount.compactFormat} views',
             style: Theme.of(context)
                 .textTheme
                 .overline

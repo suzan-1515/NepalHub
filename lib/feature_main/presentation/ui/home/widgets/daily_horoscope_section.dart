@@ -9,10 +9,16 @@ import 'package:samachar_hub/feature_horoscope/domain/entities/horoscope_entity.
 import 'package:samachar_hub/feature_horoscope/presentation/extensions/horoscope_extensions.dart';
 import 'package:samachar_hub/feature_main/presentation/blocs/settings/settings_cubit.dart';
 
-class DailyHoroscope extends StatelessWidget {
+class DailyHoroscope extends StatefulWidget {
   final HoroscopeEntity data;
   const DailyHoroscope({Key key, @required this.data}) : super(key: key);
 
+  @override
+  _DailyHoroscopeState createState() => _DailyHoroscopeState();
+}
+
+class _DailyHoroscopeState extends State<DailyHoroscope>
+    with AutomaticKeepAliveClientMixin {
   Widget _buildPopupMenu(BuildContext context) {
     return PopupMenuButton<String>(
       icon: Icon(
@@ -90,10 +96,10 @@ class DailyHoroscope extends StatelessWidget {
   }
 
   Widget _buildCard(BuildContext context, int defaultHoroscopeSign) {
-    final sign = data.signByIndex(defaultHoroscopeSign, Language.NEPALI);
-    final signIcon = data.signIconByIndex(defaultHoroscopeSign);
+    final sign = widget.data.signByIndex(defaultHoroscopeSign, Language.NEPALI);
+    final signIcon = widget.data.signIconByIndex(defaultHoroscopeSign);
     final horoscope =
-        data.horoscopeByIndex(defaultHoroscopeSign, Language.NEPALI);
+        widget.data.horoscopeByIndex(defaultHoroscopeSign, Language.NEPALI);
     return Card(
       clipBehavior: Clip.hardEdge,
       color: Theme.of(context).cardColor,
@@ -105,12 +111,12 @@ class DailyHoroscope extends StatelessWidget {
       child: InkWell(
         onTap: () => GetIt.I
             .get<NavigationService>()
-            .toHoroscopeDetail(context, sign, signIcon, horoscope, data),
+            .toHoroscopeDetail(context, sign, signIcon, horoscope, widget.data),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            _buildSignRow(context, sign, signIcon, data.formattedDate),
+            _buildSignRow(context, sign, signIcon, widget.data.formattedDate),
             Divider(),
             _buildHoroscopeRow(context, horoscope),
           ],
@@ -121,10 +127,14 @@ class DailyHoroscope extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     final settingsCubit = context.bloc<SettingsCubit>();
     return FadeInUp(
       child:
           _buildCard(context, settingsCubit.settings.defaultHoroscopeSign ?? 0),
     );
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }

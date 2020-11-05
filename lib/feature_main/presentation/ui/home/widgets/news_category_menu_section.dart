@@ -5,7 +5,7 @@ import 'package:samachar_hub/feature_main/presentation/ui/widgets/section_headin
 import 'package:samachar_hub/feature_news/domain/entities/news_category_entity.dart';
 import 'package:samachar_hub/feature_news/presentation/ui/widgets/news_menu_item.dart';
 
-class NewsCategoryMenuSection extends StatelessWidget {
+class NewsCategoryMenuSection extends StatefulWidget {
   const NewsCategoryMenuSection({
     Key key,
     @required this.newsCategories,
@@ -14,7 +14,15 @@ class NewsCategoryMenuSection extends StatelessWidget {
   final List<NewsCategoryEntity> newsCategories;
 
   @override
+  _NewsCategoryMenuSectionState createState() =>
+      _NewsCategoryMenuSectionState();
+}
+
+class _NewsCategoryMenuSectionState extends State<NewsCategoryMenuSection>
+    with AutomaticKeepAliveClientMixin {
+  @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -32,10 +40,10 @@ class NewsCategoryMenuSection extends StatelessWidget {
             child: ListView.builder(
               itemExtent: 120,
               primary: false,
-              itemCount: newsCategories.length,
+              itemCount: widget.newsCategories.length,
               scrollDirection: Axis.horizontal,
               itemBuilder: (context, index) {
-                var categoryModel = newsCategories[index];
+                var categoryModel = widget.newsCategories[index];
                 return NewsMenuItem(
                   title: categoryModel.title,
                   icon: categoryModel.icon,
@@ -50,4 +58,7 @@ class NewsCategoryMenuSection extends StatelessWidget {
       ],
     );
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }
