@@ -100,7 +100,7 @@ class _OtherMenuSectionState extends State<OtherMenuSection>
               children: <Widget>[
                 Expanded(
                   child: Icon(
-                    FontAwesomeIcons.starOfDavid,
+                    FontAwesomeIcons.coins,
                     color: Colors.white,
                     size: 32,
                   ),
@@ -109,7 +109,7 @@ class _OtherMenuSectionState extends State<OtherMenuSection>
                 Expanded(
                   child: RichText(
                     text: TextSpan(
-                        text: 'NRs. ${widget.goldSilver.price}',
+                        text: 'NRs. ${widget.goldSilver.formatttedPrice}',
                         style: Theme.of(context).textTheme.subtitle1.copyWith(
                             color: Colors.white, fontWeight: FontWeight.w600),
                         children: <TextSpan>[
@@ -143,7 +143,7 @@ class _OtherMenuSectionState extends State<OtherMenuSection>
   Widget build(BuildContext context) {
     super.build(context);
     return LimitedBox(
-      maxHeight: 120,
+      maxHeight: 140,
       child: IntrinsicHeight(
         child: Row(
           mainAxisAlignment: MainAxisAlignment.start,

@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:get_it/get_it.dart';
-import 'package:samachar_hub/core/services/services.dart';
 import 'package:samachar_hub/core/widgets/progress_widget.dart';
 import 'package:samachar_hub/feature_gold/presentation/blocs/latest/latest_gold_silver_bloc.dart';
 import 'package:samachar_hub/feature_gold/presentation/blocs/timeline/gold_silver_timeline_bloc.dart';
-import 'package:samachar_hub/feature_gold/presentation/ui/widgets/gold_silver_graph.dart';
-import 'package:samachar_hub/feature_gold/presentation/ui/widgets/gold_silver_list.dart';
+import 'package:samachar_hub/feature_gold/presentation/ui/gold_silver/widgets/gold_silver_graph.dart';
+import 'package:samachar_hub/feature_gold/presentation/ui/gold_silver/widgets/gold_silver_list.dart';
 import 'package:samachar_hub/feature_gold/utils/provider.dart';
 
 class GoldSilverScreen extends StatelessWidget {
@@ -53,16 +51,6 @@ class GoldSilverScreen extends StatelessWidget {
       backgroundColor: Theme.of(context).backgroundColor,
       appBar: AppBar(
         title: Text('Gold/Silver'),
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(Icons.settings),
-            onPressed: () {
-              GetIt.I
-                  .get<NavigationService>()
-                  .toSettingsScreen(context: context);
-            },
-          ),
-        ],
       ),
       body: SafeArea(
         child: Padding(

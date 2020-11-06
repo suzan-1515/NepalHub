@@ -5,7 +5,7 @@ import 'package:samachar_hub/core/widgets/error_data_widget.dart';
 import 'package:samachar_hub/core/widgets/progress_widget.dart';
 import 'package:samachar_hub/core/extensions/view.dart';
 import 'package:samachar_hub/feature_gold/presentation/blocs/latest/latest_gold_silver_bloc.dart';
-import 'package:samachar_hub/feature_gold/presentation/ui/widgets/gold_silver_list_builder.dart';
+import 'package:samachar_hub/feature_gold/presentation/ui/gold_silver/widgets/gold_silver_list_builder.dart';
 
 class GoldSilverList extends StatefulWidget {
   const GoldSilverList({

@@ -67,7 +67,7 @@ class GoldSilverListItem extends StatelessWidget {
             SizedBox(width: 8),
             Expanded(
               flex: 2,
-              child: Text(goldSilver.entity.price.toString(),
+              child: Text(goldSilver.entity.formatttedPrice,
                   style: Theme.of(context).textTheme.bodyText2),
             ),
           ],

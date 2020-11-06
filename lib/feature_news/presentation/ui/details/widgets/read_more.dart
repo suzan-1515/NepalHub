@@ -20,40 +20,32 @@ class ReadMore extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(
-        color: Theme.of(context).cardColor,
-        borderRadius: BorderRadius.all(Radius.circular(6)),
-      ),
+      width: double.infinity,
       margin: EdgeInsets.symmetric(vertical: 16),
       padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      child: Row(
-        mainAxisSize: MainAxisSize.max,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: <Widget>[
-          Flexible(
-            child: Text(
-              'To read the complete article, you can use external web browser or default inbuilt browser. You can change from settings.',
-              style: Theme.of(context).textTheme.caption.copyWith(fontSize: 11),
-            ),
-          ),
-          Align(
-            alignment: Alignment.centerRight,
-            child: OutlineButton.icon(
-              onPressed: () {
-                final int newsReadMode =
-                    context.bloc<SettingsCubit>().settings.newsReadMode ?? 0;
-                if (newsReadMode == 2) return LinkUtils.openLink(feed.link);
-                GetIt.I.get<NavigationService>().toWebViewScreen(
-                      feed.title,
-                      feed.link,
-                      context,
-                    );
-              },
-              icon: Icon(FontAwesomeIcons.link),
-              label: Text('Read'),
-            ),
-          ),
-        ],
+      child: RaisedButton.icon(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
+        color: Theme.of(context).primaryColor,
+        padding: const EdgeInsets.all(8),
+        onPressed: () {
+          final int newsReadMode =
+              context.bloc<SettingsCubit>().settings.newsReadMode ?? 0;
+          if (newsReadMode == 2) return LinkUtils.openLink(feed.link);
+          GetIt.I.get<NavigationService>().toWebViewScreen(
+                feed.title,
+                feed.link,
+                context,
+              );
+        },
+        icon: Icon(
+          FontAwesomeIcons.link,
+          color: Theme.of(context).cardColor,
+        ),
+        label: Text('Read Full Article',
+            style: Theme.of(context)
+                .textTheme
+                .button
+                .copyWith(color: Theme.of(context).cardColor)),
       ),
     );
   }

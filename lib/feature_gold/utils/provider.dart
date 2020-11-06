@@ -73,8 +73,10 @@ class GoldSilverProvider {
         undislikeGoldSilverUseCase: GetIt.I.get<UndislikeGoldSilverUseCase>()));
     GetIt.I.registerFactory<ShareBloc>(() => ShareBloc(
         shareGoldSilverUseCase: GetIt.I.get<ShareGoldSilverUseCase>()));
-    GetIt.I.registerFactory<ViewBloc>(() =>
-        ViewBloc(viewGoldSilverUseCase: GetIt.I.get<ViewGoldSilverUseCase>()));
+    GetIt.I.registerFactoryParam<ViewBloc, GoldSilverEntity, void>((param1,
+            param2) =>
+        ViewBloc(viewGoldSilverUseCase: GetIt.I.get<ViewGoldSilverUseCase>())
+          ..add(View(goldSilver: param1)));
   }
 
   static BlocProvider<GoldSilverBloc> goldSilverBlocProvider({
@@ -120,7 +122,7 @@ class GoldSilverProvider {
             create: (context) => GetIt.I.get<ShareBloc>(),
           ),
           BlocProvider<ViewBloc>(
-            create: (context) => GetIt.I.get<ViewBloc>(),
+            create: (context) => GetIt.I.get<ViewBloc>(param1: goldSilver),
           ),
         ],
         child: child,

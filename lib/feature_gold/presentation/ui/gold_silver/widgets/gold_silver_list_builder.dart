@@ -1,8 +1,8 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:samachar_hub/feature_gold/presentation/models/gold_silver_model.dart';
-import 'package:samachar_hub/feature_gold/presentation/ui/widgets/gold_silver_list_item.dart';
-import 'package:samachar_hub/feature_gold/presentation/ui/widgets/gold_silver_table_header.dart';
+import 'package:samachar_hub/feature_gold/presentation/ui/gold_silver/widgets/gold_silver_list_item.dart';
+import 'package:samachar_hub/feature_gold/presentation/ui/gold_silver/widgets/gold_silver_table_header.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 class GoldSilverListBuilder extends StatelessWidget {

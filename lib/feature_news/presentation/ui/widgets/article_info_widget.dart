@@ -123,26 +123,84 @@ class NewsFeedOptions extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final iconColor = Theme.of(context).iconTheme.color.withOpacity(0.4);
+    final textStyle = Theme.of(context)
+        .textTheme
+        .overline
+        .copyWith(fontWeight: FontWeight.w300);
     return Row(
       mainAxisSize: MainAxisSize.max,
       mainAxisAlignment: MainAxisAlignment.spaceAround,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: <Widget>[
         if (feed.viewCount != 0)
-          Text(
-            '${feed.viewCount.compactFormat} views',
-            style: Theme.of(context).textTheme.overline.copyWith(),
+          RichText(
+            text: TextSpan(children: [
+              WidgetSpan(
+                child: Icon(
+                  Icons.visibility,
+                  size: 14,
+                  color: iconColor,
+                ),
+              ),
+              TextSpan(
+                text: ' ${feed.viewCount.compactFormat}',
+                style: textStyle,
+              ),
+            ]),
           ),
+        if (feed.viewCount != 0) SizedBox(width: 8),
+        if (feed.likeCount != 0)
+          RichText(
+            text: TextSpan(children: [
+              WidgetSpan(
+                child: Icon(
+                  Icons.thumb_up,
+                  size: 14,
+                  color: iconColor,
+                ),
+              ),
+              TextSpan(
+                text: ' ${feed.likeCount.compactFormat}',
+                style: textStyle,
+              ),
+            ]),
+          ),
+        if (feed.likeCount != 0) SizedBox(width: 8),
         if (feed.commentCount != 0)
-          Text(
-            ' • ${feed.commentCount.compactFormat} comments',
-            style: Theme.of(context).textTheme.overline,
+          RichText(
+            text: TextSpan(children: [
+              WidgetSpan(
+                child: Icon(
+                  FontAwesomeIcons.comment,
+                  size: 14,
+                  color: iconColor,
+                ),
+              ),
+              TextSpan(
+                text: ' ${feed.commentCount.compactFormat}',
+                style: textStyle,
+              ),
+            ]),
           ),
+        if (feed.commentCount != 0) SizedBox(width: 8),
         if (feed.shareCount != 0)
-          Text(
-            ' • ${feed.shareCount.compactFormat} shares',
-            style: Theme.of(context).textTheme.overline,
+          RichText(
+            text: TextSpan(children: [
+              WidgetSpan(
+                child: Icon(
+                  FontAwesomeIcons.shareAlt,
+                  size: 14,
+                  color: iconColor,
+                ),
+              ),
+              TextSpan(
+                text: ' ${feed.shareCount.compactFormat}',
+                style: textStyle,
+              ),
+            ]),
           ),
+        if (feed.shareCount != 0) SizedBox(width: 8),
         Spacer(),
         IconButton(
           visualDensity: VisualDensity.compact,

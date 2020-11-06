@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_advanced_networkimage/provider.dart';
 import 'package:flutter_advanced_networkimage/transition.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 
 class CachedImage extends StatelessWidget {
   CachedImage(this.imageURL, {this.tag});
@@ -15,26 +14,30 @@ class CachedImage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Hero(
       tag: tag ?? UniqueKey(),
-      child: CachedNetworkImage(
+      child: TransitionToImage(
+        image: AdvancedNetworkImage(
+          imageURL,
+          useDiskCache: true,
+          cacheRule: CacheRule(maxAge: const Duration(days: 3)),
+        ),
         fit: BoxFit.cover,
-        imageUrl: imageURL ?? '',
-        progressIndicatorBuilder: (context, url, downloadProgress) => Center(
+        loadingWidgetBuilder: (context, progress, imageData) => Center(
           child: Stack(
             alignment: Alignment.center,
             children: [
               CircularProgressIndicator(
-                value: downloadProgress.progress,
+                value: progress,
               ),
-              Icon(FontAwesomeIcons.image, size: 16),
+              const Icon(FontAwesomeIcons.image, size: 16),
             ],
           ),
         ),
-        errorWidget: (context, url, error) => Opacity(
+        placeholderBuilder: (context, reloadImage) => Opacity(
           opacity: 0.45,
           child: Container(
             alignment: Alignment.center,
             color: Colors.grey[500],
-            child: Icon(FontAwesomeIcons.image, size: 32),
+            child: const Icon(FontAwesomeIcons.image, size: 32),
           ),
         ),
       ),

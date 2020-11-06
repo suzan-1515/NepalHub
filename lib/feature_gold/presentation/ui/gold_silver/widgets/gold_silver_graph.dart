@@ -7,7 +7,7 @@ import 'package:intl/intl.dart';
 
 import 'package:fl_chart/fl_chart.dart';
 import 'package:samachar_hub/feature_gold/domain/entities/gold_silver_entity.dart';
-import 'package:samachar_hub/feature_gold/presentation/ui/widgets/label.dart';
+import 'package:samachar_hub/feature_gold/presentation/ui/gold_silver/widgets/label.dart';
 
 class GoldSilverGraph extends StatelessWidget {
   final List<GoldSilverEntity> timeline;
@@ -25,7 +25,7 @@ class GoldSilverGraph extends StatelessWidget {
   String _getYTitle(double value) {
     int index = value.toInt();
     var data = timeline[index];
-    return '${data.price}';
+    return '${data.formatttedPrice}';
   }
 
   @override
@@ -78,13 +78,16 @@ class GoldSilverGraph extends StatelessWidget {
 
   LineChart _buildGraph(BuildContext context) {
     final double labelSize = 40.0;
+    final double minX = 0;
     final double maxX = (timeline.length.toDouble() - 1.0).toDouble();
     final double maxY =
         timeline.map((e) => e.price).reduce(math.max).toDouble() + 100;
     final double minY =
         timeline.map((e) => e.price).reduce(math.min).toDouble() - 100;
-    final double verticalInterval = ((maxY - minY) / 3.0);
+    final double verticalInterval = ((maxY - minY) ~/ 3).toDouble();
     final double horizontalInterval = (maxX ~/ 5).toDouble();
+    final List<double> xValues =
+        timeline.map((data) => timeline.indexOf(data).toDouble()).toList();
 
     return LineChart(
       LineChartData(
@@ -119,7 +122,7 @@ class GoldSilverGraph extends StatelessWidget {
               fitInsideHorizontally: true,
               fitInsideVertically: true),
         ),
-        minX: 0,
+        minX: minX,
         maxX: maxX,
         minY: minY,
         maxY: maxY,
@@ -151,10 +154,8 @@ class GoldSilverGraph extends StatelessWidget {
         borderData: FlBorderData(show: false),
         lineBarsData: [
           _buildLineData(
-            xValues: timeline
-                .map((data) => timeline.indexOf(data).toDouble())
-                .toList(),
-            yValues: timeline.map((data) => data.price).toList(),
+            xValues: xValues,
+            yValues: timeline.map((e) => e.price.toDouble()).toList(),
             color: Colors.red,
           ),
           // _buildLineData(
