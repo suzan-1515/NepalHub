@@ -5,7 +5,6 @@ import 'package:samachar_hub/feature_news/presentation/ui/widgets/news_compact_v
 import 'package:samachar_hub/feature_news/presentation/ui/widgets/news_list_view.dart';
 import 'package:samachar_hub/feature_news/presentation/ui/widgets/news_thumbnail_view.dart';
 import 'package:samachar_hub/core/widgets/progress_widget.dart';
-import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 class NewsListBuilder extends StatelessWidget {
   const NewsListBuilder({
@@ -31,7 +30,7 @@ class NewsListBuilder extends StatelessWidget {
   Widget build(BuildContext context) {
     return RefreshIndicator(
       onRefresh: onRefresh,
-      child: ScrollablePositionedList.builder(
+      child: ListView.builder(
         itemCount: hasMore ? data.length + 1 : data.length,
         itemBuilder: (_, int index) {
           if (_shouldShowLoadMore(index)) {

@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:samachar_hub/core/models/language.dart';
 import 'package:samachar_hub/feature_forex/data/models/forex_model.dart';
+import 'package:samachar_hub/feature_gold/data/models/gold_silver_model.dart';
 import 'package:samachar_hub/feature_horoscope/data/models/horoscope_model.dart';
 import 'package:samachar_hub/feature_main/domain/entities/home_entity.dart';
 import 'package:samachar_hub/feature_news/data/models/news_category_model.dart';
@@ -20,6 +21,7 @@ class HomeModel extends HomeEntity {
     @required List<NewsTopicModel> newsTopics,
     @required ForexModel forexe,
     @required HoroscopeModel horoscope,
+    @required GoldSilverModel goldSilver,
   }) : super(
           corona: corona,
           trendingNews: trendingNews,
@@ -29,6 +31,7 @@ class HomeModel extends HomeEntity {
           newsSources: newsSources,
           forexe: forexe,
           horoscope: horoscope,
+          goldSilver: goldSilver,
         );
   factory HomeModel.fromJson(String str) => HomeModel.fromMap(json.decode(str));
 
@@ -48,6 +51,7 @@ class HomeModel extends HomeEntity {
             json["news_sources"].map((x) => NewsSourceModel.fromMap(x))),
         forexe: ForexModel.fromMap(json["forex"]),
         horoscope: HoroscopeModel.fromMap(json["horoscope"]),
+        goldSilver: GoldSilverModel.fromMap(json["gold_silver"]),
       );
 
   Map<String, dynamic> toMap() => {
@@ -64,6 +68,7 @@ class HomeModel extends HomeEntity {
             newsSources.map((x) => (x as NewsSourceModel).toMap())),
         "forex": (forexe as ForexModel).toMap(),
         "horoscope": (horoscope as HoroscopeModel).toMap(),
+        "gold_silver": goldSilver.toMap(),
       };
 }
 

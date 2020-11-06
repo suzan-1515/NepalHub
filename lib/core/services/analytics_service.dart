@@ -281,4 +281,35 @@ class AnalyticsService {
     return _analytics
         .logEvent(name: 'report_post', parameters: {'id': reportId});
   }
+
+  // Gold Silver
+  Future logGoldSilverView({@required String goldSilverId}) {
+    return _analytics
+        .logEvent(name: 'gold_silver_view', parameters: {'id': goldSilverId});
+  }
+
+  Future logGoldSilverUnlike({@required String goldSilverId}) {
+    return _analytics
+        .logEvent(name: 'gold_silver_unlike', parameters: {'id': goldSilverId});
+  }
+
+  Future logGoldSilverShare({@required String goldSilverId}) {
+    return _analytics
+        .logEvent(name: 'gold_silver_share', parameters: {'id': goldSilverId});
+  }
+
+  Future logGoldSilverLike({@required String goldSilverId}) {
+    return _analytics
+        .logEvent(name: 'gold_silver_like', parameters: {'id': goldSilverId});
+  }
+
+  Future logGoldSilverDisLike({@required String goldSilverId}) {
+    return _analytics.logEvent(
+        name: 'gold_silver_dislike', parameters: {'id': goldSilverId});
+  }
+
+  Future logGoldSilverUndisLike({@required String goldSilverId}) {
+    return _analytics.logEvent(
+        name: 'gold_silver_undislike', parameters: {'id': goldSilverId});
+  }
 }

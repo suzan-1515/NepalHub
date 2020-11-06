@@ -10,6 +10,7 @@ import 'package:samachar_hub/core/services/services.dart';
 import 'package:samachar_hub/feature_auth/utils/providers.dart';
 import 'package:samachar_hub/feature_comment/utils/providers.dart';
 import 'package:samachar_hub/feature_forex/utils/provider.dart';
+import 'package:samachar_hub/feature_gold/utils/provider.dart';
 import 'package:samachar_hub/feature_horoscope/utils/provider.dart';
 import 'package:samachar_hub/feature_main/utils/provider.dart';
 import 'package:samachar_hub/feature_news/utils/provider.dart';
@@ -67,6 +68,7 @@ class GlobalProvider {
     AuthProviders.setup();
     CommentProvider.setup();
     ForexProvider.setup();
+    GoldSilverProvider.setup();
     HoroscopeProvider.setup();
     NewsProvider.setup();
     HomeProvider.setup();

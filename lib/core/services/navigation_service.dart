@@ -1,21 +1,22 @@
 import 'package:corona_module/corona.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:samachar_hub/feature_auth/presentation/ui/login_screen.dart';
 import 'package:samachar_hub/feature_comment/domain/entities/thread_type.dart';
 import 'package:samachar_hub/feature_forex/domain/entities/forex_entity.dart';
+import 'package:samachar_hub/feature_gold/domain/entities/gold_silver_entity.dart';
+import 'package:samachar_hub/feature_gold/presentation/models/gold_silver_model.dart';
+import 'package:samachar_hub/feature_gold/presentation/ui/gold_silver_detail_screen.dart';
+import 'package:samachar_hub/feature_gold/presentation/ui/gold_silver_screen.dart';
 import 'package:samachar_hub/feature_horoscope/domain/entities/horoscope_entity.dart';
-import 'package:samachar_hub/feature_main/presentation/blocs/settings/settings_cubit.dart';
 import 'package:samachar_hub/feature_main/presentation/ui/main/main_screen.dart';
 import 'package:samachar_hub/feature_main/presentation/ui/settings/settings_page.dart';
 import 'package:samachar_hub/feature_news/domain/entities/news_category_entity.dart';
-import 'package:samachar_hub/feature_news/domain/entities/news_feed_entity.dart';
 import 'package:samachar_hub/feature_news/domain/entities/news_source_entity.dart';
 import 'package:samachar_hub/feature_news/domain/entities/news_topic_entity.dart';
 import 'package:samachar_hub/feature_news/presentation/ui/bookmark/bookmark_page.dart';
 import 'package:samachar_hub/feature_news/presentation/ui/category/categories/news_categories_screen.dart';
 import 'package:samachar_hub/feature_news/presentation/ui/category/category_feed/news_category_feed_screen.dart';
-import 'package:samachar_hub/feature_news/presentation/ui/details/news_detail_screen.dart';
+import 'package:samachar_hub/feature_news/presentation/ui/latest/latest_news_screen.dart';
 import 'package:samachar_hub/feature_news/presentation/ui/source/source_feed/news_source_feed_screen.dart';
 import 'package:samachar_hub/feature_news/presentation/ui/source/sources/sources_screen.dart';
 import 'package:samachar_hub/feature_news/presentation/ui/topics/topic_feed/news_topic_feed_screen.dart';
@@ -55,6 +56,15 @@ class NavigationService {
       context,
       MaterialPageRoute(
         builder: (context) => TrendingNewsScreen(),
+      ),
+    );
+  }
+
+  Future toLatestNewsScreen(BuildContext context) {
+    return Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => LatestNewsScreen(),
       ),
     );
   }
@@ -112,7 +122,9 @@ class NavigationService {
     );
   }
 
-  Future toGoldSilverScreen(BuildContext context) {}
+  Future toGoldSilverScreen(BuildContext context) {
+    return GoldSilverScreen.navigate(context);
+  }
 
   Future toFollowedNewsSourceScreen(BuildContext context) {
     return Navigator.of(context).push(
@@ -235,5 +247,11 @@ class NavigationService {
         builder: (_) => BookmarkScreen(),
       ),
     );
+  }
+
+  Future toGoldSilverDetailScreen(
+      BuildContext context, GoldSilverUIModel entity) {
+    return GoldSilverDetailScreen.navigate(
+        context: context, goldSilver: entity);
   }
 }

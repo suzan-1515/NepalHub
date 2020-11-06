@@ -49,7 +49,7 @@ class NewsMenuItem extends StatelessWidget {
                       value: progress,
                     ),
                     image: AdvancedNetworkImage(
-                      icon,
+                      icon ?? '',
                     ),
                   ),
                 ),

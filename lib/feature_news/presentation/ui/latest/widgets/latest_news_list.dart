@@ -36,7 +36,7 @@ class _LatestNewsListState extends State<LatestNewsList> {
   }
 
   Future<void> _onRefresh() {
-    _feedBloc.add(RefreshNewsEvent(newsType: NewsType.BREAKING));
+    _feedBloc.add(RefreshNewsEvent(newsType: NewsType.LATEST));
     return _refreshCompleter.future;
   }
 
@@ -99,6 +99,9 @@ class _LatestNewsListState extends State<LatestNewsList> {
                 child: NewsListBuilder(
                   data: state.feeds,
                   onRefresh: _onRefresh,
+                  hasMore: state.hasMore,
+                  onLoadMore: () => _feedBloc
+                      .add(LoadMoreNewsEvent(newsType: NewsType.LATEST)),
                 ),
               ),
             );
@@ -112,7 +115,7 @@ class _LatestNewsListState extends State<LatestNewsList> {
             return Center(
               child: ErrorDataView(
                 onRetry: () =>
-                    _feedBloc.add(GetNewsEvent(newsType: NewsType.BREAKING)),
+                    _feedBloc.add(GetNewsEvent(newsType: NewsType.LATEST)),
               ),
             );
           }

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
+import 'package:samachar_hub/core/services/services.dart';
 import 'package:samachar_hub/feature_main/presentation/blocs/home/home_cubit.dart';
 import 'package:samachar_hub/feature_main/presentation/ui/widgets/section_heading.dart';
 import 'package:samachar_hub/feature_news/domain/entities/news_feed_entity.dart';
@@ -65,6 +67,9 @@ class LatestNewsSection extends StatelessWidget {
             if (index == 0) {
               return SectionHeading(
                 title: 'Latest News',
+                onTap: () => GetIt.I
+                    .get<NavigationService>()
+                    .toLatestNewsScreen(context),
               );
             }
             var feed = latestNews[index - 1];

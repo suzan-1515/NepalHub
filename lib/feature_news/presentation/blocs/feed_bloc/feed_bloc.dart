@@ -22,6 +22,8 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
   final UseCase _recentNewsUseCase;
   final UseCase _trendingNewsUseCase;
 
+  int _page = 1;
+
   FeedBloc({
     @required UseCase latestNewsUseCase,
     @required UseCase recentNewsUseCase,
@@ -53,23 +55,24 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
     yield LoadingState();
     try {
       List<NewsFeedEntity> newsList;
+      _page = 1;
       switch (event.newsType) {
         case NewsType.TRENDING:
           newsList = await _trendingNewsUseCase.call(
             GetTrendingNewsUseCaseParams(
-                sortBy: _sortBy, page: event.page, language: event.langugage),
+                sortBy: _sortBy, page: _page, language: event.langugage),
           );
           break;
         case NewsType.RECENT:
           newsList = await _recentNewsUseCase.call(
             GetRecentNewsUseCaseParams(
-                sortBy: _sortBy, page: event.page, language: event.langugage),
+                sortBy: _sortBy, page: _page, language: event.langugage),
           );
           break;
         case NewsType.LATEST:
           newsList = await _latestNewsUseCase.call(
             GetLatestNewsUseCaseParams(
-                sortBy: _sortBy, page: event.page, language: event.langugage),
+                sortBy: _sortBy, page: _page, language: event.langugage),
           );
           break;
         case NewsType.LOCAL:
@@ -97,19 +100,19 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
         case NewsType.TRENDING:
           newsList = await _trendingNewsUseCase.call(
             GetTrendingNewsUseCaseParams(
-                sortBy: _sortBy, page: event.page, language: event.langugage),
+                sortBy: _sortBy, page: 1, language: event.langugage),
           );
           break;
         case NewsType.RECENT:
           newsList = await _recentNewsUseCase.call(
             GetRecentNewsUseCaseParams(
-                sortBy: _sortBy, page: event.page, language: event.langugage),
+                sortBy: _sortBy, page: 1, language: event.langugage),
           );
           break;
         case NewsType.LATEST:
           newsList = await _latestNewsUseCase.call(
             GetLatestNewsUseCaseParams(
-                sortBy: _sortBy, page: event.page, language: event.langugage),
+                sortBy: _sortBy, page: 1, language: event.langugage),
           );
           break;
         case NewsType.LOCAL:
@@ -118,8 +121,11 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
           break;
       }
 
-      if (newsList != null && newsList.isNotEmpty)
+      if (newsList != null && newsList.isNotEmpty) {
+        _page = 1;
         yield LoadSuccessState(feeds: newsList);
+      } else
+        yield ErrorState(message: 'Unble to refresh data.');
     } catch (e) {
       log('News refresh error.', error: e);
       yield ErrorState(
@@ -139,19 +145,19 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
         case NewsType.TRENDING:
           newsList = await _trendingNewsUseCase.call(
             GetTrendingNewsUseCaseParams(
-                sortBy: _sortBy, page: event.page, language: event.langugage),
+                sortBy: _sortBy, page: _page + 1, language: event.langugage),
           );
           break;
         case NewsType.RECENT:
           newsList = await _recentNewsUseCase.call(
             GetRecentNewsUseCaseParams(
-                sortBy: _sortBy, page: event.page, language: event.langugage),
+                sortBy: _sortBy, page: _page + 1, language: event.langugage),
           );
           break;
         case NewsType.LATEST:
           newsList = await _latestNewsUseCase.call(
             GetLatestNewsUseCaseParams(
-                sortBy: _sortBy, page: event.page, language: event.langugage),
+                sortBy: _sortBy, page: _page + 1, language: event.langugage),
           );
           break;
         case NewsType.LOCAL:
@@ -167,6 +173,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
           yield EmptyState(message: 'News feed not available.');
         }
       } else {
+        _page = _page + 1;
         if (currentState is LoadSuccessState) {
           yield currentState.copyWith(feeds: currentState.feeds + newsList);
         } else {

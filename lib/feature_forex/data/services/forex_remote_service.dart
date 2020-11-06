@@ -71,6 +71,7 @@ class ForexRemoteService with RemoteService {
       'currency.id': currencyId,
       'currency.language': language.value,
       '_limit': numOfDays.toString(),
+      '_sort': 'publishedAt:DESC',
     };
     var call =
         await _httpManager.get(path: TIMELINE, query: query, headers: headers);

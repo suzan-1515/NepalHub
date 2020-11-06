@@ -2,20 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get_it/get_it.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:samachar_hub/core/models/language.dart';
 import 'package:samachar_hub/core/services/services.dart';
 import 'package:samachar_hub/feature_forex/domain/entities/forex_entity.dart';
-import 'package:samachar_hub/feature_horoscope/domain/entities/horoscope_entity.dart';
-import 'package:samachar_hub/feature_horoscope/presentation/extensions/horoscope_extensions.dart';
+import 'package:samachar_hub/feature_gold/domain/entities/gold_silver_entity.dart';
 import 'package:samachar_hub/feature_main/presentation/blocs/settings/settings_cubit.dart';
 
 class OtherMenuSection extends StatefulWidget {
   final ForexEntity forex;
-  final HoroscopeEntity horoscope;
+  final GoldSilverEntity goldSilver;
   const OtherMenuSection({
     Key key,
     this.forex,
-    this.horoscope,
+    this.goldSilver,
   }) : super(key: key);
 
   @override
@@ -82,8 +80,7 @@ class _OtherMenuSectionState extends State<OtherMenuSection>
     );
   }
 
-  Widget _buildHoroscopeMenu(BuildContext context) {
-    final settingsCubit = context.bloc<SettingsCubit>();
+  Widget _buildGoldSilverMenu(BuildContext context) {
     return Card(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.all(Radius.circular(6)),
@@ -93,7 +90,7 @@ class _OtherMenuSectionState extends State<OtherMenuSection>
         color: Colors.transparent,
         child: InkWell(
           onTap: () =>
-              GetIt.I.get<NavigationService>().toHoroscopeScreen(context),
+              GetIt.I.get<NavigationService>().toGoldSilverScreen(context),
           child: Padding(
             padding: const EdgeInsets.all(8),
             child: Row(
@@ -112,20 +109,20 @@ class _OtherMenuSectionState extends State<OtherMenuSection>
                 Expanded(
                   child: RichText(
                     text: TextSpan(
-                        text: 'Horoscope',
+                        text: 'NRs. ${widget.goldSilver.price}',
                         style: Theme.of(context).textTheme.subtitle1.copyWith(
                             color: Colors.white, fontWeight: FontWeight.w600),
                         children: <TextSpan>[
                           TextSpan(
                               text:
-                                  '\n${widget.horoscope.signByIndex(settingsCubit.settings.defaultHoroscopeSign ?? 0, Language.NEPALI)}',
+                                  '\n${widget.goldSilver.category.title} (${widget.goldSilver.unit == 'tola' ? 'Tola' : '10 gms'})',
                               style: Theme.of(context)
                                   .textTheme
                                   .subtitle2
                                   .copyWith(color: Colors.white)),
                           TextSpan(text: '\n'),
                           TextSpan(
-                              text: '${widget.horoscope.formattedDate}',
+                              text: '${widget.goldSilver.formatttedDate}',
                               style: Theme.of(context)
                                   .textTheme
                                   .caption
@@ -154,7 +151,7 @@ class _OtherMenuSectionState extends State<OtherMenuSection>
           children: <Widget>[
             Expanded(child: _buildForexMenu(context)),
             SizedBox(width: 4),
-            Expanded(child: _buildHoroscopeMenu(context)),
+            Expanded(child: _buildGoldSilverMenu(context)),
           ],
         ),
       ),

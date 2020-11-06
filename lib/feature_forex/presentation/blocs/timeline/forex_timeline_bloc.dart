@@ -44,7 +44,7 @@ class ForexTimelineBloc extends Bloc<ForexTimelineEvent, ForexTimelineState> {
           yield ForexTimelineEmptyState(message: 'Forex data not available.');
         } else {
           yield ForexTimelineLoadSuccessState(
-              forexList: forexList.toUIModels.reversed.toList());
+              forexList: forexList.reversed.toList().toUIModels);
         }
       } catch (e) {
         log('Forex ($forexUIModel) timeline load error: ', error: e);
@@ -62,11 +62,11 @@ class ForexTimelineBloc extends Bloc<ForexTimelineEvent, ForexTimelineState> {
         );
         if (forexList != null && forexList.isNotEmpty) {
           yield ForexTimelineLoadSuccessState(
-              forexList: forexList.toUIModels.reversed.toList());
+              forexList: forexList.reversed.toList().toUIModels);
         }
       } catch (e) {
         log('Forex ($forexUIModel) timeline load error: ', error: e);
-        yield ForexTimelineLoadErrorState(
+        yield ForexTimelineErrorState(
             message:
                 'Unable to load data. Make sure you are connected to Internet.');
       }

@@ -2,6 +2,7 @@ import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
 import 'package:samachar_hub/core/models/language.dart';
 import 'package:samachar_hub/feature_forex/domain/entities/forex_entity.dart';
+import 'package:samachar_hub/feature_gold/domain/entities/gold_silver_entity.dart';
 import 'package:samachar_hub/feature_horoscope/domain/entities/horoscope_entity.dart';
 import 'package:samachar_hub/feature_news/domain/entities/news_category_entity.dart';
 import 'package:samachar_hub/feature_news/domain/entities/news_feed_entity.dart';
@@ -18,6 +19,7 @@ class HomeEntity extends Equatable {
     @required this.newsTopics,
     @required this.horoscope,
     @required this.forexe,
+    @required this.goldSilver,
   });
 
   final CoronaEntity corona;
@@ -27,18 +29,19 @@ class HomeEntity extends Equatable {
   final List<NewsSourceEntity> newsSources;
   final List<NewsTopicEntity> newsTopics;
   final HoroscopeEntity horoscope;
+  final GoldSilverEntity goldSilver;
   final ForexEntity forexe;
 
-  HomeEntity copyWith({
-    CoronaEntity corona,
-    List<NewsFeedEntity> trendingNews,
-    List<NewsFeedEntity> latestNews,
-    List<NewsTopicEntity> newsTopics,
-    List<NewsCategoryEntity> newsCategories,
-    List<NewsSourceEntity> newsSources,
-    HoroscopeEntity horoscope,
-    ForexEntity forexe,
-  }) =>
+  HomeEntity copyWith(
+          {CoronaEntity corona,
+          List<NewsFeedEntity> trendingNews,
+          List<NewsFeedEntity> latestNews,
+          List<NewsTopicEntity> newsTopics,
+          List<NewsCategoryEntity> newsCategories,
+          List<NewsSourceEntity> newsSources,
+          HoroscopeEntity horoscope,
+          ForexEntity forexe,
+          GoldSilverEntity goldSilver}) =>
       HomeEntity(
         corona: corona ?? this.corona,
         trendingNews: trendingNews ?? this.trendingNews,
@@ -48,6 +51,7 @@ class HomeEntity extends Equatable {
         newsSources: newsTopics ?? this.newsSources,
         horoscope: horoscope ?? this.horoscope,
         forexe: forexe ?? this.forexe,
+        goldSilver: goldSilver ?? this.goldSilver,
       );
 
   @override

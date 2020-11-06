@@ -91,10 +91,10 @@ class HomeListBuilder extends StatelessWidget {
           //   RecentNewsSection(
           //     recentNewsUIModel: data.recentNewsUIModel,
           //   ),
-          if (data.forexe != null && data.horoscope != null)
+          if (data.forexe != null && data.goldSilver != null)
             SliverToBoxAdapter(
                 child: OtherMenuSection(
-              horoscope: data.horoscope,
+              goldSilver: data.goldSilver,
               forex: data.forexe,
             )),
           if (data.newsSources != null && data.newsSources.isNotEmpty)

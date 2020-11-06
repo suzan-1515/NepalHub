@@ -1,14 +1,10 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:event_bus/event_bus.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:samachar_hub/core/services/services.dart';
 import 'package:samachar_hub/feature_comment/domain/entities/thread_type.dart';
 import 'package:samachar_hub/feature_news/domain/entities/news_feed_entity.dart';
-import 'package:samachar_hub/feature_news/presentation/blocs/like_unlike/like_unlike_bloc.dart';
-import 'package:samachar_hub/feature_news/presentation/events/feed_event.dart';
 import 'package:samachar_hub/feature_news/presentation/ui/widgets/news_feed_more_option.dart';
 import 'package:samachar_hub/core/extensions/view.dart';
 import 'package:samachar_hub/core/extensions/number_extensions.dart';
@@ -127,106 +123,51 @@ class NewsFeedOptions extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AnimatedOpacity(
-      duration: Duration(milliseconds: 200),
-      opacity: 0.6,
-      child: Row(
-        mainAxisSize: MainAxisSize.max,
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: <Widget>[
-          LikeButton(feed: feed),
-          FlatButton.icon(
-            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-            label: Text(
-              feed.commentCount == 0
-                  ? 'Comment'
-                  : '${feed.commentCount.compactFormat}',
-              style: Theme.of(context)
-                  .textTheme
-                  .overline
-                  .copyWith(fontWeight: FontWeight.w700),
-            ),
-            icon: Icon(
-              FontAwesomeIcons.comment,
-              size: 16,
-            ),
-            onPressed: () => GetIt.I.get<NavigationService>().toCommentsScreen(
-                context: context,
-                threadTitle: feed.title,
-                threadId: feed.id,
-                threadType: CommentThreadType.NEWS_FEED),
-          ),
-          SizedBox(
-            width: 8,
-          ),
+    return Row(
+      mainAxisSize: MainAxisSize.max,
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: <Widget>[
+        if (feed.viewCount != 0)
           Text(
             '${feed.viewCount.compactFormat} views',
-            style: Theme.of(context)
-                .textTheme
-                .overline
-                .copyWith(fontWeight: FontWeight.w800),
+            style: Theme.of(context).textTheme.overline.copyWith(),
           ),
-          Spacer(),
-          IconButton(
-            visualDensity: VisualDensity.compact,
-            icon: Icon(
-              Icons.more_vert,
-            ),
-            onPressed: () => context.showBottomSheet(
-                child: NewsFeedMoreOption(
+        if (feed.commentCount != 0)
+          Text(
+            ' • ${feed.commentCount.compactFormat} comments',
+            style: Theme.of(context).textTheme.overline,
+          ),
+        if (feed.shareCount != 0)
+          Text(
+            ' • ${feed.shareCount.compactFormat} shares',
+            style: Theme.of(context).textTheme.overline,
+          ),
+        Spacer(),
+        IconButton(
+          visualDensity: VisualDensity.compact,
+          icon: Icon(
+            FontAwesomeIcons.comment,
+            size: 16,
+          ),
+          onPressed: () => GetIt.I.get<NavigationService>().toCommentsScreen(
               context: context,
-              feed: feed,
-            )),
+              threadTitle: feed.title,
+              threadId: feed.id,
+              threadType: CommentThreadType.NEWS_FEED),
+        ),
+        IconButton(
+          visualDensity: VisualDensity.compact,
+          icon: Icon(
+            Icons.more_vert,
           ),
-        ],
-      ),
-    );
-  }
-}
-
-class LikeButton extends StatelessWidget {
-  const LikeButton({
-    Key key,
-    @required this.feed,
-  }) : super(key: key);
-
-  final NewsFeedEntity feed;
-
-  @override
-  Widget build(BuildContext context) {
-    return FlatButton.icon(
-      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-      label: Text(
-        feed.likeCount == 0 ? 'Like' : '${feed.likeCount.compactFormat}',
-        style: Theme.of(context)
-            .textTheme
-            .overline
-            .copyWith(fontWeight: FontWeight.w800),
-      ),
-      icon: feed.isLiked
-          ? Icon(
-              FontAwesomeIcons.solidThumbsUp,
-              size: 16,
-              color: Theme.of(context).accentColor,
-            )
-          : Icon(
-              FontAwesomeIcons.thumbsUp,
-              size: 16,
-            ),
-      onPressed: () {
-        if (feed.isLiked) {
-          context.bloc<LikeUnlikeBloc>().add(UnlikeEvent(feed: feed));
-          GetIt.I
-              .get<EventBus>()
-              .fire(NewsChangeEvent(eventType: 'unlike', data: feed));
-        } else {
-          context.bloc<LikeUnlikeBloc>().add(LikeEvent(feed: feed));
-          GetIt.I
-              .get<EventBus>()
-              .fire(NewsChangeEvent(eventType: 'like', data: feed));
-        }
-      },
+          onPressed: () => context.showBottomSheet(
+              child: NewsFeedMoreOption(
+            context: context,
+            feed: feed,
+          )),
+        ),
+      ],
     );
   }
 }

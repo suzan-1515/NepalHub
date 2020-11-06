@@ -17,8 +17,8 @@ class AppHttpManager implements HttpManager {
       receiveTimeout: 20000,
     );
     this.dio = Dio(options);
-    // dio.interceptors.add(LogInterceptor(
-    //     responseBody: true, requestBody: true, requestHeader: true));
+    dio.interceptors.add(LogInterceptor(
+        responseBody: true, requestBody: true, requestHeader: true));
   }
 
   @override

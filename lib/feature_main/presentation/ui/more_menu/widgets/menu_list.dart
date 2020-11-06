@@ -44,7 +44,8 @@ class MenuList extends StatelessWidget {
         MoreMenuListItem(
           title: 'Gold/Silver',
           icon: FontAwesomeIcons.ring,
-          onTap: () => context.showMessage('This feature is comming soon!'),
+          onTap: () =>
+              GetIt.I.get<NavigationService>().toGoldSilverScreen(context),
         ),
         Divider(),
         MoreMenuListItem(

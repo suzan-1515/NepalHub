@@ -84,8 +84,8 @@ class ForexGraph extends StatelessWidget {
         timeline.map((e) => e.forexEntity.selling).reduce(math.max).toDouble();
     final double minY =
         timeline.map((e) => e.forexEntity.buying).reduce(math.min).toDouble();
-    final double verticalInterval = (maxX ~/ 4).toDouble();
-    final double horizontalInterval = ((maxY - minY) / 4.0);
+    final double verticalInterval = ((maxY - minY) / 3.0);
+    final double horizontalInterval = (maxX ~/ 5).toDouble();
     final List<double> xValues =
         timeline.map((data) => timeline.indexOf(data).toDouble()).toList();
 
@@ -129,15 +129,15 @@ class ForexGraph extends StatelessWidget {
         gridData: FlGridData(
           show: true,
           drawHorizontalLine: true,
-          horizontalInterval: horizontalInterval,
+          horizontalInterval: verticalInterval,
           drawVerticalLine: true,
-          verticalInterval: verticalInterval,
+          verticalInterval: horizontalInterval,
         ),
         titlesData: FlTitlesData(
           bottomTitles: SideTitles(
             showTitles: true,
             margin: 12.0,
-            interval: verticalInterval,
+            interval: horizontalInterval,
             reservedSize: labelSize,
             textStyle: Theme.of(context).textTheme.caption,
             getTitles: _getXTitle,
@@ -145,7 +145,7 @@ class ForexGraph extends StatelessWidget {
           leftTitles: SideTitles(
             showTitles: true,
             margin: 8.0,
-            interval: horizontalInterval,
+            interval: verticalInterval,
             reservedSize: labelSize,
             textStyle: Theme.of(context).textTheme.caption,
             getTitles: (value) => '${value.toStringAsFixed(2)}',
