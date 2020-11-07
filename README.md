@@ -45,9 +45,6 @@ A Flutter news app built with Bloc state management framework.
 ### Bookmark Screen
 <img src="https://github.com/suzan-1515/Samachar-Hub/blob/master/screenshots/Screenshot_20201107-002952_Nepal Hub.jpg" width="180">
 
-### Setting Page
-<img src="https://github.com/suzan-1515/Samachar-Hub/blob/master/screenshots/Screenshot_20200529-221343.jpg" width="180">
-
 ### Forex Screen
 <img src="https://github.com/suzan-1515/Samachar-Hub/blob/master/screenshots/Screenshot_20201107-002958_Nepal Hub.jpg" width="180">  <img src="https://github.com/suzan-1515/Samachar-Hub/blob/master/screenshots/Screenshot_20201107-003005_Nepal Hub.jpg" width="180">
 
