@@ -1,42 +1,76 @@
-# Samachar Hub - News Hub
+# NepalHub - News App
 
-A Flutter news app built with Mobx state management framework.
+[![GitHub license](https://img.shields.io/badge/License-Apache-blue.svg)](LICENSE)
+![Github Followers](https://img.shields.io/github/followers/suzan-1515?label=Follow&style=social)
+![GitHub stars](https://img.shields.io/github/stars/suzan-1515/NepalHub?style=social)
+![GitHub forks](https://img.shields.io/github/forks/suzan-1515/NepalHub?style=social)
+![GitHub watchers](https://img.shields.io/github/watchers/suzan-1515/NepalHub?style=social)
 
-## Demo
-<a href='https://github.com/suzan-1515/Samachar-Hub/releases/download/demo/app-release.apk'>Download</a>
+A Flutter news app built with Bloc state management framework.
+
+## APK
+
+***You can Install and test latest Flutter News app from below 👇***
+
+[![NepalHub](https://img.shields.io/badge/NepalHub-Apk-brightgreen.svg?style=for-the-badge&logo=android)](https://github.com/suzan-1515/Samachar-Hub/releases/download/demo/app-release.apk)
+
+### Created & Maintained By
+
+[Sujan Parajuli](https://github.com/suzan-1515)
 
 ## Flutter version
->Flutter 1.17.1  
->Tools • Dart 2.9.0  
+>Flutter 1.20.2  
+>Tools • Dart 2.9.01 
+
+### Splash Screen
+<img src="https://github.com/suzan-1515/Samachar-Hub/blob/master/screenshots/Screenshot_20201107-002755_Nepal Hub.jpg" width="180">
+
+### Login Screen
+<img src="https://github.com/suzan-1515/Samachar-Hub/blob/master/screenshots/Screenshot_20201107-003144_Nepal Hub.jpg" width="180">
 
 ### Home Page
-<img src="https://github.com/suzan-1515/Samachar-Hub/blob/master/screenshots/Screenshot_20200529-220843.jpg" width="180"><img src="https://github.com/suzan-1515/Samachar-Hub/blob/master/screenshots/Screenshot_20200529-220900.jpg" width="180"><img src="https://github.com/suzan-1515/Samachar-Hub/blob/master/screenshots/Screenshot_20200529-220906.jpg" width="180">
-<img src="https://github.com/suzan-1515/Samachar-Hub/blob/master/screenshots/Screenshot_20200529-220912.jpg" width="180"><img src="https://github.com/suzan-1515/Samachar-Hub/blob/master/screenshots/Screenshot_20200529-220917.jpg" width="180"><img src="https://github.com/suzan-1515/Samachar-Hub/blob/master/screenshots/Screenshot_20200529-221410.jpg" width="180">
+<img src="https://github.com/suzan-1515/Samachar-Hub/blob/master/screenshots/Screenshot_20201107-002759_Nepal Hub.jpg" width="180">  <img src="https://github.com/suzan-1515/Samachar-Hub/blob/master/screenshots/Screenshot_20201107-002808_Nepal Hub.jpg" width="180">  <img src="https://github.com/suzan-1515/Samachar-Hub/blob/master/screenshots/Screenshot_20201107-002812_Nepal Hub.jpg" width="180">
+<img src="https://github.com/suzan-1515/Samachar-Hub/blob/master/screenshots/Screenshot_20201107-002815_Nepal Hub.jpg" width="180">
 
-### Categories Page
-<img src="https://github.com/suzan-1515/Samachar-Hub/blob/master/screenshots/Screenshot_20200529-221227.jpg" width="180"><img src="https://github.com/suzan-1515/Samachar-Hub/blob/master/screenshots/Screenshot_20200529-221242.jpg" width="180"><img src="https://github.com/suzan-1515/Samachar-Hub/blob/master/screenshots/Screenshot_20200529-221249.jpg" width="180">
-<img src="https://github.com/suzan-1515/Samachar-Hub/blob/master/screenshots/Screenshot_20200529-221310.jpg" width="180"><img src="https://github.com/suzan-1515/Samachar-Hub/blob/master/screenshots/Screenshot_20200529-221417.jpg" width="180">
+### Following Screen
+<img src="https://github.com/suzan-1515/Samachar-Hub/blob/master/screenshots/Screenshot_20201107-002833_Nepal Hub.jpg" width="180">  <img src="https://github.com/suzan-1515/Samachar-Hub/blob/master/screenshots/Screenshot_20201107-002842_Nepal Hub.jpg" width="180">  <img src="https://github.com/suzan-1515/Samachar-Hub/blob/master/screenshots/Screenshot_20201107-002902_Nepal Hub.jpg" width="180">
 
-### Bookmark Page
-<img src="https://github.com/suzan-1515/Samachar-Hub/blob/master/screenshots/Screenshot_20200529-221319.jpg" width="180">
+### News (by Category, Topic and Source) Screen
+<img src="https://github.com/suzan-1515/Samachar-Hub/blob/master/screenshots/Screenshot_20201107-002926_Nepal Hub.jpg" width="180">  <img src="https://github.com/suzan-1515/Samachar-Hub/blob/master/screenshots/Screenshot_20201107-002930_Nepal Hub.jpg" width="180">
+
+### News Detail Screen
+<img src="https://github.com/suzan-1515/Samachar-Hub/blob/master/screenshots/Screenshot_20201107-003056_Nepal Hub.jpg" width="180">  <img src="https://github.com/suzan-1515/Samachar-Hub/blob/master/screenshots/Screenshot_20201107-003059_Nepal Hub.jpg" width="180">  <img src="https://github.com/suzan-1515/Samachar-Hub/blob/master/screenshots/Screenshot_20201107-003106_Nepal Hub.jpg" width="180">
+<img src="https://github.com/suzan-1515/Samachar-Hub/blob/master/screenshots/Screenshot_20201107-003125_Nepal Hub.jpg" width="180">
+
+### Bookmark Screen
+<img src="https://github.com/suzan-1515/Samachar-Hub/blob/master/screenshots/Screenshot_20201107-002952_Nepal Hub.jpg" width="180">
 
 ### Setting Page
 <img src="https://github.com/suzan-1515/Samachar-Hub/blob/master/screenshots/Screenshot_20200529-221343.jpg" width="180">
 
-### Trending Topics Page
-<img src="https://github.com/suzan-1515/Samachar-Hub/blob/master/screenshots/Screenshot_20200529-221522.jpg" width="180">
+### Forex Screen
+<img src="https://github.com/suzan-1515/Samachar-Hub/blob/master/screenshots/Screenshot_20201107-002958_Nepal Hub.jpg" width="180">  <img src="https://github.com/suzan-1515/Samachar-Hub/blob/master/screenshots/Screenshot_20201107-003005_Nepal Hub.jpg" width="180">
 
-### News Source Page
-<img src="https://github.com/suzan-1515/Samachar-Hub/blob/master/screenshots/Screenshot_20200529-221640.jpg" width="180">
+### Horoscope Screen
+<img src="https://github.com/suzan-1515/Samachar-Hub/blob/master/screenshots/Screenshot_20201107-003011_Nepal Hub.jpg" width="180">  <img src="https://github.com/suzan-1515/Samachar-Hub/blob/master/screenshots/Screenshot_20201107-003014_Nepal Hub.jpg" width="180">
 
-### News Detail Page
-<img src="https://github.com/suzan-1515/Samachar-Hub/blob/master/screenshots/Screenshot_20200529-221045.jpg" width="180"><img src="https://github.com/suzan-1515/Samachar-Hub/blob/master/screenshots/Screenshot_20200529-221437.jpg" width="180">
+### Gold/Silver Screen
+<img src="https://github.com/suzan-1515/Samachar-Hub/blob/master/screenshots/Screenshot_20201107-003022_Nepal Hub.jpg" width="180">  <img src="https://github.com/suzan-1515/Samachar-Hub/blob/master/screenshots/Screenshot_20201107-003026_Nepal Hub.jpg" width="180">
 
-### Comment Page
-<img src="https://github.com/suzan-1515/Samachar-Hub/blob/master/screenshots/Screenshot_20200529-221039.jpg" width="180">
+### Comment Screen
+<img src="https://github.com/suzan-1515/Samachar-Hub/blob/master/screenshots/Screenshot_20201107-003113_Nepal Hub.jpg" width="180">
+
+### Menu Screen
+<img src="https://github.com/suzan-1515/Samachar-Hub/blob/master/screenshots/Screenshot_20201107-002837_Nepal Hub.jpg" width="180">
+
+### Settings Screen
+<img src="https://github.com/suzan-1515/Samachar-Hub/blob/master/screenshots/Screenshot_20201107-003030_Nepal Hub.jpg" width="180">  <img src="https://github.com/suzan-1515/Samachar-Hub/blob/master/screenshots/Screenshot_20201107-003033_Nepal Hub.jpg" width="180">  <img src="https://github.com/suzan-1515/Samachar-Hub/blob/master/screenshots/Screenshot_20201107-003039_Nepal Hub.jpg" width="180">
+
+### Logout Screen
+<img src="https://github.com/suzan-1515/Samachar-Hub/blob/master/screenshots/Screenshot_20201107-003030_Nepal Hub.jpg" width="180">
 
 ## LICENSE
-    Copyright 2019 suzan-1515
+    Copyright (c) 2020 Sujan Parajuli (suzan-1515)
     
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
