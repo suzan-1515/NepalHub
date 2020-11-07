@@ -1,13 +1,22 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:samachar_hub/core/services/services.dart';
 import 'package:samachar_hub/feature_horoscope/domain/entities/horoscope_type.dart';
-import 'package:samachar_hub/feature_horoscope/presentation/ui/widgets/horoscope_list.dart';
 import 'package:samachar_hub/feature_horoscope/utils/provider.dart';
-import 'package:samachar_hub/feature_main/presentation/blocs/settings/settings_cubit.dart';
+
+import 'widgets/horoscope_list.dart';
 
 class HoroscopeScreen extends StatefulWidget {
+  static Future navigate({
+    @required BuildContext context,
+  }) {
+    return Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => HoroscopeScreen(),
+        ));
+  }
+
   @override
   _HoroscopeScreenState createState() => _HoroscopeScreenState();
 }
@@ -34,46 +43,6 @@ class _HoroscopeScreenState extends State<HoroscopeScreen>
     _tabController.dispose();
   }
 
-  Widget _buildBody() {
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Column(
-        mainAxisSize: MainAxisSize.max,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: <Widget>[
-          TabBar(
-            controller: _tabController,
-            tabs: _tabs,
-            isScrollable: true,
-          ),
-          Expanded(
-            child: TabBarView(
-              controller: _tabController,
-              children: <Widget>[
-                HoroscopeProvider.horoscopeBlocProvider(
-                  type: HoroscopeType.DAILY,
-                  child: HoroscopeList(),
-                ),
-                HoroscopeProvider.horoscopeBlocProvider(
-                  type: HoroscopeType.WEEKLY,
-                  child: HoroscopeList(),
-                ),
-                HoroscopeProvider.horoscopeBlocProvider(
-                  type: HoroscopeType.MONTHLY,
-                  child: HoroscopeList(),
-                ),
-                HoroscopeProvider.horoscopeBlocProvider(
-                  type: HoroscopeType.YEARLY,
-                  child: HoroscopeList(),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -92,7 +61,43 @@ class _HoroscopeScreenState extends State<HoroscopeScreen>
         ],
       ),
       body: SafeArea(
-        child: _buildBody(),
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.max,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>[
+              TabBar(
+                controller: _tabController,
+                tabs: _tabs,
+                isScrollable: true,
+              ),
+              Expanded(
+                child: TabBarView(
+                  controller: _tabController,
+                  children: <Widget>[
+                    HoroscopeProvider.horoscopeBlocProvider(
+                      type: HoroscopeType.DAILY,
+                      child: const HoroscopeList(),
+                    ),
+                    HoroscopeProvider.horoscopeBlocProvider(
+                      type: HoroscopeType.WEEKLY,
+                      child: const HoroscopeList(),
+                    ),
+                    HoroscopeProvider.horoscopeBlocProvider(
+                      type: HoroscopeType.MONTHLY,
+                      child: const HoroscopeList(),
+                    ),
+                    HoroscopeProvider.horoscopeBlocProvider(
+                      type: HoroscopeType.YEARLY,
+                      child: const HoroscopeList(),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

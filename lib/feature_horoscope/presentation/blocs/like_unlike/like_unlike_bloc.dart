@@ -16,34 +16,28 @@ part 'like_unlike_state.dart';
 class LikeUnlikeBloc extends Bloc<LikeUnlikeEvent, LikeUnlikeState> {
   final UseCase _likeHoroscopeUseCase;
   final UseCase _unLikeHoroscopeUseCase;
-  final HoroscopeUIModel _horoscopeUIModel;
 
   LikeUnlikeBloc({
     @required UseCase likeHoroscopeUseCase,
     @required UseCase unLikeHoroscopeUseCase,
-    @required HoroscopeUIModel horoscopeUIModel,
   })  : _likeHoroscopeUseCase = likeHoroscopeUseCase,
         _unLikeHoroscopeUseCase = unLikeHoroscopeUseCase,
-        _horoscopeUIModel = horoscopeUIModel,
         super(InitialState());
-
-  HoroscopeUIModel get horoscopeUIModel => _horoscopeUIModel;
 
   @override
   Stream<LikeUnlikeState> mapEventToState(
     LikeUnlikeEvent event,
   ) async* {
-    final currentState = state;
-    if (currentState is InProgressState) return;
+    if (state is InProgressState) return;
     if (event is LikeEvent) {
       yield InProgressState();
       try {
-        final HoroscopeEntity horoscopeEntity =
-            await _likeHoroscopeUseCase.call(LikeHoroscopeUseCaseParams(
-                horoscopeEntity: horoscopeUIModel.horoscopeEntity));
+        final HoroscopeEntity horoscopeEntity = await _likeHoroscopeUseCase
+            .call(LikeHoroscopeUseCaseParams(horoscopeEntity: event.horoscope));
         if (horoscopeEntity != null)
-          horoscopeUIModel.horoscopeEntity = horoscopeEntity;
-        yield LikedState(message: 'Horoscope liked successfully.');
+          yield LikedState(horoscope: horoscopeEntity);
+        else
+          yield ErrorState(message: 'Unable to like.');
       } catch (e) {
         log('Horoscope like error.', error: e);
         yield ErrorState(message: 'Unable to like.');
@@ -52,11 +46,12 @@ class LikeUnlikeBloc extends Bloc<LikeUnlikeEvent, LikeUnlikeState> {
       yield InProgressState();
       try {
         final HoroscopeEntity horoscopeEntity =
-            await _unLikeHoroscopeUseCase.call(UnlikeHoroscopeUseCaseParams(
-                horoscopeEntity: horoscopeUIModel.horoscopeEntity));
+            await _unLikeHoroscopeUseCase.call(
+                UnlikeHoroscopeUseCaseParams(horoscopeEntity: event.horoscope));
         if (horoscopeEntity != null)
-          horoscopeUIModel.horoscopeEntity = horoscopeEntity;
-        yield UnlikedState(message: 'Horoscope unliked successfully.');
+          yield UnlikedState(horoscope: event.horoscope);
+        else
+          yield ErrorState(message: 'Unable to unlike.');
       } catch (e) {
         log('Horoscope unlike error.', error: e);
         yield ErrorState(message: 'Unable to unlike.');

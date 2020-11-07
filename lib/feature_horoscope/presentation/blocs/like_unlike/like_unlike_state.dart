@@ -15,21 +15,21 @@ class InProgressState extends LikeUnlikeState {
 }
 
 class LikedState extends LikeUnlikeState {
-  final String message;
+  final HoroscopeEntity horoscope;
 
-  LikedState({this.message});
+  LikedState({@required this.horoscope});
 
   @override
-  List<Object> get props => [message];
+  List<Object> get props => [horoscope];
 }
 
 class UnlikedState extends LikeUnlikeState {
-  final String message;
+  final HoroscopeEntity horoscope;
 
-  UnlikedState({this.message});
+  UnlikedState({@required this.horoscope});
 
   @override
-  List<Object> get props => [message];
+  List<Object> get props => [horoscope];
 }
 
 class ErrorState extends LikeUnlikeState {

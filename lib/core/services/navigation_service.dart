@@ -2,13 +2,11 @@ import 'package:corona_module/corona.dart';
 import 'package:flutter/material.dart';
 import 'package:samachar_hub/feature_auth/presentation/ui/login_screen.dart';
 import 'package:samachar_hub/feature_comment/domain/entities/thread_type.dart';
-import 'package:samachar_hub/feature_forex/domain/entities/forex_entity.dart';
 import 'package:samachar_hub/feature_forex/presentation/models/forex_model.dart';
-import 'package:samachar_hub/feature_gold/domain/entities/gold_silver_entity.dart';
 import 'package:samachar_hub/feature_gold/presentation/models/gold_silver_model.dart';
 import 'package:samachar_hub/feature_gold/presentation/ui/details/gold_silver_detail_screen.dart';
 import 'package:samachar_hub/feature_gold/presentation/ui/gold_silver/gold_silver_screen.dart';
-import 'package:samachar_hub/feature_horoscope/domain/entities/horoscope_entity.dart';
+import 'package:samachar_hub/feature_horoscope/presentation/models/horoscope_model.dart';
 import 'package:samachar_hub/feature_main/presentation/ui/main/main_screen.dart';
 import 'package:samachar_hub/feature_main/presentation/ui/settings/settings_page.dart';
 import 'package:samachar_hub/feature_news/domain/entities/news_category_entity.dart';
@@ -27,7 +25,7 @@ import 'package:samachar_hub/feature_comment/presentation/ui/comment_screen.dart
 import 'package:samachar_hub/feature_forex/presentation/ui/forex_detail/forex_detail_screen.dart';
 import 'package:samachar_hub/feature_forex/presentation/ui/forex/forex_screen.dart';
 import 'package:samachar_hub/feature_horoscope/presentation/ui/detail/horoscope_detail_screen.dart';
-import 'package:samachar_hub/feature_horoscope/presentation/ui/horoscope_screen.dart';
+import 'package:samachar_hub/feature_horoscope/presentation/ui/horoscope/horoscope_screen.dart';
 import 'package:samachar_hub/feature_auth/presentation/ui/user_profile_screen.dart';
 import 'package:samachar_hub/core/widgets/webview_widget.dart';
 
@@ -88,27 +86,15 @@ class NavigationService {
   }
 
   Future toHoroscopeScreen(BuildContext context) {
-    return Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => HoroscopeScreen(),
-      ),
-    );
+    return HoroscopeScreen.navigate(context: context);
   }
 
-  Future toHoroscopeDetail(BuildContext context, String sign, String signIcon,
-      String zodiac, HoroscopeEntity data) {
-    return Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => HoroscopeDetailScreen(
-          sign: sign,
-          signIcon: signIcon,
-          zodiac: zodiac,
-          horoscopeEntity: data,
-        ),
-      ),
-    );
+  Future toHoroscopeDetail(
+      BuildContext context, int signIndex, HoroscopeUIModel horoscopeUIModel) {
+    return HoroscopeDetailScreen.navigate(
+        context: context,
+        horoscopeUIModel: horoscopeUIModel,
+        signIndex: signIndex);
   }
 
   Future toGoldSilverScreen(BuildContext context) {

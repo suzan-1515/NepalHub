@@ -15,12 +15,12 @@ class ShareInProgress extends ShareState {
 }
 
 class ShareSuccess extends ShareState {
-  final String message;
+  final HoroscopeEntity horoscope;
 
-  ShareSuccess({this.message});
+  ShareSuccess({@required this.horoscope});
 
   @override
-  List<Object> get props => [message];
+  List<Object> get props => [horoscope];
 }
 
 class ShareError extends ShareState {

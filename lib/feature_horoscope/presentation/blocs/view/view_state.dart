@@ -15,12 +15,12 @@ class ViewInProgress extends ViewState {
 }
 
 class ViewSuccess extends ViewState {
-  final String message;
+  final HoroscopeEntity horoscope;
 
-  ViewSuccess({this.message});
+  ViewSuccess({@required this.horoscope});
 
   @override
-  List<Object> get props => [message];
+  List<Object> get props => [horoscope];
 }
 
 class ViewError extends ViewState {

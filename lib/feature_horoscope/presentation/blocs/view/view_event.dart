@@ -6,4 +6,11 @@ abstract class ViewEvent extends Equatable {
   List<Object> get props => [];
 }
 
-class View extends ViewEvent {}
+class View extends ViewEvent {
+  final HoroscopeEntity horoscope;
+
+  View({@required this.horoscope});
+
+  @override
+  List<Object> get props => [horoscope];
+}

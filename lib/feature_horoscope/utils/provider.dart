@@ -10,6 +10,7 @@ import 'package:samachar_hub/feature_horoscope/data/datasources/remote/horoscope
 import 'package:samachar_hub/feature_horoscope/data/repositories/horoscope_repository.dart';
 import 'package:samachar_hub/feature_horoscope/data/services/horoscope_remote_service.dart';
 import 'package:samachar_hub/feature_horoscope/data/storage/horoscope_storage.dart';
+import 'package:samachar_hub/feature_horoscope/domain/entities/horoscope_entity.dart';
 import 'package:samachar_hub/feature_horoscope/domain/entities/horoscope_type.dart';
 import 'package:samachar_hub/feature_horoscope/domain/usecases/usecases.dart';
 import 'package:samachar_hub/feature_horoscope/presentation/blocs/dislike/dislike_bloc.dart';
@@ -17,7 +18,6 @@ import 'package:samachar_hub/feature_horoscope/presentation/blocs/horoscope/horo
 import 'package:samachar_hub/feature_horoscope/presentation/blocs/like_unlike/like_unlike_bloc.dart';
 import 'package:samachar_hub/feature_horoscope/presentation/blocs/share/share_bloc.dart';
 import 'package:samachar_hub/feature_horoscope/presentation/blocs/view/view_bloc.dart';
-import 'package:samachar_hub/feature_horoscope/presentation/models/horoscope_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class HoroscopeProvider {
@@ -68,25 +68,18 @@ class HoroscopeProvider {
           getYearlyHoroscopeUseCase: GetIt.I.get<GetYearlyHoroscopeUseCase>(),
           type: param1,
         )..add(GetHoroscopeEvent()));
-    GetIt.I.registerFactoryParam<LikeUnlikeBloc, HoroscopeUIModel, void>(
-        (param1, param2) => LikeUnlikeBloc(
-            horoscopeUIModel: param1,
-            likeHoroscopeUseCase: GetIt.I.get<LikeHoroscopeUseCase>(),
-            unLikeHoroscopeUseCase: GetIt.I.get<UnlikeHoroscopeUseCase>()));
-    GetIt.I.registerFactoryParam<DislikeBloc, HoroscopeUIModel, void>(
-        (param1, param2) => DislikeBloc(
-            horoscopeUIModel: param1,
-            dislikeHoroscopeUseCase: GetIt.I.get<DislikeHoroscopeUseCase>(),
-            undislikeHoroscopeUseCase:
-                GetIt.I.get<UndislikeHoroscopeUseCase>()));
-    GetIt.I.registerFactoryParam<ShareBloc, HoroscopeUIModel, void>(
-        (param1, param2) => ShareBloc(
-            horoscopeUIModel: param1,
-            shareHoroscopeUseCase: GetIt.I.get<ShareHoroscopeUseCase>()));
-    GetIt.I.registerFactoryParam<ViewBloc, HoroscopeUIModel, void>(
-        (param1, param2) => ViewBloc(
-            horoscopeUIModel: param1,
-            viewHoroscopeUseCase: GetIt.I.get<ViewHoroscopeUseCase>()));
+    GetIt.I.registerFactory<LikeUnlikeBloc>(() => LikeUnlikeBloc(
+        likeHoroscopeUseCase: GetIt.I.get<LikeHoroscopeUseCase>(),
+        unLikeHoroscopeUseCase: GetIt.I.get<UnlikeHoroscopeUseCase>()));
+    GetIt.I.registerFactory<DislikeBloc>(() => DislikeBloc(
+        dislikeHoroscopeUseCase: GetIt.I.get<DislikeHoroscopeUseCase>(),
+        undislikeHoroscopeUseCase: GetIt.I.get<UndislikeHoroscopeUseCase>()));
+    GetIt.I.registerFactory<ShareBloc>(() =>
+        ShareBloc(shareHoroscopeUseCase: GetIt.I.get<ShareHoroscopeUseCase>()));
+    GetIt.I.registerFactoryParam<ViewBloc, HoroscopeEntity, void>(
+        (param1, param2) =>
+            ViewBloc(viewHoroscopeUseCase: GetIt.I.get<ViewHoroscopeUseCase>())
+              ..add(View(horoscope: param1)));
   }
 
   static BlocProvider<HoroscopeBloc> horoscopeBlocProvider({
@@ -100,25 +93,21 @@ class HoroscopeProvider {
 
   static MultiBlocProvider horoscopeDetailBlocProvider({
     @required Widget child,
-    @required HoroscopeUIModel horoscopeUIModel,
+    @required HoroscopeEntity horoscope,
   }) =>
       MultiBlocProvider(
         providers: [
           BlocProvider<LikeUnlikeBloc>(
-            create: (context) =>
-                GetIt.I.get<LikeUnlikeBloc>(param1: horoscopeUIModel),
+            create: (context) => GetIt.I.get<LikeUnlikeBloc>(),
           ),
           BlocProvider<DislikeBloc>(
-            create: (context) =>
-                GetIt.I.get<DislikeBloc>(param1: horoscopeUIModel),
+            create: (context) => GetIt.I.get<DislikeBloc>(),
           ),
           BlocProvider<ShareBloc>(
-            create: (context) =>
-                GetIt.I.get<ShareBloc>(param1: horoscopeUIModel),
+            create: (context) => GetIt.I.get<ShareBloc>(),
           ),
           BlocProvider<ViewBloc>(
-            create: (context) =>
-                GetIt.I.get<ViewBloc>(param1: horoscopeUIModel),
+            create: (context) => GetIt.I.get<ViewBloc>(param1: horoscope),
           ),
         ],
         child: child,

@@ -15,21 +15,21 @@ class DislikeInProgress extends DislikeState {
 }
 
 class DislikeSuccess extends DislikeState {
-  final String message;
+  final HoroscopeEntity horoscope;
 
-  DislikeSuccess({this.message});
+  DislikeSuccess({@required this.horoscope});
 
   @override
-  List<Object> get props => [message];
+  List<Object> get props => [horoscope];
 }
 
 class UndislikeSuccess extends DislikeState {
-  final String message;
+  final HoroscopeEntity horoscope;
 
-  UndislikeSuccess({this.message});
+  UndislikeSuccess({@required this.horoscope});
 
   @override
-  List<Object> get props => [message];
+  List<Object> get props => [horoscope];
 }
 
 class DislikeError extends DislikeState {

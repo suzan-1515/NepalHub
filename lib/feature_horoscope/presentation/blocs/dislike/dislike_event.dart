@@ -6,6 +6,20 @@ abstract class DislikeUndislikeEvent extends Equatable {
   List<Object> get props => [];
 }
 
-class DislikeEvent extends DislikeUndislikeEvent {}
+class DislikeEvent extends DislikeUndislikeEvent {
+  final HoroscopeEntity horoscope;
 
-class UndislikeEvent extends DislikeUndislikeEvent {}
+  DislikeEvent({@required this.horoscope});
+
+  @override
+  List<Object> get props => [horoscope];
+}
+
+class UndislikeEvent extends DislikeUndislikeEvent {
+  final HoroscopeEntity horoscope;
+
+  UndislikeEvent({@required this.horoscope});
+
+  @override
+  List<Object> get props => [horoscope];
+}

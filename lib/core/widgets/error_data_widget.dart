@@ -16,6 +16,7 @@ class ErrorDataView extends StatelessWidget {
         Text(
           message,
           style: Theme.of(context).textTheme.bodyText2,
+          textAlign: TextAlign.center,
         ),
         RaisedButton(
           child: Text('Retry'),

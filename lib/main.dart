@@ -66,7 +66,9 @@ class App extends StatelessWidget {
               );
             }
 
-            return Container();
+            return Container(
+              color: Colors.white,
+            );
           },
         ),
       ),

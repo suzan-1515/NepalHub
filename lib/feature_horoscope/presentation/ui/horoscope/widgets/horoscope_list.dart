@@ -5,7 +5,7 @@ import 'package:samachar_hub/core/widgets/error_data_widget.dart';
 import 'package:samachar_hub/core/widgets/progress_widget.dart';
 import 'package:samachar_hub/core/extensions/view.dart';
 import 'package:samachar_hub/feature_horoscope/presentation/blocs/horoscope/horoscope_bloc.dart';
-import 'package:samachar_hub/feature_horoscope/presentation/ui/widgets/horoscope_list_builder.dart';
+import 'package:samachar_hub/feature_horoscope/presentation/ui/horoscope/widgets/horoscope_list_builder.dart';
 
 class HoroscopeList extends StatelessWidget {
   const HoroscopeList({

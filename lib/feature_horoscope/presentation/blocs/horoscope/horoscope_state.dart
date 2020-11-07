@@ -19,7 +19,7 @@ class HoroscopeLoadSuccessState extends HoroscopeState {
   });
 
   @override
-  List<Object> get props => [horoscope.horoscopeEntity];
+  List<Object> get props => [horoscope];
 }
 
 class HoroscopeEmptyState extends HoroscopeState {

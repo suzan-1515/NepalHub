@@ -12,15 +12,3 @@ class GoldSilverUIModel extends Model {
 
   GoldSilverEntity get entity => this._goldSilverEntity;
 }
-
-class GoldSilverUIModels extends Model {
-  List<GoldSilverEntity> _goldSilverEntities;
-  GoldSilverUIModels(this._goldSilverEntities);
-
-  set entity(List<GoldSilverEntity> goldSilverEntities) {
-    this._goldSilverEntities = goldSilverEntities;
-    notifyListeners();
-  }
-
-  List<GoldSilverEntity> get entities => this._goldSilverEntities;
-}

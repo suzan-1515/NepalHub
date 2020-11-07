@@ -137,9 +137,10 @@ class HoroscopeBloc extends Bloc<HoroscopeEvent, HoroscopeState> {
           break;
       }
 
-      if (horoscope == null) {
+      if (horoscope != null) {
         yield HoroscopeLoadSuccessState(horoscope: horoscope.toUIModel);
-      }
+      } else
+        yield HoroscopeEmptyState(message: 'Horoscope data not available.');
     } catch (e) {
       log('Refresh horoscope refresh error: ', error: e);
       yield HoroscopeErrorState(

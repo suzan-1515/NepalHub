@@ -1,5 +1,4 @@
 import 'package:equatable/equatable.dart';
-import 'package:intl/intl.dart';
 import 'package:meta/meta.dart';
 import 'package:samachar_hub/core/models/language.dart';
 
@@ -199,7 +198,35 @@ class HoroscopeEntity extends Equatable {
         viewCount
       ];
 
-  String get formattedDate => DateFormat('dd MMMM, yyyy').format(publishedAt);
+  Map<String, dynamic> toMap() => {
+        "id": id,
+        "title": title,
+        "author": author,
+        "publishedAt": publishedAt.toIso8601String(),
+        "type": type.value,
+        "aries": aries,
+        "taurus": taurus,
+        "gemini": gemini,
+        "cancer": cancer,
+        "leo": leo,
+        "virgo": virgo,
+        "libra": libra,
+        "scorpio": scorpio,
+        "sagittarius": sagittarius,
+        "capricorn": capricorn,
+        "aquarius": aquarius,
+        "pisces": pisces,
+        "created_at": createdAt.toIso8601String(),
+        "updated_at": updatedAt.toIso8601String(),
+        "is_liked": isLiked,
+        "is_commented": isCommented,
+        "is_shared": isShared,
+        "is_viewed": isViewed,
+        "comment_count": commentCount,
+        "like_count": likeCount,
+        "share_count": shareCount,
+        "view_count": viewCount,
+      };
 
   @override
   bool get stringify => true;
