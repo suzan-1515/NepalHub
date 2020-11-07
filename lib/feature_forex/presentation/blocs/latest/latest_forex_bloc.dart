@@ -80,7 +80,8 @@ class ForexBloc extends Bloc<ForexEvent, ForexState> {
         yield ForexLoadSuccessState(
             forexList: forexList.toUIModels,
             defaultForex: defaultForex.toUIModel);
-      }
+      } else
+        yield ForexErrorState(message: 'Unable to refresh data.');
     } catch (e) {
       log('Latest forex refresh error: ', error: e);
       yield ForexErrorState(

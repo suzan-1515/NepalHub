@@ -1,3 +1,4 @@
+import 'package:intl/intl.dart';
 import 'package:samachar_hub/feature_gold/domain/entities/gold_silver_entity.dart';
 import 'package:samachar_hub/feature_gold/presentation/models/gold_silver_model.dart';
 
@@ -12,4 +13,9 @@ extension GoldSilverEntitiesX on List<GoldSilverEntity> {
 
 extension GoldSilverStringX on String {
   String get label => this == 'tola' ? 'Tola' : '10 gms';
+}
+
+extension GoldSilverDateTimeX on DateTime {
+  String get formattedString =>
+      DateFormat('dd MMMM, yyyy').format(this.toLocal());
 }

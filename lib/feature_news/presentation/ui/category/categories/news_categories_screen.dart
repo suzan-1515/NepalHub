@@ -17,7 +17,7 @@ class NewsCategoriesScreen extends StatelessWidget {
           child: Container(
             color: Theme.of(context).backgroundColor,
             padding: EdgeInsets.symmetric(horizontal: 8),
-            child: NewsCategoryList(),
+            child: const NewsCategoryList(),
           ),
         ),
       ),

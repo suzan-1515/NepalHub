@@ -9,20 +9,22 @@ abstract class ForexTimelineEvent extends Equatable {
 
 class GetForexTimelineEvent extends ForexTimelineEvent {
   final Language language;
+  final ForexEntity forex;
 
-  GetForexTimelineEvent({this.language = Language.ENGLISH});
+  GetForexTimelineEvent(
+      {@required this.forex, this.language = Language.ENGLISH});
 
   @override
-  List<Object> get props => [language];
+  List<Object> get props => [language, forex];
 }
 
 class RefreshForexTimelineEvent extends ForexTimelineEvent {
   final Language language;
-  final ForexUIModel forexUIModel;
+  final ForexEntity forex;
 
   RefreshForexTimelineEvent(
-      {this.language = Language.ENGLISH, this.forexUIModel});
+      {this.language = Language.ENGLISH, @required this.forex});
 
   @override
-  List<Object> get props => [language, forexUIModel];
+  List<Object> get props => [language, forex];
 }

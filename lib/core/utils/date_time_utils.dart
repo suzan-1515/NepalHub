@@ -1,7 +1,7 @@
 import 'package:timeago/timeago.dart' as timeago;
 
 String relativeTimeString(DateTime dateTime) {
-  return timeago.format(dateTime);
+  return timeago.format(dateTime.toLocal());
 }
 
 String timeContextGreeting() {

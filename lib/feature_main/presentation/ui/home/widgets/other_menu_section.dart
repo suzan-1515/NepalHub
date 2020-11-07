@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get_it/get_it.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:samachar_hub/core/services/services.dart';
 import 'package:samachar_hub/feature_forex/domain/entities/forex_entity.dart';
 import 'package:samachar_hub/feature_gold/domain/entities/gold_silver_entity.dart';
-import 'package:samachar_hub/feature_main/presentation/blocs/settings/settings_cubit.dart';
+import 'package:samachar_hub/feature_gold/presentation/extensions/gold_silver_extensions.dart';
+import 'package:samachar_hub/core/extensions/number_extensions.dart';
 
 class OtherMenuSection extends StatefulWidget {
   final ForexEntity forex;
@@ -109,7 +109,7 @@ class _OtherMenuSectionState extends State<OtherMenuSection>
                 Expanded(
                   child: RichText(
                     text: TextSpan(
-                        text: 'NRs. ${widget.goldSilver.formatttedPrice}',
+                        text: 'NRs. ${widget.goldSilver.price.formattedString}',
                         style: Theme.of(context).textTheme.subtitle1.copyWith(
                             color: Colors.white, fontWeight: FontWeight.w600),
                         children: <TextSpan>[
@@ -122,7 +122,8 @@ class _OtherMenuSectionState extends State<OtherMenuSection>
                                   .copyWith(color: Colors.white)),
                           TextSpan(text: '\n'),
                           TextSpan(
-                              text: '${widget.goldSilver.formatttedDate}',
+                              text:
+                                  '${widget.goldSilver.publishedAt.formattedString}',
                               style: Theme.of(context)
                                   .textTheme
                                   .caption

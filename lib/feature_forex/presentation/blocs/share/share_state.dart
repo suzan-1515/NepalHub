@@ -15,12 +15,12 @@ class ShareInProgress extends ShareState {
 }
 
 class ShareSuccess extends ShareState {
-  final String message;
+  final ForexEntity forex;
 
-  ShareSuccess({this.message});
+  ShareSuccess({@required this.forex});
 
   @override
-  List<Object> get props => [message];
+  List<Object> get props => [forex];
 }
 
 class ShareError extends ShareState {

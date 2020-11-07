@@ -5,13 +5,26 @@ import 'package:samachar_hub/core/widgets/error_data_widget.dart';
 import 'package:samachar_hub/core/widgets/progress_widget.dart';
 import 'package:samachar_hub/feature_forex/presentation/blocs/latest/latest_forex_bloc.dart';
 import 'package:samachar_hub/core/extensions/view.dart';
-import 'package:samachar_hub/feature_forex/presentation/ui/widgets/forex_list_builder.dart';
+import 'package:samachar_hub/feature_forex/presentation/ui/forex/widgets/forex_list_builder.dart';
 import 'package:samachar_hub/feature_main/presentation/blocs/settings/settings_cubit.dart';
 
-class ForexList extends StatelessWidget {
+class ForexList extends StatefulWidget {
   const ForexList({
     Key key,
   }) : super(key: key);
+
+  @override
+  _ForexListState createState() => _ForexListState();
+}
+
+class _ForexListState extends State<ForexList> {
+  @override
+  void initState() {
+    super.initState();
+    context.bloc<ForexBloc>().add(GetLatestForexEvent(
+        defaultCurrencyCode:
+            context.bloc<SettingsCubit>().settings.defaultForexCurrency));
+  }
 
   @override
   Widget build(BuildContext context) {

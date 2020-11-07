@@ -6,4 +6,11 @@ abstract class ShareEvent extends Equatable {
   List<Object> get props => [];
 }
 
-class Share extends ShareEvent {}
+class Share extends ShareEvent {
+  final ForexEntity forex;
+
+  Share({@required this.forex});
+
+  @override
+  List<Object> get props => [forex];
+}

@@ -8,7 +8,7 @@ import 'package:samachar_hub/feature_gold/presentation/blocs/view/view_bloc.dart
 import 'package:samachar_hub/feature_gold/presentation/models/gold_silver_model.dart';
 import 'package:samachar_hub/feature_gold/presentation/ui/details/widgets/latest_price_info.dart';
 import 'package:samachar_hub/feature_gold/presentation/ui/details/widgets/price_timeline.dart';
-import 'package:samachar_hub/feature_gold/presentation/ui/gold_silver/widgets/gold_silver_comment.dart';
+import 'package:samachar_hub/feature_gold/presentation/ui/details/widgets/gold_silver_comment.dart';
 import 'package:samachar_hub/feature_gold/utils/provider.dart';
 import 'package:samachar_hub/core/extensions/view.dart';
 import 'package:scoped_model/scoped_model.dart';

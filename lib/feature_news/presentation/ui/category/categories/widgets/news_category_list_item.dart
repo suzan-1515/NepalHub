@@ -71,13 +71,13 @@ class NewsCategoryListItem extends StatelessWidget {
                         data: category, eventType: 'category_unfollow'));
                     context
                         .bloc<CategoryFollowUnFollowBloc>()
-                        .add(CategoryFollowEvent(category: category));
+                        .add(CategoryUnFollowEvent(category: category));
                   } else {
                     GetIt.I.get<EventBus>().fire(NewsChangeEvent(
                         data: category, eventType: 'category_follow'));
                     context
                         .bloc<CategoryFollowUnFollowBloc>()
-                        .add(CategoryUnFollowEvent(category: category));
+                        .add(CategoryFollowEvent(category: category));
                   }
                 },
               ),

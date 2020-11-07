@@ -86,7 +86,8 @@ class ForexEntity extends Equatable {
         viewCount: viewCount ?? this.viewCount,
       );
 
-  String get formatttedDate => DateFormat('dd MMMM, yyyy').format(publishedAt);
+  String get formatttedDate =>
+      DateFormat('dd MMMM, yyyy').format(publishedAt.toLocal());
 
   @override
   List<Object> get props => [
@@ -109,4 +110,25 @@ class ForexEntity extends Equatable {
         viewCount,
         shareCount
       ];
+
+  Map<String, dynamic> toMap() => {
+        "id": id,
+        "unit": unit,
+        "buying": buying,
+        "selling": selling,
+        "source": source,
+        "source_url": sourceUrl,
+        "publishedAt": publishedAt.toIso8601String(),
+        "currency": currency.toMap(),
+        "created_at": createdAt.toIso8601String(),
+        "updated_at": updatedAt.toIso8601String(),
+        "is_liked": isLiked,
+        "is_commented": isCommented,
+        "is_shared": isShared,
+        "is_viewed": isViewed,
+        "comment_count": commentCount,
+        "like_count": likeCount,
+        "share_count": shareCount,
+        "view_count": viewCount,
+      };
 }

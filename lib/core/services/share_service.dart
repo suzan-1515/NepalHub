@@ -11,8 +11,9 @@ class ShareService {
       @required String data,
       String contentType}) async {
     if (data == null || data.isEmpty) return;
-    return FlutterShareMe().shareToSystem(msg: data).then((value) =>
-        _analyticsService.logShare(
+    return FlutterShareMe()
+        .shareToSystem(msg: '$data\n\nCredits: NepalHub')
+        .then((value) => _analyticsService.logShare(
             postId: threadId, contentType: contentType, method: 'open'));
   }
 

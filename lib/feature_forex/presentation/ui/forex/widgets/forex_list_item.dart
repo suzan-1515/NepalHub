@@ -5,25 +5,25 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get_it/get_it.dart';
 import 'package:samachar_hub/core/services/services.dart';
 import 'package:samachar_hub/feature_forex/presentation/models/forex_model.dart';
+import 'package:scoped_model/scoped_model.dart';
 
 class ForexListItem extends StatelessWidget {
   const ForexListItem({
     Key key,
     @required this.context,
-    @required this.data,
   }) : super(key: key);
 
   final BuildContext context;
-  final ForexUIModel data;
 
   @override
   Widget build(BuildContext context) {
+    final forex = ScopedModel.of<ForexUIModel>(context, rebuildOnChange: true);
     return Material(
       color: Colors.transparent,
       child: InkWell(
         onTap: () => GetIt.I
             .get<NavigationService>()
-            .toForexDetailScreen(context, data.forexEntity),
+            .toForexDetailScreen(context, forex),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -34,7 +34,7 @@ class ForexListItem extends StatelessWidget {
                 width: 24,
                 height: 24,
                 image: AdvancedNetworkImage(
-                  data.forexEntity.currency.icon,
+                  forex.entity.currency.icon,
                   useDiskCache: true,
                   cacheRule: CacheRule(maxAge: const Duration(days: 3)),
                 ),
@@ -51,7 +51,7 @@ class ForexListItem extends StatelessWidget {
             Expanded(
               flex: 3,
               child: Text(
-                '${data.forexEntity.currency.title} (${data.forexEntity.currency.code})',
+                '${forex.entity.currency.title} (${forex.entity.currency.code})',
                 style: Theme.of(context).textTheme.bodyText1,
               ),
             ),
@@ -59,20 +59,20 @@ class ForexListItem extends StatelessWidget {
             Expanded(
               flex: 1,
               child: Text(
-                data.forexEntity.unit.toString(),
+                forex.entity.unit.toString(),
                 style: Theme.of(context).textTheme.bodyText2,
               ),
             ),
             SizedBox(width: 8),
             Expanded(
               flex: 1,
-              child: Text(data.forexEntity.buying.toString(),
+              child: Text(forex.entity.buying.toString(),
                   style: Theme.of(context).textTheme.bodyText2),
             ),
             SizedBox(width: 8),
             Expanded(
               flex: 1,
-              child: Text(data.forexEntity.selling.toString(),
+              child: Text(forex.entity.selling.toString(),
                   style: Theme.of(context).textTheme.bodyText2),
             ),
           ],

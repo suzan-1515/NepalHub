@@ -3,7 +3,7 @@ import 'package:flutter_advanced_networkimage/provider.dart';
 import 'package:flutter_advanced_networkimage/transition.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:samachar_hub/feature_forex/presentation/models/forex_model.dart';
-import 'package:samachar_hub/feature_forex/presentation/ui/widgets/forex_converter_item.dart';
+import 'package:samachar_hub/feature_forex/presentation/ui/forex/widgets/forex_converter_item.dart';
 
 class ForexConverter extends StatefulWidget {
   const ForexConverter({
@@ -36,7 +36,7 @@ class _ForexConverterState extends State<ForexConverter> {
       _convertToNepali();
     });
 
-    _fromController.text = _selectedFromForex.forexEntity.unit.toString();
+    _fromController.text = _selectedFromForex.entity.unit.toString();
 
     super.initState();
   }
@@ -56,8 +56,8 @@ class _ForexConverterState extends State<ForexConverter> {
     final fromText = _fromController.text;
     if (fromText != null && fromText.isNotEmpty) {
       double from = double.parse(fromText);
-      double to = (from * _selectedFromForex.forexEntity.selling) /
-          _selectedFromForex.forexEntity.unit;
+      double to = (from * _selectedFromForex.entity.selling) /
+          _selectedFromForex.entity.unit;
       _shouldToTextChnage = false;
       _toController.text = '${to.toStringAsFixed(2)}';
     }
@@ -71,8 +71,8 @@ class _ForexConverterState extends State<ForexConverter> {
     final fromText = _toController.text;
     if (fromText != null && fromText.isNotEmpty) {
       double from = double.parse(fromText);
-      double to = ((from * _selectedFromForex.forexEntity.unit) /
-          _selectedFromForex.forexEntity.selling);
+      double to = ((from * _selectedFromForex.entity.unit) /
+          _selectedFromForex.entity.selling);
       _shouldFromTextChnage = false;
       _fromController.text = '${to.toStringAsFixed(2)}';
     }
@@ -102,9 +102,9 @@ class _ForexConverterState extends State<ForexConverter> {
             onChanged: (value) {
               setState(() {
                 _selectedFromForex = widget.items
-                    .firstWhere((element) => element.forexEntity.id == value);
+                    .firstWhere((element) => element.entity.id == value);
                 _fromController.text =
-                    _selectedFromForex.forexEntity.unit.toString();
+                    _selectedFromForex.entity.unit.toString();
                 _convertToNepali();
               });
             },

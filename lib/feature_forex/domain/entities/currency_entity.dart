@@ -44,6 +44,16 @@ class CurrencyEntity extends Equatable {
   @override
   List<Object> get props => [id, code, title, language, createdAt, updatedAt];
 
+  Map<String, dynamic> toMap() => {
+        "id": id,
+        "code": code,
+        "title": title,
+        "language": language.value,
+        "created_at": createdAt.toIso8601String(),
+        "updated_at": updatedAt.toIso8601String(),
+        "icon": {"url": icon},
+      };
+
   @override
   bool get stringify => true;
 }

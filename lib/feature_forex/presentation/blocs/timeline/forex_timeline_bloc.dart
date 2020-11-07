@@ -16,15 +16,10 @@ part 'forex_timeline_state.dart';
 
 class ForexTimelineBloc extends Bloc<ForexTimelineEvent, ForexTimelineState> {
   final UseCase _getForexTimelineUseCase;
-  final ForexUIModel _forexUIModel;
-  ForexTimelineBloc(
-      {@required UseCase getForexTimelineUseCase,
-      @required ForexUIModel forexUIModel})
-      : _getForexTimelineUseCase = getForexTimelineUseCase,
-        _forexUIModel = forexUIModel,
+  ForexTimelineBloc({
+    @required UseCase getForexTimelineUseCase,
+  })  : _getForexTimelineUseCase = getForexTimelineUseCase,
         super(ForexTimelineInitialState());
-
-  ForexUIModel get forexUIModel => _forexUIModel;
 
   @override
   Stream<ForexTimelineState> mapEventToState(
@@ -37,7 +32,7 @@ class ForexTimelineBloc extends Bloc<ForexTimelineEvent, ForexTimelineState> {
         final List<ForexEntity> forexList = await _getForexTimelineUseCase.call(
           GetForexTimelineUseCaseParams(
               language: event.language,
-              currencyId: forexUIModel.forexEntity.currency.id,
+              currencyId: event.forex.currency.id,
               numOfDays: 30),
         );
         if (forexList == null || forexList.isEmpty) {
@@ -47,7 +42,8 @@ class ForexTimelineBloc extends Bloc<ForexTimelineEvent, ForexTimelineState> {
               forexList: forexList.reversed.toList().toUIModels);
         }
       } catch (e) {
-        log('Forex ($forexUIModel) timeline load error: ', error: e);
+        log('Forex (${event.forex.currency.title}) timeline load error: ',
+            error: e);
         yield ForexTimelineLoadErrorState(
             message:
                 'Unable to load data. Make sure you are connected to Internet.');
@@ -57,15 +53,17 @@ class ForexTimelineBloc extends Bloc<ForexTimelineEvent, ForexTimelineState> {
         final List<ForexEntity> forexList = await _getForexTimelineUseCase.call(
           GetForexTimelineUseCaseParams(
               language: event.language,
-              currencyId: event.forexUIModel.forexEntity.currency.id,
+              currencyId: event.forex.currency.id,
               numOfDays: 30),
         );
         if (forexList != null && forexList.isNotEmpty) {
           yield ForexTimelineLoadSuccessState(
               forexList: forexList.reversed.toList().toUIModels);
-        }
+        } else
+          yield ForexTimelineErrorState(message: 'Unable to refresh data.');
       } catch (e) {
-        log('Forex ($forexUIModel) timeline load error: ', error: e);
+        log('Forex (${event.forex.currency.title}) timeline load error: ',
+            error: e);
         yield ForexTimelineErrorState(
             message:
                 'Unable to load data. Make sure you are connected to Internet.');

@@ -6,6 +6,7 @@ import 'package:get_it/get_it.dart';
 import 'package:samachar_hub/core/services/services.dart';
 import 'package:samachar_hub/feature_gold/presentation/models/gold_silver_model.dart';
 import 'package:samachar_hub/feature_gold/presentation/extensions/gold_silver_extensions.dart';
+import 'package:samachar_hub/core/extensions/number_extensions.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 class GoldSilverListItem extends StatelessWidget {
@@ -67,7 +68,7 @@ class GoldSilverListItem extends StatelessWidget {
             SizedBox(width: 8),
             Expanded(
               flex: 2,
-              child: Text(goldSilver.entity.formatttedPrice,
+              child: Text(goldSilver.entity.price.formattedString,
                   style: Theme.of(context).textTheme.bodyText2),
             ),
           ],

@@ -15,21 +15,21 @@ class DislikeInProgress extends DislikeState {
 }
 
 class DislikeSuccess extends DislikeState {
-  final String message;
+  final ForexEntity forex;
 
-  DislikeSuccess({this.message});
+  DislikeSuccess({@required this.forex});
 
   @override
-  List<Object> get props => [message];
+  List<Object> get props => [this.forex];
 }
 
 class UndislikeSuccess extends DislikeState {
-  final String message;
+  final ForexEntity forex;
 
-  UndislikeSuccess({this.message});
+  UndislikeSuccess({@required this.forex});
 
   @override
-  List<Object> get props => [message];
+  List<Object> get props => [this.forex];
 }
 
 class DislikeError extends DislikeState {

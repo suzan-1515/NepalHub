@@ -6,10 +6,15 @@ import 'package:samachar_hub/core/network/http_manager/http_manager.dart';
 import 'package:samachar_hub/core/services/services.dart';
 import 'package:samachar_hub/feature_auth/data/repositories/auth_repository.dart';
 import 'package:samachar_hub/feature_forex/data/datasources/local/forex_local_data_source.dart';
+import 'package:samachar_hub/feature_forex/data/datasources/local/local_data_source.dart';
 import 'package:samachar_hub/feature_forex/data/datasources/remote/forex_remote_data_source.dart';
+import 'package:samachar_hub/feature_forex/data/datasources/remote/remote_data_source.dart';
 import 'package:samachar_hub/feature_forex/data/repositories/forex_repository.dart';
 import 'package:samachar_hub/feature_forex/data/services/forex_remote_service.dart';
+import 'package:samachar_hub/feature_forex/data/services/remote_service.dart';
 import 'package:samachar_hub/feature_forex/data/storage/forex_storage.dart';
+import 'package:samachar_hub/feature_forex/data/storage/storage.dart';
+import 'package:samachar_hub/feature_forex/domain/entities/forex_entity.dart';
 import 'package:samachar_hub/feature_forex/domain/usecases/share_forex_use_case.dart';
 import 'package:samachar_hub/feature_forex/domain/usecases/usecases.dart';
 import 'package:samachar_hub/feature_forex/presentation/blocs/currency/forex_currency_bloc.dart';
@@ -25,17 +30,17 @@ import 'package:shared_preferences/shared_preferences.dart';
 class ForexProvider {
   ForexProvider._();
   static setup() {
-    GetIt.I.registerLazySingleton<ForexStorage>(
+    GetIt.I.registerLazySingleton<Storage>(
         () => ForexStorage(GetIt.I.get<SharedPreferences>()));
-    GetIt.I.registerLazySingleton<ForexRemoteService>(
+    GetIt.I.registerLazySingleton<RemoteService>(
         () => ForexRemoteService(GetIt.I.get<HttpManager>()));
-    GetIt.I.registerLazySingleton<ForexRemoteDataSource>(
-        () => ForexRemoteDataSource(GetIt.I.get<ForexRemoteService>()));
-    GetIt.I.registerLazySingleton<ForexLocalDataSource>(
-        () => ForexLocalDataSource(GetIt.I.get<ForexStorage>()));
+    GetIt.I.registerLazySingleton<RemoteDataSource>(
+        () => ForexRemoteDataSource(GetIt.I.get<RemoteService>()));
+    GetIt.I.registerLazySingleton<LocalDataSource>(
+        () => ForexLocalDataSource(GetIt.I.get<Storage>()));
     GetIt.I.registerLazySingleton<ForexRepository>(() => ForexRepository(
-        GetIt.I.get<ForexRemoteDataSource>(),
-        GetIt.I.get<ForexLocalDataSource>(),
+        GetIt.I.get<RemoteDataSource>(),
+        GetIt.I.get<LocalDataSource>(),
         GetIt.I.get<AnalyticsService>(),
         GetIt.I.get<AuthRepository>()));
 
@@ -58,45 +63,35 @@ class ForexProvider {
     GetIt.I.registerLazySingleton<ViewForexUseCase>(
         () => ViewForexUseCase(GetIt.I.get<ForexRepository>()));
 
-    GetIt.I.registerFactoryParam<ForexBloc, String, void>(
-        (param1, param2) => ForexBloc(
-              getLatestForexUseCase: GetIt.I.get<GetLatestForexUseCase>(),
-            )..add(GetLatestForexEvent(defaultCurrencyCode: param1)));
-    GetIt.I.registerFactoryParam<ForexTimelineBloc, ForexUIModel, void>(
+    GetIt.I.registerFactory<ForexBloc>(() => ForexBloc(
+          getLatestForexUseCase: GetIt.I.get<GetLatestForexUseCase>(),
+        ));
+    GetIt.I.registerFactoryParam<ForexTimelineBloc, ForexEntity, void>(
         (param1, param2) => ForexTimelineBloc(
-            forexUIModel: param1,
             getForexTimelineUseCase: GetIt.I.get<GetForexTimelineUseCase>())
-          ..add(GetForexTimelineEvent()));
+          ..add(GetForexTimelineEvent(forex: param1)));
     GetIt.I.registerFactory<ForexCurrencyBloc>(() => ForexCurrencyBloc(
         getForexCurrenciesUseCase: GetIt.I.get<GetForexCurrenciesUseCase>())
       ..add(GetForexCurrencies()));
-    GetIt.I.registerFactoryParam<LikeUnlikeBloc, ForexUIModel, void>(
-        (param1, param2) => LikeUnlikeBloc(
-            forexUIModel: param1,
-            likeForexUseCase: GetIt.I.get<LikeForexUseCase>(),
-            unLikeForexUseCase: GetIt.I.get<UnlikeForexUseCase>()));
-    GetIt.I.registerFactoryParam<DislikeBloc, ForexUIModel, void>(
-        (param1, param2) => DislikeBloc(
-            forexUIModel: param1,
-            dislikeForexUseCase: GetIt.I.get<DislikeForexUseCase>(),
-            undislikeForexUseCase: GetIt.I.get<UndislikeForexUseCase>()));
-    GetIt.I.registerFactoryParam<ShareBloc, ForexUIModel, void>(
-        (param1, param2) => ShareBloc(
-            forexUIModel: param1,
-            shareForexUseCase: GetIt.I.get<ShareForexUseCase>()));
-    GetIt.I.registerFactoryParam<ViewBloc, ForexUIModel, void>(
-        (param1, param2) => ViewBloc(
-            forexUIModel: param1,
-            viewForexUseCase: GetIt.I.get<ViewForexUseCase>()));
+    GetIt.I.registerFactory<LikeUnlikeBloc>(() => LikeUnlikeBloc(
+        likeForexUseCase: GetIt.I.get<LikeForexUseCase>(),
+        unLikeForexUseCase: GetIt.I.get<UnlikeForexUseCase>()));
+    GetIt.I.registerFactory<DislikeBloc>(() => DislikeBloc(
+        dislikeForexUseCase: GetIt.I.get<DislikeForexUseCase>(),
+        undislikeForexUseCase: GetIt.I.get<UndislikeForexUseCase>()));
+    GetIt.I.registerFactory<ShareBloc>(
+        () => ShareBloc(shareForexUseCase: GetIt.I.get<ShareForexUseCase>()));
+    GetIt.I.registerFactoryParam<ViewBloc, ForexEntity, void>(
+        (param1, param2) =>
+            ViewBloc(viewForexUseCase: GetIt.I.get<ViewForexUseCase>())
+              ..add(View(forex: param1)));
   }
 
   static BlocProvider<ForexBloc> forexBlocProvider({
     @required Widget child,
-    @required String defaultCurrencyCode,
   }) =>
       BlocProvider<ForexBloc>(
-        create: (context) =>
-            GetIt.I.get<ForexBloc>(param1: defaultCurrencyCode),
+        create: (context) => GetIt.I.get<ForexBloc>(),
         child: child,
       );
 
@@ -104,7 +99,7 @@ class ForexProvider {
           {@required Widget child, @required ForexUIModel forexUIModel}) =>
       BlocProvider<ForexTimelineBloc>(
         create: (context) =>
-            GetIt.I.get<ForexTimelineBloc>(param1: forexUIModel),
+            GetIt.I.get<ForexTimelineBloc>(param1: forexUIModel.entity),
         child: child,
       );
 
@@ -117,26 +112,24 @@ class ForexProvider {
 
   static MultiBlocProvider forexDetailBlocProvider({
     @required Widget child,
-    @required ForexUIModel forexUIModel,
+    @required ForexEntity forex,
   }) =>
       MultiBlocProvider(
         providers: [
           BlocProvider<ForexTimelineBloc>(
-            create: (context) =>
-                GetIt.I.get<ForexTimelineBloc>(param1: forexUIModel),
+            create: (context) => GetIt.I.get<ForexTimelineBloc>(param1: forex),
           ),
           BlocProvider<LikeUnlikeBloc>(
-            create: (context) =>
-                GetIt.I.get<LikeUnlikeBloc>(param1: forexUIModel),
+            create: (context) => GetIt.I.get<LikeUnlikeBloc>(),
           ),
           BlocProvider<DislikeBloc>(
-            create: (context) => GetIt.I.get<DislikeBloc>(param1: forexUIModel),
+            create: (context) => GetIt.I.get<DislikeBloc>(),
           ),
           BlocProvider<ShareBloc>(
-            create: (context) => GetIt.I.get<ShareBloc>(param1: forexUIModel),
+            create: (context) => GetIt.I.get<ShareBloc>(),
           ),
           BlocProvider<ViewBloc>(
-            create: (context) => GetIt.I.get<ViewBloc>(param1: forexUIModel),
+            create: (context) => GetIt.I.get<ViewBloc>(param1: forex),
           ),
         ],
         child: child,

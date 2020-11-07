@@ -10,14 +10,12 @@ import 'package:samachar_hub/feature_gold/utils/provider.dart';
 class GoldSilverScreen extends StatelessWidget {
   static Future navigate(BuildContext context) {
     return Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => GoldSilverProvider.goldSilverBlocProvider(
-              child: GoldSilverScreen()),
-        ));
+      context,
+      MaterialPageRoute(builder: (context) => GoldSilverScreen()),
+    );
   }
 
-  Widget _buildDefaultTypeGraph(BuildContext context) {
+  Widget _buildDefaultTypeGraph() {
     return BlocBuilder<GoldSilverBloc, GoldSilverState>(
       buildWhen: (previous, current) => (current is GoldSilverInitialState ||
           current is GoldSilverLoadSuccessState),
@@ -47,21 +45,23 @@ class GoldSilverScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Theme.of(context).backgroundColor,
-      appBar: AppBar(
-        title: Text('Gold/Silver'),
-      ),
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: NestedScrollView(
-            headerSliverBuilder: (context, innerBoxIsScrolled) => [
-              SliverToBoxAdapter(
-                child: _buildDefaultTypeGraph(context),
-              ),
-            ],
-            body: const GoldSilverList(),
+    return GoldSilverProvider.goldSilverBlocProvider(
+      child: Scaffold(
+        backgroundColor: Theme.of(context).backgroundColor,
+        appBar: AppBar(
+          title: Text('Gold/Silver'),
+        ),
+        body: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: NestedScrollView(
+              headerSliverBuilder: (context, innerBoxIsScrolled) => [
+                SliverToBoxAdapter(
+                  child: _buildDefaultTypeGraph(),
+                ),
+              ],
+              body: const GoldSilverList(),
+            ),
           ),
         ),
       ),

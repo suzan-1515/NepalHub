@@ -7,7 +7,9 @@ import 'package:intl/intl.dart';
 
 import 'package:fl_chart/fl_chart.dart';
 import 'package:samachar_hub/feature_forex/presentation/models/forex_model.dart';
-import 'package:samachar_hub/feature_forex/presentation/ui/widgets/label.dart';
+import 'package:samachar_hub/feature_forex/presentation/extensions/forex_extensions.dart';
+import 'package:samachar_hub/feature_forex/presentation/ui/forex/widgets/label.dart';
+import 'package:samachar_hub/core/extensions/number_extensions.dart';
 
 class ForexGraph extends StatelessWidget {
   final List<ForexUIModel> timeline;
@@ -19,17 +21,14 @@ class ForexGraph extends StatelessWidget {
   String _getXTitle(double value) {
     int index = value.toInt();
     DateFormat formatter = DateFormat('MMMd');
-    return formatter.format(timeline[index].forexEntity.publishedAt);
+    return formatter.format(timeline[index].entity.publishedAt.toLocal());
   }
 
   String _getYTitle(double value) {
     int index = value.toInt();
     var data = timeline[index];
-    return '${(data.forexEntity.buying + data.forexEntity.selling) / 2}';
+    return '${(data.entity.buying + data.entity.selling) / 2}';
   }
-
-  String _formatLastUpdatedDate(DateTime lastUpdated) =>
-      DateFormat('dd MMM, yyyy').format(lastUpdated);
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +40,7 @@ class ForexGraph extends StatelessWidget {
         children: <Widget>[
           Flexible(
             child: Text(
-              timeline?.first?.forexEntity?.currency?.title ?? 'Forex',
+              timeline?.first?.entity?.currency?.title ?? 'Forex',
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
               style: Theme.of(context).textTheme.subtitle1,
@@ -49,7 +48,7 @@ class ForexGraph extends StatelessWidget {
           ),
           const SizedBox(height: 8.0),
           Text(
-            'Last Updated: ${_formatLastUpdatedDate(timeline?.last?.forexEntity?.publishedAt) ?? DateFormat('dd MMM, yyyy').format(DateTime.now())}',
+            'Last Updated: ${timeline?.last?.entity?.publishedAt?.formatttedString ?? DateFormat('dd MMM, yyyy').format(DateTime.now())}',
             style: Theme.of(context).textTheme.caption,
           ),
           const SizedBox(height: 20.0),
@@ -78,13 +77,13 @@ class ForexGraph extends StatelessWidget {
   }
 
   LineChart _buildGraph(BuildContext context) {
-    final double labelSize = 40.0;
+    final double labelSize = 50.0;
     final double maxX = (timeline.length.toDouble() - 1.0).toDouble();
     final double maxY =
-        timeline.map((e) => e.forexEntity.selling).reduce(math.max).toDouble();
+        timeline.map((e) => e.entity.selling).reduce(math.max).toDouble();
     final double minY =
-        timeline.map((e) => e.forexEntity.buying).reduce(math.min).toDouble();
-    final double verticalInterval = ((maxY - minY) / 3.0);
+        timeline.map((e) => e.entity.buying).reduce(math.min).toDouble();
+    final double verticalInterval = ((maxY - minY) / 4.0);
     final double horizontalInterval = (maxX ~/ 5).toDouble();
     final List<double> xValues =
         timeline.map((data) => timeline.indexOf(data).toDouble()).toList();
@@ -110,8 +109,8 @@ class ForexGraph extends StatelessWidget {
                         index,
                         LineTooltipItem(
                             (index == (touchedSpots.length - 1))
-                                ? '${touchedSpot.y.toString()}\n${_getXTitle(touchedSpot.x)}'
-                                : touchedSpot.y.toString(),
+                                ? 'NRs. ${touchedSpot.y.formattedString}\n${_getXTitle(touchedSpot.x)}'
+                                : 'NRs. ${touchedSpot.y.formattedString}',
                             textStyle),
                       );
                     })
@@ -148,19 +147,19 @@ class ForexGraph extends StatelessWidget {
             interval: verticalInterval,
             reservedSize: labelSize,
             textStyle: Theme.of(context).textTheme.caption,
-            getTitles: (value) => '${value.toStringAsFixed(2)}',
+            getTitles: (value) => '${value.formattedString}',
           ),
         ),
         borderData: FlBorderData(show: false),
         lineBarsData: [
           _buildLineData(
             xValues: xValues,
-            yValues: timeline.map((data) => data.forexEntity.buying).toList(),
+            yValues: timeline.map((data) => data.entity.buying).toList(),
             color: Colors.green,
           ),
           _buildLineData(
             xValues: xValues,
-            yValues: timeline.map((data) => data.forexEntity.selling).toList(),
+            yValues: timeline.map((data) => data.entity.selling).toList(),
             color: Colors.red,
           ),
         ],

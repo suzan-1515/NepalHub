@@ -74,9 +74,6 @@ class GoldSilverEntity {
         viewCount: viewCount ?? this.viewCount,
       );
 
-  String get formatttedDate => DateFormat('dd MMMM, yyyy').format(publishedAt);
-  String get formatttedPrice => NumberFormat.currency(symbol: '').format(price);
-
   String toJson() => json.encode(toMap());
 
   Map<String, dynamic> toMap() => {

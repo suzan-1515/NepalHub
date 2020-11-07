@@ -15,21 +15,21 @@ class InProgressState extends LikeUnlikeState {
 }
 
 class LikedState extends LikeUnlikeState {
-  final String message;
+  final ForexEntity forex;
 
-  LikedState({this.message});
+  LikedState({@required this.forex});
 
   @override
-  List<Object> get props => [message];
+  List<Object> get props => [forex];
 }
 
 class UnlikedState extends LikeUnlikeState {
-  final String message;
+  final ForexEntity forex;
 
-  UnlikedState({this.message});
+  UnlikedState({@required this.forex});
 
   @override
-  List<Object> get props => [message];
+  List<Object> get props => [forex];
 }
 
 class ErrorState extends LikeUnlikeState {

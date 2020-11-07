@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:samachar_hub/feature_auth/presentation/ui/login_screen.dart';
 import 'package:samachar_hub/feature_comment/domain/entities/thread_type.dart';
 import 'package:samachar_hub/feature_forex/domain/entities/forex_entity.dart';
+import 'package:samachar_hub/feature_forex/presentation/models/forex_model.dart';
 import 'package:samachar_hub/feature_gold/domain/entities/gold_silver_entity.dart';
 import 'package:samachar_hub/feature_gold/presentation/models/gold_silver_model.dart';
 import 'package:samachar_hub/feature_gold/presentation/ui/details/gold_silver_detail_screen.dart';
@@ -23,8 +24,8 @@ import 'package:samachar_hub/feature_news/presentation/ui/topics/topic_feed/news
 import 'package:samachar_hub/feature_news/presentation/ui/topics/topics/topics_screen.dart';
 import 'package:samachar_hub/feature_news/presentation/ui/trending/trending_news_screen.dart';
 import 'package:samachar_hub/feature_comment/presentation/ui/comment_screen.dart';
-import 'package:samachar_hub/feature_forex/presentation/ui/forex_detail_screen.dart';
-import 'package:samachar_hub/feature_forex/presentation/ui/forex_screen.dart';
+import 'package:samachar_hub/feature_forex/presentation/ui/forex_detail/forex_detail_screen.dart';
+import 'package:samachar_hub/feature_forex/presentation/ui/forex/forex_screen.dart';
 import 'package:samachar_hub/feature_horoscope/presentation/ui/detail/horoscope_detail_screen.dart';
 import 'package:samachar_hub/feature_horoscope/presentation/ui/horoscope_screen.dart';
 import 'package:samachar_hub/feature_auth/presentation/ui/user_profile_screen.dart';
@@ -79,23 +80,11 @@ class NavigationService {
   }
 
   Future toForexScreen(BuildContext context) {
-    return Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => ForexScreen(),
-      ),
-    );
+    return ForexScreen.navigate(context);
   }
 
-  Future toForexDetailScreen(BuildContext context, ForexEntity data) {
-    return Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => ForexDetailScreen(
-          forexEntity: data,
-        ),
-      ),
-    );
+  Future toForexDetailScreen(BuildContext context, ForexUIModel data) {
+    return ForexDetailScreen.navigate(context: context, forexUIModel: data);
   }
 
   Future toHoroscopeScreen(BuildContext context) {

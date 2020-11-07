@@ -22,7 +22,7 @@ class ForexConverterItem extends StatelessWidget {
         Expanded(
           flex: 1,
           child: Image.network(
-            selectedForexModel.forexEntity.currency.icon,
+            selectedForexModel.entity.currency.icon,
             errorBuilder: (context, error, stackTrace) => Icon(
               Icons.error_outline,
               size: 24,
@@ -36,15 +36,15 @@ class ForexConverterItem extends StatelessWidget {
           child: DropdownButtonHideUnderline(
             child: DropdownButton<String>(
               // icon: Icon(FontAwesomeIcons.sortDown),
-              value: selectedForexModel.forexEntity.id,
+              value: selectedForexModel.entity.id,
               isExpanded: true,
               onChanged: onChanged,
               items: items
                   .map(
                     (entry) => DropdownMenuItem<String>(
-                      value: entry.forexEntity.id,
+                      value: entry.entity.id,
                       child: Text(
-                        entry.forexEntity.currency.title,
+                        entry.entity.currency.title,
                         style: Theme.of(context).textTheme.bodyText1,
                       ),
                     ),

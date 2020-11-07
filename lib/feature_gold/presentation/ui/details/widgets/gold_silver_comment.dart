@@ -7,6 +7,8 @@ import 'package:samachar_hub/feature_comment/domain/entities/thread_type.dart';
 import 'package:samachar_hub/feature_gold/presentation/blocs/like_unlike/like_unlike_bloc.dart';
 import 'package:samachar_hub/feature_gold/presentation/blocs/share/share_bloc.dart';
 import 'package:samachar_hub/feature_gold/presentation/models/gold_silver_model.dart';
+import 'package:samachar_hub/feature_gold/presentation/extensions/gold_silver_extensions.dart';
+import 'package:samachar_hub/core/extensions/number_extensions.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:scoped_model/scoped_model.dart';
 
@@ -28,9 +30,18 @@ class GoldSilverComment extends StatelessWidget {
           threadId: goldSilverUIModel.entity.id,
           threadType: CommentThreadType.GOLD),
       onShareTap: () {
-        context
-            .bloc<ShareBloc>()
-            .add(Share(goldSilver: goldSilverUIModel.entity));
+        GetIt.I
+            .get<ShareService>()
+            .share(
+                threadId: goldSilverUIModel.entity.id,
+                data:
+                    '${goldSilverUIModel.entity.category.title}(${goldSilverUIModel.entity.unit.label})\nPrice: NRs. ${goldSilverUIModel.entity.price.formattedString}\nPublished At: ${goldSilverUIModel.entity.publishedAt.formattedString}')
+            .then((value) {
+          context
+              .bloc<ShareBloc>()
+              .add(Share(goldSilver: goldSilverUIModel.entity));
+          return value;
+        });
       },
       commentCount: goldSilverUIModel.entity.commentCount ?? 0,
       isLiked: goldSilverUIModel?.entity?.isLiked ?? false,

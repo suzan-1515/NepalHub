@@ -6,4 +6,11 @@ abstract class ViewEvent extends Equatable {
   List<Object> get props => [];
 }
 
-class View extends ViewEvent {}
+class View extends ViewEvent {
+  final ForexEntity forex;
+
+  View({@required this.forex});
+
+  @override
+  List<Object> get props => [forex];
+}

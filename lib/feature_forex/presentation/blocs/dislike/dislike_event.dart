@@ -6,6 +6,20 @@ abstract class DislikeUndislikeEvent extends Equatable {
   List<Object> get props => [];
 }
 
-class DislikeEvent extends DislikeUndislikeEvent {}
+class DislikeEvent extends DislikeUndislikeEvent {
+  final ForexEntity forex;
 
-class UndislikeEvent extends DislikeUndislikeEvent {}
+  DislikeEvent({@required this.forex});
+
+  @override
+  List<Object> get props => [this.forex];
+}
+
+class UndislikeEvent extends DislikeUndislikeEvent {
+  final ForexEntity forex;
+
+  UndislikeEvent({@required this.forex});
+
+  @override
+  List<Object> get props => [this.forex];
+}

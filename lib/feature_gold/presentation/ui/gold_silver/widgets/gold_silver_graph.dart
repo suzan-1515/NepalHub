@@ -8,6 +8,8 @@ import 'package:intl/intl.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:samachar_hub/feature_gold/domain/entities/gold_silver_entity.dart';
 import 'package:samachar_hub/feature_gold/presentation/ui/gold_silver/widgets/label.dart';
+import 'package:samachar_hub/feature_gold/presentation/extensions/gold_silver_extensions.dart';
+import 'package:samachar_hub/core/extensions/number_extensions.dart';
 
 class GoldSilverGraph extends StatelessWidget {
   final List<GoldSilverEntity> timeline;
@@ -25,7 +27,7 @@ class GoldSilverGraph extends StatelessWidget {
   String _getYTitle(double value) {
     int index = value.toInt();
     var data = timeline[index];
-    return '${data.formatttedPrice}';
+    return '${data.price.formattedString}';
   }
 
   @override
@@ -46,7 +48,7 @@ class GoldSilverGraph extends StatelessWidget {
           ),
           const SizedBox(height: 8.0),
           Text(
-            'Last Updated: ${timeline?.last?.formatttedDate ?? DateFormat('dd MMM, yyyy').format(DateTime.now())}',
+            'Last Updated: ${timeline?.last?.publishedAt?.formattedString ?? DateFormat('dd MMM, yyyy').format(DateTime.now())}',
             style: Theme.of(context).textTheme.caption,
           ),
           const SizedBox(height: 20.0),
@@ -110,7 +112,7 @@ class GoldSilverGraph extends StatelessWidget {
                         index,
                         LineTooltipItem(
                             (index == 0)
-                                ? '${_getXTitle(touchedSpot.x)}\n${touchedSpot.y.toString()}'
+                                ? '${_getXTitle(touchedSpot.x)}\nNRs. ${touchedSpot.y.formattedString}'
                                 : touchedSpot.y.toString(),
                             textStyle),
                       );
@@ -148,7 +150,7 @@ class GoldSilverGraph extends StatelessWidget {
             interval: verticalInterval,
             reservedSize: labelSize + 20,
             textStyle: Theme.of(context).textTheme.caption,
-            getTitles: (value) => '${value.toStringAsFixed(2)}',
+            getTitles: (value) => '${value.formattedString}',
           ),
         ),
         borderData: FlBorderData(show: false),
