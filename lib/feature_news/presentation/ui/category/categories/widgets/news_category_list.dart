@@ -27,7 +27,7 @@ class _NewsCategoryListState extends State<NewsCategoryList> {
   void initState() {
     super.initState();
     _refreshCompleter = Completer<void>();
-    _newsCategoryBloc = context.bloc<NewsCategoryBloc>();
+    _newsCategoryBloc = context.read<NewsCategoryBloc>();
     _newsCategoryBloc.add(GetCategories());
   }
 

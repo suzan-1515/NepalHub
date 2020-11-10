@@ -37,11 +37,11 @@ class NewsFilteringAppBar extends StatelessWidget {
                 builder: (context, state) => IgnorePointer(
                   ignoring: state is SourceLoadingState,
                   child: NewsFilterView(
-                    sources: context.bloc<NewsFilterBloc>().sources,
+                    sources: context.watch<NewsFilterBloc>().sources,
                     selectedSource:
-                        context.bloc<NewsFilterBloc>().selectedSource,
+                        context.watch<NewsFilterBloc>().selectedSource,
                     selectedSortby:
-                        context.bloc<NewsFilterBloc>().selectedSortBy,
+                        context.watch<NewsFilterBloc>().selectedSortBy,
                   ),
                 ),
               ),

@@ -33,7 +33,7 @@ class FollowedNewsSourceSection extends StatelessWidget {
                   title: 'News Sources',
                   onRefreshTap: () {
                     context
-                        .bloc<NewsSourceBloc>()
+                        .read<NewsSourceBloc>()
                         .add(GetFollowedSourcesEvent());
                   },
                 ),

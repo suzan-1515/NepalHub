@@ -8,7 +8,6 @@ import 'package:samachar_hub/core/usecases/usecase.dart';
 import 'package:samachar_hub/feature_horoscope/domain/entities/horoscope_entity.dart';
 import 'package:samachar_hub/feature_horoscope/domain/usecases/like_horoscope_use_case.dart';
 import 'package:samachar_hub/feature_horoscope/domain/usecases/unlike_horoscope_use_case.dart';
-import 'package:samachar_hub/feature_horoscope/presentation/models/horoscope_model.dart';
 
 part 'like_unlike_event.dart';
 part 'like_unlike_state.dart';

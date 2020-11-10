@@ -15,7 +15,7 @@ class LoadingState extends RelatedNewsState {
 }
 
 class LoadSuccessState extends RelatedNewsState {
-  final List<NewsFeedEntity> feeds;
+  final List<NewsFeedUIModel> feeds;
 
   LoadSuccessState(this.feeds);
 }

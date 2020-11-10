@@ -27,7 +27,7 @@ class _NewsSourceListState extends State<NewsSourceList> {
   void initState() {
     super.initState();
     _refreshCompleter = Completer<void>();
-    _newsSourceBloc = context.bloc<NewsSourceBloc>();
+    _newsSourceBloc = context.read<NewsSourceBloc>();
     _newsSourceBloc.add(GetSourcesEvent());
   }
 

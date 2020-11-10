@@ -7,6 +7,8 @@ import 'package:meta/meta.dart';
 import 'package:samachar_hub/core/usecases/usecase.dart';
 import 'package:samachar_hub/feature_news/domain/entities/news_feed_entity.dart';
 import 'package:samachar_hub/feature_news/domain/usecases/get_bookmarked_news_use_case.dart';
+import 'package:samachar_hub/feature_news/presentation/extensions/news_extensions.dart';
+import 'package:samachar_hub/feature_news/presentation/models/news_feed.dart';
 
 part 'bookmark_news_event.dart';
 part 'bookmark_news_state.dart';
@@ -16,7 +18,7 @@ class BookmarkNewsBloc extends Bloc<BookmarkNewsEvent, BookmarkNewsState> {
 
   BookmarkNewsBloc({@required UseCase getBookmarkNewsUseCase})
       : this._getBookmarkNewsUseCase = getBookmarkNewsUseCase,
-        super(InitialState());
+        super(BookmarkNewsInitialState());
 
   int _page = 0;
   int get page => _page;
@@ -36,8 +38,8 @@ class BookmarkNewsBloc extends Bloc<BookmarkNewsEvent, BookmarkNewsState> {
 
   Stream<BookmarkNewsState> _mapGetBookmarkedNewsEventToState(
       GetBookmarkedNews event) async* {
-    if (state is LoadingState) return;
-    yield LoadingState();
+    if (state is BookmarkNewsLoadingState) return;
+    yield BookmarkNewsLoadingState();
     try {
       _page = 1;
       final List<NewsFeedEntity> newsList = await _getBookmarkNewsUseCase.call(
@@ -46,12 +48,13 @@ class BookmarkNewsBloc extends Bloc<BookmarkNewsEvent, BookmarkNewsState> {
         ),
       );
       if (newsList == null || newsList.isEmpty)
-        yield EmptyState(message: 'You have not bookmarked any news yet.');
+        yield BookmarkNewsEmptyState(
+            message: 'You have not bookmarked any news yet.');
       else
-        yield LoadSuccessState(newsList);
+        yield BookmarkNewsLoadSuccessState(newsList.toUIModels);
     } catch (e) {
       log('Bookmark news load error.', error: e);
-      yield LoadErrorState(
+      yield BookmarkNewsLoadErrorState(
           message:
               'Unable to load data. Make sure you are connected to internet.');
     }
@@ -67,12 +70,12 @@ class BookmarkNewsBloc extends Bloc<BookmarkNewsEvent, BookmarkNewsState> {
       );
       if (newsList != null || newsList.isNotEmpty) {
         _page = 1;
-        yield LoadSuccessState(newsList);
+        yield BookmarkNewsLoadSuccessState(newsList.toUIModels);
       } else
-        yield ErrorState(message: 'Unable to refresh.');
+        yield BookmarkNewsErrorState(message: 'Unable to refresh.');
     } catch (e) {
       log('Refresh bookmark news load error.', error: e);
-      yield ErrorState(
+      yield BookmarkNewsErrorState(
           message:
               'Unable to refresh data. Make sure you are connected to internet.');
     }
@@ -80,7 +83,7 @@ class BookmarkNewsBloc extends Bloc<BookmarkNewsEvent, BookmarkNewsState> {
 
   Stream<BookmarkNewsState> _mapLoadMoreBookmarkedNewsEventToState(
       LoadMoreBookmarkedNewsEvent event) async* {
-    if (state is LoadingState) return;
+    if (state is BookmarkNewsLoadingState) return;
     final currentState = state;
     try {
       final List<NewsFeedEntity> newsList = await _getBookmarkNewsUseCase.call(
@@ -90,22 +93,24 @@ class BookmarkNewsBloc extends Bloc<BookmarkNewsEvent, BookmarkNewsState> {
       );
 
       if (newsList == null || newsList.isEmpty) {
-        if (currentState is LoadSuccessState) {
+        if (currentState is BookmarkNewsLoadSuccessState) {
           yield currentState.copyWith(hasMore: false);
         } else {
           _page = 1;
-          yield EmptyState(message: 'You have not bookmarked any news yet.');
+          yield BookmarkNewsEmptyState(
+              message: 'You have not bookmarked any news yet.');
         }
       } else {
         _page = _page + 1;
-        if (currentState is LoadSuccessState) {
-          yield currentState.copyWith(feeds: currentState.feeds + newsList);
+        if (currentState is BookmarkNewsLoadSuccessState) {
+          yield currentState.copyWith(
+              feeds: currentState.feeds + newsList.toUIModels);
         } else
-          yield LoadSuccessState(newsList);
+          yield BookmarkNewsLoadSuccessState(newsList.toUIModels);
       }
     } catch (e) {
       log('Load more bookmark news error.', error: e);
-      yield ErrorState(
+      yield BookmarkNewsErrorState(
           message:
               'Unable to load more data. Make sure you are connected to internet.');
     }

@@ -20,7 +20,7 @@ class _GoldSilverListState extends State<GoldSilverList> {
   @override
   void initState() {
     super.initState();
-    context.bloc<GoldSilverBloc>().add(GetLatestGoldSilverEvent());
+    context.read<GoldSilverBloc>().add(GetLatestGoldSilverEvent());
   }
 
   @override
@@ -50,7 +50,7 @@ class _GoldSilverListState extends State<GoldSilverList> {
             child: ErrorDataView(
               message: state.message,
               onRetry: () => context
-                  .bloc<GoldSilverBloc>()
+                  .read<GoldSilverBloc>()
                   .add(GetLatestGoldSilverEvent()),
             ),
           );

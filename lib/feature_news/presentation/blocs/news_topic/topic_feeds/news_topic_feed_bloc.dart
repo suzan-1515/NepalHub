@@ -8,10 +8,12 @@ import 'package:samachar_hub/core/models/language.dart';
 import 'package:samachar_hub/core/usecases/usecase.dart';
 import 'package:samachar_hub/feature_news/domain/entities/news_feed_entity.dart';
 import 'package:samachar_hub/feature_news/domain/entities/news_source_entity.dart';
-import 'package:samachar_hub/feature_news/domain/entities/news_topic_entity.dart';
 import 'package:samachar_hub/feature_news/domain/entities/sort.dart';
 import 'package:samachar_hub/feature_news/domain/usecases/get_news_by_topic_use_case.dart';
 import 'package:samachar_hub/feature_news/presentation/blocs/news_filter/news_filter_bloc.dart';
+import 'package:samachar_hub/feature_news/presentation/models/news_feed.dart';
+import 'package:samachar_hub/feature_news/presentation/extensions/news_extensions.dart';
+import 'package:samachar_hub/feature_news/presentation/models/news_topic.dart';
 
 part 'news_topic_feed_event.dart';
 part 'news_topic_feed_state.dart';
@@ -19,7 +21,7 @@ part 'news_topic_feed_state.dart';
 class NewsTopicFeedBloc extends Bloc<NewsTopicFeedEvent, NewsTopicFeedState> {
   final UseCase _newsByTopicUseCase;
   final NewsFilterBloc _newsFilterBloc;
-  final NewsTopicEntity _topic;
+  final NewsTopicUIModel _topic;
 
   SortBy _sortBy;
   NewsSourceEntity _source;
@@ -30,12 +32,12 @@ class NewsTopicFeedBloc extends Bloc<NewsTopicFeedEvent, NewsTopicFeedState> {
   NewsSourceEntity get sourceModel => _source;
   int get page => _page;
 
-  NewsTopicEntity get topic => _topic;
+  NewsTopicUIModel get topic => _topic;
   StreamSubscription _newsFilterBlocSubscription;
 
   NewsTopicFeedBloc(
       {@required UseCase newsByTopicUseCase,
-      @required NewsTopicEntity topic,
+      @required NewsTopicUIModel topic,
       @required NewsFilterBloc newsFilterBloc})
       : this._newsByTopicUseCase = newsByTopicUseCase,
         this._topic = topic,
@@ -70,8 +72,6 @@ class NewsTopicFeedBloc extends Bloc<NewsTopicFeedEvent, NewsTopicFeedState> {
       yield* _mapGetMoreTopicNewsEventToState(event);
     } else if (event is RefreshTopicNewsEvent) {
       yield* _mapRefreshTopicNewsToState(event);
-    } else if (event is FeedChangeEvent) {
-      yield* _mapFeedChangeEventToState(event);
     }
   }
 
@@ -81,7 +81,7 @@ class NewsTopicFeedBloc extends Bloc<NewsTopicFeedEvent, NewsTopicFeedState> {
     try {
       final List<NewsFeedEntity> newsList = await _newsByTopicUseCase.call(
         GetNewsByTopicUseCaseParams(
-          topic: topic,
+          topic: topic.entity,
           source: sourceModel,
           sortBy: sortBy,
           page: 1,
@@ -89,7 +89,8 @@ class NewsTopicFeedBloc extends Bloc<NewsTopicFeedEvent, NewsTopicFeedState> {
       );
       if (newsList != null && newsList.isNotEmpty) {
         _page = 1;
-        yield NewsTopicFeedLoadSuccessState(feeds: newsList, hasMore: true);
+        yield NewsTopicFeedLoadSuccessState(
+            feeds: newsList.toUIModels, hasMore: true);
       } else {
         yield NewsTopicFeedErrorState(message: 'Unable to refresh data.');
       }
@@ -109,7 +110,7 @@ class NewsTopicFeedBloc extends Bloc<NewsTopicFeedEvent, NewsTopicFeedState> {
     try {
       final List<NewsFeedEntity> newsList = await _newsByTopicUseCase.call(
         GetNewsByTopicUseCaseParams(
-            topic: topic,
+            topic: topic.entity,
             source: sourceModel,
             sortBy: sortBy,
             page: page + 1,
@@ -123,9 +124,11 @@ class NewsTopicFeedBloc extends Bloc<NewsTopicFeedEvent, NewsTopicFeedState> {
       } else {
         _page = _page + 1;
         if (currentState is NewsTopicFeedLoadSuccessState) {
-          yield currentState.copyWith(feeds: currentState.feeds + newsList);
+          yield currentState.copyWith(
+              feeds: currentState.feeds + newsList.toUIModels);
         } else
-          yield NewsTopicFeedLoadSuccessState(feeds: newsList, hasMore: true);
+          yield NewsTopicFeedLoadSuccessState(
+              feeds: newsList.toUIModels, hasMore: true);
       }
     } catch (e) {
       log('News by topic load more cache error.', error: e);
@@ -146,7 +149,7 @@ class NewsTopicFeedBloc extends Bloc<NewsTopicFeedEvent, NewsTopicFeedState> {
       _page = 1;
       final List<NewsFeedEntity> newsList = await _newsByTopicUseCase.call(
         GetNewsByTopicUseCaseParams(
-          topic: topic,
+          topic: topic.entity,
           source: sourceModel,
           sortBy: sortBy,
           page: page,
@@ -156,43 +159,13 @@ class NewsTopicFeedBloc extends Bloc<NewsTopicFeedEvent, NewsTopicFeedState> {
       if (newsList == null || newsList.isEmpty)
         yield NewsTopicFeedEmptyState(message: 'News feed not available.');
       else
-        yield NewsTopicFeedLoadSuccessState(feeds: newsList, hasMore: true);
+        yield NewsTopicFeedLoadSuccessState(
+            feeds: newsList.toUIModels, hasMore: true);
     } catch (e) {
       log('News by topic load error.', error: e);
       yield NewsTopicFeedLoadErrorState(
           message:
               'Unable to load data. Make sure you are connected to internet.');
-    }
-  }
-
-  Stream<NewsTopicFeedState> _mapFeedChangeEventToState(
-      FeedChangeEvent event) async* {
-    try {
-      final currentState = state;
-      if (currentState is NewsTopicFeedLoadSuccessState) {
-        if (event.eventType == 'feed') {
-          final feed = (event.data as NewsFeedEntity);
-          final index =
-              currentState.feeds.indexWhere((element) => element.id == feed.id);
-          if (index != -1) {
-            final feeds = List<NewsFeedEntity>.from(currentState.feeds);
-            feeds[index] = feed;
-            yield currentState.copyWith(feeds: feeds);
-          }
-        } else if (event.eventType == 'source') {
-          final source = (event.data as NewsSourceEntity);
-          final feeds = currentState.feeds.map<NewsFeedEntity>((e) {
-            if (e.source.id == source.id) {
-              return e.copyWith(source: source);
-            }
-            return e;
-          }).toList();
-
-          yield currentState.copyWith(feeds: feeds);
-        }
-      }
-    } catch (e) {
-      log('Update change event of ${event.eventType} error: ', error: e);
     }
   }
 }

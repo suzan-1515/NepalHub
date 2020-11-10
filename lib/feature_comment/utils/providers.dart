@@ -14,7 +14,6 @@ import 'package:samachar_hub/feature_comment/presentation/blocs/comment_bloc.dar
 import 'package:samachar_hub/feature_comment/presentation/blocs/comment_post/comment_post_bloc.dart';
 import 'package:samachar_hub/feature_comment/presentation/blocs/delete/delete_cubit.dart';
 import 'package:samachar_hub/feature_comment/presentation/blocs/like_unlike/like_unlike_bloc.dart';
-import 'package:samachar_hub/feature_comment/presentation/models/comment_model.dart';
 import 'package:samachar_hub/feature_stats/presentation/blocs/thread_stats_cubit.dart';
 import 'package:samachar_hub/feature_stats/domain/entities/thread_type.dart';
 
@@ -50,16 +49,14 @@ class CommentProvider {
         threadType: param2,
       )..add(GetCommentsEvent()),
     );
-    GetIt.I.registerFactoryParam<LikeUnlikeBloc, CommentUIModel, void>(
-      (param1, param2) => LikeUnlikeBloc(
+    GetIt.I.registerFactory<CommentLikeUnlikeBloc>(
+      () => CommentLikeUnlikeBloc(
           likeCommentUseCase: GetIt.I.get<LikeCommentUseCase>(),
-          unlikeCommentUseCase: GetIt.I.get<UnlikeCommentUseCase>(),
-          commentUIModel: param1),
+          unlikeCommentUseCase: GetIt.I.get<UnlikeCommentUseCase>()),
     );
-    GetIt.I.registerFactoryParam<CommentDeleteCubit, CommentUIModel, void>(
-      (param1, param2) => CommentDeleteCubit(
-          deleteCommentUseCase: GetIt.I.get<DeleteCommentUseCase>(),
-          commentUIModel: param1),
+    GetIt.I.registerFactory<CommentDeleteCubit>(
+      () => CommentDeleteCubit(
+          deleteCommentUseCase: GetIt.I.get<DeleteCommentUseCase>()),
     );
     GetIt.I.registerFactoryParam<CommentPostBloc, String, CommentThreadType>(
       (param1, param2) => CommentPostBloc(
@@ -93,17 +90,14 @@ class CommentProvider {
 
   static MultiBlocProvider commentItemBlocProvider({
     @required Widget child,
-    @required CommentUIModel commentUIModel,
   }) =>
       MultiBlocProvider(
         providers: [
-          BlocProvider<LikeUnlikeBloc>(
-            create: (context) =>
-                GetIt.I.get<LikeUnlikeBloc>(param1: commentUIModel),
+          BlocProvider<CommentLikeUnlikeBloc>(
+            create: (context) => GetIt.I.get<CommentLikeUnlikeBloc>(),
           ),
           BlocProvider<CommentDeleteCubit>(
-            create: (context) =>
-                GetIt.I.get<CommentDeleteCubit>(param1: commentUIModel),
+            create: (context) => GetIt.I.get<CommentDeleteCubit>(),
           ),
         ],
         child: child,

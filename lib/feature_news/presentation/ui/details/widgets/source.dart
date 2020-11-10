@@ -1,27 +1,20 @@
 import 'package:animate_do/animate_do.dart';
-import 'package:event_bus/event_bus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:get_it/get_it.dart';
-import 'package:samachar_hub/feature_news/domain/entities/news_feed_entity.dart';
-import 'package:samachar_hub/feature_news/domain/entities/news_source_entity.dart';
 import 'package:samachar_hub/feature_news/presentation/blocs/news_source/follow_unfollow/follow_un_follow_bloc.dart';
-import 'package:samachar_hub/feature_news/presentation/events/feed_event.dart';
 import 'package:samachar_hub/core/widgets/cached_image_widget.dart';
 import 'package:samachar_hub/core/extensions/number_extensions.dart';
+import 'package:samachar_hub/feature_news/presentation/models/news_feed.dart';
+import 'package:scoped_model/scoped_model.dart';
 
 class Source extends StatelessWidget {
   const Source({
     Key key,
-    @required this.context,
-    @required this.feed,
   }) : super(key: key);
-
-  final BuildContext context;
-  final NewsFeedEntity feed;
 
   @override
   Widget build(BuildContext context) {
+    final feed = ScopedModel.of<NewsFeedUIModel>(context);
     return Row(
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -30,15 +23,15 @@ class Source extends StatelessWidget {
         SizedBox(
           height: 42,
           width: 42,
-          child: CachedImage(feed.source.favicon),
+          child: CachedImage(feed.entity.source.favicon),
         ),
-        SizedBox(width: 8),
-        SourceFollowerCount(source: feed.source),
-        SizedBox(width: 4),
-        Spacer(),
+        const SizedBox(width: 8),
+        const SourceFollowerCount(),
+        const SizedBox(width: 4),
+        const Spacer(),
         ZoomIn(
           duration: const Duration(milliseconds: 200),
-          child: SourceFollowButton(source: feed.source),
+          child: const SourceFollowButton(),
         ),
       ],
     );
@@ -48,17 +41,16 @@ class Source extends StatelessWidget {
 class SourceFollowButton extends StatelessWidget {
   const SourceFollowButton({
     Key key,
-    @required this.source,
   }) : super(key: key);
-
-  final NewsSourceEntity source;
 
   @override
   Widget build(BuildContext context) {
+    final feed =
+        ScopedModel.of<NewsFeedUIModel>(context, rebuildOnChange: true);
     return FlatButton(
       key: UniqueKey(),
       visualDensity: VisualDensity.compact,
-      color: source.isFollowed ? Colors.blue : null,
+      color: feed.entity.source.isFollowed ? Colors.blue : null,
       shape: RoundedRectangleBorder(
           side: BorderSide(color: Colors.blue),
           borderRadius: BorderRadius.horizontal(
@@ -66,33 +58,31 @@ class SourceFollowButton extends StatelessWidget {
             right: Radius.circular(6),
           )),
       onPressed: () {
-        if (source.isFollowed) {
+        if (feed.entity.source.isFollowed) {
+          feed.unFollowSource();
           context
-              .bloc<SourceFollowUnFollowBloc>()
-              .add(SourceUnFollowEvent(source: source));
-          GetIt.I.get<EventBus>().fire(
-              NewsChangeEvent(data: source, eventType: 'source_unfollow'));
+              .read<SourceFollowUnFollowBloc>()
+              .add(SourceUnFollowEvent(source: feed.entity.source));
         } else {
+          feed.followSource();
           context
-              .bloc<SourceFollowUnFollowBloc>()
-              .add(SourceFollowEvent(source: source));
-          GetIt.I
-              .get<EventBus>()
-              .fire(NewsChangeEvent(data: source, eventType: 'source_follow'));
+              .read<SourceFollowUnFollowBloc>()
+              .add(SourceFollowEvent(source: feed.entity.source));
         }
       },
       child: Row(
         children: [
           Icon(
-            source.isFollowed ? Icons.star : Icons.star_border,
-            color: source.isFollowed ? Colors.white : Colors.blue,
+            feed.entity.source.isFollowed ? Icons.star : Icons.star_border,
+            color: feed.entity.source.isFollowed ? Colors.white : Colors.blue,
             size: 14,
           ),
-          SizedBox(width: 4),
+          const SizedBox(width: 4),
           Text(
-            source.isFollowed ? 'Following' : 'Follow',
+            feed.entity.source.isFollowed ? 'Following' : 'Follow',
             style: Theme.of(context).textTheme.caption.copyWith(
-                color: source.isFollowed ? Colors.white : Colors.blue),
+                color:
+                    feed.entity.source.isFollowed ? Colors.white : Colors.blue),
           ),
         ],
       ),
@@ -103,21 +93,21 @@ class SourceFollowButton extends StatelessWidget {
 class SourceFollowerCount extends StatelessWidget {
   const SourceFollowerCount({
     Key key,
-    @required this.source,
   }) : super(key: key);
-
-  final NewsSourceEntity source;
 
   @override
   Widget build(BuildContext context) {
+    final feed =
+        ScopedModel.of<NewsFeedUIModel>(context, rebuildOnChange: true);
     return RichText(
       text: TextSpan(
-          text: '${source.title}',
+          text: '${feed.entity.source.title}',
           style: Theme.of(context).textTheme.subtitle2,
           children: [
             TextSpan(text: '\n'),
             TextSpan(
-                text: '${source.followerCount.compactFormat} followers',
+                text:
+                    '${feed.entity.source.followerCount.compactFormat} followers',
                 style: Theme.of(context).textTheme.caption),
           ]),
       overflow: TextOverflow.ellipsis,

@@ -7,6 +7,15 @@ import 'package:samachar_hub/feature_auth/domain/entities/user_entity.dart';
 import 'package:samachar_hub/feature_auth/presentation/blocs/auth_bloc.dart';
 
 class UserProfileScreen extends StatefulWidget {
+  static Future navigate(BuildContext context) {
+    return Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => UserProfileScreen(),
+      ),
+    );
+  }
+
   @override
   _UserProfileScreenState createState() => _UserProfileScreenState();
 }
@@ -49,7 +58,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
         ignoring: false,
         child: OutlineButton(
           padding: const EdgeInsets.all(8),
-          onPressed: () => context.bloc<AuthBloc>().add(LogoutEvent()),
+          onPressed: () => context.watch<AuthBloc>().add(LogoutEvent()),
           child: Text('Log out'),
         ),
       ),
@@ -58,7 +67,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final user = context.bloc<AuthBloc>().currentUser;
+    final user = context.watch<AuthBloc>().currentUser;
     return Scaffold(
       appBar: AppBar(
         title: Text('Profile'),

@@ -7,22 +7,22 @@ abstract class CommentDeleteState extends Equatable {
   List<Object> get props => [];
 }
 
-class InitialState extends CommentDeleteState {}
+class CommentDeleteInitialState extends CommentDeleteState {}
 
-class InProgressState extends CommentDeleteState {}
+class CommentDeleteInProgressState extends CommentDeleteState {}
 
-class SuccessState extends CommentDeleteState {
-  final String message;
+class CommentDeleteSuccessState extends CommentDeleteState {
+  final CommentEntity comment;
 
-  SuccessState({this.message});
+  CommentDeleteSuccessState({@required this.comment});
   @override
-  List<Object> get props => [message];
+  List<Object> get props => [comment];
 }
 
-class ErrorState extends CommentDeleteState {
+class CommentDeleteErrorState extends CommentDeleteState {
   final String message;
 
-  ErrorState({this.message});
+  CommentDeleteErrorState({this.message});
   @override
   List<Object> get props => [message];
 }

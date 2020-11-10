@@ -79,6 +79,21 @@ class NewsSourceEntity extends Equatable {
         language
       ];
 
+  Map<String, dynamic> toMap() => {
+        "id": id,
+        "title": title,
+        "code": code,
+        "priority": priority,
+        "language": language.value,
+        "created_at": createdAt.toIso8601String(),
+        "updated_at": updatedAt.toIso8601String(),
+        "icon": {"url": icon},
+        "favicon": {"url": favicon},
+        "is_followed": isFollowed,
+        "follower_count": followerCount,
+        "is_blocked": isBlocked,
+      };
+
   @override
   bool get stringify => true;
 }

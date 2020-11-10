@@ -7,37 +7,37 @@ import 'package:samachar_hub/feature_news/presentation/models/news_feed.dart';
 import 'package:samachar_hub/feature_news/presentation/models/news_source.dart';
 import 'package:samachar_hub/feature_news/presentation/models/news_topic.dart';
 
-extension NewsFeedX on NewsFeedEntity {
-  NewsFeedUIModel get toUIModel => NewsFeedUIModel(feed: this);
+extension NewsFeedEntityX on NewsFeedEntity {
+  NewsFeedUIModel get toUIModel => NewsFeedUIModel(this);
 }
 
-extension NewsFeedListX on List<NewsFeedEntity> {
+extension NewsFeedEntityListX on List<NewsFeedEntity> {
   List<NewsFeedUIModel> get toUIModels => this.map((e) => e.toUIModel).toList();
 }
 
-extension NewsCategoryX on NewsCategoryEntity {
-  NewsCategoryUIModel get toUIModel => NewsCategoryUIModel(category: this);
+extension NewsCategoryEntityX on NewsCategoryEntity {
+  NewsCategoryUIModel get toUIModel => NewsCategoryUIModel(this);
 }
 
-extension NewsCategoryListX on List<NewsCategoryEntity> {
+extension NewsCategoryEntityListX on List<NewsCategoryEntity> {
   List<NewsCategoryUIModel> get toUIModels =>
       this.map((e) => e.toUIModel).toList();
 }
 
-extension NewsSourceX on NewsSourceEntity {
-  NewsSourceUIModel get toUIModel => NewsSourceUIModel(source: this);
+extension NewsSourceEntityX on NewsSourceEntity {
+  NewsSourceUIModel get toUIModel => NewsSourceUIModel(this);
 }
 
-extension NewsSourceListX on List<NewsSourceEntity> {
+extension NewsSourceEntityListX on List<NewsSourceEntity> {
   List<NewsSourceUIModel> get toUIModels =>
       this.map((e) => e.toUIModel).toList();
 }
 
-extension NewsTopicX on NewsTopicEntity {
-  NewsTopicUIModel get toUIModel => NewsTopicUIModel(topic: this);
+extension NewsTopicEntityX on NewsTopicEntity {
+  NewsTopicUIModel get toUIModel => NewsTopicUIModel(topicUIModel: this);
 }
 
-extension NewsTopicListX on List<NewsTopicEntity> {
+extension NewsTopicEntityListX on List<NewsTopicEntity> {
   List<NewsTopicUIModel> get toUIModels =>
       this.map((e) => e.toUIModel).toList();
 }

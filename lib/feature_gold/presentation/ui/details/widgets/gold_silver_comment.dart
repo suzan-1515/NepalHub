@@ -19,7 +19,7 @@ class GoldSilverComment extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final user = context.bloc<AuthBloc>().currentUser;
+    final user = context.watch<AuthBloc>().currentUser;
     final goldSilverUIModel =
         ScopedModel.of<GoldSilverUIModel>(context, rebuildOnChange: true);
     return CommentBar(
@@ -38,7 +38,7 @@ class GoldSilverComment extends StatelessWidget {
                     '${goldSilverUIModel.entity.category.title}(${goldSilverUIModel.entity.unit.label})\nPrice: NRs. ${goldSilverUIModel.entity.price.formattedString}\nPublished At: ${goldSilverUIModel.entity.publishedAt.formattedString}')
             .then((value) {
           context
-              .bloc<ShareBloc>()
+              .read<ShareBloc>()
               .add(Share(goldSilver: goldSilverUIModel.entity));
           return value;
         });
@@ -53,13 +53,13 @@ class GoldSilverComment extends StatelessWidget {
               isLiked: false,
               likeCount: goldSilverUIModel.entity.likeCount - 1);
           context
-              .bloc<LikeUnlikeBloc>()
+              .read<LikeUnlikeBloc>()
               .add(UnlikeEvent(goldSilver: goldSilverUIModel.entity));
         } else {
           goldSilverUIModel.entity = goldSilverUIModel.entity.copyWith(
               isLiked: true, likeCount: goldSilverUIModel.entity.likeCount + 1);
           context
-              .bloc<LikeUnlikeBloc>()
+              .read<LikeUnlikeBloc>()
               .add(LikeEvent(goldSilver: goldSilverUIModel.entity));
         }
       },

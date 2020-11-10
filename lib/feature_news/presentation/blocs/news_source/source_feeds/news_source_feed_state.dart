@@ -3,7 +3,7 @@ part of 'news_source_feed_bloc.dart';
 abstract class NewsSourceFeedState extends Equatable {}
 
 class NewsSourceFeedInitialState extends NewsSourceFeedState {
-  final NewsSourceEntity source;
+  final NewsSourceUIModel source;
   NewsSourceFeedInitialState({@required this.source});
 
   @override
@@ -21,13 +21,13 @@ class NewsSourceFeedMoreLoadingState extends NewsSourceFeedState {
 }
 
 class NewsSourceFeedLoadSuccessState extends NewsSourceFeedState {
-  final List<NewsFeedEntity> feeds;
+  final List<NewsFeedUIModel> feeds;
   final bool hasMore;
 
   NewsSourceFeedLoadSuccessState({this.feeds, this.hasMore});
 
   NewsSourceFeedLoadSuccessState copyWith({
-    List<NewsFeedEntity> feeds,
+    List<NewsFeedUIModel> feeds,
     bool hasMore,
   }) =>
       NewsSourceFeedLoadSuccessState(

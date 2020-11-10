@@ -81,6 +81,8 @@ class CommentBloc extends Bloc<CommentEvent, CommentState> {
 
   Stream<CommentState> _mapRefreshCommentsEventToState(
       RefreshCommentsEvent event) async* {
+    if (state is CommentRefreshing) return;
+    yield CommentRefreshing();
     try {
       List<CommentEntity> comments = await _getCommentsUseCase.call(
         GetCommentsUseCaseParams(
@@ -89,8 +91,8 @@ class CommentBloc extends Bloc<CommentEvent, CommentState> {
           page: 1,
         ),
       );
-      _page = 1;
       if (comments != null || comments.isNotEmpty) {
+        _page = 1;
         yield CommentLoadSuccess(comments.toUIModels);
       } else {
         yield CommentError(message: 'Unable to refresh data');
@@ -137,6 +139,9 @@ class CommentBloc extends Bloc<CommentEvent, CommentState> {
     } catch (e) {
       log('Comment load more error of thread id: $_threadId and thread type: $_threadType.',
           error: e);
+      if (currentState is CommentLoadSuccess) {
+        yield currentState.copyWith(hasMore: false);
+      }
       yield CommentError(
           message:
               'Unable to load comments. Make sure you are connected to Internet.');

@@ -54,7 +54,7 @@ class NewsFilterView extends StatelessWidget {
                     (element) => element.code == value,
                     orElse: () => null,
                   );
-                  context.bloc<NewsFilterBloc>().add(
+                  context.read<NewsFilterBloc>().add(
                       NewsFilterSourceChangedEvent(source: changedSourceModel));
                 },
                 selections: this._getSourceSelectors(),
@@ -68,7 +68,7 @@ class NewsFilterView extends StatelessWidget {
               child: SortBySelector(
                 selectedValue: selectedSortby,
                 onChanged: (SortBy sortBy) => context
-                    .bloc<NewsFilterBloc>()
+                    .read<NewsFilterBloc>()
                     .add(NewsFilterSortByChangedEvent(sortBy: sortBy)),
               ),
             ),

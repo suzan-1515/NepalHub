@@ -8,68 +8,55 @@ import 'package:samachar_hub/core/usecases/usecase.dart';
 import 'package:samachar_hub/feature_comment/domain/entities/comment_entity.dart';
 import 'package:samachar_hub/feature_comment/domain/usecases/like_comment_use_case.dart';
 import 'package:samachar_hub/feature_comment/domain/usecases/unlike_comment_use_case.dart';
-import 'package:samachar_hub/feature_comment/presentation/models/comment_model.dart';
 
 part 'like_unlike_event.dart';
 part 'like_unlike_state.dart';
 
-class LikeUnlikeBloc extends Bloc<LikeUnlikeEvent, LikeUnlikeState> {
+class CommentLikeUnlikeBloc
+    extends Bloc<CommentLikeUnlikeEvent, CommentLikeUnlikeState> {
   final UseCase _likeCommentUseCase;
   final UseCase _unlikeCommentUseCase;
-  final CommentUIModel _commentUIModel;
-  LikeUnlikeBloc(
+  CommentLikeUnlikeBloc(
       {@required UseCase likeCommentUseCase,
-      @required UseCase unlikeCommentUseCase,
-      @required CommentUIModel commentUIModel})
+      @required UseCase unlikeCommentUseCase})
       : _likeCommentUseCase = likeCommentUseCase,
         _unlikeCommentUseCase = unlikeCommentUseCase,
-        _commentUIModel = commentUIModel,
-        super(InitialState());
-
-  CommentUIModel get commentUIModel => _commentUIModel;
+        super(CommentLikeInitialState());
 
   @override
-  Stream<LikeUnlikeState> mapEventToState(
-    LikeUnlikeEvent event,
+  Stream<CommentLikeUnlikeState> mapEventToState(
+    CommentLikeUnlikeEvent event,
   ) async* {
-    if (state is InProgressState) return;
-    if (event is LikeEvent) {
+    if (state is CommentLikeInProgressState) return;
+    if (event is CommentLikeEvent) {
       try {
         final CommentEntity commentEntity = await _likeCommentUseCase.call(
           LikeCommentUseCaseParams(
-            commentEntity: commentUIModel.comment,
+            commentEntity: event.comment,
           ),
         );
-        if (commentEntity != null) {
-          _commentUIModel.comment = _commentUIModel.comment.copyWith(
-              isLiked: commentEntity.isLiked,
-              likeCount: commentEntity.likeCount,
-              isCommented: commentEntity.isCommented,
-              commentCount: commentEntity.commentCount);
-        }
-        yield LikeSuccessState();
+        if (commentEntity != null)
+          yield CommentLikeSuccessState(comment: commentEntity);
+        else
+          yield CommentErrorState(message: 'Unable to like.');
       } catch (e) {
         log('Comment like error: ', error: e);
-        yield ErrorState(message: 'Unable to like.');
+        yield CommentErrorState(message: 'Unable to like.');
       }
-    } else if (event is UnlikeEvent) {
+    } else if (event is CommentUnlikeEvent) {
       try {
         final CommentEntity commentEntity = await _unlikeCommentUseCase.call(
           UnlikeCommentUseCaseParams(
-            commentEntity: commentUIModel.comment,
+            commentEntity: event.comment,
           ),
         );
-        if (commentEntity != null) {
-          _commentUIModel.comment = _commentUIModel.comment.copyWith(
-              isLiked: commentEntity.isLiked,
-              likeCount: commentEntity.likeCount,
-              isCommented: commentEntity.isCommented,
-              commentCount: commentEntity.commentCount);
-        }
-        yield UnlikeSuccessState();
+        if (commentEntity != null)
+          yield CommentUnlikeSuccessState(comment: commentEntity);
+        else
+          yield CommentErrorState(message: 'Unable to unlike.');
       } catch (e) {
         log('Comment unlikelike error: ', error: e);
-        yield ErrorState(message: 'Unable to unlike.');
+        yield CommentErrorState(message: 'Unable to unlike.');
       }
     }
   }

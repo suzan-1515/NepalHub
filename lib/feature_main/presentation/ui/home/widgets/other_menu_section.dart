@@ -2,18 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get_it/get_it.dart';
 import 'package:samachar_hub/core/services/services.dart';
-import 'package:samachar_hub/feature_forex/domain/entities/forex_entity.dart';
-import 'package:samachar_hub/feature_gold/domain/entities/gold_silver_entity.dart';
-import 'package:samachar_hub/feature_gold/presentation/extensions/gold_silver_extensions.dart';
 import 'package:samachar_hub/core/extensions/number_extensions.dart';
+import 'package:samachar_hub/feature_forex/presentation/models/forex_model.dart';
+import 'package:samachar_hub/feature_gold/presentation/models/gold_silver_model.dart';
+import 'package:samachar_hub/feature_gold/presentation/extensions/gold_silver_extensions.dart';
 
 class OtherMenuSection extends StatefulWidget {
-  final ForexEntity forex;
-  final GoldSilverEntity goldSilver;
+  final ForexUIModel forex;
+  final GoldSilverUIModel goldSilver;
   const OtherMenuSection({
     Key key,
-    this.forex,
-    this.goldSilver,
+    @required this.forex,
+    @required this.goldSilver,
   }) : super(key: key);
 
   @override
@@ -56,14 +56,14 @@ class _OtherMenuSectionState extends State<OtherMenuSection>
                         children: <TextSpan>[
                           TextSpan(
                               text:
-                                  '\n${widget.forex.unit} ${widget.forex.currency.code}=NRs. ${widget.forex.buying}',
+                                  '\n${widget.forex.entity.unit} ${widget.forex.entity.currency.code}=NRs. ${widget.forex.entity.buying}',
                               style: Theme.of(context)
                                   .textTheme
                                   .subtitle2
                                   .copyWith(color: Colors.white)),
                           TextSpan(text: '\n'),
                           TextSpan(
-                              text: '${widget.forex.formatttedDate}',
+                              text: '${widget.forex.entity.formatttedDate}',
                               style: Theme.of(context)
                                   .textTheme
                                   .caption
@@ -109,13 +109,14 @@ class _OtherMenuSectionState extends State<OtherMenuSection>
                 Expanded(
                   child: RichText(
                     text: TextSpan(
-                        text: 'NRs. ${widget.goldSilver.price.formattedString}',
+                        text:
+                            'NRs. ${widget.goldSilver.entity.price.formattedString}',
                         style: Theme.of(context).textTheme.subtitle1.copyWith(
                             color: Colors.white, fontWeight: FontWeight.w600),
                         children: <TextSpan>[
                           TextSpan(
                               text:
-                                  '\n${widget.goldSilver.category.title} (${widget.goldSilver.unit == 'tola' ? 'Tola' : '10 gms'})',
+                                  '\n${widget.goldSilver.entity.category.title} (${widget.goldSilver.entity.unit == 'tola' ? 'Tola' : '10 gms'})',
                               style: Theme.of(context)
                                   .textTheme
                                   .subtitle2
@@ -123,7 +124,7 @@ class _OtherMenuSectionState extends State<OtherMenuSection>
                           TextSpan(text: '\n'),
                           TextSpan(
                               text:
-                                  '${widget.goldSilver.publishedAt.formattedString}',
+                                  '${widget.goldSilver.entity.publishedAt.formattedString}',
                               style: Theme.of(context)
                                   .textTheme
                                   .caption

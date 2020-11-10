@@ -24,7 +24,7 @@ class HoroscopeComment extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final user = context.bloc<AuthBloc>().currentUser;
+    final user = context.watch<AuthBloc>().currentUser;
     final horoscopeUIModel =
         ScopedModel.of<HoroscopeUIModel>(context, rebuildOnChange: true);
     return CommentBar(
@@ -44,7 +44,7 @@ class HoroscopeComment extends StatelessWidget {
                     'Horoscope (${horoscopeUIModel.entity.type.value.toUpperCase()})\n${horoscopeUIModel.entity.horoscopeByIndex(signIndex, Language.NEPALI)})\nPublished At: ${horoscopeUIModel.entity.publishedAt.formattedString}')
             .then((value) {
           context
-              .bloc<ShareBloc>()
+              .read<ShareBloc>()
               .add(Share(horoscope: horoscopeUIModel.entity));
           return value;
         });
@@ -58,13 +58,13 @@ class HoroscopeComment extends StatelessWidget {
           horoscopeUIModel.entity = horoscopeUIModel.entity.copyWith(
               isLiked: false, likeCount: horoscopeUIModel.entity.likeCount - 1);
           context
-              .bloc<LikeUnlikeBloc>()
+              .read<LikeUnlikeBloc>()
               .add(UnlikeEvent(horoscope: horoscopeUIModel.entity));
         } else {
           horoscopeUIModel.entity = horoscopeUIModel.entity.copyWith(
               isLiked: true, likeCount: horoscopeUIModel.entity.likeCount + 1);
           context
-              .bloc<LikeUnlikeBloc>()
+              .read<LikeUnlikeBloc>()
               .add(LikeEvent(horoscope: horoscopeUIModel.entity));
         }
       },

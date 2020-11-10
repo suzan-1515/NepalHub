@@ -49,7 +49,7 @@ class App extends StatelessWidget {
                 state is SettingsDarkModeChangedState ||
                 state is SettingsPitchBlackModeChangedState ||
                 state is SettingsSystemThemeChangedState) {
-              var settings = context.bloc<SettingsCubit>().settings;
+              var settings = context.watch<SettingsCubit>().settings;
               return MaterialApp(
                 theme: _getTheme(settings.useDarkMode, settings.usePitchBlack),
                 home: SplashScreen(),

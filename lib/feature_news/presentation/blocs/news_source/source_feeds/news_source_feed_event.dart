@@ -32,12 +32,3 @@ class RefreshSourceNewsEvent extends NewsSourceFeedEvent {
   @override
   List<Object> get props => [language];
 }
-
-class FeedChangeEvent extends NewsSourceFeedEvent {
-  final Object data;
-  final String eventType;
-  const FeedChangeEvent({@required this.data, @required this.eventType});
-
-  @override
-  List<Object> get props => [data, eventType];
-}

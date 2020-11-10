@@ -1,74 +1,177 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
+import 'package:line_awesome_icons/line_awesome_icons.dart';
+import 'package:samachar_hub/core/services/navigation_service.dart';
+import 'package:samachar_hub/feature_auth/presentation/blocs/auth_bloc.dart';
+import 'package:samachar_hub/feature_comment/domain/entities/thread_type.dart';
+import 'package:samachar_hub/feature_comment/presentation/blocs/delete/delete_cubit.dart';
 import 'package:samachar_hub/feature_comment/presentation/blocs/like_unlike/like_unlike_bloc.dart';
 import 'package:samachar_hub/feature_comment/presentation/models/comment_model.dart';
+import 'package:samachar_hub/core/extensions/date_time.dart';
+import 'package:samachar_hub/core/extensions/number_extensions.dart';
+import 'package:samachar_hub/core/extensions/view.dart';
+import 'package:samachar_hub/feature_comment/presentation/ui/widgets/comment_delete_comfirmation_dialog.dart';
+import 'package:samachar_hub/feature_report/domain/entities/report_thread_type.dart';
+import 'package:samachar_hub/feature_report/presentation/ui/report.dart';
+import 'package:scoped_model/scoped_model.dart';
 
 class CommentListItem extends StatelessWidget {
   const CommentListItem({
     Key key,
-    @required this.commentUIModel,
   }) : super(key: key);
-
-  final CommentUIModel commentUIModel;
 
   @override
   Widget build(BuildContext context) {
-    final hasAvatar = (commentUIModel.comment.user.avatar != null &&
-        commentUIModel.comment.user.avatar.isNotEmpty);
+    final comment =
+        ScopedModel.of<CommentUIModel>(context, rebuildOnChange: true);
+    final user = context.watch<AuthBloc>().currentUser;
+    final hasAvatar = (comment.entity.user.avatar != null &&
+        comment.entity.user.avatar.isNotEmpty);
     return Material(
       child: ListTile(
         leading: CircleAvatar(
           backgroundColor: Theme.of(context).backgroundColor,
           backgroundImage: hasAvatar
-              ? NetworkImage(commentUIModel.comment.user.avatar)
+              ? NetworkImage(comment.entity.user.avatar)
               : Image.asset('/assets/images/user.png'),
         ),
         title: RichText(
           text: TextSpan(
-              text: '${commentUIModel.comment.user.fullname}',
+              text: '${comment.entity.user.fullname}',
               style: Theme.of(context).textTheme.bodyText1,
               children: <TextSpan>[
                 TextSpan(
-                    text: '\n${commentUIModel.publishedDateMomentAgo}',
+                    text: '\n${comment.entity.updatedAt.momentAgo}',
                     style: Theme.of(context).textTheme.caption)
               ]),
         ),
         subtitle: Padding(
           padding: const EdgeInsets.symmetric(vertical: 8.0),
-          child: Text(
-            commentUIModel.comment.comment,
-            style: Theme.of(context).textTheme.bodyText2,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Container(
+                padding: const EdgeInsets.all(8.0),
+                decoration: BoxDecoration(
+                  color: Theme.of(context).backgroundColor,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Text(
+                  comment.entity.comment,
+                  style: Theme.of(context).textTheme.bodyText2,
+                ),
+              ),
+              SizedBox(height: 4),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  InkWell(
+                    child: Icon(
+                      comment.entity.isLiked
+                          ? Icons.thumb_up
+                          : LineAwesomeIcons.thumbs_up,
+                      size: 16,
+                      color: Theme.of(context).iconTheme.color.withOpacity(0.4),
+                    ),
+                    onTap: () {
+                      if (comment.entity.isLiked) {
+                        comment.unlike();
+                        context
+                            .read<CommentLikeUnlikeBloc>()
+                            .add(CommentUnlikeEvent(comment: comment.entity));
+                      } else {
+                        comment.like();
+                        context
+                            .read<CommentLikeUnlikeBloc>()
+                            .add(CommentLikeEvent(comment: comment.entity));
+                      }
+                    },
+                  ),
+                  SizedBox(width: 4),
+                  if (comment.entity.likeCount != 0)
+                    Text(
+                      '${comment.entity.likeCount.compactFormat}',
+                      style: Theme.of(context).textTheme.overline,
+                    ),
+                  SizedBox(width: 16),
+                  InkWell(
+                    child: Text(
+                      'Reply',
+                      style: Theme.of(context).textTheme.caption,
+                    ),
+                    onTap: () {
+                      GetIt.I.get<NavigationService>().toCommentsScreen(
+                          context: context,
+                          threadTitle: comment.entity.comment,
+                          threadType: CommentThreadType.COMMENT,
+                          threadId: comment.entity.id);
+                    },
+                  ),
+                ],
+              ),
+            ],
           ),
         ),
-        trailing: BlocBuilder<LikeUnlikeBloc, LikeUnlikeState>(
-          builder: (context, state) {
-            return Row(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                IconButton(
-                  icon: Icon(
-                    commentUIModel.comment.isLiked
-                        ? FontAwesomeIcons.solidThumbsUp
-                        : FontAwesomeIcons.thumbsUp,
+        trailing: PopupMenuButton<String>(
+          itemBuilder: (context) {
+            final textStyle = Theme.of(context).textTheme.bodyText2;
+            return <PopupMenuEntry<String>>[
+              if (comment.entity.user.id == user.id)
+                PopupMenuItem<String>(
+                  value: 'edit',
+                  child: Text(
+                    'Edit',
+                    style: textStyle,
                   ),
-                  onPressed: () {
-                    if (commentUIModel.comment.isLiked) {
-                      commentUIModel.unlike();
-                      context.bloc<LikeUnlikeBloc>().add(UnlikeEvent());
-                    } else {
-                      commentUIModel.like();
-                      context.bloc<LikeUnlikeBloc>().add(LikeEvent());
-                    }
-                  },
                 ),
-                Text(
-                  '${commentUIModel.formattedLikeCount}',
-                  style: Theme.of(context).textTheme.overline,
+              if (comment.entity.user.id == user.id)
+                PopupMenuItem<String>(
+                  value: 'delete',
+                  child: Text(
+                    'Delete',
+                    style: textStyle,
+                  ),
                 ),
-              ],
-            );
+              PopupMenuItem<String>(
+                value: 'report',
+                child: Text(
+                  'Report',
+                  style: textStyle,
+                ),
+              ),
+            ];
+          },
+          child: Icon(
+            Icons.more_vert,
+            size: 18,
+          ),
+          onSelected: (value) {
+            switch (value) {
+              case 'edit':
+                context.showMessage('Comment edit selected.');
+                break;
+              case 'delete':
+                context.dialog(
+                  child: CommentDeleteConfirmationDialog(
+                    onYesTap: () => context
+                        .read<CommentDeleteCubit>()
+                        .delete(comment.entity),
+                    onNoTap: () {},
+                  ),
+                );
+                break;
+              case 'report':
+                context.showBottomSheet(
+                    child: Report(
+                  threadId: comment.entity.id,
+                  threadType: ReportThreadType.COMMENT,
+                ));
+                break;
+            }
           },
         ),
       ),

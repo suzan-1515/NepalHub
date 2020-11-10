@@ -23,21 +23,3 @@ class SourceUnFollowEvent extends SourceFollowUnFollowEvent {
   @override
   List<Object> get props => [source];
 }
-
-class UpdateSourceFollowEvent extends SourceFollowUnFollowEvent {
-  final NewsSourceEntity source;
-
-  UpdateSourceFollowEvent({@required this.source});
-
-  @override
-  List<Object> get props => [source];
-}
-
-class UpdateSourceUnfollowEvent extends SourceFollowUnFollowEvent {
-  final NewsSourceEntity source;
-
-  UpdateSourceUnfollowEvent({@required this.source});
-
-  @override
-  List<Object> get props => [source];
-}

@@ -23,19 +23,3 @@ class CategoryUnFollowEvent extends CategoryFollowUnfollowEvent {
   @override
   List<Object> get props => [category];
 }
-
-class UpdateFollowEvent extends CategoryFollowUnfollowEvent {
-  final NewsCategoryEntity category;
-
-  UpdateFollowEvent({@required this.category});
-  @override
-  List<Object> get props => [category];
-}
-
-class UpdateUnfollowEvent extends CategoryFollowUnfollowEvent {
-  final NewsCategoryEntity category;
-
-  UpdateUnfollowEvent({@required this.category});
-  @override
-  List<Object> get props => [category];
-}

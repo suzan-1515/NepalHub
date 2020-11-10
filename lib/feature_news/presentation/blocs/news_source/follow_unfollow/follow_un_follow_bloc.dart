@@ -2,8 +2,6 @@ import 'dart:async';
 import 'dart:developer';
 
 import 'package:bloc/bloc.dart';
-import 'package:event_bus/event_bus.dart';
-import 'package:get_it/get_it.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
@@ -11,7 +9,6 @@ import 'package:samachar_hub/core/usecases/usecase.dart';
 import 'package:samachar_hub/feature_news/domain/entities/news_source_entity.dart';
 import 'package:samachar_hub/feature_news/domain/usecases/follow_news_source_use_case.dart';
 import 'package:samachar_hub/feature_news/domain/usecases/unfollow_news_source_use_case.dart';
-import 'package:samachar_hub/feature_news/presentation/events/feed_event.dart';
 
 part 'follow_un_follow_event.dart';
 part 'follow_un_follow_state.dart';
@@ -21,32 +18,12 @@ class SourceFollowUnFollowBloc
   final UseCase _followNewsSourceUseCase;
   final UseCase _unFollowNewsSourceUseCase;
 
-  StreamSubscription _feedEventStreamSubscription;
-
   SourceFollowUnFollowBloc({
     @required UseCase followNewsSourceUseCase,
     @required UseCase unFollowNewsSourceUseCase,
   })  : _followNewsSourceUseCase = followNewsSourceUseCase,
         _unFollowNewsSourceUseCase = unFollowNewsSourceUseCase,
-        super(SourceFollowInitialState()) {
-    this._feedEventStreamSubscription =
-        GetIt.I.get<EventBus>().on<NewsChangeEvent>().listen((event) {
-      switch (event.eventType) {
-        case 'source_follow':
-          add(UpdateSourceFollowEvent(source: event.data));
-          break;
-        case 'source_unfollow':
-          add(UpdateSourceUnfollowEvent(source: event.data));
-          break;
-      }
-    });
-  }
-
-  @override
-  Future<void> close() {
-    _feedEventStreamSubscription?.cancel();
-    return super.close();
-  }
+        super(SourceFollowInitialState());
 
   @override
   Stream<Transition<SourceFollowUnFollowEvent, SourceFollowUnFollowState>>
@@ -62,10 +39,6 @@ class SourceFollowUnFollowBloc
       yield* _mapFollowEventToState(event);
     } else if (event is SourceUnFollowEvent) {
       yield* _mapUnFollowEventToState(event);
-    } else if (event is UpdateSourceFollowEvent) {
-      yield* _mapUpdateFollowEventToState(event);
-    } else if (event is UpdateSourceUnfollowEvent) {
-      yield* _mapUpdateUnFollowEventToState(event);
     }
   }
 
@@ -102,32 +75,6 @@ class SourceFollowUnFollowBloc
     } catch (e) {
       log('News sources unfollow error.', error: e);
       yield SourceFollowErrorState(message: 'Unable to unfollow.');
-    }
-  }
-
-  Stream<SourceFollowUnFollowState> _mapUpdateFollowEventToState(
-    UpdateSourceFollowEvent event,
-  ) async* {
-    try {
-      if (event.source.isFollowed) return;
-      final source = event.source.copyWith(
-          isFollowed: true, followerCount: event.source.followerCount + 1);
-      yield SourceFollowSuccessState(source: source);
-    } catch (e) {
-      log('Update source follow error: ', error: e);
-    }
-  }
-
-  Stream<SourceFollowUnFollowState> _mapUpdateUnFollowEventToState(
-    UpdateSourceUnfollowEvent event,
-  ) async* {
-    try {
-      if (!event.source.isFollowed) return;
-      final source = event.source.copyWith(
-          isFollowed: false, followerCount: event.source.followerCount - 1);
-      yield SourceUnFollowSuccessState(source: source);
-    } catch (e) {
-      log('Update source unfollow error: ', error: e);
     }
   }
 }

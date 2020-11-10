@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:samachar_hub/feature_news/domain/entities/news_feed_entity.dart';
+import 'package:samachar_hub/feature_news/presentation/models/news_feed.dart';
 import 'package:samachar_hub/feature_report/domain/entities/report_thread_type.dart';
 import 'package:samachar_hub/feature_report/presentation/ui/report.dart';
 import 'package:samachar_hub/core/extensions/view.dart';
+import 'package:scoped_model/scoped_model.dart';
 
 class Disclaimer extends StatelessWidget {
-  final NewsFeedEntity feed;
-
-  const Disclaimer({Key key, this.feed}) : super(key: key);
+  const Disclaimer({Key key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
+    final feed = ScopedModel.of<NewsFeedUIModel>(context);
     final fontStyle =
         Theme.of(context).textTheme.caption.copyWith(fontSize: 11, height: 2);
     return Container(
@@ -28,7 +28,7 @@ class Disclaimer extends StatelessWidget {
                 visualDensity: VisualDensity.compact,
                 onPressed: () => context.showBottomSheet(
                   child: Report(
-                    threadId: feed.id,
+                    threadId: feed.entity.id,
                     threadType: ReportThreadType.NEWS_FEED,
                   ),
                 ),
@@ -58,7 +58,7 @@ class Disclaimer extends StatelessWidget {
                 children: [
                   TextSpan(
                       text:
-                          'This story is auto-aggregated by a computer program and has not been created or edited by Nepal Hub.\nPublisher: ${feed.source.title}',
+                          'This story is auto-aggregated by a computer program and has not been created or edited by Nepal Hub.\nPublisher: ${feed.entity.source.title}',
                       style: fontStyle.copyWith(fontStyle: FontStyle.normal)),
                 ],
               ),

@@ -68,6 +68,19 @@ class NewsTopicEntity extends Equatable {
         categories
       ];
 
+  Map<String, dynamic> toMap() => {
+        "id": id,
+        "title": title,
+        "language": language.value,
+        "created_at": createdAt.toIso8601String(),
+        "updated_at": updatedAt.toIso8601String(),
+        "icon": icon,
+        "categories": categories?.map((e) => e.toMap())?.toList(),
+        "is_followed": isFollowed,
+        "follower_count": followerCount,
+        "is_blocked": isBlocked,
+      };
+
   @override
   bool get stringify => true;
 }

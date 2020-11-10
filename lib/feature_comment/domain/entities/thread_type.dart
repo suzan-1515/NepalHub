@@ -6,7 +6,8 @@ enum CommentThreadType {
   GOLD,
   VIDEO,
   TWEET,
-  INSTAGRAM_POST
+  INSTAGRAM_POST,
+  COMMENT
 }
 
 extension CommentThreadTypeX on CommentThreadType {
@@ -32,6 +33,8 @@ extension CommentThreadTypeParsingX on String {
         return CommentThreadType.TWEET;
       case 'instagram_post':
         return CommentThreadType.INSTAGRAM_POST;
+      case 'comment':
+        return CommentThreadType.COMMENT;
       default:
         return null;
     }

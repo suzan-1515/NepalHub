@@ -2,6 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:samachar_hub/feature_main/presentation/ui/settings/widgets/settings_list.dart';
 
 class SettingsScreen extends StatelessWidget {
+  static Future navigate(BuildContext context) {
+    return Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => SettingsScreen(),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

@@ -4,32 +4,32 @@ abstract class BookmarkNewsState extends Equatable {
   const BookmarkNewsState();
 }
 
-class InitialState extends BookmarkNewsState {
+class BookmarkNewsInitialState extends BookmarkNewsState {
   @override
   List<Object> get props => [];
 }
 
-class LoadingState extends BookmarkNewsState {
+class BookmarkNewsLoadingState extends BookmarkNewsState {
   @override
   List<Object> get props => [];
 }
 
-class LoadingMoreState extends BookmarkNewsState {
+class BookmarkNewsLoadingMoreState extends BookmarkNewsState {
   @override
   List<Object> get props => [];
 }
 
-class LoadSuccessState extends BookmarkNewsState {
-  final List<NewsFeedEntity> feeds;
+class BookmarkNewsLoadSuccessState extends BookmarkNewsState {
+  final List<NewsFeedUIModel> feeds;
   final bool hasMore;
 
-  const LoadSuccessState(this.feeds, {this.hasMore = true});
+  const BookmarkNewsLoadSuccessState(this.feeds, {this.hasMore = true});
 
-  LoadSuccessState copyWith({
-    List<NewsFeedEntity> feeds,
+  BookmarkNewsLoadSuccessState copyWith({
+    List<NewsFeedUIModel> feeds,
     bool hasMore,
   }) =>
-      LoadSuccessState(
+      BookmarkNewsLoadSuccessState(
         feeds ?? this.feeds,
         hasMore: hasMore ?? this.hasMore,
       );
@@ -38,28 +38,28 @@ class LoadSuccessState extends BookmarkNewsState {
   List<Object> get props => [feeds, hasMore];
 }
 
-class EmptyState extends BookmarkNewsState {
+class BookmarkNewsEmptyState extends BookmarkNewsState {
   final String message;
 
-  const EmptyState({this.message});
+  const BookmarkNewsEmptyState({this.message});
 
   @override
   List<Object> get props => [message];
 }
 
-class LoadErrorState extends BookmarkNewsState {
+class BookmarkNewsLoadErrorState extends BookmarkNewsState {
   final String message;
 
-  const LoadErrorState({this.message});
+  const BookmarkNewsLoadErrorState({this.message});
 
   @override
   List<Object> get props => [message];
 }
 
-class ErrorState extends BookmarkNewsState {
+class BookmarkNewsErrorState extends BookmarkNewsState {
   final String message;
 
-  const ErrorState({this.message});
+  const BookmarkNewsErrorState({this.message});
 
   @override
   List<Object> get props => [message];

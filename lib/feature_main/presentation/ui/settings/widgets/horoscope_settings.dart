@@ -20,7 +20,7 @@ class HoroscopeSettings extends StatelessWidget {
     return DropdownButton<int>(
       value: selectedIndex,
       onChanged: (value) {
-        context.bloc<SettingsCubit>().setdefaultHoroscopeSign(value);
+        context.watch<SettingsCubit>().setdefaultHoroscopeSign(value);
       },
       items: HOROSCOPE_SIGNS[Language.NEPALI]
           .map(
@@ -40,7 +40,7 @@ class HoroscopeSettings extends StatelessWidget {
     return Switch(
       value: initialValue,
       onChanged: (value) {
-        context.bloc<SettingsCubit>().setShowDailyMorningHoroscope(value);
+        context.watch<SettingsCubit>().setShowDailyMorningHoroscope(value);
         if (value) {
           GetIt.I.get<NotificationService>().scheduleNotificationDaily(
               NotificationChannels.kMorningHoroscopeId,
@@ -69,7 +69,7 @@ class HoroscopeSettings extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final settingsCubit = context.bloc<SettingsCubit>();
+    final settingsCubit = context.watch<SettingsCubit>();
     return Padding(
       padding: const EdgeInsets.only(left: 16.0, top: 16.0),
       child: Column(

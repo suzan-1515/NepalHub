@@ -23,7 +23,7 @@ class _FollowedNewsTopicListState extends State<FollowedNewsTopicList> {
   @override
   void initState() {
     super.initState();
-    context.bloc<NewsTopicBloc>().add(GetFollowedTopicsEvent());
+    context.read<NewsTopicBloc>().add(GetFollowedTopicsEvent());
   }
 
   @override
@@ -48,11 +48,11 @@ class _FollowedNewsTopicListState extends State<FollowedNewsTopicList> {
                 itemBuilder: (_, index) {
                   var topic = state.topics[index];
                   return NewsMenuItem(
-                    title: topic.title,
-                    icon: topic.icon,
+                    title: topic.entity.title,
+                    icon: topic.entity.icon,
                     onTap: () {
                       GetIt.I.get<NavigationService>().toNewsTopicFeedScreen(
-                          context: context, topic: topic);
+                          context: context, topicUIModel: topic);
                     },
                   );
                 },
@@ -64,7 +64,7 @@ class _FollowedNewsTopicListState extends State<FollowedNewsTopicList> {
             child: ErrorDataView(
               message: state.message,
               onRetry: () {
-                context.bloc<NewsTopicBloc>().add(GetFollowedTopicsEvent());
+                context.read<NewsTopicBloc>().add(GetFollowedTopicsEvent());
               },
             ),
           );
@@ -75,7 +75,7 @@ class _FollowedNewsTopicListState extends State<FollowedNewsTopicList> {
             ),
           );
         }
-        return Center(child: ProgressView());
+        return const Center(child: const ProgressView());
       },
     );
   }

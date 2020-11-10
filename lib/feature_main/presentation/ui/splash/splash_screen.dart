@@ -15,7 +15,7 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    context.bloc<AuthBloc>().add(AutoLoginEvent());
+    context.read<AuthBloc>().add(AutoLoginEvent());
   }
 
   @override

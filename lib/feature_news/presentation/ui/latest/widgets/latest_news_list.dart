@@ -31,7 +31,7 @@ class _LatestNewsListState extends State<LatestNewsList> {
   void initState() {
     super.initState();
     _refreshCompleter = Completer<void>();
-    _feedBloc = context.bloc<FeedBloc>();
+    _feedBloc = context.read<FeedBloc>();
     _feedBloc.add(GetNewsEvent(newsType: NewsType.LATEST));
   }
 
@@ -58,52 +58,12 @@ class _LatestNewsListState extends State<LatestNewsList> {
             !(current is ErrorState) && !(current is LoadingMoreState),
         builder: (context, state) {
           if (state is LoadSuccessState) {
-            return NewsProvider.feedItemBlocProvider(
-              child: MultiBlocListener(
-                listeners: [
-                  BlocListener<LikeUnlikeBloc, LikeUnlikeState>(
-                    listener: (context, state) {
-                      if (state is NewsLikeSuccessState) {
-                        _feedBloc.add(FeedChangeEvent(
-                            data: state.feed, eventType: 'feed'));
-                      } else if (state is NewsUnLikeSuccessState) {
-                        _feedBloc.add(FeedChangeEvent(
-                            data: state.feed, eventType: 'feed'));
-                      }
-                    },
-                  ),
-                  BlocListener<BookmarkUnBookmarkBloc, BookmarkUnBookmarkState>(
-                    listener: (context, state) {
-                      if (state is BookmarkSuccess) {
-                        _feedBloc.add(FeedChangeEvent(
-                            data: state.feed, eventType: 'feed'));
-                      } else if (state is UnbookmarkSuccess) {
-                        _feedBloc.add(FeedChangeEvent(
-                            data: state.feed, eventType: 'feed'));
-                      }
-                    },
-                  ),
-                  BlocListener<SourceFollowUnFollowBloc,
-                      SourceFollowUnFollowState>(
-                    listener: (context, state) {
-                      if (state is SourceFollowSuccessState) {
-                        _feedBloc.add(FeedChangeEvent(
-                            data: state.source, eventType: 'source'));
-                      } else if (state is SourceUnFollowSuccessState) {
-                        _feedBloc.add(FeedChangeEvent(
-                            data: state.source, eventType: 'source'));
-                      }
-                    },
-                  ),
-                ],
-                child: NewsListBuilder(
-                  data: state.feeds,
-                  onRefresh: _onRefresh,
-                  hasMore: state.hasMore,
-                  onLoadMore: () => _feedBloc
-                      .add(LoadMoreNewsEvent(newsType: NewsType.LATEST)),
-                ),
-              ),
+            return NewsListBuilder(
+              data: state.feeds,
+              onRefresh: _onRefresh,
+              hasMore: state.hasMore,
+              onLoadMore: () =>
+                  _feedBloc.add(LoadMoreNewsEvent(newsType: NewsType.LATEST)),
             );
           } else if (state is EmptyState) {
             return Center(
@@ -119,7 +79,8 @@ class _LatestNewsListState extends State<LatestNewsList> {
               ),
             );
           }
-          return Center(child: ProgressView());
+
+          return const Center(child: const ProgressView());
         });
   }
 }

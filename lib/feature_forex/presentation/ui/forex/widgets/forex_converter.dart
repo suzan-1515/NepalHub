@@ -23,14 +23,12 @@ class _ForexConverterState extends State<ForexConverter> {
   final TextEditingController _fromController = TextEditingController();
   final TextEditingController _toController = TextEditingController();
   ForexUIModel _selectedFromForex;
-  ForexUIModel _selectedToForex;
   bool _shouldFromTextChnage = true;
   bool _shouldToTextChnage = true;
 
   @override
   void initState() {
     _selectedFromForex = widget.defaultForex;
-    _selectedToForex = widget.items.first;
 
     _fromController.addListener(() {
       _convertToNepali();

@@ -32,7 +32,7 @@ class FollowedNewsTopicSection extends StatelessWidget {
                   context: context,
                   title: 'News Topics',
                   onRefreshTap: () {
-                    context.bloc<NewsTopicBloc>().add(GetFollowedTopicsEvent());
+                    context.read<NewsTopicBloc>().add(GetFollowedTopicsEvent());
                   },
                 ),
                 SizedBox(

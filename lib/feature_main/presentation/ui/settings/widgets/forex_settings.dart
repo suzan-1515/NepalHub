@@ -26,7 +26,7 @@ class _ForexSettingsState extends State<ForexSettings>
     return DropdownButton<String>(
       value: selectedValue,
       onChanged: (value) {
-        widget.context.bloc<SettingsCubit>().setdefaultForexCurrency(value);
+        widget.context.watch<SettingsCubit>().setdefaultForexCurrency(value);
       },
       items: currencies
           .map(
@@ -45,7 +45,7 @@ class _ForexSettingsState extends State<ForexSettings>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    final settingsCubit = context.bloc<SettingsCubit>();
+    final settingsCubit = context.watch<SettingsCubit>();
     return ForexProvider.forexCurrencyBlocProvider(
       child: Padding(
         padding: const EdgeInsets.only(left: 16.0, top: 16.0),
@@ -68,7 +68,7 @@ class _ForexSettingsState extends State<ForexSettings>
                 if (state is ForexCurrencyLoadSuccessState) {
                   if (settingsCubit.settings.defaultForexCurrency == null) {
                     context
-                        .bloc<SettingsCubit>()
+                        .read<SettingsCubit>()
                         .setdefaultForexCurrency(state.currencies.first.code);
                   }
                   return BlocBuilder<SettingsCubit, SettingsState>(
@@ -100,6 +100,5 @@ class _ForexSettingsState extends State<ForexSettings>
   }
 
   @override
-  // TODO: implement wantKeepAlive
   bool get wantKeepAlive => true;
 }

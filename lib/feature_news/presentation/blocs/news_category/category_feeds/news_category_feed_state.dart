@@ -5,7 +5,7 @@ abstract class NewsCategoryFeedState extends Equatable {
 }
 
 class NewsCategoryFeedInitialState extends NewsCategoryFeedState {
-  final NewsCategoryEntity category;
+  final NewsCategoryUIModel category;
   const NewsCategoryFeedInitialState({@required this.category});
 
   @override
@@ -23,13 +23,13 @@ class NewsCategoryFeedMoreLoadingState extends NewsCategoryFeedState {
 }
 
 class NewsCategoryFeedLoadSuccessState extends NewsCategoryFeedState {
-  final List<NewsFeedEntity> feeds;
+  final List<NewsFeedUIModel> feeds;
   final bool hasMore;
 
   NewsCategoryFeedLoadSuccessState({this.feeds, this.hasMore});
 
   NewsCategoryFeedLoadSuccessState copyWith({
-    List<NewsFeedEntity> feeds,
+    List<NewsFeedUIModel> feeds,
     bool hasMore,
   }) =>
       NewsCategoryFeedLoadSuccessState(

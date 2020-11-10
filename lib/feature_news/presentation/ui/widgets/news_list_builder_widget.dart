@@ -1,10 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:samachar_hub/core/view/content_view_style.dart';
-import 'package:samachar_hub/feature_news/domain/entities/news_feed_entity.dart';
+import 'package:samachar_hub/feature_news/presentation/blocs/bookmarks/bookmark_unbookmark/bookmark_un_bookmark_bloc.dart';
+import 'package:samachar_hub/feature_news/presentation/blocs/like_unlike/like_unlike_bloc.dart';
+import 'package:samachar_hub/feature_news/presentation/blocs/news_source/follow_unfollow/follow_un_follow_bloc.dart';
+import 'package:samachar_hub/feature_news/presentation/models/news_feed.dart';
 import 'package:samachar_hub/feature_news/presentation/ui/widgets/news_compact_view.dart';
 import 'package:samachar_hub/feature_news/presentation/ui/widgets/news_list_view.dart';
 import 'package:samachar_hub/feature_news/presentation/ui/widgets/news_thumbnail_view.dart';
 import 'package:samachar_hub/core/widgets/progress_widget.dart';
+import 'package:samachar_hub/feature_news/utils/provider.dart';
+import 'package:scoped_model/scoped_model.dart';
 
 class NewsListBuilder extends StatelessWidget {
   const NewsListBuilder({
@@ -20,7 +26,7 @@ class NewsListBuilder extends StatelessWidget {
 
   final Future<void> Function() onRefresh;
   final Function() onLoadMore;
-  final List<NewsFeedEntity> data;
+  final List<NewsFeedUIModel> data;
   final bool hasMore;
   final ContentViewStyle contentViewStyle;
 
@@ -44,22 +50,63 @@ class NewsListBuilder extends StatelessWidget {
           var view;
           switch (contentViewStyle) {
             case ContentViewStyle.LIST_VIEW:
-              view = NewsListView(
-                feed: feed,
-              );
+              view = const NewsListView();
               break;
             case ContentViewStyle.THUMBNAIL_VIEW:
-              view = NewsThumbnailView(
-                feed: feed,
-              );
+              view = const NewsThumbnailView();
               break;
             case ContentViewStyle.COMPACT_VIEW:
-              view = NewsCompactView(
-                feed: feed,
-              );
+              view = const NewsCompactView();
               break;
           }
-          return view;
+          return NewsProvider.feedItemBlocProvider(
+            child: ScopedModel<NewsFeedUIModel>(
+              model: feed,
+              child: MultiBlocListener(
+                listeners: [
+                  BlocListener<LikeUnlikeBloc, LikeUnlikeState>(
+                    listener: (context, state) {
+                      if (state is NewsLikeSuccessState) {
+                        ScopedModel.of<NewsFeedUIModel>(context).entity =
+                            state.feed;
+                      } else if (state is NewsUnLikeSuccessState) {
+                        ScopedModel.of<NewsFeedUIModel>(context).entity =
+                            state.feed;
+                      }
+                    },
+                  ),
+                  BlocListener<BookmarkUnBookmarkBloc, BookmarkUnBookmarkState>(
+                    listener: (context, state) {
+                      if (state is BookmarkSuccess) {
+                        ScopedModel.of<NewsFeedUIModel>(context).entity =
+                            state.feed;
+                      } else if (state is UnbookmarkSuccess) {
+                        ScopedModel.of<NewsFeedUIModel>(context).entity =
+                            state.feed;
+                      }
+                    },
+                  ),
+                  BlocListener<SourceFollowUnFollowBloc,
+                      SourceFollowUnFollowState>(
+                    listener: (context, state) {
+                      if (state is SourceFollowSuccessState) {
+                        final entity =
+                            ScopedModel.of<NewsFeedUIModel>(context).entity;
+                        ScopedModel.of<NewsFeedUIModel>(context).entity =
+                            entity.copyWith(source: state.source);
+                      } else if (state is SourceUnFollowSuccessState) {
+                        final entity =
+                            ScopedModel.of<NewsFeedUIModel>(context).entity;
+                        ScopedModel.of<NewsFeedUIModel>(context).entity =
+                            entity.copyWith(source: state.source);
+                      }
+                    },
+                  ),
+                ],
+                child: view,
+              ),
+            ),
+          );
         },
       ),
     );

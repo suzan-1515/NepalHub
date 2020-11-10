@@ -20,7 +20,7 @@ class NewsSourceRefreshingState extends NewsSourceState {
 }
 
 class NewsSourceLoadSuccessState extends NewsSourceState {
-  final List<NewsSourceEntity> sources;
+  final List<NewsSourceUIModel> sources;
 
   NewsSourceLoadSuccessState(this.sources);
 

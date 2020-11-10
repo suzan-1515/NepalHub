@@ -12,6 +12,16 @@ import 'package:samachar_hub/feature_main/presentation/ui/more_menu/more_menu_sc
 import 'package:samachar_hub/feature_news/presentation/ui/following/following_screen.dart';
 
 class MainScreen extends StatefulWidget {
+  static Future navigate(BuildContext context) {
+    return Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(
+        builder: (context) => MainScreen(),
+      ),
+      (Route<dynamic> route) => false,
+    );
+  }
+
   @override
   _MainScreenState createState() => _MainScreenState();
 }
@@ -94,7 +104,7 @@ class _MainScreenState extends State<MainScreen> {
             type: BottomNavigationBarType.fixed,
             currentIndex: state.currentIndex,
             onTap: (index) {
-              context.bloc<MainCubit>().navItemSelected(index);
+              context.read<MainCubit>().navItemSelected(index);
             },
           ),
         ),

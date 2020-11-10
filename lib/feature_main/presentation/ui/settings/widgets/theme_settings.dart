@@ -15,7 +15,7 @@ class ThemeSettings extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final settingsCubit = context.bloc<SettingsCubit>();
+    final settingsCubit = context.watch<SettingsCubit>();
     return Padding(
       padding: const EdgeInsets.only(left: 16, top: 16),
       child: BlocBuilder<SettingsCubit, SettingsState>(
@@ -82,7 +82,7 @@ class SystemThemeSetting extends StatelessWidget {
             Checkbox(
               value: settingsEntity.themeSetBySystem ?? false,
               onChanged: (value) {
-                context.bloc<SettingsCubit>().setUseSystemThemeMode(value);
+                context.watch<SettingsCubit>().setUseSystemThemeMode(value);
               },
               activeColor: Theme.of(context).accentColor,
             )
@@ -132,7 +132,7 @@ class PitchBlackThemeSetting extends StatelessWidget {
             Checkbox(
               value: settingsEntity.usePitchBlack ?? false,
               onChanged: (value) {
-                context.bloc<SettingsCubit>().setPitchBlackMode(value);
+                context.watch<SettingsCubit>().setPitchBlackMode(value);
               },
               activeColor: Theme.of(context).accentColor,
             )
@@ -167,7 +167,7 @@ class DarkThemeSetting extends StatelessWidget {
             Switch(
               value: settingsEntity.useDarkMode ?? false,
               onChanged: (value) {
-                context.bloc<SettingsCubit>().setDarkMode(value);
+                context.watch<SettingsCubit>().setDarkMode(value);
               },
               activeColor: Theme.of(context).accentColor,
             )

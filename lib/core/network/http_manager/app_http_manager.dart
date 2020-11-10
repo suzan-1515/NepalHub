@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:samachar_hub/core/constants/api_url_constants.dart';
@@ -93,31 +92,6 @@ class AppHttpManager implements HttpManager {
         ));
 
     return _returnResponse(response);
-  }
-
-  Map<String, String> _headerBuilder(Map<String, String> headers) {
-    final headers = <String, String>{};
-    headers[HttpHeaders.acceptHeader] = 'application/json';
-    headers[HttpHeaders.contentTypeHeader] = 'application/json';
-    if (headers != null && headers.isNotEmpty) {
-      headers.forEach((key, value) {
-        headers[key] = value;
-      });
-    }
-    return headers;
-  }
-
-  String _queryBuilder(String path, Map<String, String> query) {
-    final buffer = StringBuffer()..write(path);
-    if (query != null) {
-      if (query.isNotEmpty) {
-        buffer.write('?');
-      }
-      query.forEach((key, value) {
-        buffer.write('$key=$value&');
-      });
-    }
-    return buffer.toString();
   }
 
   dynamic _returnResponse(Response response) {

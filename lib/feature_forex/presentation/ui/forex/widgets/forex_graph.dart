@@ -24,11 +24,11 @@ class ForexGraph extends StatelessWidget {
     return formatter.format(timeline[index].entity.publishedAt.toLocal());
   }
 
-  String _getYTitle(double value) {
-    int index = value.toInt();
-    var data = timeline[index];
-    return '${(data.entity.buying + data.entity.selling) / 2}';
-  }
+  // String _getYTitle(double value) {
+  //   int index = value.toInt();
+  //   var data = timeline[index];
+  //   return '${(data.entity.buying + data.entity.selling) / 2}';
+  // }
 
   @override
   Widget build(BuildContext context) {

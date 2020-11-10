@@ -2,14 +2,12 @@ import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_advanced_networkimage/provider.dart';
 import 'package:flutter_advanced_networkimage/transition.dart';
-import 'package:get_it/get_it.dart';
-import 'package:intl/intl.dart';
-import 'package:samachar_hub/core/services/services.dart';
-import 'package:samachar_hub/feature_main/domain/entities/home_entity.dart';
+import 'package:samachar_hub/feature_main/presentation/models/home/corona_model.dart';
+import 'package:samachar_hub/feature_main/presentation/extensions/home_extensions.dart';
 import 'package:samachar_hub/feature_main/presentation/ui/home/widgets/corona_case_item.dart';
 
 class CoronaSection extends StatefulWidget {
-  final CoronaEntity data;
+  final CoronaUIModel data;
   const CoronaSection({Key key, this.data}) : super(key: key);
 
   @override
@@ -28,31 +26,28 @@ class _CoronaSectionState extends State<CoronaSection>
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6.0)),
         margin: const EdgeInsets.all(4),
         elevation: 2,
-        child: InkWell(
-          onTap: () => GetIt.I.get<NavigationService>().toCoronaScreen(context),
-          child: Container(
-            padding: const EdgeInsets.all(8),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                _buildDateTimeRow(context),
-                SizedBox(
-                  height: 8,
-                ),
-                Text(
-                  'Coronavirus\nRealtime Updates',
-                  style: Theme.of(context).textTheme.subtitle1.copyWith(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w700,
-                      ),
-                ),
-                SizedBox(
-                  height: 8,
-                ),
-                _buildCasesInfoRow(context),
-              ],
-            ),
+        child: Container(
+          padding: const EdgeInsets.all(8),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              _buildDateTimeRow(context),
+              SizedBox(
+                height: 8,
+              ),
+              Text(
+                'Coronavirus\nRealtime Updates',
+                style: Theme.of(context).textTheme.subtitle1.copyWith(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w700,
+                    ),
+              ),
+              SizedBox(
+                height: 8,
+              ),
+              _buildCasesInfoRow(context),
+            ],
           ),
         ),
       ),
@@ -66,22 +61,22 @@ class _CoronaSectionState extends State<CoronaSection>
       children: <Widget>[
         CaseItem(
             context: context,
-            todayCases: int.parse(widget.data.coronaCase),
-            cases: int.parse(widget.data.totalCases),
+            todayCases: int.parse(widget.data.coronaEntity.coronaCase),
+            cases: int.parse(widget.data.coronaEntity.totalCases),
             higlightColor: Colors.white,
             textColor: Colors.black,
             label: 'Oficially Confirmed'),
         CaseItem(
             context: context,
-            todayCases: int.parse(widget.data.recovered),
-            cases: int.parse(widget.data.totalRecovered),
+            todayCases: int.parse(widget.data.coronaEntity.recovered),
+            cases: int.parse(widget.data.coronaEntity.totalRecovered),
             higlightColor: Colors.green[400],
             textColor: Colors.white,
             label: 'Recovered'),
         CaseItem(
             context: context,
-            todayCases: int.parse(widget.data.death),
-            cases: int.parse(widget.data.totalDeaths),
+            todayCases: int.parse(widget.data.coronaEntity.death),
+            cases: int.parse(widget.data.coronaEntity.totalDeaths),
             higlightColor: Colors.red[300],
             textColor: Colors.white,
             label: 'Deaths'),
@@ -96,7 +91,7 @@ class _CoronaSectionState extends State<CoronaSection>
       children: <Widget>[
         TransitionToImage(
           image: AdvancedNetworkImage(
-            widget.data.country.flag,
+            widget.data.coronaEntity.country.flag,
             width: 24,
             height: 24,
           ),
@@ -105,7 +100,7 @@ class _CoronaSectionState extends State<CoronaSection>
         ),
         RichText(
           text: TextSpan(
-            text: widget.data.country.title,
+            text: widget.data.coronaEntity.country.title,
             style: Theme.of(context).textTheme.bodyText1.copyWith(
                   color: Colors.white,
                   fontWeight: FontWeight.w600,
@@ -113,7 +108,7 @@ class _CoronaSectionState extends State<CoronaSection>
             children: [
               TextSpan(
                 text:
-                    '\t${DateFormat.yMd().add_jm().format(widget.data.lastUpdated)}',
+                    '\t${widget.data.coronaEntity.lastUpdated.formattedString}',
                 style: Theme.of(context)
                     .textTheme
                     .bodyText2

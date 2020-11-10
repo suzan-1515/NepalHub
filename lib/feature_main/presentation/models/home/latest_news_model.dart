@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
-import 'package:samachar_hub/feature_news/domain/entities/news_feed_entity.dart';
+import 'package:samachar_hub/feature_news/presentation/models/news_feed.dart';
 
 class LatestNewsUIModel {
-  List<NewsFeedEntity> feeds;
+  List<NewsFeedUIModel> feeds;
   LatestNewsUIModel({@required this.feeds});
 }

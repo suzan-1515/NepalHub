@@ -26,7 +26,7 @@ class _CommentListState extends State<CommentList> {
   void initState() {
     super.initState();
     _refreshCompleter = Completer<void>();
-    _commentBloc = context.bloc<CommentBloc>();
+    _commentBloc = context.read<CommentBloc>();
   }
 
   Future<void> _onRefresh() {
@@ -38,11 +38,13 @@ class _CommentListState extends State<CommentList> {
   Widget build(BuildContext context) {
     return BlocConsumer<CommentBloc, CommentState>(
         cubit: _commentBloc,
+        listenWhen: (previous, current) =>
+            !(current is CommentLoading) &&
+            !(current is CommentError) &&
+            !(current is CommentRefreshing),
         listener: (context, state) {
-          if (!(state is CommentLoading)) {
-            _refreshCompleter?.complete();
-            _refreshCompleter = Completer();
-          }
+          _refreshCompleter?.complete();
+          _refreshCompleter = Completer();
           if (state is CommentError) {
             context.showMessage(state.message);
           } else if (state is CommentLoadError) {
@@ -50,7 +52,9 @@ class _CommentListState extends State<CommentList> {
           }
         },
         buildWhen: (previous, current) =>
-            !(current is CommentError) && !(current is CommentMoreLoading),
+            !(current is CommentError) &&
+            !(current is CommentMoreLoading) &&
+            !(current is CommentRefreshing),
         builder: (context, state) {
           if (state is CommentLoadSuccess) {
             return CommentListBuilder(

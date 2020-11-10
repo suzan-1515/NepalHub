@@ -38,7 +38,7 @@ class HoroscopeList extends StatelessWidget {
           return Center(
             child: ErrorDataView(
               message: state.message,
-              onRetry: () => context.bloc<HoroscopeBloc>().add(
+              onRetry: () => context.read<HoroscopeBloc>().add(
                     GetHoroscopeEvent(),
                   ),
             ),

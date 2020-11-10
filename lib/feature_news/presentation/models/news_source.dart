@@ -1,24 +1,22 @@
-import 'package:flutter/cupertino.dart';
-import 'package:intl/intl.dart';
 import 'package:samachar_hub/feature_news/domain/entities/news_source_entity.dart';
+import 'package:scoped_model/scoped_model.dart';
 
-class NewsSourceUIModel {
-  NewsSourceEntity source;
+class NewsSourceUIModel extends Model {
+  NewsSourceEntity _sourceUIModel;
 
-  NewsSourceUIModel({@required this.source});
+  NewsSourceUIModel(this._sourceUIModel);
 
-  follow() {
-    if (source.isFollowed) return;
-    source = source.copyWith(
-        isFollowed: true, followerCount: source.followerCount + 1);
+  set entity(NewsSourceEntity categoryEntity) {
+    this._sourceUIModel = categoryEntity;
+    notifyListeners();
   }
 
-  unfollow() {
-    if (!source.isFollowed) return;
-    source = source.copyWith(
-        isFollowed: false, followerCount: source.followerCount - 1);
-  }
+  NewsSourceEntity get entity => this._sourceUIModel;
 
-  String get formattedFollowerCount =>
-      NumberFormat.compact().format(source.followerCount);
+  unFollow() => this.entity = this.entity.copyWith(
+      isFollowed: false, followerCount: this.entity.followerCount - 1);
+
+  follow() => this.entity = this
+      .entity
+      .copyWith(isFollowed: true, followerCount: this.entity.followerCount + 1);
 }

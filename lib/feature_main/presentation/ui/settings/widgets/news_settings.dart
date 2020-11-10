@@ -18,7 +18,7 @@ class NewsSettings extends StatelessWidget {
     return Switch(
       value: initialValue,
       onChanged: (value) {
-        context.bloc<SettingsCubit>().setShowDailyMorningNews(value);
+        context.watch<SettingsCubit>().setShowDailyMorningNews(value);
         if (value) {
           GetIt.I.get<NotificationService>().scheduleNotificationDaily(
               NotificationChannels.kMorningNewsId,
@@ -49,7 +49,7 @@ class NewsSettings extends StatelessWidget {
     return Switch(
       value: initialValue,
       onChanged: (value) {
-        context.bloc<SettingsCubit>().setNewsNotifications(value);
+        context.watch<SettingsCubit>().setNewsNotifications(value);
         if (value) {
           GetIt.I
               .get<NotificationService>()
@@ -67,7 +67,7 @@ class NewsSettings extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final settingsCubit = context.bloc<SettingsCubit>();
+    final settingsCubit = context.watch<SettingsCubit>();
     return Padding(
       padding: const EdgeInsets.only(left: 16.0, top: 16.0),
       child: Column(

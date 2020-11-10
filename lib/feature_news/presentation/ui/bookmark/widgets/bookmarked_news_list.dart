@@ -7,11 +7,7 @@ import 'package:samachar_hub/core/widgets/empty_data_widget.dart';
 import 'package:samachar_hub/core/widgets/error_data_widget.dart';
 import 'package:samachar_hub/core/widgets/progress_widget.dart';
 import 'package:samachar_hub/core/extensions/view.dart';
-import 'package:samachar_hub/feature_news/presentation/blocs/bookmarks/bookmark_unbookmark/bookmark_un_bookmark_bloc.dart';
-import 'package:samachar_hub/feature_news/presentation/blocs/like_unlike/like_unlike_bloc.dart';
-import 'package:samachar_hub/feature_news/presentation/blocs/news_source/follow_unfollow/follow_un_follow_bloc.dart';
 import 'package:samachar_hub/feature_news/presentation/ui/widgets/news_list_builder_widget.dart';
-import 'package:samachar_hub/feature_news/utils/provider.dart';
 
 class BookmarkedNewsList extends StatefulWidget {
   const BookmarkedNewsList({
@@ -30,7 +26,7 @@ class _BookmarkedNewsListState extends State<BookmarkedNewsList> {
   void initState() {
     super.initState();
     _refreshCompleter = Completer<void>();
-    _bookmarkNewsBloc = context.bloc<BookmarkNewsBloc>();
+    _bookmarkNewsBloc = context.read<BookmarkNewsBloc>();
   }
 
   Future<void> _onRefresh() {
@@ -42,82 +38,44 @@ class _BookmarkedNewsListState extends State<BookmarkedNewsList> {
   Widget build(BuildContext context) {
     return BlocConsumer<BookmarkNewsBloc, BookmarkNewsState>(
         cubit: _bookmarkNewsBloc,
+        listenWhen: (previous, current) =>
+            !(current is BookmarkNewsLoadingState) &&
+            !(current is BookmarkNewsLoadingMoreState),
         listener: (context, state) {
-          if (!(state is LoadingState)) {
-            _refreshCompleter?.complete();
-            _refreshCompleter = Completer();
-          }
-          if (state is ErrorState) {
+          _refreshCompleter?.complete();
+          _refreshCompleter = Completer();
+          if (state is BookmarkNewsErrorState) {
             context.showMessage(state.message);
-          } else if (state is LoadErrorState) {
+          } else if (state is BookmarkNewsLoadErrorState) {
             context.showMessage(state.message);
           }
         },
         buildWhen: (previous, current) =>
-            !(current is ErrorState) && !(current is LoadingMoreState),
+            !(current is BookmarkNewsErrorState) &&
+            !(current is BookmarkNewsLoadingMoreState),
         builder: (context, state) {
-          if (state is LoadSuccessState) {
-            return NewsProvider.feedItemBlocProvider(
-              child: MultiBlocListener(
-                listeners: [
-                  BlocListener<LikeUnlikeBloc, LikeUnlikeState>(
-                    listener: (context, state) {
-                      if (state is NewsLikeSuccessState) {
-                        _bookmarkNewsBloc.add(FeedChangeEvent(
-                            data: state.feed, eventType: 'feed'));
-                      } else if (state is NewsUnLikeSuccessState) {
-                        _bookmarkNewsBloc.add(FeedChangeEvent(
-                            data: state.feed, eventType: 'feed'));
-                      }
-                    },
-                  ),
-                  BlocListener<BookmarkUnBookmarkBloc, BookmarkUnBookmarkState>(
-                    listener: (context, state) {
-                      if (state is BookmarkSuccess) {
-                        _bookmarkNewsBloc.add(FeedChangeEvent(
-                            data: state.feed, eventType: 'feed'));
-                      } else if (state is UnbookmarkSuccess) {
-                        _bookmarkNewsBloc.add(FeedChangeEvent(
-                            data: state.feed, eventType: 'feed'));
-                      }
-                    },
-                  ),
-                  BlocListener<SourceFollowUnFollowBloc,
-                      SourceFollowUnFollowState>(
-                    listener: (context, state) {
-                      if (state is SourceFollowSuccessState) {
-                        _bookmarkNewsBloc.add(FeedChangeEvent(
-                            data: state.source, eventType: 'source'));
-                      } else if (state is SourceUnFollowSuccessState) {
-                        _bookmarkNewsBloc.add(FeedChangeEvent(
-                            data: state.source, eventType: 'source'));
-                      }
-                    },
-                  ),
-                ],
-                child: NewsListBuilder(
-                  data: state.feeds,
-                  onRefresh: _onRefresh,
-                  hasMore: state.hasMore,
-                  onLoadMore: () =>
-                      _bookmarkNewsBloc.add(LoadMoreBookmarkedNewsEvent()),
-                ),
-              ),
+          if (state is BookmarkNewsLoadSuccessState) {
+            return NewsListBuilder(
+              data: state.feeds,
+              onRefresh: _onRefresh,
+              hasMore: state.hasMore,
+              onLoadMore: () =>
+                  _bookmarkNewsBloc.add(LoadMoreBookmarkedNewsEvent()),
             );
-          } else if (state is EmptyState) {
+          } else if (state is BookmarkNewsEmptyState) {
             return Center(
               child: EmptyDataView(
                 text: state.message,
               ),
             );
-          } else if (state is LoadErrorState) {
+          } else if (state is BookmarkNewsLoadErrorState) {
             return Center(
               child: ErrorDataView(
                 onRetry: () => _bookmarkNewsBloc.add(GetBookmarkedNews()),
               ),
             );
           }
-          return Center(child: ProgressView());
+          return const Center(child: const ProgressView());
         });
   }
 }

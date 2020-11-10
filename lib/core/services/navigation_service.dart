@@ -1,4 +1,3 @@
-import 'package:corona_module/corona.dart';
 import 'package:flutter/material.dart';
 import 'package:samachar_hub/feature_auth/presentation/ui/login_screen.dart';
 import 'package:samachar_hub/feature_comment/domain/entities/thread_type.dart';
@@ -9,9 +8,9 @@ import 'package:samachar_hub/feature_gold/presentation/ui/gold_silver/gold_silve
 import 'package:samachar_hub/feature_horoscope/presentation/models/horoscope_model.dart';
 import 'package:samachar_hub/feature_main/presentation/ui/main/main_screen.dart';
 import 'package:samachar_hub/feature_main/presentation/ui/settings/settings_page.dart';
-import 'package:samachar_hub/feature_news/domain/entities/news_category_entity.dart';
-import 'package:samachar_hub/feature_news/domain/entities/news_source_entity.dart';
-import 'package:samachar_hub/feature_news/domain/entities/news_topic_entity.dart';
+import 'package:samachar_hub/feature_news/presentation/models/news_category.dart';
+import 'package:samachar_hub/feature_news/presentation/models/news_source.dart';
+import 'package:samachar_hub/feature_news/presentation/models/news_topic.dart';
 import 'package:samachar_hub/feature_news/presentation/ui/bookmark/bookmark_page.dart';
 import 'package:samachar_hub/feature_news/presentation/ui/category/categories/news_categories_screen.dart';
 import 'package:samachar_hub/feature_news/presentation/ui/category/category_feed/news_category_feed_screen.dart';
@@ -31,50 +30,19 @@ import 'package:samachar_hub/core/widgets/webview_widget.dart';
 
 class NavigationService {
   Future toHomeScreen(BuildContext context) {
-    return Navigator.pushAndRemoveUntil(
-      context,
-      MaterialPageRoute(
-        builder: (context) => MainScreen(),
-      ),
-      (Route<dynamic> route) => false,
-    );
+    return MainScreen.navigate(context);
   }
 
   Future toLoginScreen(BuildContext context) {
-    return Navigator.pushAndRemoveUntil(
-      context,
-      MaterialPageRoute(
-        builder: (context) => LoginScreen(),
-      ),
-      (Route<dynamic> route) => false,
-    );
+    return LoginScreen.navigate(context);
   }
 
   Future toTrendingNews(BuildContext context) {
-    return Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => TrendingNewsScreen(),
-      ),
-    );
+    return TrendingNewsScreen.navigate(context);
   }
 
   Future toLatestNewsScreen(BuildContext context) {
-    return Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => LatestNewsScreen(),
-      ),
-    );
-  }
-
-  Future toCoronaScreen(BuildContext context) {
-    return Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => CoronaApp(),
-      ),
-    );
+    return LatestNewsScreen.navigate(context);
   }
 
   Future toForexScreen(BuildContext context) {
@@ -102,73 +70,36 @@ class NavigationService {
   }
 
   Future toFollowedNewsSourceScreen(BuildContext context) {
-    return Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (_) => NewsSourcesScreen(),
-      ),
-    );
+    return NewsSourcesScreen.navigate(context);
   }
 
   Future toFollowedNewsTopicScreen(BuildContext context) {
-    return Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (_) => NewsTopicsScreen(),
-      ),
-    );
+    return NewsTopicsScreen.navigate(context);
   }
 
   Future toNewsCategoryFeedScreen(
-      BuildContext context, NewsCategoryEntity categoryEntity) {
-    return Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (_) => NewsCategoryFeedScreen(
-            newsCategoryEntity: categoryEntity,
-          ),
-        ));
+      BuildContext context, NewsCategoryUIModel categoryUIModel) {
+    return NewsCategoryFeedScreen.navigate(context, categoryUIModel);
   }
 
   Future toFollowedNewsCategoryScreen(BuildContext context) {
-    return Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (_) => NewsCategoriesScreen(),
-      ),
-    );
+    return NewsCategoriesScreen.navigate(context);
   }
 
   Future toWebViewScreen(String title, String url, BuildContext context) {
-    return Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => Webview(
-          title: title,
-          url: url,
-        ),
-      ),
-    );
+    return Webview.navigate(context, title, url);
   }
 
   Future toNewsTopicFeedScreen(
-      {@required BuildContext context, @required NewsTopicEntity topic}) {
-    return Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => NewsTopicFeedScreen(
-          newsTopicEntity: topic,
-        ),
-      ),
-    );
+      {@required BuildContext context,
+      @required NewsTopicUIModel topicUIModel}) {
+    return NewsTopicFeedScreen.navigate(context, topicUIModel);
   }
 
   Future toNewsSourceFeedScreen(
-      {@required NewsSourceEntity source, @required BuildContext context}) {
-    return Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (_) => NewsSourceFeedScreen(
-            newsSourceEntity: source,
-          ),
-        ));
+      {@required NewsSourceUIModel sourceUIModel,
+      @required BuildContext context}) {
+    return NewsSourceFeedScreen.navigate(context, sourceUIModel);
   }
 
   Future toCommentsScreen(
@@ -176,52 +107,23 @@ class NavigationService {
       @required String threadTitle,
       @required CommentThreadType threadType,
       @required String threadId}) {
-    return Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => CommentScreen(
-          threadId: threadId,
-          threadTitle: threadTitle,
-          threadType: threadType,
-        ),
-      ),
-    );
+    return CommentScreen.navigate(context, threadId, threadType, threadTitle);
   }
 
   Future loginRedirect(BuildContext context) {
-    return Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => LoginScreen(),
-      ),
-    );
+    return LoginScreen.navigate(context);
   }
 
   Future toSettingsScreen({@required BuildContext context}) {
-    return Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (_) => SettingsScreen(),
-      ),
-    );
+    return SettingsScreen.navigate(context);
   }
 
   Future toUserProfileScreen({@required BuildContext context}) {
-    return Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (_) => UserProfileScreen(),
-      ),
-    );
+    return UserProfileScreen.navigate(context);
   }
 
   Future toBookmarkedNewsScreen({@required BuildContext context}) {
-    return Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (_) => BookmarkScreen(),
-      ),
-    );
+    return BookmarkScreen.navigate(context);
   }
 
   Future toGoldSilverDetailScreen(

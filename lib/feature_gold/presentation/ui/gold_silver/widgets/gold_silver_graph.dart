@@ -24,11 +24,11 @@ class GoldSilverGraph extends StatelessWidget {
     return formatter.format(timeline[index].publishedAt);
   }
 
-  String _getYTitle(double value) {
-    int index = value.toInt();
-    var data = timeline[index];
-    return '${data.price.formattedString}';
-  }
+  // String _getYTitle(double value) {
+  //   int index = value.toInt();
+  //   var data = timeline[index];
+  //   return '${data.price.formattedString}';
+  // }
 
   @override
   Widget build(BuildContext context) {

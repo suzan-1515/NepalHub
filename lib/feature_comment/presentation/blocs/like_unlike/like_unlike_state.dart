@@ -1,24 +1,38 @@
 part of 'like_unlike_bloc.dart';
 
-abstract class LikeUnlikeState extends Equatable {
-  const LikeUnlikeState();
+abstract class CommentLikeUnlikeState extends Equatable {
+  const CommentLikeUnlikeState();
 
   @override
   List<Object> get props => [];
 }
 
-class InitialState extends LikeUnlikeState {}
+class CommentLikeInitialState extends CommentLikeUnlikeState {}
 
-class InProgressState extends LikeUnlikeState {}
+class CommentLikeInProgressState extends CommentLikeUnlikeState {}
 
-class LikeSuccessState extends LikeUnlikeState {}
+class CommentLikeSuccessState extends CommentLikeUnlikeState {
+  final CommentEntity comment;
 
-class UnlikeSuccessState extends LikeUnlikeState {}
+  CommentLikeSuccessState({@required this.comment});
 
-class ErrorState extends LikeUnlikeState {
+  @override
+  List<Object> get props => [comment];
+}
+
+class CommentUnlikeSuccessState extends CommentLikeUnlikeState {
+  final CommentEntity comment;
+
+  CommentUnlikeSuccessState({@required this.comment});
+
+  @override
+  List<Object> get props => [comment];
+}
+
+class CommentErrorState extends CommentLikeUnlikeState {
   final String message;
 
-  ErrorState({this.message});
+  CommentErrorState({this.message});
   @override
   List<Object> get props => [message];
 }

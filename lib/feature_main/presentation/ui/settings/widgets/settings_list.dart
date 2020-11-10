@@ -1,9 +1,6 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:samachar_hub/feature_main/domain/entities/settings_entity.dart';
-import 'package:samachar_hub/feature_main/presentation/blocs/settings/settings_cubit.dart';
 import 'package:samachar_hub/feature_main/presentation/ui/settings/widgets/about_settings.dart';
 import 'package:samachar_hub/feature_main/presentation/ui/settings/widgets/forex_settings.dart';
 import 'package:samachar_hub/feature_main/presentation/ui/settings/widgets/general_settings.dart';

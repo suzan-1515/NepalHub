@@ -8,8 +8,6 @@ import 'package:samachar_hub/core/usecases/usecase.dart';
 import 'package:samachar_hub/feature_comment/domain/entities/comment_entity.dart';
 import 'package:samachar_hub/feature_comment/domain/entities/thread_type.dart';
 import 'package:samachar_hub/feature_comment/domain/usecases/post_comment_use_case.dart';
-import 'package:samachar_hub/feature_comment/presentation/extensions/comment_entity_extension.dart';
-import 'package:samachar_hub/feature_comment/presentation/models/comment_model.dart';
 
 part 'comment_post_event.dart';
 part 'comment_post_state.dart';
@@ -49,7 +47,10 @@ class CommentPostBloc extends Bloc<CommentPostEvent, CommentPostState> {
             comment: event.comment,
           ),
         );
-        yield CommentPostSuccessState(commentUIModel: commentEntity.toUIModel);
+        if (commentEntity != null)
+          yield CommentPostSuccessState(comment: commentEntity);
+        else
+          yield CommentPostErrorState(message: 'Unable to post comment.');
       } catch (e) {
         log('Comment post error: ', error: e);
         yield CommentPostErrorState(message: 'Unable to post comment.');

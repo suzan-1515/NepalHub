@@ -1,16 +1,22 @@
 part of 'like_unlike_bloc.dart';
 
-abstract class LikeUnlikeEvent extends Equatable {
-  const LikeUnlikeEvent();
+abstract class CommentLikeUnlikeEvent extends Equatable {
+  const CommentLikeUnlikeEvent();
 
   @override
   List<Object> get props => [];
 }
 
-class LikeEvent extends LikeUnlikeEvent {
-  const LikeEvent();
+class CommentLikeEvent extends CommentLikeUnlikeEvent {
+  final CommentEntity comment;
+  const CommentLikeEvent({@required this.comment});
+  @override
+  List<Object> get props => [comment];
 }
 
-class UnlikeEvent extends LikeUnlikeEvent {
-  const UnlikeEvent();
+class CommentUnlikeEvent extends CommentLikeUnlikeEvent {
+  final CommentEntity comment;
+  const CommentUnlikeEvent({@required this.comment});
+  @override
+  List<Object> get props => [comment];
 }

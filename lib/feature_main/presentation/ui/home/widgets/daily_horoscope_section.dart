@@ -5,14 +5,13 @@ import 'package:get_it/get_it.dart';
 import 'package:samachar_hub/core/models/language.dart';
 import 'package:samachar_hub/core/services/services.dart';
 import 'package:samachar_hub/core/widgets/cached_image_widget.dart';
-import 'package:samachar_hub/feature_horoscope/domain/entities/horoscope_entity.dart';
 import 'package:samachar_hub/feature_horoscope/presentation/extensions/horoscope_extensions.dart';
 import 'package:samachar_hub/feature_horoscope/presentation/models/horoscope_model.dart';
 import 'package:samachar_hub/feature_main/presentation/blocs/settings/settings_cubit.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 class DailyHoroscope extends StatefulWidget {
-  final HoroscopeEntity data;
+  final HoroscopeUIModel data;
   const DailyHoroscope({Key key, @required this.data}) : super(key: key);
 
   @override
@@ -97,51 +96,49 @@ class _DailyHoroscopeState extends State<DailyHoroscope>
     );
   }
 
-  Widget _buildCard(BuildContext context, int defaultHoroscopeSign) {
-    final horoscopeUIModel =
-        ScopedModel.of<HoroscopeUIModel>(context, rebuildOnChange: true);
-    final sign = horoscopeUIModel.entity
-        .signByIndex(defaultHoroscopeSign, Language.NEPALI);
-    final signIcon =
-        horoscopeUIModel.entity.signIconByIndex(defaultHoroscopeSign);
-    final horoscope = horoscopeUIModel.entity
-        .horoscopeByIndex(defaultHoroscopeSign, Language.NEPALI);
-
-    return Card(
-      clipBehavior: Clip.hardEdge,
-      color: Theme.of(context).cardColor,
-      margin: const EdgeInsets.symmetric(vertical: 6, horizontal: 4),
-      elevation: 0,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(6),
-      ),
-      child: InkWell(
-        onTap: () => GetIt.I
-            .get<NavigationService>()
-            .toHoroscopeDetail(context, defaultHoroscopeSign, horoscopeUIModel),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            _buildSignRow(context, sign, signIcon,
-                horoscopeUIModel.entity.publishedAt.formattedString),
-            Divider(),
-            _buildHoroscopeRow(context, horoscope),
-          ],
+  Widget _buildCard(int defaultHoroscopeSign) {
+    return ScopedModelDescendant<HoroscopeUIModel>(
+        builder: (context, child, horoscopeUIModel) {
+      final sign = horoscopeUIModel.entity
+          .signByIndex(defaultHoroscopeSign, Language.NEPALI);
+      final signIcon =
+          horoscopeUIModel.entity.signIconByIndex(defaultHoroscopeSign);
+      final horoscope = horoscopeUIModel.entity
+          .horoscopeByIndex(defaultHoroscopeSign, Language.NEPALI);
+      return Card(
+        clipBehavior: Clip.hardEdge,
+        color: Theme.of(context).cardColor,
+        margin: const EdgeInsets.symmetric(vertical: 6, horizontal: 4),
+        elevation: 0,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(6),
         ),
-      ),
-    );
+        child: InkWell(
+          onTap: () => GetIt.I.get<NavigationService>().toHoroscopeDetail(
+              context, defaultHoroscopeSign, horoscopeUIModel),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              _buildSignRow(context, sign, signIcon,
+                  horoscopeUIModel.entity.publishedAt.formattedString),
+              Divider(),
+              _buildHoroscopeRow(context, horoscope),
+            ],
+          ),
+        ),
+      );
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    final settingsCubit = context.bloc<SettingsCubit>();
+    final settingsCubit = context.watch<SettingsCubit>();
     return ScopedModel<HoroscopeUIModel>(
-      model: widget.data.toUIModel,
+      model: widget.data,
       child: FadeInUp(
-        child: _buildCard(
-            context, settingsCubit.settings.defaultHoroscopeSign ?? 0),
+        child: _buildCard(settingsCubit.settings.defaultHoroscopeSign ?? 0),
       ),
     );
   }

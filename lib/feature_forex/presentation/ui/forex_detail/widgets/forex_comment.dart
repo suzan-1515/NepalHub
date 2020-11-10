@@ -18,7 +18,7 @@ class ForexComment extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final user = context.bloc<AuthBloc>().currentUser;
+    final user = context.watch<AuthBloc>().currentUser;
     final forexUIModel =
         ScopedModel.of<ForexUIModel>(context, rebuildOnChange: true);
     return CommentBar(
@@ -36,7 +36,7 @@ class ForexComment extends StatelessWidget {
                 data:
                     '${forexUIModel.entity.currency.title}\nBuying: ${forexUIModel.entity.buying}\nSelling: ${forexUIModel.entity.selling}\nPublished At: ${forexUIModel.entity.publishedAt.formatttedString}')
             .then((value) {
-          context.bloc<ShareBloc>().add(Share(forex: forexUIModel.entity));
+          context.read<ShareBloc>().add(Share(forex: forexUIModel.entity));
           return value;
         });
       },
@@ -49,13 +49,13 @@ class ForexComment extends StatelessWidget {
           forexUIModel.entity = forexUIModel.entity.copyWith(
               isLiked: false, likeCount: forexUIModel.entity.likeCount - 1);
           context
-              .bloc<LikeUnlikeBloc>()
+              .read<LikeUnlikeBloc>()
               .add(UnlikeEvent(forex: forexUIModel.entity));
         } else {
           forexUIModel.entity = forexUIModel.entity.copyWith(
               isLiked: true, likeCount: forexUIModel.entity.likeCount + 1);
           context
-              .bloc<LikeUnlikeBloc>()
+              .read<LikeUnlikeBloc>()
               .add(LikeEvent(forex: forexUIModel.entity));
         }
       },

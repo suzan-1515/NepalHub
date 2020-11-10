@@ -71,7 +71,7 @@ class _AuthInfoState extends State<AuthInfo> {
       padding: const EdgeInsets.all(16.0),
       child: Builder(
         builder: (context) {
-          final user = context.bloc<AuthBloc>().currentUser;
+          final user = context.watch<AuthBloc>().currentUser;
           if (user != null && !user.isAnonymous) {
             return _buildUserInfo(context, user);
           }

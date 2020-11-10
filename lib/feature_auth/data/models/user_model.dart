@@ -36,8 +36,6 @@ class UserModel extends UserEntity {
 
   factory UserModel.fromJson(String str) => UserModel.fromMap(json.decode(str));
 
-  String toJson() => json.encode(toMap());
-
   factory UserModel.fromMap(Map<String, dynamic> json) => UserModel(
         id: json["id"].toString(),
         email: json["email"],
@@ -53,20 +51,4 @@ class UserModel extends UserEntity {
         isNew: json["is_new"] ?? false,
         method: json["provider"],
       );
-
-  Map<String, dynamic> toMap() => {
-        "id": id,
-        "email": email,
-        "username": username,
-        "fullname": fullname,
-        "created_at": createdAt.toIso8601String(),
-        "updated_at": updatedAt.toIso8601String(),
-        "avatar": avatar,
-        "is_anonymous": isAnonymous,
-        "blocked": blocked,
-        "confirmed": confirmed,
-        "is_new": isNew,
-        "provider": method,
-        "jwt": token,
-      };
 }

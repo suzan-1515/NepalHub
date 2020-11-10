@@ -166,4 +166,34 @@ class NewsFeedEntity extends Equatable {
         page,
         type
       ];
+
+  Map<String, dynamic> toMap() => {
+        "id": id,
+        "title": title,
+        "description": description,
+        "content": content,
+        "link": link,
+        "publishedAt": publishedDate.toIso8601String(),
+        "author": author,
+        "uuid": uuid,
+        "category": category.toMap(),
+        "source": source.toMap(),
+        "language": language.value,
+        "image": image,
+        "type": type.value,
+        "parent_id": parent,
+        "created_at": createdAt.toIso8601String(),
+        "updated_at": updatedAt.toIso8601String(),
+        "topics": topics?.map((x) => x.toMap())?.toList(),
+        "is_liked": isLiked,
+        "is_commented": isCommented,
+        "is_shared": isShared,
+        "is_viewed": isViewed,
+        "is_bookmarked": isBookmarked,
+        "comment_count": commentCount,
+        "like_count": likeCount,
+        "share_count": shareCount,
+        "view_count": viewCount,
+        "bookmark_count": bookmarkCount,
+      };
 }

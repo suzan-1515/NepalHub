@@ -1,31 +1,29 @@
-import 'package:event_bus/event_bus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:samachar_hub/core/services/services.dart';
-import 'package:samachar_hub/feature_news/domain/entities/news_feed_entity.dart';
-import 'package:samachar_hub/feature_news/domain/entities/news_source_entity.dart';
 import 'package:samachar_hub/feature_news/presentation/blocs/bookmarks/bookmark_unbookmark/bookmark_un_bookmark_bloc.dart';
 import 'package:samachar_hub/feature_news/presentation/blocs/dislike/dislike_bloc.dart';
 import 'package:samachar_hub/feature_news/presentation/blocs/news_source/follow_unfollow/follow_un_follow_bloc.dart';
 import 'package:samachar_hub/feature_news/presentation/blocs/share/share_bloc.dart';
-import 'package:samachar_hub/feature_news/presentation/events/feed_event.dart';
+import 'package:samachar_hub/feature_news/presentation/models/news_feed.dart';
 import 'package:samachar_hub/feature_report/domain/entities/report_thread_type.dart';
+import 'package:samachar_hub/feature_news/presentation/extensions/news_extensions.dart';
 import 'package:samachar_hub/feature_report/presentation/ui/report.dart';
 import 'package:samachar_hub/core/extensions/view.dart';
+import 'package:scoped_model/scoped_model.dart';
 
 class NewsFeedMoreOption extends StatelessWidget {
-  final NewsFeedEntity feed;
   final BuildContext context;
 
   const NewsFeedMoreOption({
     Key key,
-    @required this.feed,
     @required this.context,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final feed = ScopedModel.of<NewsFeedUIModel>(this.context);
     return SingleChildScrollView(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -35,14 +33,12 @@ class NewsFeedMoreOption extends StatelessWidget {
           ListTile(
               visualDensity: VisualDensity.compact,
               title: Text(
-                '${feed.source.title}',
+                '${feed.entity.source.title}',
                 style: Theme.of(context).textTheme.bodyText2,
               ),
-              trailing: SourceFollowButton(
-                  source: feed.source, context: this.context)),
+              trailing: SourceFollowButton(context: this.context)),
           Divider(),
           BookmarkButton(
-            feed: feed,
             context: this.context,
           ),
           ListTile(
@@ -59,11 +55,11 @@ class NewsFeedMoreOption extends StatelessWidget {
               GetIt.I
                   .get<ShareService>()
                   .share(
-                      threadId: feed.id,
-                      data: feed.link,
+                      threadId: feed.entity.id,
+                      data: feed.entity.link,
                       contentType: 'news_feed')
                   .then((value) {
-                this.context.bloc<ShareBloc>().add(Share(feed: feed));
+                this.context.read<ShareBloc>().add(Share(feed: feed.entity));
                 return value;
               });
               Navigator.pop(context);
@@ -76,13 +72,14 @@ class NewsFeedMoreOption extends StatelessWidget {
               size: 18,
             ),
             title: Text(
-              'Browse ${feed.source.title}',
+              'Browse ${feed.entity.source.title}',
               style: Theme.of(context).textTheme.bodyText2,
             ),
             onTap: () {
               Navigator.pop(context);
               GetIt.I.get<NavigationService>().toNewsSourceFeedScreen(
-                  source: feed.source, context: context);
+                  sourceUIModel: feed.entity.source.toUIModel,
+                  context: context);
             },
           ),
           ListTile(
@@ -92,7 +89,7 @@ class NewsFeedMoreOption extends StatelessWidget {
               size: 18,
             ),
             title: Text(
-              'Block ${feed.source.title}',
+              'Block ${feed.entity.source.title}',
               style: Theme.of(context).textTheme.bodyText2,
             ),
             onTap: () {
@@ -110,7 +107,10 @@ class NewsFeedMoreOption extends StatelessWidget {
               style: Theme.of(context).textTheme.bodyText2,
             ),
             onTap: () {
-              this.context.bloc<DislikeBloc>().add(DislikeEvent(feed: feed));
+              this
+                  .context
+                  .read<DislikeBloc>()
+                  .add(DislikeEvent(feed: feed.entity));
               Navigator.pop(context);
             },
           ),
@@ -128,7 +128,7 @@ class NewsFeedMoreOption extends StatelessWidget {
               // Navigator.pop(context);
               context.showBottomSheet(
                 child: Report(
-                  threadId: feed.id,
+                  threadId: feed.entity.id,
                   threadType: ReportThreadType.NEWS_FEED,
                 ),
               );
@@ -143,18 +143,17 @@ class NewsFeedMoreOption extends StatelessWidget {
 class SourceFollowButton extends StatelessWidget {
   const SourceFollowButton({
     Key key,
-    @required this.source,
     @required this.context,
   }) : super(key: key);
 
-  final NewsSourceEntity source;
   final BuildContext context;
 
   @override
   Widget build(BuildContext context) {
+    final feed = ScopedModel.of<NewsFeedUIModel>(this.context);
     return OutlineButton.icon(
       icon: Icon(
-        source.isFollowed ? Icons.check : Icons.add,
+        feed.entity.source.isFollowed ? Icons.check : Icons.add,
         size: 16,
       ),
       shape: RoundedRectangleBorder(
@@ -164,25 +163,22 @@ class SourceFollowButton extends StatelessWidget {
       )),
       visualDensity: VisualDensity.compact,
       onPressed: () {
-        if (source.isFollowed) {
-          GetIt.I.get<EventBus>().fire(
-              NewsChangeEvent(data: source, eventType: 'source_unfollow'));
+        if (feed.entity.source.isFollowed) {
+          feed.unFollowSource();
           this
               .context
-              .bloc<SourceFollowUnFollowBloc>()
-              .add(SourceUnFollowEvent(source: source));
+              .read<SourceFollowUnFollowBloc>()
+              .add(SourceUnFollowEvent(source: feed.entity.source));
         } else {
-          GetIt.I
-              .get<EventBus>()
-              .fire(NewsChangeEvent(data: source, eventType: 'source_follow'));
+          feed.followSource();
           this
               .context
-              .bloc<SourceFollowUnFollowBloc>()
-              .add(SourceFollowEvent(source: source));
+              .read<SourceFollowUnFollowBloc>()
+              .add(SourceFollowEvent(source: feed.entity.source));
         }
         Navigator.pop(context);
       },
-      label: Text(source.isFollowed ? 'Following' : 'Follow'),
+      label: Text(feed.entity.source.isFollowed ? 'Following' : 'Follow'),
     );
   }
 }
@@ -190,15 +186,14 @@ class SourceFollowButton extends StatelessWidget {
 class BookmarkButton extends StatelessWidget {
   const BookmarkButton({
     Key key,
-    @required this.feed,
     @required this.context,
   }) : super(key: key);
 
   final BuildContext context;
-  final NewsFeedEntity feed;
 
   @override
   Widget build(BuildContext context) {
+    final feed = ScopedModel.of<NewsFeedUIModel>(this.context);
     return ListTile(
       visualDensity: VisualDensity.compact,
       leading: Icon(
@@ -206,26 +201,22 @@ class BookmarkButton extends StatelessWidget {
         size: 18,
       ),
       title: Text(
-        feed.isBookmarked ? 'Remove bookmark' : 'Bookmark',
+        feed.entity.isBookmarked ? 'Remove bookmark' : 'Bookmark',
         style: Theme.of(context).textTheme.bodyText2,
       ),
       onTap: () {
-        if (feed.isBookmarked) {
-          GetIt.I
-              .get<EventBus>()
-              .fire(NewsChangeEvent(data: feed, eventType: 'unbookmark'));
+        if (feed.entity.isBookmarked) {
+          feed.unBookmark();
           this
               .context
-              .bloc<BookmarkUnBookmarkBloc>()
-              .add(UnBookmarkNews(feed: feed));
+              .read<BookmarkUnBookmarkBloc>()
+              .add(UnBookmarkNews(feed: feed.entity));
         } else {
-          GetIt.I
-              .get<EventBus>()
-              .fire(NewsChangeEvent(data: feed, eventType: 'bookmark'));
+          feed.bookmark();
           this
               .context
-              .bloc<BookmarkUnBookmarkBloc>()
-              .add(BookmarkNews(feed: feed));
+              .read<BookmarkUnBookmarkBloc>()
+              .add(BookmarkNews(feed: feed.entity));
         }
         Navigator.pop(context);
       },

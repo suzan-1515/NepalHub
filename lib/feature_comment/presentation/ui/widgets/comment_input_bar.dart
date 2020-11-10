@@ -1,4 +1,3 @@
-import 'package:event_bus/event_bus.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get_it/get_it.dart';
@@ -30,15 +29,21 @@ class _CommentInputBarState extends State<CommentInputBar> {
 
   _submitComment(BuildContext context, UserEntity user, String comment) async {
     if (comment == null || comment.isEmpty) return;
-    if (user != null && !user.isAnonymous) {
-      return context.bloc<CommentPostBloc>().add(PostCommentEvent(comment));
+    if (comment.length > 500) {
+      context.showMessage('Comment too long. Max character limit is 500.');
+      return;
     }
+    if (user != null && !user.isAnonymous) {
+      context.showMessage('Comment posting...');
+      return context.read<CommentPostBloc>().add(PostCommentEvent(comment));
+    }
+
     GetIt.I.get<NavigationService>().loginRedirect(context);
   }
 
   @override
   Widget build(BuildContext context) {
-    final user = context.bloc<AuthBloc>().currentUser;
+    final user = context.watch<AuthBloc>().currentUser;
     final bool hasAvatar = (user != null &&
         !user.isAnonymous &&
         user.avatar != null &&
@@ -46,11 +51,9 @@ class _CommentInputBarState extends State<CommentInputBar> {
     return BlocListener<CommentPostBloc, CommentPostState>(
       listener: (context, state) {
         if (state is CommentPostSuccessState) {
-          context.bloc<CommentBloc>().add(RefreshCommentsEvent());
-          context.bloc<ThreadStatsCubit>().refreshStats();
+          context.read<CommentBloc>().add(RefreshCommentsEvent());
+          context.read<ThreadStatsCubit>().refreshStats();
           context.showMessage('Comment posted.');
-          GetIt.I.get<EventBus>().fire(
-              CommentPostSuccessState(commentUIModel: state.commentUIModel));
         } else if (state is CommentPostErrorState) {
           context.showMessage(state.message);
         }

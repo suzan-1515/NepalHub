@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:samachar_hub/feature_forex/presentation/models/forex_model.dart';
+import 'package:samachar_hub/feature_gold/presentation/models/gold_silver_model.dart';
 import 'package:samachar_hub/feature_horoscope/presentation/models/horoscope_model.dart';
 import 'package:samachar_hub/feature_main/domain/entities/home_entity.dart';
 import 'package:samachar_hub/feature_main/presentation/models/home/corona_model.dart';
@@ -14,6 +15,7 @@ class HomeUIModel {
   LatestNewsUIModel latestNewsUIModel;
   TrendingNewsUIModel trendingNewsUIModel;
   ForexUIModel forexUIModel;
+  GoldSilverUIModel goldSilverUIModel;
   List<NewsTopicUIModel> newsTopicUIModels;
   List<NewsCategoryUIModel> newsCategoryUIModels;
   List<NewsSourceUIModel> newsSourceUIModels;
@@ -27,6 +29,7 @@ class HomeUIModel {
     @required this.newsCategoryUIModels,
     @required this.newsSourceUIModels,
     @required this.forexUIModel,
+    @required this.goldSilverUIModel,
     @required this.horoscopeUIModel,
     HomeEntity feed,
   });
@@ -38,5 +41,6 @@ class HomeUIModel {
   bool get hasNewsCategories => newsCategoryUIModels != null;
   bool get hasNewsSources => newsSourceUIModels != null;
   bool get hasForex => forexUIModel != null;
+  bool get hasGoldSilver => goldSilverUIModel != null;
   bool get hasHoroscope => horoscopeUIModel != null;
 }

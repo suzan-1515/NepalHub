@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
 import 'package:samachar_hub/feature_auth/domain/entities/user_entity.dart';
@@ -70,6 +72,22 @@ class CommentEntity extends Equatable {
         createdAt,
         updatedAt
       ];
+
+  String toJson() => json.encode(toMap());
+
+  Map<String, dynamic> toMap() => {
+        "id": id,
+        "thread_id": threadId,
+        "user": user.toMap(),
+        "comment": comment,
+        "thread_type": threadType.value,
+        "created_at": createdAt.toIso8601String(),
+        "updated_at": updatedAt.toIso8601String(),
+        "is_liked": isLiked,
+        "is_commented": isCommented,
+        "comment_count": commentCount,
+        "like_count": likeCount,
+      };
 
   @override
   bool get stringify => true;

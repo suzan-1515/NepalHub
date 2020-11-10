@@ -6,6 +6,15 @@ import 'package:samachar_hub/feature_news/utils/provider.dart';
 class TrendingNewsScreen extends StatelessWidget {
   const TrendingNewsScreen({Key key}) : super(key: key);
 
+  static Future navigate(BuildContext context) {
+    return Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => TrendingNewsScreen(),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return NewsProvider.feedBlocProvider(
@@ -17,7 +26,7 @@ class TrendingNewsScreen extends StatelessWidget {
         body: SafeArea(
           child: Padding(
             padding: const EdgeInsets.all(8.0),
-            child: TrendingNewsList(),
+            child: const TrendingNewsList(),
           ),
         ),
       ),

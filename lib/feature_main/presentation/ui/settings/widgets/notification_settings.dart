@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:samachar_hub/core/constants/notification_channels.dart';
 import 'package:samachar_hub/core/services/services.dart';
-import 'package:samachar_hub/feature_main/domain/entities/settings_entity.dart';
 import 'package:samachar_hub/feature_main/presentation/blocs/settings/settings_cubit.dart';
 
 class NotificationSettings extends StatelessWidget {
@@ -16,7 +15,7 @@ class NotificationSettings extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final settingsCubit = context.bloc<SettingsCubit>();
+    final settingsCubit = context.watch<SettingsCubit>();
     return Padding(
       padding: const EdgeInsets.only(left: 16.0, top: 16.0),
       child: Column(
@@ -198,7 +197,7 @@ class OtherNotificationSwitch extends StatelessWidget {
     return Switch(
       value: initialValue,
       onChanged: (value) {
-        context.bloc<SettingsCubit>().setOtherNotifications(value);
+        context.watch<SettingsCubit>().setOtherNotifications(value);
         if (value) {
           GetIt.I
               .get<NotificationService>()
@@ -230,7 +229,7 @@ class MessageNotificationSwitch extends StatelessWidget {
     return Switch(
       value: initialValue,
       onChanged: (value) {
-        context.bloc<SettingsCubit>().setMessageNotifications(value);
+        context.watch<SettingsCubit>().setMessageNotifications(value);
         if (value) {
           GetIt.I
               .get<NotificationService>()
@@ -262,7 +261,7 @@ class CommentNotificationSwitch extends StatelessWidget {
     return Switch(
       value: initialValue,
       onChanged: (value) {
-        context.bloc<SettingsCubit>().setCommentNotifications(value);
+        context.watch<SettingsCubit>().setCommentNotifications(value);
         if (value) {
           GetIt.I
               .get<NotificationService>()
@@ -294,7 +293,7 @@ class TrendingNotificationSwitch extends StatelessWidget {
     return Switch(
       value: initialValue,
       onChanged: (value) {
-        context.bloc<SettingsCubit>().setTrendingNotifications(value);
+        context.watch<SettingsCubit>().setTrendingNotifications(value);
         if (value) {
           GetIt.I
               .get<NotificationService>()

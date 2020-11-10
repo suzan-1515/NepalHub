@@ -12,7 +12,7 @@ class HomeInitialState extends HomeState {}
 class HomeLoadingState extends HomeState {}
 
 class HomeLoadSuccessState extends HomeState {
-  final HomeEntity home;
+  final HomeUIModel home;
 
   HomeLoadSuccessState({@required this.home});
 

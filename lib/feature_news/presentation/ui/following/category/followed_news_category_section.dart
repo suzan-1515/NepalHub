@@ -33,7 +33,7 @@ class FollowedNewsCategorySection extends StatelessWidget {
                   title: 'News Categories',
                   onRefreshTap: () {
                     context
-                        .bloc<NewsCategoryBloc>()
+                        .read<NewsCategoryBloc>()
                         .add(GetFollowedCategories());
                   },
                 ),

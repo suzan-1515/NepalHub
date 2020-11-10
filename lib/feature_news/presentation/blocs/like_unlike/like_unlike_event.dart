@@ -23,21 +23,3 @@ class UnlikeEvent extends LikeUnlikeEvent {
   @override
   List<Object> get props => [feed];
 }
-
-class UpdateLikeEvent extends LikeUnlikeEvent {
-  final NewsFeedEntity feed;
-
-  UpdateLikeEvent({@required this.feed});
-
-  @override
-  List<Object> get props => [feed];
-}
-
-class UpdateUnlikeEvent extends LikeUnlikeEvent {
-  final NewsFeedEntity feed;
-
-  UpdateUnlikeEvent({@required this.feed});
-
-  @override
-  List<Object> get props => [feed];
-}

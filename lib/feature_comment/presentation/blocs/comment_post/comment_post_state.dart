@@ -12,12 +12,12 @@ class CommentPostInitialState extends CommentPostState {}
 class CommentPostProgressState extends CommentPostState {}
 
 class CommentPostSuccessState extends CommentPostState {
-  final CommentUIModel commentUIModel;
+  final CommentEntity comment;
 
-  CommentPostSuccessState({@required this.commentUIModel});
+  CommentPostSuccessState({@required this.comment});
 
   @override
-  List<Object> get props => [commentUIModel];
+  List<Object> get props => [comment];
 }
 
 class CommentPostErrorState extends CommentPostState {

@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:meta/meta.dart';
 
 import 'package:equatable/equatable.dart';
@@ -82,6 +84,24 @@ class UserEntity extends Equatable {
       updatedAt: updatedAt ?? this.updatedAt,
     );
   }
+
+  String toJson() => json.encode(toMap());
+
+  Map<String, dynamic> toMap() => {
+        "id": id,
+        "email": email,
+        "username": username,
+        "fullname": fullname,
+        "created_at": createdAt.toIso8601String(),
+        "updated_at": updatedAt.toIso8601String(),
+        "avatar": avatar,
+        "is_anonymous": isAnonymous,
+        "blocked": blocked,
+        "confirmed": confirmed,
+        "is_new": isNew,
+        "provider": method,
+        "jwt": token,
+      };
 
   @override
   bool get stringify => true;

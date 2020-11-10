@@ -20,7 +20,7 @@ class NewsCategoryRefreshingState extends NewsCategoryState {
 }
 
 class NewsCategoryLoadSuccessState extends NewsCategoryState {
-  final List<NewsCategoryEntity> categories;
+  final List<NewsCategoryUIModel> categories;
 
   NewsCategoryLoadSuccessState(this.categories);
 

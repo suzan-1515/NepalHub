@@ -7,12 +7,13 @@ import 'package:meta/meta.dart';
 import 'package:samachar_hub/core/models/language.dart';
 import 'package:samachar_hub/core/usecases/usecase.dart';
 import 'package:samachar_hub/feature_news/domain/entities/news_feed_entity.dart';
-import 'package:samachar_hub/feature_news/domain/entities/news_source_entity.dart';
 import 'package:samachar_hub/feature_news/domain/entities/news_type.dart';
 import 'package:samachar_hub/feature_news/domain/entities/sort.dart';
 import 'package:samachar_hub/feature_news/domain/usecases/get_latest_news_use_case.dart';
 import 'package:samachar_hub/feature_news/domain/usecases/get_recent_news_use_case.dart';
 import 'package:samachar_hub/feature_news/domain/usecases/get_trending_news_use_case.dart';
+import 'package:samachar_hub/feature_news/presentation/extensions/news_extensions.dart';
+import 'package:samachar_hub/feature_news/presentation/models/news_feed.dart';
 
 part 'feed_event.dart';
 part 'feed_state.dart';
@@ -45,8 +46,6 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
       yield* _mapRefreshNewsEventToState(event);
     } else if (event is LoadMoreNewsEvent) {
       yield* _mapLoadMoreNewsEventToState(event);
-    } else if (event is FeedChangeEvent) {
-      yield* _mapFeedChangeEventToState(event);
     }
   }
 
@@ -84,7 +83,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
       if (newsList == null || newsList.isEmpty)
         yield EmptyState(message: 'News feed not available.');
       else
-        yield LoadSuccessState(feeds: newsList);
+        yield LoadSuccessState(feeds: newsList.toUIModels);
     } catch (e) {
       log('Latest news load error.', error: e);
       yield LoadErrorState(
@@ -123,7 +122,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
 
       if (newsList != null && newsList.isNotEmpty) {
         _page = 1;
-        yield LoadSuccessState(feeds: newsList);
+        yield LoadSuccessState(feeds: newsList.toUIModels);
       } else
         yield ErrorState(message: 'Unble to refresh data.');
     } catch (e) {
@@ -175,9 +174,10 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
       } else {
         _page = _page + 1;
         if (currentState is LoadSuccessState) {
-          yield currentState.copyWith(feeds: currentState.feeds + newsList);
+          yield currentState.copyWith(
+              feeds: currentState.feeds + newsList.toUIModels);
         } else {
-          yield LoadSuccessState(feeds: newsList);
+          yield LoadSuccessState(feeds: newsList.toUIModels);
         }
       }
     } catch (e) {
@@ -189,36 +189,6 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
         yield LoadErrorState(
             message:
                 'Unble to load data. Make sure you are connected to internet.');
-    }
-  }
-
-  Stream<FeedState> _mapFeedChangeEventToState(FeedChangeEvent event) async* {
-    try {
-      final currentState = state;
-      if (currentState is LoadSuccessState) {
-        if (event.eventType == 'feed') {
-          final feed = (event.data as NewsFeedEntity);
-          final index =
-              currentState.feeds.indexWhere((element) => element.id == feed.id);
-          if (index != -1) {
-            final feeds = List<NewsFeedEntity>.from(currentState.feeds);
-            feeds[index] = feed;
-            yield currentState.copyWith(feeds: feeds);
-          }
-        } else if (event.eventType == 'source') {
-          final source = (event.data as NewsSourceEntity);
-          final feeds = currentState.feeds.map<NewsFeedEntity>((e) {
-            if (e.source.id == source.id) {
-              return e.copyWith(source: source);
-            }
-            return e;
-          }).toList();
-
-          yield currentState.copyWith(feeds: feeds);
-        }
-      }
-    } catch (e) {
-      log('Update change event of ${event.eventType} error: ', error: e);
     }
   }
 }

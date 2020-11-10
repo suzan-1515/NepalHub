@@ -6,12 +6,14 @@ import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
 import 'package:samachar_hub/core/models/language.dart';
 import 'package:samachar_hub/core/usecases/usecase.dart';
-import 'package:samachar_hub/feature_news/domain/entities/news_category_entity.dart';
 import 'package:samachar_hub/feature_news/domain/entities/news_feed_entity.dart';
 import 'package:samachar_hub/feature_news/domain/entities/news_source_entity.dart';
 import 'package:samachar_hub/feature_news/domain/entities/sort.dart';
 import 'package:samachar_hub/feature_news/domain/usecases/get_news_by_category_use_case.dart';
 import 'package:samachar_hub/feature_news/presentation/blocs/news_filter/news_filter_bloc.dart';
+import 'package:samachar_hub/feature_news/presentation/extensions/news_extensions.dart';
+import 'package:samachar_hub/feature_news/presentation/models/news_category.dart';
+import 'package:samachar_hub/feature_news/presentation/models/news_feed.dart';
 
 part 'news_category_feed_event.dart';
 part 'news_category_feed_state.dart';
@@ -20,7 +22,7 @@ class NewsCategoryFeedBloc
     extends Bloc<NewsCategoryFeedEvent, NewsCategoryFeedState> {
   final UseCase _newsByCategoryUseCase;
   final NewsFilterBloc _newsFilterBloc;
-  final NewsCategoryEntity _categoryEntity;
+  final NewsCategoryUIModel _categoryEntity;
 
   SortBy _sortBy;
   NewsSourceEntity _source;
@@ -28,14 +30,14 @@ class NewsCategoryFeedBloc
 
   SortBy get sortBy => _sortBy;
   NewsSourceEntity get source => _source;
-  NewsCategoryEntity get category => _categoryEntity;
+  NewsCategoryUIModel get category => _categoryEntity;
   int get page => _page;
 
   StreamSubscription _newsFilterBlocSubscription;
 
   NewsCategoryFeedBloc(
       {@required UseCase newsByCategoryUseCase,
-      @required NewsCategoryEntity category,
+      @required NewsCategoryUIModel category,
       @required NewsFilterBloc newsFilterBloc})
       : this._newsByCategoryUseCase = newsByCategoryUseCase,
         this._categoryEntity = category,
@@ -70,8 +72,6 @@ class NewsCategoryFeedBloc
       yield* _mapGetMoreCategoryNewsEventToState(event);
     } else if (event is RefreshCategoryNewsEvent) {
       yield* _mapRefreshCategoryNewsToState(event);
-    } else if (event is FeedChangeEvent) {
-      yield* _mapFeedChangeEventToState(event);
     }
   }
 
@@ -81,7 +81,7 @@ class NewsCategoryFeedBloc
     try {
       final List<NewsFeedEntity> newsList = await _newsByCategoryUseCase.call(
         GetNewsByCategoryUseCaseParams(
-            category: category,
+            category: category.entity,
             source: source,
             sortBy: sortBy,
             page: 1,
@@ -89,7 +89,8 @@ class NewsCategoryFeedBloc
       );
       if (newsList != null && newsList.isNotEmpty) {
         _page = 1;
-        yield NewsCategoryFeedLoadSuccessState(feeds: newsList, hasMore: true);
+        yield NewsCategoryFeedLoadSuccessState(
+            feeds: newsList.toUIModels, hasMore: true);
       } else {
         yield NewsCategoryFeedErrorState(message: 'Unable to refresh');
       }
@@ -109,7 +110,7 @@ class NewsCategoryFeedBloc
     try {
       final List<NewsFeedEntity> newsList = await _newsByCategoryUseCase.call(
         GetNewsByCategoryUseCaseParams(
-            category: category,
+            category: category.entity,
             source: source,
             sortBy: sortBy,
             page: page + 1,
@@ -123,10 +124,11 @@ class NewsCategoryFeedBloc
       } else {
         _page = _page + 1;
         if (currentState is NewsCategoryFeedLoadSuccessState) {
-          yield currentState.copyWith(feeds: currentState.feeds + newsList);
+          yield currentState.copyWith(
+              feeds: currentState.feeds + newsList.toUIModels);
         } else
           yield NewsCategoryFeedLoadSuccessState(
-              feeds: newsList, hasMore: true);
+              feeds: newsList.toUIModels, hasMore: true);
       }
     } catch (e) {
       log('News by category load more cache error.', error: e);
@@ -147,7 +149,7 @@ class NewsCategoryFeedBloc
       _page = 1;
       final List<NewsFeedEntity> newsList = await _newsByCategoryUseCase.call(
         GetNewsByCategoryUseCaseParams(
-          category: category,
+          category: category.entity,
           source: source,
           sortBy: sortBy,
           page: page,
@@ -157,43 +159,13 @@ class NewsCategoryFeedBloc
       if (newsList == null || newsList.isEmpty)
         yield NewsCategoryFeedEmptyState(message: 'News feed not available.');
       else
-        yield NewsCategoryFeedLoadSuccessState(feeds: newsList, hasMore: true);
+        yield NewsCategoryFeedLoadSuccessState(
+            feeds: newsList.toUIModels, hasMore: true);
     } catch (e) {
       log('News by category load error.', error: e);
       yield NewsCategoryFeedLoadErrorState(
           message:
               'Unable to load data. Make sure you are connected to internet.');
-    }
-  }
-
-  Stream<NewsCategoryFeedState> _mapFeedChangeEventToState(
-      FeedChangeEvent event) async* {
-    try {
-      final currentState = state;
-      if (currentState is NewsCategoryFeedLoadSuccessState) {
-        if (event.eventType == 'feed') {
-          final feed = (event.data as NewsFeedEntity);
-          final index =
-              currentState.feeds.indexWhere((element) => element.id == feed.id);
-          if (index != -1) {
-            final feeds = List<NewsFeedEntity>.from(currentState.feeds);
-            feeds[index] = feed;
-            yield currentState.copyWith(feeds: feeds);
-          }
-        } else if (event.eventType == 'source') {
-          final source = (event.data as NewsSourceEntity);
-          final feeds = currentState.feeds.map<NewsFeedEntity>((e) {
-            if (e.source.id == source.id) {
-              return e.copyWith(source: source);
-            }
-            return e;
-          }).toList();
-
-          yield currentState.copyWith(feeds: feeds);
-        }
-      }
-    } catch (e) {
-      log('Update change event of ${event.eventType} error: ', error: e);
     }
   }
 }

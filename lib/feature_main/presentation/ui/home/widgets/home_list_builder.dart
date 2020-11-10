@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:samachar_hub/core/constants/app_constants.dart';
 import 'package:samachar_hub/core/utils/date_time_utils.dart';
 import 'package:samachar_hub/feature_auth/presentation/blocs/auth_bloc.dart';
-import 'package:samachar_hub/feature_main/domain/entities/home_entity.dart';
+import 'package:samachar_hub/feature_main/presentation/models/home/home_model.dart';
 import 'package:samachar_hub/feature_main/presentation/ui/home/widgets/corona_section.dart';
 import 'package:samachar_hub/feature_main/presentation/ui/home/widgets/date_weather_section.dart';
 import 'package:samachar_hub/feature_main/presentation/ui/home/widgets/daily_horoscope_section.dart';
@@ -15,7 +15,7 @@ import 'package:samachar_hub/feature_main/presentation/ui/home/widgets/other_men
 import 'package:samachar_hub/feature_main/presentation/ui/home/widgets/trending_news_section.dart';
 
 class HomeListBuilder extends StatelessWidget {
-  final HomeEntity data;
+  final HomeUIModel data;
   final Future<void> Function() onRefresh;
   final ScrollController scrollController;
 
@@ -28,7 +28,7 @@ class HomeListBuilder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final user = context.bloc<AuthBloc>().currentUser;
+    final user = context.watch<AuthBloc>().currentUser;
     return RefreshIndicator(
       onRefresh: onRefresh,
       child: CustomScrollView(
@@ -60,50 +60,45 @@ class HomeListBuilder extends StatelessWidget {
             ),
           ),
           const SliverToBoxAdapter(child: const DateWeatherSection()),
-          if (data.corona != null)
+          if (data.hasCoronaData)
             SliverToBoxAdapter(
               child: CoronaSection(
-                data: data.corona,
+                data: data.coronaUIModel,
               ),
             ),
-          if (isEarlyMorning() && data.horoscope != null)
+          if (isEarlyMorning() && data.hasHoroscope)
             SliverToBoxAdapter(
                 child: DailyHoroscope(
-              data: data.horoscope,
+              data: data.horoscopeUIModel,
             )),
-          if (data.newsCategories != null && data.newsCategories.isNotEmpty)
+          if (data.hasNewsCategories)
             SliverToBoxAdapter(
                 child: NewsCategoryMenuSection(
-              newsCategories: data.newsCategories,
+              newsCategories: data.newsCategoryUIModels,
             )),
-          if (data.trendingNews != null && data.trendingNews.isNotEmpty)
+          if (data.hasTrendingNews)
             SliverToBoxAdapter(
                 child: TrendingNewsSection(
-              trendingNews: data.trendingNews,
+              trendingNews: data.trendingNewsUIModel,
             )),
-          if (data.newsTopics != null && data.newsTopics.isNotEmpty)
+          if (data.hasNewsTopics)
             SliverToBoxAdapter(
                 child: NewsTopicsSection(
-              items: data.newsTopics,
+              items: data.newsTopicUIModels,
             )),
-
-          // if (data.hasRecentNews)
-          //   RecentNewsSection(
-          //     recentNewsUIModel: data.recentNewsUIModel,
-          //   ),
-          if (data.forexe != null && data.goldSilver != null)
+          if (data.hasForex && data.hasGoldSilver)
             SliverToBoxAdapter(
                 child: OtherMenuSection(
-              goldSilver: data.goldSilver,
-              forex: data.forexe,
+              goldSilver: data.goldSilverUIModel,
+              forex: data.forexUIModel,
             )),
-          if (data.newsSources != null && data.newsSources.isNotEmpty)
+          if (data.hasNewsSources)
             SliverToBoxAdapter(
-                child: NewsSourceMenuSection(newsSources: data.newsSources)),
-
-          if (data.latestNews != null && data.latestNews.isNotEmpty)
+                child: NewsSourceMenuSection(
+                    newsSources: data.newsSourceUIModels)),
+          if (data.hasLatestNews)
             LatestNewsSection(
-              latestNews: data.latestNews,
+              latestNews: data.latestNewsUIModel,
             ),
         ],
       ),

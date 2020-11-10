@@ -8,7 +8,8 @@ import 'package:samachar_hub/core/models/language.dart';
 import 'package:samachar_hub/core/usecases/usecase.dart';
 import 'package:samachar_hub/feature_news/domain/entities/news_source_entity.dart';
 import 'package:samachar_hub/feature_news/domain/usecases/get_news_sources_use_case.dart';
-import 'package:samachar_hub/feature_news/presentation/blocs/news_source/follow_unfollow/follow_un_follow_bloc.dart';
+import 'package:samachar_hub/feature_news/presentation/extensions/news_extensions.dart';
+import 'package:samachar_hub/feature_news/presentation/models/news_source.dart';
 
 part 'news_sources_event.dart';
 part 'news_sources_state.dart';
@@ -16,34 +17,13 @@ part 'news_sources_state.dart';
 class NewsSourceBloc extends Bloc<NewsSourcesEvent, NewsSourceState> {
   final UseCase _newsSourcesUseCase;
   final UseCase _newsFollowedSourcesUseCase;
-  final SourceFollowUnFollowBloc _followUnFollowBloc;
-
-  StreamSubscription _followStreamSubscription;
 
   NewsSourceBloc({
     @required UseCase getNewsSourcesUseCase,
     @required UseCase getNewsFollowedSourcesUseCase,
-    @required SourceFollowUnFollowBloc followUnFollowBloc,
   })  : _newsSourcesUseCase = getNewsSourcesUseCase,
         _newsFollowedSourcesUseCase = getNewsFollowedSourcesUseCase,
-        _followUnFollowBloc = followUnFollowBloc,
-        super(NewsSourceInitialState()) {
-    this._followStreamSubscription = _followUnFollowBloc.listen((followState) {
-      if (followState is SourceFollowSuccessState) {
-        add(UpdateSourceChangeEvent(
-            source: followState.source, eventType: 'follow'));
-      } else if (followState is SourceUnFollowSuccessState) {
-        add(UpdateSourceChangeEvent(
-            source: followState.source, eventType: 'unfollow'));
-      }
-    });
-  }
-
-  @override
-  Future<void> close() {
-    _followStreamSubscription?.cancel();
-    return super.close();
-  }
+        super(NewsSourceInitialState());
 
   @override
   Stream<NewsSourceState> mapEventToState(
@@ -67,7 +47,7 @@ class NewsSourceBloc extends Bloc<NewsSourcesEvent, NewsSourceState> {
       final List<NewsSourceEntity> newsList = await _newsSourcesUseCase
           .call(GetNewsSourcesUseCaseParams(language: event.language));
       if (newsList != null || newsList.isNotEmpty)
-        yield NewsSourceLoadSuccessState(newsList);
+        yield NewsSourceLoadSuccessState(newsList.toUIModels);
       else
         yield NewsSourceErrorState(message: 'Unable to refresh data.');
     } catch (e) {
@@ -88,7 +68,7 @@ class NewsSourceBloc extends Bloc<NewsSourcesEvent, NewsSourceState> {
       if (newsList == null || newsList.isEmpty)
         yield NewsSourceLoadEmptyState(message: 'News sources not available.');
       else
-        yield NewsSourceLoadSuccessState(newsList);
+        yield NewsSourceLoadSuccessState(newsList.toUIModels);
     } catch (e) {
       log('News sources load error.', error: e);
       yield NewsSourceLoadErrorState(
@@ -113,7 +93,7 @@ class NewsSourceBloc extends Bloc<NewsSourcesEvent, NewsSourceState> {
           yield NewsSourceLoadEmptyState(
               message: 'You have not followed any news source yet');
         else
-          yield NewsSourceLoadSuccessState(followedSources);
+          yield NewsSourceLoadSuccessState(followedSources.toUIModels);
       }
     } catch (e) {
       log('News sources load error.', error: e);
@@ -129,10 +109,10 @@ class NewsSourceBloc extends Bloc<NewsSourcesEvent, NewsSourceState> {
       final currentState = state;
       if (currentState is NewsSourceLoadSuccessState) {
         final index = currentState.sources
-            .indexWhere((element) => element.id == event.source.id);
+            .indexWhere((element) => element.entity.id == event.source.id);
         if (index != -1) {
-          var sources = List<NewsSourceEntity>.from(currentState.sources);
-          sources[index] = event.source;
+          var sources = List<NewsSourceUIModel>.from(currentState.sources);
+          sources[index].entity = event.source;
           yield NewsSourceLoadSuccessState(sources);
         }
       }

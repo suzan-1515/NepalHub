@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:samachar_hub/core/services/services.dart';
 import 'package:samachar_hub/feature_main/presentation/ui/widgets/section_heading.dart';
-import 'package:samachar_hub/feature_news/domain/entities/news_category_entity.dart';
+import 'package:samachar_hub/feature_news/presentation/models/news_category.dart';
 import 'package:samachar_hub/feature_news/presentation/ui/widgets/news_menu_item.dart';
 
 class NewsCategoryMenuSection extends StatefulWidget {
@@ -11,7 +11,7 @@ class NewsCategoryMenuSection extends StatefulWidget {
     @required this.newsCategories,
   }) : super(key: key);
 
-  final List<NewsCategoryEntity> newsCategories;
+  final List<NewsCategoryUIModel> newsCategories;
 
   @override
   _NewsCategoryMenuSectionState createState() =>
@@ -45,8 +45,8 @@ class _NewsCategoryMenuSectionState extends State<NewsCategoryMenuSection>
               itemBuilder: (context, index) {
                 var categoryModel = widget.newsCategories[index];
                 return NewsMenuItem(
-                  title: categoryModel.title,
-                  icon: categoryModel.icon,
+                  title: categoryModel.entity.title,
+                  icon: categoryModel.entity.icon,
                   onTap: () => GetIt.I
                       .get<NavigationService>()
                       .toNewsCategoryFeedScreen(context, categoryModel),

@@ -18,13 +18,13 @@ class _HomeScreenState extends State<HomeScreen>
     var size = MediaQuery.of(context).size;
     return HomeProvider.homeBlocProvider(
       defaultForexCurrencyCode:
-          context.bloc<SettingsCubit>().settings.defaultForexCurrency,
+          context.watch<SettingsCubit>().settings.defaultForexCurrency,
       child: Container(
         width: size.width,
         height: size.height,
         color: Theme.of(context).backgroundColor,
         padding: EdgeInsets.symmetric(horizontal: 8),
-        child: HomeFeedList(),
+        child: const HomeFeedList(),
       ),
     );
   }

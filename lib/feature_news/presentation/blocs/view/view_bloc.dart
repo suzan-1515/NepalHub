@@ -13,13 +13,10 @@ part 'view_state.dart';
 
 class ViewBloc extends Bloc<ViewEvent, ViewState> {
   final UseCase _viewNewsFeedUseCase;
-  final NewsFeedEntity _feed;
 
   ViewBloc({
     @required UseCase viewNewsFeedUseCase,
-    @required NewsFeedEntity feed,
   })  : _viewNewsFeedUseCase = viewNewsFeedUseCase,
-        _feed = feed,
         super(ViewInitial());
 
   @override
@@ -31,9 +28,12 @@ class ViewBloc extends Bloc<ViewEvent, ViewState> {
     if (event is View) {
       yield ViewInProgress();
       try {
-        final NewsFeedEntity newsFeedEntity =
-            await _viewNewsFeedUseCase.call(ViewNewsUseCaseParams(feed: _feed));
-        if (newsFeedEntity != null) yield ViewSuccess(feed: newsFeedEntity);
+        final NewsFeedEntity newsFeedEntity = await _viewNewsFeedUseCase
+            .call(ViewNewsUseCaseParams(feed: event.feed));
+        if (newsFeedEntity != null)
+          yield ViewSuccess(feed: newsFeedEntity);
+        else
+          yield ViewError(message: 'Unable to view.');
       } catch (e) {
         log('News feed view error.', error: e);
         yield ViewError(message: 'Unable to view.');

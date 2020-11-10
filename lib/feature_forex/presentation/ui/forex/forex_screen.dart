@@ -35,7 +35,7 @@ class ForexScreen extends StatelessWidget {
                       (element) => element.entity.currency.code == state1.value,
                       orElse: () => state.defaultForex);
                   context
-                      .bloc<ForexTimelineBloc>()
+                      .read<ForexTimelineBloc>()
                       .add(RefreshForexTimelineEvent(forex: forex.entity));
                 }
               },

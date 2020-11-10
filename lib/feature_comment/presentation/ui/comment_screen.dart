@@ -20,6 +20,20 @@ class CommentScreen extends StatelessWidget {
       @required this.threadTitle})
       : super(key: key);
 
+  static Future navigate(BuildContext context, String threadId,
+      CommentThreadType threadType, String threadTitle) {
+    return Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => CommentScreen(
+          threadId: threadId,
+          threadTitle: threadTitle,
+          threadType: threadType,
+        ),
+      ),
+    );
+  }
+
   Widget _buildBody(BuildContext context) {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 4),

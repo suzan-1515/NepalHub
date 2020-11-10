@@ -23,7 +23,7 @@ class _FollowedNewsSourceListState extends State<FollowedNewsSourceList> {
   @override
   void initState() {
     super.initState();
-    context.bloc<NewsSourceBloc>().add(GetFollowedSourcesEvent());
+    context.read<NewsSourceBloc>().add(GetFollowedSourcesEvent());
   }
 
   @override
@@ -48,11 +48,11 @@ class _FollowedNewsSourceListState extends State<FollowedNewsSourceList> {
                 itemBuilder: (_, index) {
                   var source = state.sources[index];
                   return NewsMenuItem(
-                    title: source.title,
-                    icon: source.icon,
+                    title: source.entity.title,
+                    icon: source.entity.icon,
                     onTap: () {
                       GetIt.I.get<NavigationService>().toNewsSourceFeedScreen(
-                          context: context, source: source);
+                          context: context, sourceUIModel: source);
                     },
                   );
                 },
@@ -64,7 +64,7 @@ class _FollowedNewsSourceListState extends State<FollowedNewsSourceList> {
             child: ErrorDataView(
               message: state.message,
               onRetry: () {
-                context.bloc<NewsSourceBloc>().add(GetFollowedSourcesEvent());
+                context.read<NewsSourceBloc>().add(GetFollowedSourcesEvent());
               },
             ),
           );

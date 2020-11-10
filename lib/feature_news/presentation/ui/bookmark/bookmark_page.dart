@@ -3,6 +3,15 @@ import 'package:samachar_hub/feature_news/presentation/ui/bookmark/widgets/bookm
 import 'package:samachar_hub/feature_news/utils/provider.dart';
 
 class BookmarkScreen extends StatelessWidget {
+  static Future navigate(BuildContext context) {
+    return Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => BookmarkScreen(),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return NewsProvider.bookmarkBlocProvider(

@@ -56,19 +56,19 @@ class Report extends StatelessWidget {
                   spacing: 4.0,
                   children: [
                     ReportOptionButton(
-                      text: 'Fake news',
+                      text: 'Misleading',
                       onTap: () {
-                        context.bloc<ReportCubit>().report(
+                        context.read<ReportCubit>().report(
                             threadId: threadId,
                             threadType: threadType,
-                            tag: 'Fake news');
+                            tag: 'Misleading');
                         Navigator.pop(context);
                       },
                     ),
                     ReportOptionButton(
                       text: 'Clickbait',
                       onTap: () {
-                        context.bloc<ReportCubit>().report(
+                        context.read<ReportCubit>().report(
                             threadId: threadId,
                             threadType: threadType,
                             tag: 'Clickbait');
@@ -78,7 +78,7 @@ class Report extends StatelessWidget {
                     ReportOptionButton(
                       text: 'Old or repetative',
                       onTap: () {
-                        context.bloc<ReportCubit>().report(
+                        context.read<ReportCubit>().report(
                             threadId: threadId,
                             threadType: threadType,
                             tag: 'Old or repetative news');
@@ -88,7 +88,7 @@ class Report extends StatelessWidget {
                     ReportOptionButton(
                       text: 'Adult',
                       onTap: () {
-                        context.bloc<ReportCubit>().report(
+                        context.read<ReportCubit>().report(
                             threadId: threadId,
                             threadType: threadType,
                             tag: 'Adult');
@@ -96,9 +96,19 @@ class Report extends StatelessWidget {
                       },
                     ),
                     ReportOptionButton(
+                      text: 'Spam',
+                      onTap: () {
+                        context.read<ReportCubit>().report(
+                            threadId: threadId,
+                            threadType: threadType,
+                            tag: 'Spam');
+                        Navigator.pop(context);
+                      },
+                    ),
+                    ReportOptionButton(
                       text: 'Other',
                       onTap: () {
-                        context.bloc<ReportCubit>().report(
+                        context.read<ReportCubit>().report(
                             threadId: threadId,
                             threadType: threadType,
                             tag: 'Other');

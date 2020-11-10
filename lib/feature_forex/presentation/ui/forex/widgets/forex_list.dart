@@ -21,9 +21,9 @@ class _ForexListState extends State<ForexList> {
   @override
   void initState() {
     super.initState();
-    context.bloc<ForexBloc>().add(GetLatestForexEvent(
+    context.read<ForexBloc>().add(GetLatestForexEvent(
         defaultCurrencyCode:
-            context.bloc<SettingsCubit>().settings.defaultForexCurrency));
+            context.read<SettingsCubit>().settings.defaultForexCurrency));
   }
 
   @override
@@ -53,9 +53,9 @@ class _ForexListState extends State<ForexList> {
           return Center(
             child: ErrorDataView(
               message: state.message,
-              onRetry: () => context.bloc<ForexBloc>().add(GetLatestForexEvent(
+              onRetry: () => context.read<ForexBloc>().add(GetLatestForexEvent(
                   defaultCurrencyCode: context
-                      .bloc<SettingsCubit>()
+                      .read<SettingsCubit>()
                       .settings
                       .defaultForexCurrency)),
             ),

@@ -16,7 +16,7 @@ class NewsReadMode extends StatelessWidget {
   }
 
   Widget _buildModes(BuildContext context) {
-    final settingsBloc = context.bloc<SettingsCubit>();
+    final settingsBloc = context.watch<SettingsCubit>();
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,

@@ -5,17 +5,13 @@ import 'package:get_it/get_it.dart';
 import 'package:samachar_hub/core/services/services.dart';
 import 'package:samachar_hub/core/utils/link_utils.dart';
 import 'package:samachar_hub/feature_main/presentation/blocs/settings/settings_cubit.dart';
-import 'package:samachar_hub/feature_news/domain/entities/news_feed_entity.dart';
+import 'package:samachar_hub/feature_news/presentation/models/news_feed.dart';
+import 'package:scoped_model/scoped_model.dart';
 
 class ReadMore extends StatelessWidget {
   const ReadMore({
     Key key,
-    @required this.context,
-    @required this.feed,
   }) : super(key: key);
-
-  final BuildContext context;
-  final NewsFeedEntity feed;
 
   @override
   Widget build(BuildContext context) {
@@ -29,11 +25,12 @@ class ReadMore extends StatelessWidget {
         padding: const EdgeInsets.all(8),
         onPressed: () {
           final int newsReadMode =
-              context.bloc<SettingsCubit>().settings.newsReadMode ?? 0;
-          if (newsReadMode == 2) return LinkUtils.openLink(feed.link);
+              context.read<SettingsCubit>().settings.newsReadMode ?? 0;
+          final feed = ScopedModel.of<NewsFeedUIModel>(context);
+          if (newsReadMode == 2) return LinkUtils.openLink(feed.entity.link);
           GetIt.I.get<NavigationService>().toWebViewScreen(
-                feed.title,
-                feed.link,
+                feed.entity.title,
+                feed.entity.link,
                 context,
               );
         },

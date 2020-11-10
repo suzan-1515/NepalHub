@@ -33,8 +33,6 @@ class CommentModel extends CommentEntity {
   factory CommentModel.fromJson(String str) =>
       CommentModel.fromMap(json.decode(str));
 
-  String toJson() => json.encode(toMap());
-
   factory CommentModel.fromMap(Map<String, dynamic> json) => CommentModel(
         id: json["id"].toString(),
         threadId: json["thread_id"],
@@ -48,18 +46,4 @@ class CommentModel extends CommentEntity {
         commentCount: json["comment_count"],
         likeCount: json["like_count"],
       );
-
-  Map<String, dynamic> toMap() => {
-        "id": id,
-        "thread_id": threadId,
-        "user": (user as UserModel).toMap(),
-        "comment": comment,
-        "thread_type": threadType.value,
-        "created_at": createdAt.toIso8601String(),
-        "updated_at": updatedAt.toIso8601String(),
-        "is_liked": isLiked,
-        "is_commented": isCommented,
-        "comment_count": commentCount,
-        "like_count": likeCount,
-      };
 }

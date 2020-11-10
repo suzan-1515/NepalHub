@@ -10,6 +10,16 @@ import 'package:samachar_hub/feature_auth/presentation/blocs/auth_bloc.dart';
 import 'package:samachar_hub/core/extensions/view.dart';
 
 class LoginScreen extends StatelessWidget {
+  static Future navigate(BuildContext context) {
+    return Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(
+        builder: (context) => LoginScreen(),
+      ),
+      (Route<dynamic> route) => false,
+    );
+  }
+
   Widget _buildHeader(BuildContext context) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -58,7 +68,7 @@ class LoginScreen extends StatelessWidget {
               )),
               text: 'Continue with Google',
               onPressed: () {
-                context.bloc<AuthBloc>().add(LoginWithGoogleEvent());
+                context.read<AuthBloc>().add(LoginWithGoogleEvent());
               },
             ),
             SizedBox(height: 8),
@@ -71,7 +81,7 @@ class LoginScreen extends StatelessWidget {
               )),
               text: 'Continue with Facebook',
               onPressed: () {
-                context.bloc<AuthBloc>().add(LoginWithFacebookEvent());
+                context.read<AuthBloc>().add(LoginWithFacebookEvent());
               },
             ),
             SizedBox(height: 8),
@@ -84,7 +94,7 @@ class LoginScreen extends StatelessWidget {
               )),
               text: 'Continue with Twitter',
               onPressed: () {
-                context.bloc<AuthBloc>().add(LoginWithTwitterEvent());
+                context.read<AuthBloc>().add(LoginWithTwitterEvent());
               },
             ),
             // SizedBox(height: 8),

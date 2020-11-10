@@ -3,6 +3,14 @@ import 'package:samachar_hub/feature_news/presentation/ui/topics/topics/widgets/
 import 'package:samachar_hub/feature_news/utils/provider.dart';
 
 class NewsTopicsScreen extends StatelessWidget {
+  static Future navigate(BuildContext context) {
+    return Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => NewsTopicsScreen(),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return NewsProvider.topicBlocProvider(

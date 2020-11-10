@@ -4,10 +4,11 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get_it/get_it.dart';
 import 'package:samachar_hub/core/services/services.dart';
 import 'package:samachar_hub/feature_comment/domain/entities/thread_type.dart';
-import 'package:samachar_hub/feature_news/domain/entities/news_feed_entity.dart';
+import 'package:samachar_hub/feature_news/presentation/models/news_feed.dart';
 import 'package:samachar_hub/feature_news/presentation/ui/widgets/news_feed_more_option.dart';
 import 'package:samachar_hub/core/extensions/view.dart';
 import 'package:samachar_hub/core/extensions/number_extensions.dart';
+import 'package:scoped_model/scoped_model.dart';
 
 class NewsFeedCardSourceCategory extends StatelessWidget {
   final String sourceIcon;
@@ -116,13 +117,12 @@ class NewsFeedCardTitleDescription extends StatelessWidget {
 class NewsFeedOptions extends StatelessWidget {
   const NewsFeedOptions({
     Key key,
-    @required this.feed,
   }) : super(key: key);
-
-  final NewsFeedEntity feed;
 
   @override
   Widget build(BuildContext context) {
+    final feed =
+        ScopedModel.of<NewsFeedUIModel>(context, rebuildOnChange: true);
     final iconColor = Theme.of(context).iconTheme.color.withOpacity(0.4);
     final textStyle = Theme.of(context)
         .textTheme
@@ -133,7 +133,7 @@ class NewsFeedOptions extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceAround,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: <Widget>[
-        if (feed.viewCount != 0)
+        if (feed.entity.viewCount != 0)
           RichText(
             text: TextSpan(children: [
               WidgetSpan(
@@ -144,13 +144,13 @@ class NewsFeedOptions extends StatelessWidget {
                 ),
               ),
               TextSpan(
-                text: ' ${feed.viewCount.compactFormat}',
+                text: ' ${feed.entity.viewCount.compactFormat}',
                 style: textStyle,
               ),
             ]),
           ),
-        if (feed.viewCount != 0) SizedBox(width: 8),
-        if (feed.likeCount != 0)
+        if (feed.entity.viewCount != 0) const SizedBox(width: 8),
+        if (feed.entity.likeCount != 0)
           RichText(
             text: TextSpan(children: [
               WidgetSpan(
@@ -161,13 +161,13 @@ class NewsFeedOptions extends StatelessWidget {
                 ),
               ),
               TextSpan(
-                text: ' ${feed.likeCount.compactFormat}',
+                text: ' ${feed.entity.likeCount.compactFormat}',
                 style: textStyle,
               ),
             ]),
           ),
-        if (feed.likeCount != 0) SizedBox(width: 8),
-        if (feed.commentCount != 0)
+        if (feed.entity.likeCount != 0) SizedBox(width: 8),
+        if (feed.entity.commentCount != 0)
           RichText(
             text: TextSpan(children: [
               WidgetSpan(
@@ -178,13 +178,13 @@ class NewsFeedOptions extends StatelessWidget {
                 ),
               ),
               TextSpan(
-                text: ' ${feed.commentCount.compactFormat}',
+                text: ' ${feed.entity.commentCount.compactFormat}',
                 style: textStyle,
               ),
             ]),
           ),
-        if (feed.commentCount != 0) SizedBox(width: 8),
-        if (feed.shareCount != 0)
+        if (feed.entity.commentCount != 0) SizedBox(width: 8),
+        if (feed.entity.shareCount != 0)
           RichText(
             text: TextSpan(children: [
               WidgetSpan(
@@ -195,12 +195,12 @@ class NewsFeedOptions extends StatelessWidget {
                 ),
               ),
               TextSpan(
-                text: ' ${feed.shareCount.compactFormat}',
+                text: ' ${feed.entity.shareCount.compactFormat}',
                 style: textStyle,
               ),
             ]),
           ),
-        if (feed.shareCount != 0) SizedBox(width: 8),
+        if (feed.entity.shareCount != 0) SizedBox(width: 8),
         Spacer(),
         IconButton(
           visualDensity: VisualDensity.compact,
@@ -210,8 +210,8 @@ class NewsFeedOptions extends StatelessWidget {
           ),
           onPressed: () => GetIt.I.get<NavigationService>().toCommentsScreen(
               context: context,
-              threadTitle: feed.title,
-              threadId: feed.id,
+              threadTitle: feed.entity.title,
+              threadId: feed.entity.id,
               threadType: CommentThreadType.NEWS_FEED),
         ),
         IconButton(
@@ -222,7 +222,6 @@ class NewsFeedOptions extends StatelessWidget {
           onPressed: () => context.showBottomSheet(
               child: NewsFeedMoreOption(
             context: context,
-            feed: feed,
           )),
         ),
       ],

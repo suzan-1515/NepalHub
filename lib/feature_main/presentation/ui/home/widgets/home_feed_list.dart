@@ -30,7 +30,7 @@ class _HomeFeedListState extends State<HomeFeedList> {
     super.initState();
     _refreshCompleter = Completer<void>();
     _scrollController = ScrollController();
-    _homeCubit = context.bloc<HomeCubit>();
+    _homeCubit = context.read<HomeCubit>();
   }
 
   @override
@@ -50,7 +50,7 @@ class _HomeFeedListState extends State<HomeFeedList> {
   Future<void> _onRefresh() {
     _homeCubit.refreshHomeFeed(
         defaultForexCurrencyCode:
-            context.bloc<SettingsCubit>().settings.defaultForexCurrency);
+            context.read<SettingsCubit>().settings.defaultForexCurrency);
     return _refreshCompleter.future;
   }
 
@@ -98,7 +98,7 @@ class _HomeFeedListState extends State<HomeFeedList> {
                 child: ErrorDataView(
                   onRetry: () => _homeCubit.getHomeFeed(
                       defaultForexCurrencyCode: context
-                          .bloc<SettingsCubit>()
+                          .read<SettingsCubit>()
                           .settings
                           .defaultForexCurrency),
                 ),

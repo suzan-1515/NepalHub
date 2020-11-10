@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:samachar_hub/feature_news/domain/entities/news_feed_entity.dart';
+import 'package:samachar_hub/feature_news/presentation/models/news_feed.dart';
 import 'package:samachar_hub/feature_news/presentation/ui/details/news_detail_screen.dart';
 import 'package:samachar_hub/feature_news/presentation/ui/widgets/article_info_widget.dart';
 import 'package:samachar_hub/core/widgets/cached_image_widget.dart';
 import 'package:samachar_hub/core/extensions/date_time.dart';
+import 'package:scoped_model/scoped_model.dart';
 
 class NewsThumbnailView extends StatelessWidget {
-  final NewsFeedEntity feed;
-  NewsThumbnailView({@required this.feed});
+  const NewsThumbnailView();
 
   @override
   Widget build(BuildContext context) {
+    final feed = ScopedModel.of<NewsFeedUIModel>(context);
     return Card(
       clipBehavior: Clip.hardEdge,
       color: Theme.of(context).cardColor,
@@ -28,12 +29,12 @@ class NewsThumbnailView extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
               NewsFeedCardSourceCategory(
-                category: feed.category.title,
-                publishedDate: feed.publishedDate.momentAgo,
-                source: feed.source.title,
-                sourceIcon: feed.source.favicon,
+                category: feed.entity.category.title,
+                publishedDate: feed.entity.publishedDate.momentAgo,
+                source: feed.entity.source.title,
+                sourceIcon: feed.entity.source.favicon,
               ),
-              SizedBox(height: 8),
+              const SizedBox(height: 8),
               AspectRatio(
                 aspectRatio: 16 / 9,
                 child: ClipRRect(
@@ -41,23 +42,23 @@ class NewsThumbnailView extends StatelessWidget {
                     Radius.circular(6),
                   ),
                   child: CachedImage(
-                    feed.image,
-                    tag: '${feed.id}-${feed.type}',
+                    feed.entity.image,
+                    tag: '${feed.entity.id}-${feed.entity.type}',
                   ),
                 ),
               ),
-              SizedBox(height: 8),
+              const SizedBox(height: 8),
               NewsFeedCardTitleDescription(
-                description: feed.description,
-                title: feed.title,
+                description: feed.entity.description,
+                title: feed.entity.title,
                 descriptionMaxLines:
                     MediaQuery.of(context).orientation == Orientation.portrait
                         ? 2
                         : 4,
               ),
-              SizedBox(height: 8),
-              Divider(),
-              NewsFeedOptions(feed: feed),
+              const SizedBox(height: 8),
+              const Divider(),
+              const NewsFeedOptions(),
             ],
           ),
         ),

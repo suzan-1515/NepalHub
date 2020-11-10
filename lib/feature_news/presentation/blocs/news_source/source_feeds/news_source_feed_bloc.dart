@@ -7,10 +7,12 @@ import 'package:meta/meta.dart';
 import 'package:samachar_hub/core/models/language.dart';
 import 'package:samachar_hub/core/usecases/usecase.dart';
 import 'package:samachar_hub/feature_news/domain/entities/news_feed_entity.dart';
-import 'package:samachar_hub/feature_news/domain/entities/news_source_entity.dart';
 import 'package:samachar_hub/feature_news/domain/entities/sort.dart';
 import 'package:samachar_hub/feature_news/domain/usecases/get_news_by_source_use_case.dart';
 import 'package:samachar_hub/feature_news/presentation/blocs/news_filter/news_filter_bloc.dart';
+import 'package:samachar_hub/feature_news/presentation/models/news_feed.dart';
+import 'package:samachar_hub/feature_news/presentation/extensions/news_extensions.dart';
+import 'package:samachar_hub/feature_news/presentation/models/news_source.dart';
 
 part 'news_source_feed_event.dart';
 part 'news_source_feed_state.dart';
@@ -24,15 +26,15 @@ class NewsSourceFeedBloc
   SortBy get sortBy => _sortBy;
   int _page = 1;
 
-  NewsSourceEntity _sourceModel;
-  NewsSourceEntity get source => _sourceModel;
+  NewsSourceUIModel _sourceModel;
+  NewsSourceUIModel get source => _sourceModel;
   int get page => _page;
 
   StreamSubscription _newsFilterBlocSubscription;
 
   NewsSourceFeedBloc(
       {@required UseCase newsBySourceUseCase,
-      @required NewsSourceEntity source,
+      @required NewsSourceUIModel source,
       @required NewsFilterBloc newsFilterBloc})
       : this._newsBySourceUseCase = newsBySourceUseCase,
         this._sourceModel = source,
@@ -41,13 +43,13 @@ class NewsSourceFeedBloc
     this._sortBy = _newsFilterBloc.selectedSortBy;
     this._newsFilterBlocSubscription = this._newsFilterBloc.listen((state) {
       if (state is SourceChangedState) {
-        if (state.source != null) this._sourceModel = state.source;
+        if (state.source != null) this._sourceModel.entity = state.source;
         this.add(GetSourceNewsEvent());
       } else if (state is SortByChangedState) {
         this._sortBy = state.sortBy;
         this.add(GetSourceNewsEvent());
       } else if (state is SourceLoadSuccessState) {
-        this._newsFilterBloc.selectedSource = _sourceModel;
+        this._newsFilterBloc.selectedSource = _sourceModel.entity;
       }
     });
   }
@@ -68,8 +70,6 @@ class NewsSourceFeedBloc
       yield* _mapGetMoreSourceNewsEventToState(event);
     } else if (event is RefreshSourceNewsEvent) {
       yield* _mapRefreshSourceNewsToState(event);
-    } else if (event is FeedChangeEvent) {
-      yield* _mapFeedChangeEventToState(event);
     }
   }
 
@@ -79,11 +79,15 @@ class NewsSourceFeedBloc
     try {
       final List<NewsFeedEntity> newsList = await _newsBySourceUseCase.call(
         GetNewsBySourceUseCaseParams(
-            source: source, sortBy: sortBy, page: 1, language: event.language),
+            source: source.entity,
+            sortBy: sortBy,
+            page: 1,
+            language: event.language),
       );
       if (newsList != null && newsList.isNotEmpty) {
         _page = 1;
-        yield NewsSourceFeedLoadSuccessState(feeds: newsList, hasMore: true);
+        yield NewsSourceFeedLoadSuccessState(
+            feeds: newsList.toUIModels, hasMore: true);
       } else {
         yield NewsSourceFeedErrorState(message: 'Unable to refresh.');
       }
@@ -103,7 +107,7 @@ class NewsSourceFeedBloc
     try {
       final List<NewsFeedEntity> newsList = await _newsBySourceUseCase.call(
         GetNewsBySourceUseCaseParams(
-            source: source,
+            source: source.entity,
             sortBy: sortBy,
             page: page + 1,
             language: event.language),
@@ -116,9 +120,11 @@ class NewsSourceFeedBloc
       } else {
         _page = _page + 1;
         if (currentState is NewsSourceFeedLoadSuccessState) {
-          yield currentState.copyWith(feeds: currentState.feeds + newsList);
+          yield currentState.copyWith(
+              feeds: currentState.feeds + newsList.toUIModels);
         } else
-          yield NewsSourceFeedLoadSuccessState(feeds: newsList, hasMore: true);
+          yield NewsSourceFeedLoadSuccessState(
+              feeds: newsList.toUIModels, hasMore: true);
       }
     } catch (e) {
       log('News by source load more cache error.', error: e);
@@ -139,7 +145,7 @@ class NewsSourceFeedBloc
       _page = 1;
       final List<NewsFeedEntity> newsList = await _newsBySourceUseCase.call(
         GetNewsBySourceUseCaseParams(
-          source: source,
+          source: source.entity,
           sortBy: sortBy,
           page: page,
           language: event.language,
@@ -148,43 +154,13 @@ class NewsSourceFeedBloc
       if (newsList == null || newsList.isEmpty)
         yield NewsSourceFeedEmptyState(message: 'News feed not available.');
       else
-        yield NewsSourceFeedLoadSuccessState(feeds: newsList, hasMore: true);
+        yield NewsSourceFeedLoadSuccessState(
+            feeds: newsList.toUIModels, hasMore: true);
     } catch (e) {
       log('News by source load error.', error: e);
       yield NewsSourceFeedLoadErrorState(
           message:
               'Unable to load data. Make sure you are connected to internet.');
-    }
-  }
-
-  Stream<NewsSourceFeedState> _mapFeedChangeEventToState(
-      FeedChangeEvent event) async* {
-    try {
-      final currentState = state;
-      if (currentState is NewsSourceFeedLoadSuccessState) {
-        if (event.eventType == 'feed') {
-          final feed = (event.data as NewsFeedEntity);
-          final index =
-              currentState.feeds.indexWhere((element) => element.id == feed.id);
-          if (index != -1) {
-            final feeds = List<NewsFeedEntity>.from(currentState.feeds);
-            feeds[index] = feed;
-            yield currentState.copyWith(feeds: feeds);
-          }
-        } else if (event.eventType == 'source') {
-          final source = (event.data as NewsSourceEntity);
-          final feeds = currentState.feeds.map<NewsFeedEntity>((e) {
-            if (e.source.id == source.id) {
-              return e.copyWith(source: source);
-            }
-            return e;
-          }).toList();
-
-          yield currentState.copyWith(feeds: feeds);
-        }
-      }
-    } catch (e) {
-      log('Update change event of ${event.eventType} error: ', error: e);
     }
   }
 }

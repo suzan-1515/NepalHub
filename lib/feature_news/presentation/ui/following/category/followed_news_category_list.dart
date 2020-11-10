@@ -24,7 +24,7 @@ class _FollowedNewsCategoryListState extends State<FollowedNewsCategoryList> {
   @override
   void initState() {
     super.initState();
-    context.bloc<NewsCategoryBloc>().add(GetCategories());
+    context.read<NewsCategoryBloc>().add(GetCategories());
   }
 
   @override
@@ -52,8 +52,8 @@ class _FollowedNewsCategoryListState extends State<FollowedNewsCategoryList> {
                 itemBuilder: (_, index) {
                   var categoryModel = state.categories[index];
                   return NewsMenuItem(
-                    title: categoryModel.title,
-                    icon: categoryModel.icon,
+                    title: categoryModel.entity.title,
+                    icon: categoryModel.entity.icon,
                     onTap: () {
                       GetIt.I
                           .get<NavigationService>()
@@ -69,7 +69,7 @@ class _FollowedNewsCategoryListState extends State<FollowedNewsCategoryList> {
             child: ErrorDataView(
               message: state.message,
               onRetry: () {
-                context.bloc<NewsCategoryBloc>().add(GetFollowedCategories());
+                context.read<NewsCategoryBloc>().add(GetFollowedCategories());
               },
             ),
           );

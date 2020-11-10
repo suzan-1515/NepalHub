@@ -6,7 +6,21 @@ class Webview extends StatefulWidget {
   final String title;
   final String url;
 
-  const Webview({Key key, this.title, this.url}) : super(key: key);
+  const Webview({Key key, @required this.title, @required this.url})
+      : super(key: key);
+
+  static Future navigate(BuildContext context, String title, String url) {
+    return Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => Webview(
+          title: title,
+          url: url,
+        ),
+      ),
+    );
+  }
+
   @override
   _WebviewState createState() => _WebviewState();
 }

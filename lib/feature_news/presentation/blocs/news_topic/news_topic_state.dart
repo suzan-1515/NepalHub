@@ -20,7 +20,7 @@ class NewsTopicRefreshingState extends NewsTopicState {
 }
 
 class NewsTopicLoadSuccessState extends NewsTopicState {
-  final List<NewsTopicEntity> topics;
+  final List<NewsTopicUIModel> topics;
 
   NewsTopicLoadSuccessState(this.topics);
 

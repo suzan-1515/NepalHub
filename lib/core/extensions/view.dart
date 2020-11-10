@@ -35,3 +35,11 @@ extension ModalBottonSheetX on BuildContext {
             return child;
           });
 }
+
+extension DialogX on BuildContext {
+  dialog({@required Widget child}) => showDialog(
+      context: this,
+      builder: (context) {
+        return child;
+      });
+}

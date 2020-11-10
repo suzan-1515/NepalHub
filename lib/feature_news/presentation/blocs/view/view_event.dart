@@ -6,4 +6,11 @@ abstract class ViewEvent extends Equatable {
   List<Object> get props => [];
 }
 
-class View extends ViewEvent {}
+class View extends ViewEvent {
+  final NewsFeedEntity feed;
+
+  View({this.feed});
+
+  @override
+  List<Object> get props => [feed];
+}

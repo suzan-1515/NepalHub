@@ -20,12 +20,12 @@ class LoadingMoreState extends FeedState {
 }
 
 class LoadSuccessState extends FeedState {
-  final List<NewsFeedEntity> feeds;
+  final List<NewsFeedUIModel> feeds;
   final bool hasMore;
 
   LoadSuccessState({@required this.feeds, this.hasMore = true});
 
-  LoadSuccessState copyWith({List<NewsFeedEntity> feeds, bool hasMore}) =>
+  LoadSuccessState copyWith({List<NewsFeedUIModel> feeds, bool hasMore}) =>
       LoadSuccessState(
           feeds: feeds ?? this.feeds, hasMore: hasMore ?? this.hasMore);
 

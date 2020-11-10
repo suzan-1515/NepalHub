@@ -8,7 +8,8 @@ import 'package:samachar_hub/core/models/language.dart';
 import 'package:samachar_hub/core/usecases/usecase.dart';
 import 'package:samachar_hub/feature_news/domain/entities/news_topic_entity.dart';
 import 'package:samachar_hub/feature_news/domain/usecases/get_news_topics_use_case.dart';
-import 'package:samachar_hub/feature_news/presentation/blocs/news_topic/follow_unfollow/follow_un_follow_bloc.dart';
+import 'package:samachar_hub/feature_news/presentation/models/news_topic.dart';
+import 'package:samachar_hub/feature_news/presentation/extensions/news_extensions.dart';
 
 part 'news_topic_event.dart';
 part 'news_topic_state.dart';
@@ -16,34 +17,13 @@ part 'news_topic_state.dart';
 class NewsTopicBloc extends Bloc<NewsTopicEvent, NewsTopicState> {
   final UseCase _newsTopicsUseCase;
   final UseCase _newsFollowedTopicsUseCase;
-  final TopicFollowUnFollowBloc _followUnFollowBloc;
-
-  StreamSubscription _followStreamSubscription;
 
   NewsTopicBloc({
     @required getNewsTopicsUseCase,
     @required getNewsFollowedTopicsUseCase,
-    @required TopicFollowUnFollowBloc followUnFollowBloc,
   })  : _newsTopicsUseCase = getNewsTopicsUseCase,
         _newsFollowedTopicsUseCase = getNewsFollowedTopicsUseCase,
-        _followUnFollowBloc = followUnFollowBloc,
-        super(NewsTopicInitialState()) {
-    this._followStreamSubscription = _followUnFollowBloc.listen((followState) {
-      if (followState is TopicFollowSuccessState) {
-        add(UpdateTopicChangeEvent(
-            topic: followState.topic, eventType: 'follow'));
-      } else if (followState is TopicUnFollowSuccessState) {
-        add(UpdateTopicChangeEvent(
-            topic: followState.topic, eventType: 'unfollow'));
-      }
-    });
-  }
-
-  @override
-  Future<void> close() {
-    _followStreamSubscription?.cancel();
-    return super.close();
-  }
+        super(NewsTopicInitialState());
 
   @override
   Stream<NewsTopicState> mapEventToState(
@@ -55,8 +35,6 @@ class NewsTopicBloc extends Bloc<NewsTopicEvent, NewsTopicState> {
       yield* _mapGetFollowedTopicsEventToState(event);
     } else if (event is RefreshTopicsEvent) {
       yield* _mapRefreshTopicsEventToState(event);
-    } else if (event is UpdateTopicChangeEvent) {
-      yield* _mapUpdateFollowEventToState(event);
     }
   }
 
@@ -67,7 +45,7 @@ class NewsTopicBloc extends Bloc<NewsTopicEvent, NewsTopicState> {
       final List<NewsTopicEntity> newsList = await _newsTopicsUseCase
           .call(GetNewsTopicsUseCaseParams(language: event.language));
       if (newsList != null || newsList.isNotEmpty)
-        yield NewsTopicLoadSuccessState(newsList);
+        yield NewsTopicLoadSuccessState(newsList.toUIModels);
       else
         yield NewsTopicErrorState(message: 'Unable to refresh data.');
     } catch (e) {
@@ -88,7 +66,7 @@ class NewsTopicBloc extends Bloc<NewsTopicEvent, NewsTopicState> {
       if (newsList == null || newsList.isEmpty)
         yield NewsTopicLoadEmptyState(message: 'News topics not available.');
       else
-        yield NewsTopicLoadSuccessState(newsList);
+        yield NewsTopicLoadSuccessState(newsList.toUIModels);
     } catch (e) {
       log('News topics load error.', error: e);
       yield NewsTopicLoadErrorState(
@@ -113,31 +91,13 @@ class NewsTopicBloc extends Bloc<NewsTopicEvent, NewsTopicState> {
           yield NewsTopicLoadEmptyState(
               message: 'You have not followed any topics yet.');
         } else
-          yield NewsTopicLoadSuccessState(followedTopics);
+          yield NewsTopicLoadSuccessState(followedTopics.toUIModels);
       }
     } catch (e) {
       log('News followed topics load error.', error: e);
       yield NewsTopicLoadErrorState(
           message:
               'Unable to load topics. Make sure you are connect to Internet.');
-    }
-  }
-
-  Stream<NewsTopicState> _mapUpdateFollowEventToState(
-      UpdateTopicChangeEvent event) async* {
-    try {
-      final currentState = state;
-      if (currentState is NewsTopicLoadSuccessState) {
-        final index = currentState.topics
-            .indexWhere((element) => element.id == event.topic.id);
-        if (index != -1) {
-          var topics = List<NewsTopicEntity>.from(currentState.topics);
-          topics[index] = event.topic;
-          yield NewsTopicLoadSuccessState(topics);
-        }
-      }
-    } catch (e) {
-      log('Update topic ${event.eventType} event error: ', error: e);
     }
   }
 }

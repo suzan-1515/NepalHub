@@ -23,21 +23,3 @@ class TopicUnFollowEvent extends TopicFollowUnFollowEvent {
   @override
   List<Object> get props => [topic];
 }
-
-class UpdateTopicFollowEvent extends TopicFollowUnFollowEvent {
-  final NewsTopicEntity topic;
-
-  UpdateTopicFollowEvent({@required this.topic});
-
-  @override
-  List<Object> get props => [topic];
-}
-
-class UpdateTopicUnfollowEvent extends TopicFollowUnFollowEvent {
-  final NewsTopicEntity topic;
-
-  UpdateTopicUnfollowEvent({@required this.topic});
-
-  @override
-  List<Object> get props => [topic];
-}

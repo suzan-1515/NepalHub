@@ -13,6 +13,8 @@ class CommentLoading extends CommentState {}
 
 class CommentMoreLoading extends CommentState {}
 
+class CommentRefreshing extends CommentState {}
+
 class CommentLoadSuccess extends CommentState {
   final List<CommentUIModel> comments;
   final bool hasMore;
