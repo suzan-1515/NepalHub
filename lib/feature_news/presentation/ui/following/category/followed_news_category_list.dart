@@ -24,7 +24,7 @@ class _FollowedNewsCategoryListState extends State<FollowedNewsCategoryList> {
   @override
   void initState() {
     super.initState();
-    context.read<NewsCategoryBloc>().add(GetCategories());
+    context.read<NewsCategoryBloc>().add(GetFollowedCategories());
   }
 
   @override

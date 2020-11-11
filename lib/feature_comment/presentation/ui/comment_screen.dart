@@ -75,6 +75,7 @@ class CommentScreen extends StatelessWidget {
       threadId: threadId,
       threadType: threadType,
       child: Scaffold(
+        resizeToAvoidBottomInset: true,
         backgroundColor: Theme.of(context).backgroundColor,
         appBar: AppBar(
           title: Text('Comments'),

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:line_awesome_icons/line_awesome_icons.dart';
 import 'package:samachar_hub/core/services/navigation_service.dart';
 import 'package:samachar_hub/feature_auth/presentation/blocs/auth_bloc.dart';
 import 'package:samachar_hub/feature_comment/domain/entities/thread_type.dart';
+import 'package:samachar_hub/feature_comment/presentation/blocs/comment_bloc.dart';
 import 'package:samachar_hub/feature_comment/presentation/blocs/delete/delete_cubit.dart';
 import 'package:samachar_hub/feature_comment/presentation/blocs/like_unlike/like_unlike_bloc.dart';
 import 'package:samachar_hub/feature_comment/presentation/models/comment_model.dart';
@@ -29,6 +29,8 @@ class CommentListItem extends StatelessWidget {
     final user = context.watch<AuthBloc>().currentUser;
     final hasAvatar = (comment.entity.user.avatar != null &&
         comment.entity.user.avatar.isNotEmpty);
+    final isReply =
+        (context.watch<CommentBloc>().threadType == CommentThreadType.COMMENT);
     return Material(
       child: ListTile(
         leading: CircleAvatar(
@@ -53,17 +55,7 @@ class CommentListItem extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Container(
-                padding: const EdgeInsets.all(8.0),
-                decoration: BoxDecoration(
-                  color: Theme.of(context).backgroundColor,
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Text(
-                  comment.entity.comment,
-                  style: Theme.of(context).textTheme.bodyText2,
-                ),
-              ),
+              CommentView(comment: comment.entity.comment),
               SizedBox(height: 4),
               Row(
                 mainAxisAlignment: MainAxisAlignment.start,
@@ -97,20 +89,23 @@ class CommentListItem extends StatelessWidget {
                       '${comment.entity.likeCount.compactFormat}',
                       style: Theme.of(context).textTheme.overline,
                     ),
-                  SizedBox(width: 16),
-                  InkWell(
-                    child: Text(
-                      'Reply',
-                      style: Theme.of(context).textTheme.caption,
+                  if (!isReply) SizedBox(width: 16),
+                  if (!isReply)
+                    InkWell(
+                      child: Text(
+                        comment.entity.commentCount == 0
+                            ? 'Reply'
+                            : 'Replies (${comment.entity.commentCount.compactFormat})',
+                        style: Theme.of(context).textTheme.caption,
+                      ),
+                      onTap: () {
+                        GetIt.I.get<NavigationService>().toCommentsScreen(
+                            context: context,
+                            threadTitle: 'Reply: ${comment.entity.comment}',
+                            threadType: CommentThreadType.COMMENT,
+                            threadId: comment.entity.id);
+                      },
                     ),
-                    onTap: () {
-                      GetIt.I.get<NavigationService>().toCommentsScreen(
-                          context: context,
-                          threadTitle: comment.entity.comment,
-                          threadType: CommentThreadType.COMMENT,
-                          threadId: comment.entity.id);
-                    },
-                  ),
                 ],
               ),
             ],
@@ -173,6 +168,46 @@ class CommentListItem extends StatelessWidget {
                 break;
             }
           },
+        ),
+      ),
+    );
+  }
+}
+
+class CommentView extends StatefulWidget {
+  const CommentView({
+    Key key,
+    @required this.comment,
+  }) : super(key: key);
+
+  final String comment;
+
+  @override
+  _CommentViewState createState() => _CommentViewState();
+}
+
+class _CommentViewState extends State<CommentView> {
+  bool isExpanded = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(8.0),
+      decoration: BoxDecoration(
+        color: Theme.of(context).backgroundColor,
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: GestureDetector(
+        onTap: () {
+          setState(() {
+            isExpanded = !isExpanded;
+          });
+        },
+        child: Text(
+          widget.comment,
+          style: Theme.of(context).textTheme.bodyText2,
+          overflow: TextOverflow.ellipsis,
+          maxLines: isExpanded ? null : 4,
         ),
       ),
     );

@@ -17,43 +17,47 @@ class FollowedNewsTopicSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return NewsProvider.topicBlocProvider(
-      child: FadeInUp(
-        duration: Duration(milliseconds: 200),
-        child: Card(
-          color: Theme.of(context).cardColor,
-          elevation: 1,
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                SectionTitle(
-                  context: context,
-                  title: 'News Topics',
-                  onRefreshTap: () {
-                    context.read<NewsTopicBloc>().add(GetFollowedTopicsEvent());
-                  },
-                ),
-                SizedBox(
-                  height: 8,
-                ),
-                Flexible(
-                  fit: FlexFit.loose,
-                  child: FollowedNewsTopicList(),
-                ),
-                SizedBox(
-                  height: 8,
-                ),
-                // Divider(),
-                ViewAllButton(
+      child: Builder(
+        builder: (context) => FadeInUp(
+          duration: Duration(milliseconds: 200),
+          child: Card(
+            color: Theme.of(context).cardColor,
+            elevation: 1,
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  SectionTitle(
                     context: context,
-                    onTap: () {
-                      GetIt.I
-                          .get<NavigationService>()
-                          .toFollowedNewsTopicScreen(context);
-                    }),
-              ],
+                    title: 'News Topics',
+                    onRefreshTap: () {
+                      context
+                          .read<NewsTopicBloc>()
+                          .add(GetFollowedTopicsEvent());
+                    },
+                  ),
+                  SizedBox(
+                    height: 8,
+                  ),
+                  Flexible(
+                    fit: FlexFit.loose,
+                    child: FollowedNewsTopicList(),
+                  ),
+                  SizedBox(
+                    height: 8,
+                  ),
+                  // Divider(),
+                  ViewAllButton(
+                      context: context,
+                      onTap: () {
+                        GetIt.I
+                            .get<NavigationService>()
+                            .toFollowedNewsTopicScreen(context);
+                      }),
+                ],
+              ),
             ),
           ),
         ),

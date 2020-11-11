@@ -17,45 +17,47 @@ class FollowedNewsCategorySection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return NewsProvider.categoryBlocProvider(
-      child: FadeInUp(
-        duration: Duration(milliseconds: 200),
-        child: Card(
-          color: Theme.of(context).cardColor,
-          elevation: 1,
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                SectionTitle(
-                  context: context,
-                  title: 'News Categories',
-                  onRefreshTap: () {
-                    context
-                        .read<NewsCategoryBloc>()
-                        .add(GetFollowedCategories());
-                  },
-                ),
-                SizedBox(
-                  height: 8,
-                ),
-                Flexible(
-                  fit: FlexFit.loose,
-                  child: FollowedNewsCategoryList(),
-                ),
-                SizedBox(
-                  height: 8,
-                ),
-                Divider(),
-                ViewAllButton(
+      child: Builder(
+        builder: (context) => FadeInUp(
+          duration: Duration(milliseconds: 200),
+          child: Card(
+            color: Theme.of(context).cardColor,
+            elevation: 1,
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  SectionTitle(
                     context: context,
-                    onTap: () {
-                      GetIt.I
-                          .get<NavigationService>()
-                          .toFollowedNewsCategoryScreen(context);
-                    }),
-              ],
+                    title: 'News Categories',
+                    onRefreshTap: () {
+                      context
+                          .read<NewsCategoryBloc>()
+                          .add(GetFollowedCategories());
+                    },
+                  ),
+                  SizedBox(
+                    height: 8,
+                  ),
+                  Flexible(
+                    fit: FlexFit.loose,
+                    child: FollowedNewsCategoryList(),
+                  ),
+                  SizedBox(
+                    height: 8,
+                  ),
+                  Divider(),
+                  ViewAllButton(
+                      context: context,
+                      onTap: () {
+                        GetIt.I
+                            .get<NavigationService>()
+                            .toFollowedNewsCategoryScreen(context);
+                      }),
+                ],
+              ),
             ),
           ),
         ),

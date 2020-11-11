@@ -24,7 +24,7 @@ class AboutSettings extends StatelessWidget {
             dense: true,
             onTap: () => GetIt.I.get<NavigationService>().toWebViewScreen(
                 'Privacy Policy',
-                'https://suzan-1515.github.io/Samachar-Hub/privacy-policy.html',
+                'https://suzan-1515.github.io/NepalHub/privacy-policy.html',
                 context),
             title: Text(
               'Privacy Policy',
@@ -47,7 +47,7 @@ class AboutSettings extends StatelessWidget {
               showAboutDialog(
                   context: context,
                   applicationName: 'Nepal Hub',
-                  applicationVersion: '1.0.0',
+                  applicationVersion: '1.0.1',
                   applicationLegalese: kDesclaimer,
                   applicationIcon: Image.asset(
                     'assets/icons/logo.png',

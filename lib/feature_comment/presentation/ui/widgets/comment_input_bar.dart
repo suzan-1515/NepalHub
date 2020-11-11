@@ -4,6 +4,7 @@ import 'package:get_it/get_it.dart';
 import 'package:samachar_hub/core/services/services.dart';
 import 'package:samachar_hub/feature_auth/domain/entities/user_entity.dart';
 import 'package:samachar_hub/feature_auth/presentation/blocs/auth_bloc.dart';
+import 'package:samachar_hub/feature_comment/domain/entities/thread_type.dart';
 import 'package:samachar_hub/feature_comment/presentation/blocs/comment_bloc.dart';
 import 'package:samachar_hub/feature_comment/presentation/blocs/comment_post/comment_post_bloc.dart';
 import 'package:samachar_hub/core/extensions/view.dart';
@@ -20,6 +21,14 @@ class CommentInputBar extends StatefulWidget {
 
 class _CommentInputBarState extends State<CommentInputBar> {
   final TextEditingController _textEditingController = TextEditingController();
+  bool isReply = false;
+
+  @override
+  void initState() {
+    super.initState();
+    isReply =
+        (context.read<CommentBloc>().threadType == CommentThreadType.COMMENT);
+  }
 
   @override
   void dispose() {
@@ -82,6 +91,7 @@ class _CommentInputBarState extends State<CommentInputBar> {
               Expanded(
                   child: Container(
                 child: TextField(
+                  keyboardType: TextInputType.multiline,
                   onSubmitted: (value) {
                     _submitComment(context, user, value.trim());
                     _textEditingController.clear();

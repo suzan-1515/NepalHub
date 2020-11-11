@@ -10,9 +10,9 @@ A Flutter news app built with Bloc state management framework.
 
 ## APK
 
-***You can Install and test latest Flutter News app from below 👇***
+***You can install and test latest NepalHub apk from below 👇***
 
-[![NepalHub](https://img.shields.io/badge/NepalHub-Apk-brightgreen.svg?style=for-the-badge&logo=android)](https://github.com/suzan-1515/Samachar-Hub/releases/download/demo/app-release.apk)
+[![NepalHub](https://img.shields.io/badge/NepalHub-Apk-brightgreen.svg?style=for-the-badge&logo=android)](https://github.com/suzan-1515/NepalHub/releases/download/v1.0.1/app-release.apk)
 
 ### Created & Maintained By
 
