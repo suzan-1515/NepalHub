@@ -66,7 +66,11 @@ class App extends StatelessWidget {
               );
             }
 
-            return Container();
+            return Container(
+              width: double.infinity,
+              height: double.infinity,
+              color: Colors.white,
+            );
           },
         ),
       ),

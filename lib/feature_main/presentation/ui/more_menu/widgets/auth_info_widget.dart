@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_advanced_networkimage/provider.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:get_it/get_it.dart';
-import 'package:samachar_hub/core/services/services.dart';
 import 'package:samachar_hub/feature_auth/domain/entities/user_entity.dart';
 import 'package:samachar_hub/feature_auth/presentation/blocs/auth_bloc.dart';
+import 'package:samachar_hub/feature_auth/presentation/ui/login_screen.dart';
+import 'package:samachar_hub/feature_auth/presentation/ui/user_profile_screen.dart';
 
 class AuthInfo extends StatefulWidget {
   @override
@@ -15,7 +15,7 @@ class _AuthInfoState extends State<AuthInfo> {
   Widget _buildUserInfo(BuildContext context, UserEntity user) {
     return InkWell(
       onTap: () {
-        GetIt.I.get<NavigationService>().toUserProfileScreen(context: context);
+        Navigator.pushNamed(context, UserProfileScreen.ROUTE_NAME);
       },
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -58,7 +58,7 @@ class _AuthInfoState extends State<AuthInfo> {
       alignment: Alignment.center,
       child: OutlineButton(
         onPressed: () {
-          GetIt.I.get<NavigationService>().toLoginScreen(context);
+          Navigator.pushNamed(context, LoginScreen.ROUTE_NAME);
         },
         child: Text('Sign In'),
       ),

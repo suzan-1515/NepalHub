@@ -1,12 +1,11 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:get_it/get_it.dart';
-import 'package:samachar_hub/core/services/services.dart';
 import 'package:samachar_hub/core/widgets/empty_data_widget.dart';
 import 'package:samachar_hub/core/widgets/error_data_widget.dart';
 import 'package:samachar_hub/core/widgets/progress_widget.dart';
 import 'package:samachar_hub/feature_news/presentation/blocs/news_topic/news_topic_bloc.dart';
+import 'package:samachar_hub/feature_news/presentation/ui/topics/topic_feed/news_topic_feed_screen.dart';
 import 'package:samachar_hub/feature_news/presentation/ui/widgets/news_menu_item.dart';
 import 'package:samachar_hub/core/extensions/view.dart';
 
@@ -51,8 +50,9 @@ class _FollowedNewsTopicListState extends State<FollowedNewsTopicList> {
                     title: topic.entity.title,
                     icon: topic.entity.icon,
                     onTap: () {
-                      GetIt.I.get<NavigationService>().toNewsTopicFeedScreen(
-                          context: context, topicUIModel: topic);
+                      Navigator.pushNamed(
+                          context, NewsTopicFeedScreen.ROUTE_NAME,
+                          arguments: topic);
                     },
                   );
                 },

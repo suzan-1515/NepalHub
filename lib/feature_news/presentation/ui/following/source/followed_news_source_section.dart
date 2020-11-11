@@ -1,12 +1,11 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:get_it/get_it.dart';
-import 'package:samachar_hub/core/services/services.dart';
 import 'package:samachar_hub/feature_news/presentation/blocs/news_source/news_sources_bloc.dart';
 import 'package:samachar_hub/feature_news/presentation/ui/following/source/followed_news_source_list.dart';
 import 'package:samachar_hub/feature_news/presentation/ui/following/widgets/section_title.dart';
 import 'package:samachar_hub/feature_news/presentation/ui/following/widgets/view_all_button.dart';
+import 'package:samachar_hub/feature_news/presentation/ui/source/sources/sources_screen.dart';
 import 'package:samachar_hub/feature_news/utils/provider.dart';
 
 class FollowedNewsSourceSection extends StatelessWidget {
@@ -52,9 +51,8 @@ class FollowedNewsSourceSection extends StatelessWidget {
                   ViewAllButton(
                       context: context,
                       onTap: () {
-                        GetIt.I
-                            .get<NavigationService>()
-                            .toFollowedNewsSourceScreen(context);
+                        Navigator.pushNamed(
+                            context, NewsSourcesScreen.ROUTE_NAME);
                       }),
                 ],
               ),

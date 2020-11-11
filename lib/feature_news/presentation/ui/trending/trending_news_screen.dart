@@ -4,16 +4,9 @@ import 'package:samachar_hub/feature_news/presentation/ui/trending/widgets/trend
 import 'package:samachar_hub/feature_news/utils/provider.dart';
 
 class TrendingNewsScreen extends StatelessWidget {
-  const TrendingNewsScreen({Key key}) : super(key: key);
+  static const String ROUTE_NAME = '/trending-news';
 
-  static Future navigate(BuildContext context) {
-    return Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => TrendingNewsScreen(),
-      ),
-    );
-  }
+  const TrendingNewsScreen({Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

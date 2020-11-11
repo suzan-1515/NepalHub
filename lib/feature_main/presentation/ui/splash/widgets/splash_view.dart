@@ -14,7 +14,7 @@ class SplashView extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Center(
-            child: FadeInUp(
+            child: FadeIn(
               child: Container(
                 width: 100,
                 height: 100,

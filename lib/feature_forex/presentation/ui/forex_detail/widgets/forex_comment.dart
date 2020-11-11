@@ -4,6 +4,7 @@ import 'package:samachar_hub/core/services/services.dart';
 import 'package:samachar_hub/core/widgets/comment_bar_widget.dart';
 import 'package:samachar_hub/feature_auth/presentation/blocs/auth_bloc.dart';
 import 'package:samachar_hub/feature_comment/domain/entities/thread_type.dart';
+import 'package:samachar_hub/feature_comment/presentation/ui/comment_screen.dart';
 import 'package:samachar_hub/feature_forex/presentation/blocs/like_unlike/like_unlike_bloc.dart';
 import 'package:samachar_hub/feature_forex/presentation/blocs/share/share_bloc.dart';
 import 'package:samachar_hub/feature_forex/presentation/models/forex_model.dart';
@@ -23,11 +24,14 @@ class ForexComment extends StatelessWidget {
         ScopedModel.of<ForexUIModel>(context, rebuildOnChange: true);
     return CommentBar(
       likeCount: forexUIModel.entity.likeCount ?? 0,
-      onCommentTap: () => GetIt.I.get<NavigationService>().toCommentsScreen(
-          context: context,
-          threadTitle: forexUIModel.entity.currency.title,
-          threadId: forexUIModel.entity.id,
-          threadType: CommentThreadType.FOREX),
+      onCommentTap: () => Navigator.pushNamed(
+        context,
+        CommentScreen.ROUTE_NAME,
+        arguments: CommentScreenArgs(
+            threadTitle: forexUIModel.entity.currency.title,
+            threadId: forexUIModel.entity.id,
+            threadType: CommentThreadType.FOREX),
+      ),
       onShareTap: () {
         GetIt.I
             .get<ShareService>()

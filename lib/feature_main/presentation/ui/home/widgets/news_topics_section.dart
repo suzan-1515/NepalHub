@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:get_it/get_it.dart';
-import 'package:samachar_hub/core/services/services.dart';
 import 'package:samachar_hub/feature_main/presentation/ui/widgets/section_heading.dart';
 import 'package:samachar_hub/feature_news/presentation/models/news_topic.dart';
+import 'package:samachar_hub/feature_news/presentation/ui/topics/topic_feed/news_topic_feed_screen.dart';
+import 'package:samachar_hub/feature_news/presentation/ui/topics/topics/topics_screen.dart';
 import 'package:samachar_hub/feature_news/presentation/ui/widgets/news_tag_item.dart';
 
 class NewsTopicsSection extends StatefulWidget {
@@ -27,6 +27,8 @@ class _NewsTopicsSectionState extends State<NewsTopicsSection>
       children: <Widget>[
         SectionHeading(
           title: 'Trending Topics',
+          onTap: () =>
+              Navigator.pushNamed(context, NewsTopicsScreen.ROUTE_NAME),
         ),
         Container(
           color: Theme.of(context).cardColor,
@@ -38,10 +40,9 @@ class _NewsTopicsSectionState extends State<NewsTopicsSection>
                 .map((e) => NewsTagItem(
                       title: e.entity.title,
                       icon: e.entity.icon,
-                      onTap: (value) => GetIt.I
-                          .get<NavigationService>()
-                          .toNewsTopicFeedScreen(
-                              context: context, topicUIModel: e),
+                      onTap: (value) => Navigator.pushNamed(
+                          context, NewsTopicFeedScreen.ROUTE_NAME,
+                          arguments: e),
                     ))
                 .toList(),
           ),

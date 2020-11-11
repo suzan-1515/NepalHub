@@ -22,7 +22,8 @@ class NewsCompactView extends StatelessWidget {
       margin: EdgeInsets.symmetric(horizontal: 4, vertical: 6),
       elevation: 0,
       child: InkWell(
-        onTap: () => NewsDetailScreen.navigate(feed, context),
+        onTap: () => Navigator.pushNamed(context, NewsDetailScreen.ROUTE_NAME,
+            arguments: feed),
         child: ClipRRect(
           borderRadius: BorderRadius.all(Radius.circular(6.0)),
           child: Stack(

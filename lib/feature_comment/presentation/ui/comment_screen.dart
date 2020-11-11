@@ -10,31 +10,10 @@ import 'package:samachar_hub/feature_comment/utils/providers.dart';
 import 'package:samachar_hub/feature_stats/presentation/blocs/thread_stats_cubit.dart';
 
 class CommentScreen extends StatelessWidget {
-  final String threadId;
-  final CommentThreadType threadType;
-  final String threadTitle;
-  const CommentScreen(
-      {Key key,
-      @required this.threadId,
-      @required this.threadType,
-      @required this.threadTitle})
-      : super(key: key);
+  static const String ROUTE_NAME = '/comment';
+  const CommentScreen({Key key}) : super(key: key);
 
-  static Future navigate(BuildContext context, String threadId,
-      CommentThreadType threadType, String threadTitle) {
-    return Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => CommentScreen(
-          threadId: threadId,
-          threadTitle: threadTitle,
-          threadType: threadType,
-        ),
-      ),
-    );
-  }
-
-  Widget _buildBody(BuildContext context) {
+  Widget _buildBody(BuildContext context, String title) {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 4),
       child: NestedScrollView(
@@ -42,7 +21,7 @@ class CommentScreen extends StatelessWidget {
             [
           SliverToBoxAdapter(
             child: Header(
-              title: threadTitle,
+              title: title,
             ),
           ),
           SliverToBoxAdapter(
@@ -71,9 +50,10 @@ class CommentScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final CommentScreenArgs args = ModalRoute.of(context).settings.arguments;
     return CommentProvider.commentBlocProvider(
-      threadId: threadId,
-      threadType: threadType,
+      threadId: args.threadId,
+      threadType: args.threadType,
       child: Scaffold(
         resizeToAvoidBottomInset: true,
         backgroundColor: Theme.of(context).backgroundColor,
@@ -89,7 +69,7 @@ class CommentScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: <Widget>[
                 Expanded(
-                  child: _buildBody(context),
+                  child: _buildBody(context, args.threadTitle),
                 ),
                 const CommentInputBar(),
               ],
@@ -99,4 +79,17 @@ class CommentScreen extends StatelessWidget {
       ),
     );
   }
+}
+
+class CommentScreenArgs {
+  final String threadId;
+  final CommentThreadType threadType;
+  final String threadTitle;
+  final Map<String, dynamic> data;
+
+  CommentScreenArgs(
+      {@required this.threadId,
+      @required this.threadType,
+      @required this.threadTitle,
+      this.data});
 }

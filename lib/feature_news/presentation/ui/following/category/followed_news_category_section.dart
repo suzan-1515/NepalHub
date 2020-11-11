@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:samachar_hub/core/services/services.dart';
 import 'package:samachar_hub/feature_news/presentation/blocs/news_category/news_category_bloc.dart';
+import 'package:samachar_hub/feature_news/presentation/ui/category/categories/news_categories_screen.dart';
 import 'package:samachar_hub/feature_news/presentation/ui/following/category/followed_news_category_list.dart';
 import 'package:samachar_hub/feature_news/presentation/ui/following/widgets/section_title.dart';
 import 'package:samachar_hub/feature_news/presentation/ui/following/widgets/view_all_button.dart';
@@ -52,9 +53,8 @@ class FollowedNewsCategorySection extends StatelessWidget {
                   ViewAllButton(
                       context: context,
                       onTap: () {
-                        GetIt.I
-                            .get<NavigationService>()
-                            .toFollowedNewsCategoryScreen(context);
+                        Navigator.pushNamed(
+                            context, NewsCategoriesScreen.ROUTE_NAME);
                       }),
                 ],
               ),

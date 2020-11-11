@@ -5,6 +5,7 @@ import 'package:samachar_hub/core/services/services.dart';
 import 'package:samachar_hub/core/widgets/comment_bar_widget.dart';
 import 'package:samachar_hub/feature_auth/presentation/blocs/auth_bloc.dart';
 import 'package:samachar_hub/feature_comment/domain/entities/thread_type.dart';
+import 'package:samachar_hub/feature_comment/presentation/ui/comment_screen.dart';
 import 'package:samachar_hub/feature_news/presentation/blocs/like_unlike/like_unlike_bloc.dart';
 import 'package:samachar_hub/feature_news/presentation/blocs/share/share_bloc.dart';
 import 'package:samachar_hub/feature_news/presentation/models/news_feed.dart';
@@ -22,11 +23,14 @@ class NewsDetailComment extends StatelessWidget {
     final user = context.watch<AuthBloc>().currentUser;
     return CommentBar(
       likeCount: feed.entity.likeCount ?? 0,
-      onCommentTap: () => GetIt.I.get<NavigationService>().toCommentsScreen(
-          context: context,
-          threadTitle: feed.entity.title,
-          threadId: feed.entity.id,
-          threadType: CommentThreadType.NEWS_FEED),
+      onCommentTap: () => Navigator.pushNamed(
+        context,
+        CommentScreen.ROUTE_NAME,
+        arguments: CommentScreenArgs(
+            threadTitle: feed.entity.title,
+            threadId: feed.entity.id,
+            threadType: CommentThreadType.NEWS_FEED),
+      ),
       onShareTap: () {
         GetIt.I
             .get<ShareService>()

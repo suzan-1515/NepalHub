@@ -5,6 +5,7 @@ import 'package:samachar_hub/core/services/services.dart';
 import 'package:samachar_hub/feature_main/presentation/ui/more_menu/widgets/auth_info_widget.dart';
 import 'package:samachar_hub/feature_main/presentation/ui/more_menu/widgets/menu_list.dart';
 import 'package:samachar_hub/feature_main/presentation/ui/more_menu/widgets/more_menu_list_item.dart';
+import 'package:samachar_hub/feature_main/presentation/ui/settings/settings_page.dart';
 
 class MoreMenuScreen extends StatefulWidget {
   @override
@@ -23,7 +24,7 @@ class _MoreMenuScreenState extends State<MoreMenuScreen>
       title: 'Settings',
       icon: FontAwesomeIcons.cog,
       onTap: () {
-        GetIt.I.get<NavigationService>().toSettingsScreen(context: context);
+        Navigator.pushNamed(context, SettingsScreen.ROUTE_NAME);
       },
     );
   }

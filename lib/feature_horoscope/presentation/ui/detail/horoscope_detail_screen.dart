@@ -9,34 +9,18 @@ import 'package:samachar_hub/feature_horoscope/presentation/blocs/share/share_bl
 import 'package:samachar_hub/feature_horoscope/presentation/blocs/view/view_bloc.dart';
 import 'package:samachar_hub/feature_horoscope/presentation/models/horoscope_model.dart';
 import 'package:samachar_hub/feature_horoscope/presentation/ui/detail/widgets/zodiac_info.dart';
+import 'package:samachar_hub/feature_horoscope/presentation/ui/horoscope_detail_screen_arguments.dart';
 import 'package:samachar_hub/feature_horoscope/utils/provider.dart';
+import 'package:samachar_hub/feature_main/presentation/ui/settings/settings_page.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 import 'widgets/horoscope_comment.dart';
 
 class HoroscopeDetailScreen extends StatelessWidget {
-  final int signIndex;
-  final HoroscopeUIModel horoscopeUIModel;
-
+  static const String ROUTE_NAME = '/horoscope-detail';
   const HoroscopeDetailScreen({
     Key key,
-    @required this.signIndex,
-    @required this.horoscopeUIModel,
   }) : super(key: key);
-
-  static Future navigate(
-      {@required BuildContext context,
-      @required HoroscopeUIModel horoscopeUIModel,
-      @required int signIndex}) {
-    return Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => HoroscopeDetailScreen(
-            horoscopeUIModel: horoscopeUIModel,
-            signIndex: signIndex,
-          ),
-        ));
-  }
 
   Widget _buildAdView(context, store) {
     return Container(
@@ -55,10 +39,12 @@ class HoroscopeDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final HoroscopeDetailScreenArgs args =
+        ModalRoute.of(context).settings.arguments;
     return HoroscopeProvider.horoscopeDetailBlocProvider(
-      horoscope: horoscopeUIModel.entity,
+      horoscope: args.horoscopeUIModel.entity,
       child: ScopedModel<HoroscopeUIModel>(
-        model: horoscopeUIModel,
+        model: args.horoscopeUIModel,
         child: MultiBlocListener(
           listeners: [
             BlocListener<LikeUnlikeBloc, LikeUnlikeState>(
@@ -92,14 +78,12 @@ class HoroscopeDetailScreen extends StatelessWidget {
           child: Scaffold(
             backgroundColor: Theme.of(context).backgroundColor,
             appBar: AppBar(
-              title: Text(HOROSCOPE_SIGNS[Language.NEPALI][signIndex]),
+              title: Text(HOROSCOPE_SIGNS[Language.NEPALI][args.signIndex]),
               actions: <Widget>[
                 IconButton(
                   icon: Icon(Icons.settings),
                   onPressed: () {
-                    GetIt.I
-                        .get<NavigationService>()
-                        .toSettingsScreen(context: context);
+                    Navigator.pushNamed(context, SettingsScreen.ROUTE_NAME);
                   },
                 ),
               ],
@@ -107,11 +91,11 @@ class HoroscopeDetailScreen extends StatelessWidget {
             body: SafeArea(
               child: Padding(
                 padding: const EdgeInsets.all(16.0),
-                child: ZodiacInfo(signIndex: signIndex),
+                child: ZodiacInfo(signIndex: args.signIndex),
               ),
             ),
             bottomNavigationBar: BottomAppBar(
-              child: HoroscopeComment(signIndex: signIndex),
+              child: HoroscopeComment(signIndex: args.signIndex),
             ),
           ),
         ),

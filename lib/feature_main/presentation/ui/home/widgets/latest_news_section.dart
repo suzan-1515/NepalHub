@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:get_it/get_it.dart';
-import 'package:samachar_hub/core/services/services.dart';
 import 'package:samachar_hub/feature_main/presentation/models/home/latest_news_model.dart';
 import 'package:samachar_hub/feature_main/presentation/ui/widgets/section_heading.dart';
 import 'package:samachar_hub/feature_news/presentation/blocs/bookmarks/bookmark_unbookmark/bookmark_un_bookmark_bloc.dart';
 import 'package:samachar_hub/feature_news/presentation/blocs/news_source/follow_unfollow/follow_un_follow_bloc.dart';
 import 'package:samachar_hub/feature_news/presentation/models/news_feed.dart';
+import 'package:samachar_hub/feature_news/presentation/ui/latest/latest_news_screen.dart';
 import 'package:samachar_hub/feature_news/presentation/ui/widgets/news_list_view.dart';
 import 'package:samachar_hub/feature_news/presentation/ui/widgets/news_thumbnail_view.dart';
 import 'package:samachar_hub/feature_news/utils/provider.dart';
@@ -25,7 +24,7 @@ class LatestNewsSection extends StatelessWidget {
           return SectionHeading(
             title: 'Latest News',
             onTap: () =>
-                GetIt.I.get<NavigationService>().toLatestNewsScreen(context),
+                Navigator.pushNamed(context, LatestNewsScreen.ROUTE_NAME),
           );
         }
         var feed = latestNews.feeds[index - 1];

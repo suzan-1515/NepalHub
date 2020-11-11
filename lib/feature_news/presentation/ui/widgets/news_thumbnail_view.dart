@@ -21,7 +21,8 @@ class NewsThumbnailView extends StatelessWidget {
         borderRadius: BorderRadius.circular(6),
       ),
       child: InkWell(
-        onTap: () => NewsDetailScreen.navigate(feed, context),
+        onTap: () => Navigator.pushNamed(context, NewsDetailScreen.ROUTE_NAME,
+            arguments: feed),
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Column(

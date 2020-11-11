@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:samachar_hub/feature_news/domain/entities/news_topic_entity.dart';
 import 'package:samachar_hub/feature_news/presentation/blocs/news_topic/follow_unfollow/follow_un_follow_bloc.dart';
 import 'package:samachar_hub/feature_news/presentation/models/news_topic.dart';
 import 'package:samachar_hub/feature_news/presentation/ui/topics/topic_feed/widgets/news_topic_feed_header.dart';
@@ -11,23 +10,14 @@ import 'package:samachar_hub/feature_news/utils/provider.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 class NewsTopicFeedScreen extends StatelessWidget {
-  final NewsTopicUIModel newsTopicUIModel;
-  const NewsTopicFeedScreen({Key key, @required this.newsTopicUIModel})
-      : super(key: key);
+  static const String ROUTE_NAME = '/news-topic-feed';
 
-  static Future navigate(BuildContext context, NewsTopicUIModel topicUIModel) {
-    return Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => NewsTopicFeedScreen(
-          newsTopicUIModel: topicUIModel,
-        ),
-      ),
-    );
-  }
+  const NewsTopicFeedScreen({Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final NewsTopicUIModel newsTopicUIModel =
+        ModalRoute.of(context).settings.arguments;
     return NewsProvider.topicFeedBlocProvider(
       topicUIModel: newsTopicUIModel,
       child: ScopedModel<NewsTopicUIModel>(

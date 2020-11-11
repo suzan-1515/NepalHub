@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:get_it/get_it.dart';
-import 'package:samachar_hub/core/services/services.dart';
 import 'package:samachar_hub/feature_main/presentation/ui/widgets/section_heading.dart';
 import 'package:samachar_hub/feature_news/presentation/models/news_category.dart';
+import 'package:samachar_hub/feature_news/presentation/ui/category/categories/news_categories_screen.dart';
+import 'package:samachar_hub/feature_news/presentation/ui/category/category_feed/news_category_feed_screen.dart';
 import 'package:samachar_hub/feature_news/presentation/ui/widgets/news_menu_item.dart';
 
 class NewsCategoryMenuSection extends StatefulWidget {
@@ -29,9 +29,8 @@ class _NewsCategoryMenuSectionState extends State<NewsCategoryMenuSection>
       children: <Widget>[
         SectionHeading(
           title: 'Top Categories',
-          onTap: () => GetIt.I
-              .get<NavigationService>()
-              .toFollowedNewsCategoryScreen(context),
+          onTap: () =>
+              Navigator.pushNamed(context, NewsCategoriesScreen.ROUTE_NAME),
         ),
         LimitedBox(
           maxHeight: 100,
@@ -47,9 +46,9 @@ class _NewsCategoryMenuSectionState extends State<NewsCategoryMenuSection>
                 return NewsMenuItem(
                   title: categoryModel.entity.title,
                   icon: categoryModel.entity.icon,
-                  onTap: () => GetIt.I
-                      .get<NavigationService>()
-                      .toNewsCategoryFeedScreen(context, categoryModel),
+                  onTap: () => Navigator.pushNamed(
+                      context, NewsCategoryFeedScreen.ROUTE_NAME,
+                      arguments: categoryModel),
                 );
               },
             ),

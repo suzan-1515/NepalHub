@@ -13,9 +13,13 @@ part 'news_detail_state.dart';
 
 class NewsDetailBloc extends Bloc<NewsDetailEvent, NewsDetailState> {
   final NewsFeedEntity feed;
+  String feedId;
   final UseCase _getDetailNewsUseCase;
 
-  NewsDetailBloc({@required this.feed, @required UseCase getDetailNewsUseCase})
+  NewsDetailBloc(
+      {@required this.feed,
+      @required UseCase getDetailNewsUseCase,
+      this.feedId})
       : _getDetailNewsUseCase = getDetailNewsUseCase,
         super(NewsDetailInitialState(feed: feed));
 
@@ -28,11 +32,15 @@ class NewsDetailBloc extends Bloc<NewsDetailEvent, NewsDetailState> {
       yield NewsDetailLoadingState();
       try {
         if (feed != null) {
+          this.feedId = feed.id;
           yield NewsDetailLoadSuccessState(feed);
         }
         final NewsFeedEntity feedEntity = await _getDetailNewsUseCase
-            .call(GetNewsDetailUseCaseParams(feedId: feed.id));
-        if (feedEntity != null) yield NewsDetailLoadSuccessState(feedEntity);
+            .call(GetNewsDetailUseCaseParams(feedId: feedId));
+        if (feedEntity != null)
+          yield NewsDetailLoadSuccessState(feedEntity);
+        else
+          yield NewsDetailErrorState(message: 'Unable to load data.');
       } catch (e) {
         log('News detail load error.', error: e);
         yield NewsDetailErrorState(message: 'Unable to load data.');

@@ -10,23 +10,14 @@ import 'package:samachar_hub/feature_news/utils/provider.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 class NewsSourceFeedScreen extends StatelessWidget {
-  final NewsSourceUIModel newsSourceUIModel;
-  const NewsSourceFeedScreen({Key key, @required this.newsSourceUIModel})
-      : super(key: key);
+  static const String ROUTE_NAME = '/news-source-feed';
 
-  static Future navigate(
-      BuildContext context, NewsSourceUIModel sourceUIModel) {
-    return Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (_) => NewsSourceFeedScreen(
-            newsSourceUIModel: sourceUIModel,
-          ),
-        ));
-  }
+  const NewsSourceFeedScreen({Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final NewsSourceUIModel newsSourceUIModel =
+        ModalRoute.of(context).settings.arguments;
     return NewsProvider.sourceFeedBlocProvider(
       source: newsSourceUIModel,
       child: ScopedModel<NewsSourceUIModel>(

@@ -14,25 +14,14 @@ import 'package:samachar_hub/core/extensions/view.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 class GoldSilverDetailScreen extends StatelessWidget {
-  final GoldSilverUIModel goldSilverUIModel;
-  const GoldSilverDetailScreen({Key key, @required this.goldSilverUIModel})
-      : assert(goldSilverUIModel != null, 'Gold/Silver cannot be null.'),
-        super(key: key);
+  static const String ROUTE_NAME = '/gold-silver';
 
-  static Future navigate(
-      {@required BuildContext context,
-      @required GoldSilverUIModel goldSilver}) {
-    return Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => GoldSilverDetailScreen(
-            goldSilverUIModel: goldSilver,
-          ),
-        ));
-  }
+  const GoldSilverDetailScreen({Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final GoldSilverUIModel goldSilverUIModel =
+        ModalRoute.of(context).settings.arguments;
     return GoldSilverProvider.goldSilverDetailBlocProvider(
       goldSilver: goldSilverUIModel.entity,
       child: ScopedModel<GoldSilverUIModel>(

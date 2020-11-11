@@ -3,19 +3,12 @@ import 'package:get_it/get_it.dart';
 import 'package:samachar_hub/core/services/services.dart';
 import 'package:samachar_hub/feature_horoscope/domain/entities/horoscope_type.dart';
 import 'package:samachar_hub/feature_horoscope/utils/provider.dart';
+import 'package:samachar_hub/feature_main/presentation/ui/settings/settings_page.dart';
 
 import 'widgets/horoscope_list.dart';
 
 class HoroscopeScreen extends StatefulWidget {
-  static Future navigate({
-    @required BuildContext context,
-  }) {
-    return Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => HoroscopeScreen(),
-        ));
-  }
+  static const String ROUTE_NAME = '/horoscope';
 
   @override
   _HoroscopeScreenState createState() => _HoroscopeScreenState();
@@ -53,9 +46,7 @@ class _HoroscopeScreenState extends State<HoroscopeScreen>
           IconButton(
             icon: Icon(Icons.settings),
             onPressed: () {
-              GetIt.I
-                  .get<NavigationService>()
-                  .toSettingsScreen(context: context);
+              Navigator.pushNamed(context, SettingsScreen.ROUTE_NAME);
             },
           ),
         ],

@@ -4,6 +4,7 @@ import 'package:get_it/get_it.dart';
 import 'package:samachar_hub/core/services/services.dart';
 import 'package:samachar_hub/feature_auth/domain/entities/user_entity.dart';
 import 'package:samachar_hub/feature_auth/presentation/blocs/auth_bloc.dart';
+import 'package:samachar_hub/feature_auth/presentation/ui/login_screen.dart';
 import 'package:samachar_hub/feature_comment/domain/entities/thread_type.dart';
 import 'package:samachar_hub/feature_comment/presentation/blocs/comment_bloc.dart';
 import 'package:samachar_hub/feature_comment/presentation/blocs/comment_post/comment_post_bloc.dart';
@@ -47,7 +48,7 @@ class _CommentInputBarState extends State<CommentInputBar> {
       return context.read<CommentPostBloc>().add(PostCommentEvent(comment));
     }
 
-    GetIt.I.get<NavigationService>().loginRedirect(context);
+    Navigator.pushNamed(context, LoginScreen.ROUTE_NAME);
   }
 
   @override

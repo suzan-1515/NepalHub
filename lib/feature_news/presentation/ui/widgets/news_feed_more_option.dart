@@ -7,6 +7,7 @@ import 'package:samachar_hub/feature_news/presentation/blocs/dislike/dislike_blo
 import 'package:samachar_hub/feature_news/presentation/blocs/news_source/follow_unfollow/follow_un_follow_bloc.dart';
 import 'package:samachar_hub/feature_news/presentation/blocs/share/share_bloc.dart';
 import 'package:samachar_hub/feature_news/presentation/models/news_feed.dart';
+import 'package:samachar_hub/feature_news/presentation/ui/source/source_feed/news_source_feed_screen.dart';
 import 'package:samachar_hub/feature_report/domain/entities/report_thread_type.dart';
 import 'package:samachar_hub/feature_news/presentation/extensions/news_extensions.dart';
 import 'package:samachar_hub/feature_report/presentation/ui/report.dart';
@@ -77,9 +78,8 @@ class NewsFeedMoreOption extends StatelessWidget {
             ),
             onTap: () {
               Navigator.pop(context);
-              GetIt.I.get<NavigationService>().toNewsSourceFeedScreen(
-                  sourceUIModel: feed.entity.source.toUIModel,
-                  context: context);
+              Navigator.pushNamed(context, NewsSourceFeedScreen.ROUTE_NAME,
+                  arguments: feed.entity.toUIModel);
             },
           ),
           ListTile(

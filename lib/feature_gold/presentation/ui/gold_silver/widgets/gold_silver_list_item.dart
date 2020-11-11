@@ -7,6 +7,8 @@ import 'package:samachar_hub/core/services/services.dart';
 import 'package:samachar_hub/feature_gold/presentation/models/gold_silver_model.dart';
 import 'package:samachar_hub/feature_gold/presentation/extensions/gold_silver_extensions.dart';
 import 'package:samachar_hub/core/extensions/number_extensions.dart';
+import 'package:samachar_hub/feature_gold/presentation/ui/details/gold_silver_detail_screen.dart';
+import 'package:samachar_hub/feature_gold/presentation/ui/gold_silver/gold_silver_screen.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 class GoldSilverListItem extends StatelessWidget {
@@ -23,9 +25,9 @@ class GoldSilverListItem extends StatelessWidget {
     return Material(
       color: Colors.transparent,
       child: InkWell(
-        onTap: () => GetIt.I
-            .get<NavigationService>()
-            .toGoldSilverDetailScreen(context, goldSilver),
+        onTap: () => Navigator.pushNamed(
+            context, GoldSilverDetailScreen.ROUTE_NAME,
+            arguments: goldSilver),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.center,

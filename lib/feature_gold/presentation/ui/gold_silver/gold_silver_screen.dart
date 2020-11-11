@@ -8,12 +8,7 @@ import 'package:samachar_hub/feature_gold/presentation/ui/gold_silver/widgets/go
 import 'package:samachar_hub/feature_gold/utils/provider.dart';
 
 class GoldSilverScreen extends StatelessWidget {
-  static Future navigate(BuildContext context) {
-    return Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => GoldSilverScreen()),
-    );
-  }
+  static const String ROUTE_NAME = '/gold-silver';
 
   Widget _buildDefaultTypeGraph() {
     return BlocBuilder<GoldSilverBloc, GoldSilverState>(

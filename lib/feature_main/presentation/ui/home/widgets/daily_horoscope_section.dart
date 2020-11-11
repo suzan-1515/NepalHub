@@ -1,13 +1,14 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:get_it/get_it.dart';
 import 'package:samachar_hub/core/models/language.dart';
-import 'package:samachar_hub/core/services/services.dart';
 import 'package:samachar_hub/core/widgets/cached_image_widget.dart';
 import 'package:samachar_hub/feature_horoscope/presentation/extensions/horoscope_extensions.dart';
 import 'package:samachar_hub/feature_horoscope/presentation/models/horoscope_model.dart';
+import 'package:samachar_hub/feature_horoscope/presentation/ui/detail/horoscope_detail_screen.dart';
+import 'package:samachar_hub/feature_horoscope/presentation/ui/horoscope_detail_screen_arguments.dart';
 import 'package:samachar_hub/feature_main/presentation/blocs/settings/settings_cubit.dart';
+import 'package:samachar_hub/feature_main/presentation/ui/settings/settings_page.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 class DailyHoroscope extends StatefulWidget {
@@ -36,7 +37,7 @@ class _DailyHoroscopeState extends State<DailyHoroscope>
         ),
       ],
       onSelected: (value) =>
-          GetIt.I.get<NavigationService>().toSettingsScreen(context: context),
+          Navigator.pushNamed(context, SettingsScreen.ROUTE_NAME),
     );
   }
 
@@ -114,8 +115,10 @@ class _DailyHoroscopeState extends State<DailyHoroscope>
           borderRadius: BorderRadius.circular(6),
         ),
         child: InkWell(
-          onTap: () => GetIt.I.get<NavigationService>().toHoroscopeDetail(
-              context, defaultHoroscopeSign, horoscopeUIModel),
+          onTap: () => Navigator.pushNamed(
+              context, HoroscopeDetailScreen.ROUTE_NAME,
+              arguments: HoroscopeDetailScreenArgs(
+                  horoscopeUIModel, defaultHoroscopeSign)),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,

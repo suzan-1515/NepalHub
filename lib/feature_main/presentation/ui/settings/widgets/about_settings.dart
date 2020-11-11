@@ -3,6 +3,7 @@ import 'package:get_it/get_it.dart';
 import 'package:launch_review/launch_review.dart';
 import 'package:samachar_hub/core/services/services.dart';
 import 'package:samachar_hub/core/utils/desclaimer.dart';
+import 'package:samachar_hub/core/widgets/webview_widget.dart';
 
 class AboutSettings extends StatelessWidget {
   const AboutSettings({
@@ -22,10 +23,14 @@ class AboutSettings extends StatelessWidget {
           SizedBox(height: 8),
           ListTile(
             dense: true,
-            onTap: () => GetIt.I.get<NavigationService>().toWebViewScreen(
-                'Privacy Policy',
-                'https://suzan-1515.github.io/NepalHub/privacy-policy.html',
-                context),
+            onTap: () => Navigator.pushNamed(
+              context,
+              InBuiltWebViewScreen.ROUTE_NAME,
+              arguments: InBuiltWebViewScreenArgs(
+                  title: 'Privacy Policy',
+                  url:
+                      'https://suzan-1515.github.io/NepalHub/privacy-policy.html'),
+            ),
             title: Text(
               'Privacy Policy',
               style: Theme.of(context).textTheme.bodyText1,

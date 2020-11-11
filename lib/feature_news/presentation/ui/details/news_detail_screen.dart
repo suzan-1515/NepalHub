@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:get_it/get_it.dart';
-import 'package:samachar_hub/core/services/services.dart';
 import 'package:samachar_hub/core/widgets/empty_data_widget.dart';
 import 'package:samachar_hub/core/widgets/error_data_widget.dart';
 import 'package:samachar_hub/core/widgets/progress_widget.dart';
-import 'package:samachar_hub/feature_main/presentation/blocs/settings/settings_cubit.dart';
 import 'package:samachar_hub/feature_news/presentation/blocs/news_detail/news_detail_bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:samachar_hub/feature_news/presentation/models/news_feed.dart';
@@ -14,28 +11,14 @@ import 'package:samachar_hub/feature_news/utils/provider.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 class NewsDetailScreen extends StatelessWidget {
-  final NewsFeedUIModel feedUIModel;
+  static const String ROUTE_NAME = '/news-detail';
 
-  const NewsDetailScreen({Key key, @required this.feedUIModel})
-      : super(key: key);
-
-  static Future navigate(NewsFeedUIModel feedUIModel, BuildContext context) {
-    if (context.read<SettingsCubit>().settings.newsReadMode == 2) {
-      return GetIt.I.get<NavigationService>().toWebViewScreen(
-          feedUIModel.entity.title, feedUIModel.entity.link, context);
-    }
-    return Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (_) => NewsDetailScreen(
-          feedUIModel: feedUIModel,
-        ),
-      ),
-    );
-  }
+  const NewsDetailScreen({Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final NewsFeedUIModel feedUIModel =
+        ModalRoute.of(context).settings.arguments;
     return NewsProvider.detailMultiBlocProvider(
       feed: feedUIModel,
       child: ScopedModel<NewsFeedUIModel>(
@@ -80,4 +63,11 @@ class NewsDetailScreen extends StatelessWidget {
       ),
     );
   }
+}
+
+class NewsDetailScreenArgs {
+  final NewsFeedUIModel newsFeedUIModel;
+  final String feedId;
+
+  NewsDetailScreenArgs({this.newsFeedUIModel, this.feedId});
 }

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:get_it/get_it.dart';
-import 'package:samachar_hub/core/services/services.dart';
 import 'package:samachar_hub/core/extensions/number_extensions.dart';
 import 'package:samachar_hub/feature_forex/presentation/models/forex_model.dart';
+import 'package:samachar_hub/feature_forex/presentation/ui/forex_detail/forex_detail_screen.dart';
 import 'package:samachar_hub/feature_gold/presentation/models/gold_silver_model.dart';
 import 'package:samachar_hub/feature_gold/presentation/extensions/gold_silver_extensions.dart';
+import 'package:samachar_hub/feature_gold/presentation/ui/gold_silver/gold_silver_screen.dart';
 
 class OtherMenuSection extends StatefulWidget {
   final ForexUIModel forex;
@@ -31,7 +31,9 @@ class _OtherMenuSectionState extends State<OtherMenuSection>
       child: Material(
         color: Colors.transparent,
         child: InkWell(
-          onTap: () => GetIt.I.get<NavigationService>().toForexScreen(context),
+          onTap: () => Navigator.pushNamed(
+              context, ForexDetailScreen.ROUTE_NAME,
+              arguments: widget.forex),
           child: Padding(
             padding: const EdgeInsets.all(8),
             child: Row(
@@ -89,8 +91,8 @@ class _OtherMenuSectionState extends State<OtherMenuSection>
       child: Material(
         color: Colors.transparent,
         child: InkWell(
-          onTap: () =>
-              GetIt.I.get<NavigationService>().toGoldSilverScreen(context),
+          onTap: () => Navigator.pushNamed(context, GoldSilverScreen.ROUTE_NAME,
+              arguments: widget.goldSilver),
           child: Padding(
             padding: const EdgeInsets.all(8),
             child: Row(

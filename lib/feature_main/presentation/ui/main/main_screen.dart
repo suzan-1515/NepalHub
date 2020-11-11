@@ -6,21 +6,17 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get_it/get_it.dart';
 import 'package:samachar_hub/core/services/services.dart';
+import 'package:samachar_hub/feature_forex/presentation/ui/forex/forex_screen.dart';
+import 'package:samachar_hub/feature_gold/presentation/ui/gold_silver/gold_silver_screen.dart';
+import 'package:samachar_hub/feature_horoscope/presentation/ui/horoscope/horoscope_screen.dart';
 import 'package:samachar_hub/feature_main/presentation/blocs/main/main_cubit.dart';
 import 'package:samachar_hub/feature_main/presentation/ui/home/home_screen.dart';
 import 'package:samachar_hub/feature_main/presentation/ui/more_menu/more_menu_screen.dart';
+import 'package:samachar_hub/feature_news/presentation/ui/details/news_detail_screen_preloader.dart';
 import 'package:samachar_hub/feature_news/presentation/ui/following/following_screen.dart';
 
 class MainScreen extends StatefulWidget {
-  static Future navigate(BuildContext context) {
-    return Navigator.pushAndRemoveUntil(
-      context,
-      MaterialPageRoute(
-        builder: (context) => MainScreen(),
-      ),
-      (Route<dynamic> route) => false,
-    );
-  }
+  static const String ROUTE_NAME = '/main';
 
   @override
   _MainScreenState createState() => _MainScreenState();
@@ -39,13 +35,21 @@ class _MainScreenState extends State<MainScreen> {
   _initDynamicLinks() {
     _dynamicLinkSubscription =
         GetIt.I.get<DynamicLinkService>().linkStream.listen((event) {
-      log('[MainScreen] dybamic link received: ${event.path}');
-      if (event.path.contains('horoscope')) {
+      log('[MainScreen] dynamic link received: ${event.path}');
+      if (event.pathSegments.first == 'horoscope') {
         log('[MainScreen] Navigate to horocope screen');
-        GetIt.I.get<NavigationService>().toHoroscopeScreen(context);
-      } else if (event.path.contains('forex')) {
+        Navigator.pushNamed(context, HoroscopeScreen.ROUTE_NAME);
+      } else if (event.pathSegments.first == 'forex') {
         log('[MainScreen] Navigate to forex screen');
-        GetIt.I.get<NavigationService>().toForexScreen(context);
+        Navigator.pushNamed(context, ForexScreen.ROUTE_NAME);
+      } else if (event.pathSegments.first == 'gold-silver') {
+        log('[MainScreen] Navigate to gold-silver screen');
+        Navigator.pushNamed(context, GoldSilverScreen.ROUTE_NAME);
+      } else if (event.pathSegments.first == 'news-detail') {
+        log('[MainScreen] Navigate to news detail screen');
+        if (event.pathSegments.length > 1)
+          Navigator.pushNamed(context, NewsDetailScreenPreloader.ROUTE_NAME,
+              arguments: event.pathSegments[1]);
       }
     }, onError: (e) {
       log('[MainScreen] already subscribed');

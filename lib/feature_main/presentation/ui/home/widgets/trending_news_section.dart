@@ -1,10 +1,9 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
-import 'package:get_it/get_it.dart';
-import 'package:samachar_hub/core/services/services.dart';
 import 'package:samachar_hub/feature_main/presentation/models/home/trending_news_model.dart';
 import 'package:samachar_hub/feature_main/presentation/ui/widgets/section_heading.dart';
+import 'package:samachar_hub/feature_news/presentation/ui/trending/trending_news_screen.dart';
 import 'package:samachar_hub/feature_news/presentation/ui/widgets/news_compact_view.dart';
 import 'package:scoped_model/scoped_model.dart';
 
@@ -47,7 +46,7 @@ class _TrendingNewsSectionState extends State<TrendingNewsSection>
           SectionHeading(
             title: 'Trending News',
             onTap: () =>
-                GetIt.I.get<NavigationService>().toTrendingNews(context),
+                Navigator.pushNamed(context, TrendingNewsScreen.ROUTE_NAME),
           ),
           CarouselSlider(
               items: widgets,

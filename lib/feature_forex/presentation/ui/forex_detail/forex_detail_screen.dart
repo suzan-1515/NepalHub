@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:get_it/get_it.dart';
-import 'package:samachar_hub/core/services/services.dart';
 import 'package:samachar_hub/core/widgets/comment_bar_placeholder_widget.dart';
 import 'package:samachar_hub/core/extensions/view.dart';
 import 'package:samachar_hub/feature_forex/presentation/blocs/like_unlike/like_unlike_bloc.dart';
@@ -13,27 +11,16 @@ import 'package:samachar_hub/feature_forex/presentation/ui/forex_detail/widgets/
 import 'package:samachar_hub/feature_forex/presentation/ui/forex_detail/widgets/latest_rate_info.dart';
 import 'package:samachar_hub/feature_forex/presentation/ui/forex_detail/widgets/rate_timeline.dart';
 import 'package:samachar_hub/feature_forex/utils/provider.dart';
+import 'package:samachar_hub/feature_main/presentation/ui/settings/settings_page.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 class ForexDetailScreen extends StatelessWidget {
-  final ForexUIModel forexUIModel;
-  const ForexDetailScreen({Key key, @required this.forexUIModel})
-      : assert(forexUIModel != null, 'Forex cannot be null.'),
-        super(key: key);
-
-  static Future navigate(
-      {@required BuildContext context, @required ForexUIModel forexUIModel}) {
-    return Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => ForexDetailScreen(
-            forexUIModel: forexUIModel,
-          ),
-        ));
-  }
+  static const String ROUTE_NAME = '/forex-detail';
+  const ForexDetailScreen({Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final ForexUIModel forexUIModel = ModalRoute.of(context).settings.arguments;
     return ForexProvider.forexDetailBlocProvider(
       forex: forexUIModel.entity,
       child: ScopedModel<ForexUIModel>(
@@ -83,9 +70,7 @@ class ForexDetailScreen extends StatelessWidget {
                 IconButton(
                   icon: Icon(Icons.settings),
                   onPressed: () {
-                    GetIt.I
-                        .get<NavigationService>()
-                        .toSettingsScreen(context: context);
+                    Navigator.pushNamed(context, SettingsScreen.ROUTE_NAME);
                   },
                 ),
               ],

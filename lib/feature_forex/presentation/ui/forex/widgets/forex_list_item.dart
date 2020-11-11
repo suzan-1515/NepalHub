@@ -2,9 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_advanced_networkimage/provider.dart';
 import 'package:flutter_advanced_networkimage/transition.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:get_it/get_it.dart';
-import 'package:samachar_hub/core/services/services.dart';
 import 'package:samachar_hub/feature_forex/presentation/models/forex_model.dart';
+import 'package:samachar_hub/feature_forex/presentation/ui/forex_detail/forex_detail_screen.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 class ForexListItem extends StatelessWidget {
@@ -21,9 +20,8 @@ class ForexListItem extends StatelessWidget {
     return Material(
       color: Colors.transparent,
       child: InkWell(
-        onTap: () => GetIt.I
-            .get<NavigationService>()
-            .toForexDetailScreen(context, forex),
+        onTap: () => Navigator.pushNamed(context, ForexDetailScreen.ROUTE_NAME,
+            arguments: forex),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.center,

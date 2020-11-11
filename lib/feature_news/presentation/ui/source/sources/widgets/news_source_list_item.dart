@@ -1,4 +1,3 @@
-import 'package:event_bus/event_bus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get_it/get_it.dart';
@@ -6,8 +5,8 @@ import 'package:samachar_hub/core/services/services.dart';
 import 'package:samachar_hub/core/widgets/cached_image_widget.dart';
 import 'package:samachar_hub/core/extensions/number_extensions.dart';
 import 'package:samachar_hub/feature_news/presentation/blocs/news_source/follow_unfollow/follow_un_follow_bloc.dart';
-import 'package:samachar_hub/feature_news/presentation/events/feed_event.dart';
 import 'package:samachar_hub/feature_news/presentation/models/news_source.dart';
+import 'package:samachar_hub/feature_news/presentation/ui/source/source_feed/news_source_feed_screen.dart';
 import 'package:samachar_hub/feature_news/presentation/ui/widgets/follow_unfollow_button.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:scoped_model/scoped_model.dart';
@@ -25,9 +24,8 @@ class NewsSourceListItem extends StatelessWidget {
       color: Colors.transparent,
       child: ListTile(
         onTap: () {
-          GetIt.I
-              .get<NavigationService>()
-              .toNewsSourceFeedScreen(context: context, sourceUIModel: source);
+          Navigator.pushNamed(context, NewsSourceFeedScreen.ROUTE_NAME,
+              arguments: source);
         },
         leading: Container(
           width: 84,

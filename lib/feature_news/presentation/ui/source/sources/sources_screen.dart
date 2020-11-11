@@ -3,13 +3,7 @@ import 'package:samachar_hub/feature_news/presentation/ui/source/sources/widgets
 import 'package:samachar_hub/feature_news/utils/provider.dart';
 
 class NewsSourcesScreen extends StatelessWidget {
-  static Future navigate(BuildContext context) {
-    return Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (_) => NewsSourcesScreen(),
-      ),
-    );
-  }
+  static const String ROUTE_NAME = '/news-sources';
 
   @override
   Widget build(BuildContext context) {

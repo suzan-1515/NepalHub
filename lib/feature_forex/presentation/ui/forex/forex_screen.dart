@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:get_it/get_it.dart';
-import 'package:samachar_hub/core/services/services.dart';
 import 'package:samachar_hub/core/widgets/progress_widget.dart';
 import 'package:samachar_hub/feature_forex/presentation/blocs/latest/latest_forex_bloc.dart';
 import 'package:samachar_hub/feature_forex/presentation/blocs/timeline/forex_timeline_bloc.dart';
@@ -9,15 +7,10 @@ import 'package:samachar_hub/feature_forex/presentation/ui/forex/widgets/forex_g
 import 'package:samachar_hub/feature_forex/presentation/ui/forex/widgets/forex_list.dart';
 import 'package:samachar_hub/feature_forex/utils/provider.dart';
 import 'package:samachar_hub/feature_main/presentation/blocs/settings/settings_cubit.dart';
+import 'package:samachar_hub/feature_main/presentation/ui/settings/settings_page.dart';
 
 class ForexScreen extends StatelessWidget {
-  static Future navigate(BuildContext context) {
-    return Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => ForexScreen()),
-    );
-  }
-
+  static const String ROUTE_NAME = '/forex';
   Widget _buildDefaultCurrencyStat() {
     return BlocBuilder<ForexBloc, ForexState>(
       buildWhen: (previous, current) =>
@@ -71,9 +64,7 @@ class ForexScreen extends StatelessWidget {
             IconButton(
               icon: Icon(Icons.settings),
               onPressed: () {
-                GetIt.I
-                    .get<NavigationService>()
-                    .toSettingsScreen(context: context);
+                Navigator.pushNamed(context, SettingsScreen.ROUTE_NAME);
               },
             ),
           ],

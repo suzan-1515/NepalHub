@@ -1,20 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_advanced_networkimage/provider.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:get_it/get_it.dart';
-import 'package:samachar_hub/core/services/services.dart';
 import 'package:samachar_hub/feature_auth/domain/entities/user_entity.dart';
 import 'package:samachar_hub/feature_auth/presentation/blocs/auth_bloc.dart';
+import 'package:samachar_hub/feature_auth/presentation/ui/login_screen.dart';
 
 class UserProfileScreen extends StatefulWidget {
-  static Future navigate(BuildContext context) {
-    return Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (_) => UserProfileScreen(),
-      ),
-    );
-  }
+  static const String ROUTE_NAME = '/profile';
 
   @override
   _UserProfileScreenState createState() => _UserProfileScreenState();
@@ -51,14 +43,15 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     return BlocListener<AuthBloc, AuthState>(
       listener: (context, state) {
         if (state is AuthLogoutState) {
-          GetIt.I.get<NavigationService>().toLoginScreen(context);
+          Navigator.pushNamedAndRemoveUntil(
+              context, LoginScreen.ROUTE_NAME, (route) => false);
         }
       },
       child: IgnorePointer(
         ignoring: false,
         child: OutlineButton(
           padding: const EdgeInsets.all(8),
-          onPressed: () => context.watch<AuthBloc>().add(LogoutEvent()),
+          onPressed: () => context.read<AuthBloc>().add(LogoutEvent()),
           child: Text('Log out'),
         ),
       ),

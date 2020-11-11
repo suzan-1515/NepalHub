@@ -12,6 +12,7 @@ import 'package:samachar_hub/feature_comment/presentation/models/comment_model.d
 import 'package:samachar_hub/core/extensions/date_time.dart';
 import 'package:samachar_hub/core/extensions/number_extensions.dart';
 import 'package:samachar_hub/core/extensions/view.dart';
+import 'package:samachar_hub/feature_comment/presentation/ui/comment_screen.dart';
 import 'package:samachar_hub/feature_comment/presentation/ui/widgets/comment_delete_comfirmation_dialog.dart';
 import 'package:samachar_hub/feature_report/domain/entities/report_thread_type.dart';
 import 'package:samachar_hub/feature_report/presentation/ui/report.dart';
@@ -99,11 +100,15 @@ class CommentListItem extends StatelessWidget {
                         style: Theme.of(context).textTheme.caption,
                       ),
                       onTap: () {
-                        GetIt.I.get<NavigationService>().toCommentsScreen(
-                            context: context,
+                        Navigator.pushNamed(
+                          context,
+                          CommentScreen.ROUTE_NAME,
+                          arguments: CommentScreenArgs(
+                            threadId: comment.entity.id,
                             threadTitle: 'Reply: ${comment.entity.comment}',
                             threadType: CommentThreadType.COMMENT,
-                            threadId: comment.entity.id);
+                          ),
+                        );
                       },
                     ),
                 ],

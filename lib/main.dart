@@ -52,7 +52,8 @@ class App extends StatelessWidget {
               var settings = context.watch<SettingsCubit>().settings;
               return MaterialApp(
                 theme: _getTheme(settings.useDarkMode, settings.usePitchBlack),
-                home: SplashScreen(),
+                onGenerateRoute: GetIt.I.get<NavigationService>().generateRoute,
+                initialRoute: SplashScreen.ROUTE_NAME,
                 themeMode: settings.themeSetBySystem
                     ? ThemeMode.system
                     : _getThemeMode(

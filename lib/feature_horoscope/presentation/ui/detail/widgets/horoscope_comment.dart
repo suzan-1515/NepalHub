@@ -6,6 +6,7 @@ import 'package:samachar_hub/core/widgets/comment_bar_widget.dart';
 import 'package:samachar_hub/feature_auth/presentation/blocs/auth_bloc.dart';
 import 'package:samachar_hub/feature_comment/domain/entities/thread_type.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:samachar_hub/feature_comment/presentation/ui/comment_screen.dart';
 import 'package:samachar_hub/feature_horoscope/domain/entities/horoscope_entity.dart';
 import 'package:samachar_hub/feature_horoscope/presentation/blocs/like_unlike/like_unlike_bloc.dart';
 import 'package:samachar_hub/feature_horoscope/presentation/blocs/share/share_bloc.dart';
@@ -29,12 +30,15 @@ class HoroscopeComment extends StatelessWidget {
         ScopedModel.of<HoroscopeUIModel>(context, rebuildOnChange: true);
     return CommentBar(
       likeCount: horoscopeUIModel.entity.likeCount ?? 0,
-      onCommentTap: () => GetIt.I.get<NavigationService>().toCommentsScreen(
-          context: context,
-          threadTitle:
-              '${horoscopeUIModel.entity.type.value.toUpperCase()} Horoscope - ${HOROSCOPE_SIGNS[Language.NEPALI][signIndex]}',
-          threadId: horoscopeUIModel.entity.id,
-          threadType: CommentThreadType.HOROSCOPE),
+      onCommentTap: () => Navigator.pushNamed(
+        context,
+        CommentScreen.ROUTE_NAME,
+        arguments: CommentScreenArgs(
+            threadTitle:
+                '${horoscopeUIModel.entity.type.value.toUpperCase()} Horoscope - ${HOROSCOPE_SIGNS[Language.NEPALI][signIndex]}',
+            threadId: horoscopeUIModel.entity.id,
+            threadType: CommentThreadType.HOROSCOPE),
+      ),
       onShareTap: () {
         GetIt.I
             .get<ShareService>()

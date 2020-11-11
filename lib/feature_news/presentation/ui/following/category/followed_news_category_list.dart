@@ -8,6 +8,7 @@ import 'package:samachar_hub/core/widgets/error_data_widget.dart';
 import 'package:samachar_hub/core/widgets/progress_widget.dart';
 import 'package:samachar_hub/core/extensions/view.dart';
 import 'package:samachar_hub/feature_news/presentation/blocs/news_category/news_category_bloc.dart';
+import 'package:samachar_hub/feature_news/presentation/ui/category/category_feed/news_category_feed_screen.dart';
 import 'package:samachar_hub/feature_news/presentation/ui/widgets/news_menu_item.dart';
 
 class FollowedNewsCategoryList extends StatefulWidget {
@@ -55,9 +56,9 @@ class _FollowedNewsCategoryListState extends State<FollowedNewsCategoryList> {
                     title: categoryModel.entity.title,
                     icon: categoryModel.entity.icon,
                     onTap: () {
-                      GetIt.I
-                          .get<NavigationService>()
-                          .toNewsCategoryFeedScreen(context, categoryModel);
+                      Navigator.pushNamed(
+                          context, NewsCategoryFeedScreen.ROUTE_NAME,
+                          arguments: categoryModel);
                     },
                   );
                 },

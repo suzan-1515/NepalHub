@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:get_it/get_it.dart';
-import 'package:samachar_hub/core/services/services.dart';
+import 'package:samachar_hub/feature_forex/presentation/ui/forex/forex_screen.dart';
+import 'package:samachar_hub/feature_gold/presentation/ui/gold_silver/gold_silver_screen.dart';
+import 'package:samachar_hub/feature_horoscope/presentation/ui/horoscope/horoscope_screen.dart';
 import 'package:samachar_hub/feature_main/presentation/ui/more_menu/widgets/more_menu_list_item.dart';
 import 'package:samachar_hub/core/extensions/view.dart';
+import 'package:samachar_hub/feature_news/presentation/ui/bookmark/bookmark_page.dart';
 
 class MenuList extends StatelessWidget {
   const MenuList({
@@ -22,35 +24,34 @@ class MenuList extends StatelessWidget {
         MoreMenuListItem(
           title: 'Bookmarks',
           icon: FontAwesomeIcons.bookmark,
-          onTap: () => GetIt.I
-              .get<NavigationService>()
-              .toBookmarkedNewsScreen(context: context),
+          onTap: () => Navigator.pushNamed(context, BookmarkScreen.ROUTE_NAME),
         ),
         Divider(),
         MoreMenuListItem(
           title: 'Forex',
           icon: FontAwesomeIcons.chartLine,
-          onTap: () => GetIt.I.get<NavigationService>().toForexScreen(context),
+          onTap: () => Navigator.pushNamed(context, ForexScreen.ROUTE_NAME),
         ),
         Divider(),
         MoreMenuListItem(
           title: 'Horoscope',
           icon: FontAwesomeIcons.starOfDavid,
-          onTap: () =>
-              GetIt.I.get<NavigationService>().toHoroscopeScreen(context),
+          onTap: () => Navigator.pushNamed(context, HoroscopeScreen.ROUTE_NAME),
         ),
         Divider(),
         MoreMenuListItem(
           title: 'Gold/Silver',
           icon: FontAwesomeIcons.ring,
           onTap: () =>
-              GetIt.I.get<NavigationService>().toGoldSilverScreen(context),
+              Navigator.pushNamed(context, GoldSilverScreen.ROUTE_NAME),
         ),
         Divider(),
         MoreMenuListItem(
           title: 'Stock Market',
           icon: FontAwesomeIcons.poll,
-          onTap: () => context.showMessage('This feature is comming soon!'),
+          onTap: () {
+            context.showMessage('This feature is comming soon!');
+          },
         ),
       ],
     );

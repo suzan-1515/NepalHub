@@ -1,9 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:get_it/get_it.dart';
-import 'package:samachar_hub/core/services/services.dart';
 import 'package:samachar_hub/feature_comment/domain/entities/thread_type.dart';
+import 'package:samachar_hub/feature_comment/presentation/ui/comment_screen.dart';
 import 'package:samachar_hub/feature_news/presentation/models/news_feed.dart';
 import 'package:samachar_hub/feature_news/presentation/ui/widgets/news_feed_more_option.dart';
 import 'package:samachar_hub/core/extensions/view.dart';
@@ -208,11 +207,14 @@ class NewsFeedOptions extends StatelessWidget {
             FontAwesomeIcons.comment,
             size: 16,
           ),
-          onPressed: () => GetIt.I.get<NavigationService>().toCommentsScreen(
-              context: context,
-              threadTitle: feed.entity.title,
-              threadId: feed.entity.id,
-              threadType: CommentThreadType.NEWS_FEED),
+          onPressed: () => Navigator.pushNamed(
+            context,
+            CommentScreen.ROUTE_NAME,
+            arguments: CommentScreenArgs(
+                threadTitle: feed.entity.title,
+                threadId: feed.entity.id,
+                threadType: CommentThreadType.NEWS_FEED),
+          ),
         ),
         IconButton(
           visualDensity: VisualDensity.compact,

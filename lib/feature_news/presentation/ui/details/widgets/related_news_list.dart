@@ -35,7 +35,9 @@ class RelatedNewsList extends StatelessWidget {
               return ScopedModel<NewsFeedUIModel>(
                 model: feed,
                 child: RelatedNewsListItem(
-                  onTap: () => NewsDetailScreen.navigate(feed, context),
+                  onTap: () => Navigator.pushNamed(
+                      context, NewsDetailScreen.ROUTE_NAME,
+                      arguments: feed),
                 ),
               );
             }) +

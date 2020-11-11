@@ -7,6 +7,7 @@ import 'package:samachar_hub/core/widgets/cached_image_widget.dart';
 import 'package:samachar_hub/core/extensions/number_extensions.dart';
 import 'package:samachar_hub/feature_news/presentation/blocs/news_category/follow_unfollow/follow_un_follow_bloc.dart';
 import 'package:samachar_hub/feature_news/presentation/models/news_category.dart';
+import 'package:samachar_hub/feature_news/presentation/ui/category/category_feed/news_category_feed_screen.dart';
 import 'package:samachar_hub/feature_news/presentation/ui/widgets/follow_unfollow_button.dart';
 import 'package:scoped_model/scoped_model.dart';
 
@@ -23,9 +24,8 @@ class NewsCategoryListItem extends StatelessWidget {
       color: Colors.transparent,
       child: ListTile(
         onTap: () {
-          GetIt.I
-              .get<NavigationService>()
-              .toNewsCategoryFeedScreen(context, category);
+          Navigator.pushNamed(context, NewsCategoryFeedScreen.ROUTE_NAME,
+              arguments: category);
         },
         leading: Container(
           width: 84,

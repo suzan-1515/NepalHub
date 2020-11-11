@@ -3,13 +3,7 @@ import 'package:samachar_hub/feature_news/presentation/ui/category/categories/wi
 import 'package:samachar_hub/feature_news/utils/provider.dart';
 
 class NewsCategoriesScreen extends StatelessWidget {
-  static Future navigate(BuildContext context) {
-    return Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (_) => NewsCategoriesScreen(),
-      ),
-    );
-  }
+  static const String ROUTE_NAME = '/news-categories';
 
   @override
   Widget build(BuildContext context) {

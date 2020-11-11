@@ -8,17 +8,10 @@ import 'package:samachar_hub/core/services/services.dart';
 import 'package:samachar_hub/core/widgets/progress_widget.dart';
 import 'package:samachar_hub/feature_auth/presentation/blocs/auth_bloc.dart';
 import 'package:samachar_hub/core/extensions/view.dart';
+import 'package:samachar_hub/feature_main/presentation/ui/main/main_screen.dart';
 
 class LoginScreen extends StatelessWidget {
-  static Future navigate(BuildContext context) {
-    return Navigator.pushAndRemoveUntil(
-      context,
-      MaterialPageRoute(
-        builder: (context) => LoginScreen(),
-      ),
-      (Route<dynamic> route) => false,
-    );
-  }
+  static const String ROUTE_NAME = '/login';
 
   Widget _buildHeader(BuildContext context) {
     return Column(
@@ -130,7 +123,8 @@ class LoginScreen extends StatelessWidget {
                     .get<CrashAnalyticsService>()
                     .setUser(userId: state.user.id);
                 GetIt.I.get<NotificationService>().setEmail(state.user.email);
-                GetIt.I.get<NavigationService>().toHomeScreen(context);
+                Navigator.pushNamedAndRemoveUntil(
+                    context, MainScreen.ROUTE_NAME, (route) => false);
               }
             },
             buildWhen: (previous, current) => !(current is AuthSuccessState),

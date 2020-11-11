@@ -3,14 +3,7 @@ import 'package:samachar_hub/feature_news/presentation/ui/latest/widgets/latest_
 import 'package:samachar_hub/feature_news/utils/provider.dart';
 
 class LatestNewsScreen extends StatelessWidget {
-  static Future navigate(BuildContext context) {
-    return Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => LatestNewsScreen(),
-      ),
-    );
-  }
+  static const String ROUTE_NAME = '/latest-news';
 
   @override
   Widget build(BuildContext context) {

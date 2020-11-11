@@ -115,9 +115,10 @@ class NewsProvider {
           recentNewsUseCase: GetIt.I.get<GetRecentNewsUseCase>(),
           trendingNewsUseCase: GetIt.I.get<GetTrendingNewsUseCase>(),
         ));
-    GetIt.I.registerFactoryParam<NewsDetailBloc, NewsFeedEntity, void>(
+    GetIt.I.registerFactoryParam<NewsDetailBloc, NewsFeedEntity, String>(
         (param1, param2) => NewsDetailBloc(
             feed: param1,
+            feedId: param2,
             getDetailNewsUseCase: GetIt.I.get<GetNewsDetailUseCase>())
           ..add(GetNewsDetailEvent()));
     GetIt.I.registerFactory<LikeUnlikeBloc>(() => LikeUnlikeBloc(
@@ -265,6 +266,17 @@ class NewsProvider {
                 GetIt.I.get<NewsDetailBloc>(param1: feed.entity),
           ),
         ],
+        child: child,
+      );
+
+  static BlocProvider<NewsDetailBloc> detailBlocProvider({
+    @required Widget child,
+    NewsFeedUIModel feed,
+    String feedId,
+  }) =>
+      BlocProvider<NewsDetailBloc>(
+        create: (context) =>
+            GetIt.I.get<NewsDetailBloc>(param1: feed?.entity, param2: feedId),
         child: child,
       );
 
