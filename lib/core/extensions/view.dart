@@ -31,6 +31,7 @@ extension ModalBottonSheetX on BuildContext {
       showModalBottomSheet(
           context: this,
           shape: shape,
+          isScrollControlled: true,
           builder: (context) {
             return child;
           });

@@ -12,6 +12,7 @@ import 'package:samachar_hub/feature_comment/domain/entities/thread_type.dart';
 import 'package:samachar_hub/feature_comment/domain/usecases/usecases.dart';
 import 'package:samachar_hub/feature_comment/presentation/blocs/comment_bloc.dart';
 import 'package:samachar_hub/feature_comment/presentation/blocs/comment_post/comment_post_bloc.dart';
+import 'package:samachar_hub/feature_comment/presentation/blocs/comment_update/comment_update_bloc.dart';
 import 'package:samachar_hub/feature_comment/presentation/blocs/delete/delete_cubit.dart';
 import 'package:samachar_hub/feature_comment/presentation/blocs/like_unlike/like_unlike_bloc.dart';
 import 'package:samachar_hub/feature_stats/presentation/blocs/thread_stats_cubit.dart';
@@ -64,6 +65,10 @@ class CommentProvider {
           threadId: param1,
           threadType: param2),
     );
+    GetIt.I.registerFactory<CommentUpdateBloc>(
+      () => CommentUpdateBloc(
+          editCommentUseCase: GetIt.I.get<UpdateCommentUseCase>()),
+    );
   }
 
   static MultiBlocProvider commentBlocProvider(
@@ -79,6 +84,9 @@ class CommentProvider {
           BlocProvider<CommentPostBloc>(
             create: (context) => GetIt.I
                 .get<CommentPostBloc>(param1: threadId, param2: threadType),
+          ),
+          BlocProvider<CommentUpdateBloc>(
+            create: (context) => GetIt.I.get<CommentUpdateBloc>(),
           ),
           BlocProvider<ThreadStatsCubit>(
             create: (context) => GetIt.I.get<ThreadStatsCubit>(

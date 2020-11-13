@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:get_it/get_it.dart';
 import 'package:line_awesome_icons/line_awesome_icons.dart';
-import 'package:samachar_hub/core/services/navigation_service.dart';
+import 'package:readmore/readmore.dart';
 import 'package:samachar_hub/feature_auth/presentation/blocs/auth_bloc.dart';
 import 'package:samachar_hub/feature_comment/domain/entities/thread_type.dart';
 import 'package:samachar_hub/feature_comment/presentation/blocs/comment_bloc.dart';
@@ -14,6 +13,7 @@ import 'package:samachar_hub/core/extensions/number_extensions.dart';
 import 'package:samachar_hub/core/extensions/view.dart';
 import 'package:samachar_hub/feature_comment/presentation/ui/comment_screen.dart';
 import 'package:samachar_hub/feature_comment/presentation/ui/widgets/comment_delete_comfirmation_dialog.dart';
+import 'package:samachar_hub/feature_comment/presentation/ui/widgets/comment_edit.dart';
 import 'package:samachar_hub/feature_report/domain/entities/report_thread_type.dart';
 import 'package:samachar_hub/feature_report/presentation/ui/report.dart';
 import 'package:scoped_model/scoped_model.dart';
@@ -62,15 +62,18 @@ class CommentListItem extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  InkWell(
-                    child: Icon(
+                  IconButton(
+                    constraints: BoxConstraints.tight(Size.fromRadius(8)),
+                    splashRadius: 16,
+                    padding: EdgeInsets.all(0.0),
+                    icon: Icon(
                       comment.entity.isLiked
                           ? Icons.thumb_up
                           : LineAwesomeIcons.thumbs_up,
                       size: 16,
                       color: Theme.of(context).iconTheme.color.withOpacity(0.4),
                     ),
-                    onTap: () {
+                    onPressed: () {
                       if (comment.entity.isLiked) {
                         comment.unlike();
                         context
@@ -84,19 +87,19 @@ class CommentListItem extends StatelessWidget {
                       }
                     },
                   ),
-                  SizedBox(width: 4),
+                  SizedBox(width: 8),
                   if (comment.entity.likeCount != 0)
                     Text(
                       '${comment.entity.likeCount.compactFormat}',
-                      style: Theme.of(context).textTheme.overline,
+                      style: Theme.of(context).textTheme.caption,
                     ),
                   if (!isReply) SizedBox(width: 16),
                   if (!isReply)
                     InkWell(
                       child: Text(
                         comment.entity.commentCount == 0
-                            ? 'Reply'
-                            : 'Replies (${comment.entity.commentCount.compactFormat})',
+                            ? 'REPLY'
+                            : 'View replies (${comment.entity.commentCount.compactFormat})',
                         style: Theme.of(context).textTheme.caption,
                       ),
                       onTap: () {
@@ -152,7 +155,10 @@ class CommentListItem extends StatelessWidget {
           onSelected: (value) {
             switch (value) {
               case 'edit':
-                context.showMessage('Comment edit selected.');
+                context.showBottomSheet(
+                    child: CommentEdit(
+                  commentUIModel: comment,
+                ));
                 break;
               case 'delete':
                 context.dialog(
@@ -202,18 +208,15 @@ class _CommentViewState extends State<CommentView> {
         color: Theme.of(context).backgroundColor,
         borderRadius: BorderRadius.circular(8),
       ),
-      child: GestureDetector(
-        onTap: () {
-          setState(() {
-            isExpanded = !isExpanded;
-          });
-        },
-        child: Text(
-          widget.comment,
-          style: Theme.of(context).textTheme.bodyText2,
-          overflow: TextOverflow.ellipsis,
-          maxLines: isExpanded ? null : 4,
-        ),
+      child: ReadMoreText(
+        widget.comment,
+        trimLines: 4,
+        colorClickableText:
+            Theme.of(context).textTheme.button.color.withOpacity(0.6),
+        trimMode: TrimMode.Line,
+        style: Theme.of(context).textTheme.bodyText2,
+        trimCollapsedText: '...\nRead more',
+        trimExpandedText: '\nShow less',
       ),
     );
   }

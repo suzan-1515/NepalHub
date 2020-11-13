@@ -70,6 +70,7 @@ dependencies:
   event_bus: ^1.1.1
   scoped_model: ^1.1.0
   uni_links: ^0.4.0
+  readmore: ^1.0.0
 
   # corona_module:
   #   path: ./corona_module

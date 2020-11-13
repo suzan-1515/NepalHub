@@ -14,7 +14,7 @@ import 'package:samachar_hub/core/extensions/view.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 class GoldSilverDetailScreen extends StatelessWidget {
-  static const String ROUTE_NAME = '/gold-silver';
+  static const String ROUTE_NAME = '/gold-silver-detail';
 
   const GoldSilverDetailScreen({Key key}) : super(key: key);
 

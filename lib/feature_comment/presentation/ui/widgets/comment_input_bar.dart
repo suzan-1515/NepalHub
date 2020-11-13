@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:get_it/get_it.dart';
-import 'package:samachar_hub/core/services/services.dart';
 import 'package:samachar_hub/feature_auth/domain/entities/user_entity.dart';
 import 'package:samachar_hub/feature_auth/presentation/blocs/auth_bloc.dart';
 import 'package:samachar_hub/feature_auth/presentation/ui/login_screen.dart';
@@ -23,6 +21,7 @@ class CommentInputBar extends StatefulWidget {
 class _CommentInputBarState extends State<CommentInputBar> {
   final TextEditingController _textEditingController = TextEditingController();
   bool isReply = false;
+  var focusNode = FocusNode();
 
   @override
   void initState() {
@@ -33,11 +32,13 @@ class _CommentInputBarState extends State<CommentInputBar> {
 
   @override
   void dispose() {
-    _textEditingController.dispose();
+    _textEditingController?.dispose();
+    focusNode?.dispose();
     super.dispose();
   }
 
-  _submitComment(BuildContext context, UserEntity user, String comment) async {
+  void _submitComment(
+      BuildContext context, UserEntity user, String comment) async {
     if (comment == null || comment.isEmpty) return;
     if (comment.length > 500) {
       context.showMessage('Comment too long. Max character limit is 500.');
@@ -45,10 +46,10 @@ class _CommentInputBarState extends State<CommentInputBar> {
     }
     if (user != null && !user.isAnonymous) {
       context.showMessage('Comment posting...');
-      return context.read<CommentPostBloc>().add(PostCommentEvent(comment));
-    }
-
-    Navigator.pushNamed(context, LoginScreen.ROUTE_NAME);
+      focusNode.unfocus();
+      context.read<CommentPostBloc>().add(PostCommentEvent(comment));
+    } else
+      Navigator.pushNamed(context, LoginScreen.ROUTE_NAME);
   }
 
   @override
@@ -58,16 +59,21 @@ class _CommentInputBarState extends State<CommentInputBar> {
         !user.isAnonymous &&
         user.avatar != null &&
         user.avatar.isNotEmpty);
-    return BlocListener<CommentPostBloc, CommentPostState>(
-      listener: (context, state) {
-        if (state is CommentPostSuccessState) {
-          context.read<CommentBloc>().add(RefreshCommentsEvent());
-          context.read<ThreadStatsCubit>().refreshStats();
-          context.showMessage('Comment posted.');
-        } else if (state is CommentPostErrorState) {
-          context.showMessage(state.message);
-        }
-      },
+    return MultiBlocListener(
+      listeners: [
+        BlocListener<CommentPostBloc, CommentPostState>(
+          listener: (context, state) {
+            if (state is CommentPostSuccessState) {
+              _textEditingController.clear();
+              context.read<CommentBloc>().add(RefreshCommentsEvent());
+              context.read<ThreadStatsCubit>().refreshStats();
+              context.showMessage('Comment posted.');
+            } else if (state is CommentPostErrorState) {
+              context.showMessage(state.message);
+            }
+          },
+        ),
+      ],
       child: Container(
         decoration: BoxDecoration(
           color: Theme.of(context).backgroundColor,
@@ -86,23 +92,21 @@ class _CommentInputBarState extends State<CommentInputBar> {
                     ? NetworkImage(user.avatar)
                     : AssetImage('assets/images/user.png'),
               ),
-              SizedBox(
-                width: 8,
-              ),
+              const SizedBox(width: 8),
               Expanded(
-                  child: Container(
-                child: TextField(
-                  keyboardType: TextInputType.multiline,
-                  onSubmitted: (value) {
-                    _submitComment(context, user, value.trim());
-                    _textEditingController.clear();
-                    FocusScope.of(context).unfocus();
-                  },
-                  controller: _textEditingController,
-                  decoration: InputDecoration(
-                      border: InputBorder.none, hintText: 'Write a comment'),
-                  style: Theme.of(context).textTheme.bodyText2,
-                ),
+                  child: TextField(
+                focusNode: focusNode,
+                keyboardType: TextInputType.multiline,
+                textCapitalization: TextCapitalization.sentences,
+                minLines: 1,
+                maxLines: 4,
+                onSubmitted: (value) {
+                  _submitComment(context, user, value.trim());
+                },
+                controller: _textEditingController,
+                decoration: InputDecoration(
+                    border: InputBorder.none, hintText: 'Write a comment'),
+                style: Theme.of(context).textTheme.bodyText2,
               )),
               SizedBox(
                 width: 8,
@@ -115,8 +119,6 @@ class _CommentInputBarState extends State<CommentInputBar> {
                 onPressed: () {
                   _submitComment(
                       context, user, _textEditingController.value.text.trim());
-                  _textEditingController.clear();
-                  FocusScope.of(context).unfocus();
                 },
               )
             ],
