@@ -31,8 +31,11 @@ class _FollowedNewsTopicListState extends State<FollowedNewsTopicList> {
       listener: (context, state) {
         if (state is NewsTopicLoadErrorState) {
           context.showMessage(state.message);
+        } else if (state is NewsTopicLoadErrorState) {
+          context.showMessage(state.message);
         }
       },
+      buildWhen: (previous, current) => !(current is NewsTopicErrorState),
       builder: (context, state) {
         if (state is NewsTopicLoadSuccessState) {
           return FadeInUp(

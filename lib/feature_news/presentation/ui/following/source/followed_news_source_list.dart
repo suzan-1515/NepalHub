@@ -33,8 +33,11 @@ class _FollowedNewsSourceListState extends State<FollowedNewsSourceList> {
       listener: (context, state) {
         if (state is NewsSourceErrorState) {
           context.showMessage(state.message);
+        } else if (state is NewsSourceLoadErrorState) {
+          context.showMessage(state.message);
         }
       },
+      buildWhen: (previous, current) => !(current is NewsSourceErrorState),
       builder: (context, state) {
         if (state is NewsSourceLoadSuccessState) {
           return FadeInUp(
@@ -61,7 +64,7 @@ class _FollowedNewsSourceListState extends State<FollowedNewsSourceList> {
               ),
             ),
           );
-        } else if (state is NewsSourceErrorState) {
+        } else if (state is NewsSourceLoadErrorState) {
           return Center(
             child: ErrorDataView(
               message: state.message,
