@@ -79,7 +79,7 @@ class NewsFeedMoreOption extends StatelessWidget {
             onTap: () {
               Navigator.pop(context);
               Navigator.pushNamed(context, NewsSourceFeedScreen.ROUTE_NAME,
-                  arguments: feed.entity.toUIModel);
+                  arguments: feed.entity.source.toUIModel);
             },
           ),
           ListTile(
