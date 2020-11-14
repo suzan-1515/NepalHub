@@ -9,6 +9,6 @@ class CrashAnalyticsService {
   }
 
   Future setUser({@required String userId}) {
-    return Crashlytics.instance.setUserIdentifier(userId);
+    return FirebaseCrashlytics.instance.setUserIdentifier(userId);
   }
 }

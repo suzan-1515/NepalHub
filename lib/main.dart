@@ -18,6 +18,7 @@ Future<void> main() async {
   await Firebase.initializeApp();
   NepaliUtils(Language.nepali);
   GlobalProvider.setup(await SharedPreferences.getInstance());
+  FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
   runApp(App());
 }
 
