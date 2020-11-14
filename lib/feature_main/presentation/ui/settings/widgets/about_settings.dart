@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:get_it/get_it.dart';
 import 'package:launch_review/launch_review.dart';
-import 'package:samachar_hub/core/services/services.dart';
 import 'package:samachar_hub/core/utils/desclaimer.dart';
 import 'package:samachar_hub/core/widgets/webview_widget.dart';
 

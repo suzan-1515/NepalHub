@@ -4,12 +4,8 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:samachar_hub/core/models/language.dart';
-import 'package:samachar_hub/feature_main/domain/entities/home_entity.dart';
 import 'package:samachar_hub/feature_main/domain/usecases/home/get_home_feed_use_case.dart';
 import 'package:samachar_hub/feature_main/presentation/models/home/home_model.dart';
-import 'package:samachar_hub/feature_news/domain/entities/news_feed_entity.dart';
-import 'package:samachar_hub/feature_news/domain/entities/news_source_entity.dart';
-import 'package:samachar_hub/feature_news/domain/entities/news_type.dart';
 import 'package:samachar_hub/feature_main/presentation/extensions/home_extensions.dart';
 
 part 'home_state.dart';

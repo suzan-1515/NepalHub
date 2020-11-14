@@ -28,10 +28,10 @@ class AuthRemoteService with RemoteService {
 
   @override
   Future loginWithFacebook() async {
-    final LoginResult result = await _facebookAuth.login();
+    final AccessToken accessToken = await _facebookAuth.login();
 
     final FacebookAuthCredential facebookAuthCredential =
-        FacebookAuthProvider.credential(result.accessToken.token);
+        FacebookAuthProvider.credential(accessToken.token);
 
     UserCredential userCredential =
         await _firebaseAuth.signInWithCredential(facebookAuthCredential);

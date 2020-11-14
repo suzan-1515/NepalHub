@@ -19,8 +19,8 @@ A Flutter news app built with Bloc state management framework.
 [Sujan Parajuli](https://github.com/suzan-1515)
 
 ## Flutter version
->Flutter 1.20.2  
->Tools • Dart 2.9.01 
+>Flutter 1.22.4  (stable)
+>Tools • Dart 2.10.4 
 
 ### Splash Screen
 <img src="https://github.com/suzan-1515/Samachar-Hub/blob/master/screenshots/Screenshot_20201107-002755_Nepal Hub.jpg" width="180">

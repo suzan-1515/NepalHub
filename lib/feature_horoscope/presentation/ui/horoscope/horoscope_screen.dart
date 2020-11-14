@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:get_it/get_it.dart';
-import 'package:samachar_hub/core/services/services.dart';
 import 'package:samachar_hub/feature_horoscope/domain/entities/horoscope_type.dart';
 import 'package:samachar_hub/feature_horoscope/utils/provider.dart';
 import 'package:samachar_hub/feature_main/presentation/ui/settings/settings_page.dart';

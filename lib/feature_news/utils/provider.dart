@@ -9,10 +9,7 @@ import 'package:samachar_hub/feature_auth/data/repositories/auth_repository.dart
 import 'package:samachar_hub/feature_news/data/datasource/remote/news_remote_data_source.dart';
 import 'package:samachar_hub/feature_news/data/repository/news_repository.dart';
 import 'package:samachar_hub/feature_news/data/service/news_remote_service_impl.dart';
-import 'package:samachar_hub/feature_news/domain/entities/news_category_entity.dart';
 import 'package:samachar_hub/feature_news/domain/entities/news_feed_entity.dart';
-import 'package:samachar_hub/feature_news/domain/entities/news_source_entity.dart';
-import 'package:samachar_hub/feature_news/domain/entities/news_topic_entity.dart';
 import 'package:samachar_hub/feature_news/domain/usecases/get_news_category_use_case.dart';
 import 'package:samachar_hub/feature_news/domain/usecases/usecases.dart';
 import 'package:samachar_hub/feature_news/presentation/blocs/bookmarks/bookmark_news_bloc.dart';

@@ -32,8 +32,8 @@ class NotificationService {
     final initializationSettingsIOS = IOSInitializationSettings(
         onDidReceiveLocalNotification: onDidReceiveLocalNotification);
     final initializationSettings = InitializationSettings(
-      initializationSettingsAndroid,
-      initializationSettingsIOS,
+      android: initializationSettingsAndroid,
+      iOS: initializationSettingsIOS,
     );
     flutterLocalNotificationsPlugin.initialize(
       initializationSettings,
@@ -75,14 +75,14 @@ class NotificationService {
       channelId,
       channelName,
       channelDescription,
-      priority: Priority.Max,
-      importance: Importance.Max,
-      visibility: NotificationVisibility.Public,
+      priority: Priority.max,
+      importance: Importance.max,
+      visibility: NotificationVisibility.public,
     );
     const iOSPlatformChannelSpecifics = IOSNotificationDetails();
     final platformChannelSpecifics = NotificationDetails(
-      androidPlatformChannelSpecifics,
-      iOSPlatformChannelSpecifics,
+      android: androidPlatformChannelSpecifics,
+      iOS: iOSPlatformChannelSpecifics,
     );
 
     await flutterLocalNotificationsPlugin.show(
@@ -105,14 +105,14 @@ class NotificationService {
       channelId,
       channelName,
       channelDescription,
-      priority: Priority.Max,
-      importance: Importance.Max,
-      visibility: NotificationVisibility.Public,
+      priority: Priority.max,
+      importance: Importance.max,
+      visibility: NotificationVisibility.public,
     );
     const iOSPlatformChannelSpecifics = IOSNotificationDetails();
     final platformChannelSpecifics = NotificationDetails(
-      androidPlatformChannelSpecifics,
-      iOSPlatformChannelSpecifics,
+      android: androidPlatformChannelSpecifics,
+      iOS: iOSPlatformChannelSpecifics,
     );
     await flutterLocalNotificationsPlugin.periodicallyShow(
       id,
@@ -130,26 +130,29 @@ class NotificationService {
       String channelId,
       String channelName,
       String channelDescription,
-      Time time) async {
+      DateTime time) async {
     final androidPlatformChannelSpecifics = AndroidNotificationDetails(
       channelId,
       channelName,
       channelDescription,
-      priority: Priority.Max,
-      importance: Importance.Max,
-      visibility: NotificationVisibility.Public,
+      priority: Priority.max,
+      importance: Importance.max,
+      visibility: NotificationVisibility.public,
     );
     const iOSPlatformChannelSpecifics = IOSNotificationDetails();
     final platformChannelSpecifics = NotificationDetails(
-      androidPlatformChannelSpecifics,
-      iOSPlatformChannelSpecifics,
+      android: androidPlatformChannelSpecifics,
+      iOS: iOSPlatformChannelSpecifics,
     );
-    await flutterLocalNotificationsPlugin.showDailyAtTime(
+    await flutterLocalNotificationsPlugin.zonedSchedule(
       id,
       title,
       message,
       time,
       platformChannelSpecifics,
+      androidAllowWhileIdle: false,
+      uiLocalNotificationDateInterpretation: null,
+      matchDateTimeComponents: DateTimeComponents.time,
     );
   }
 
@@ -184,7 +187,7 @@ class NotificationService {
         NotificationChannels.kMorningNewsChannelId,
         NotificationChannels.kMorningNewsChannelName,
         NotificationChannels.kMorningNewsChannelDesc,
-        Time(7, 0, 0));
+        DateTime(2020, 1, 1, 7));
 
     // this.scheduleNotificationDaily(
     //     NotificationChannels.kMorningHoroscopeId,

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get_it/get_it.dart';
 import 'package:samachar_hub/core/constants/notification_channels.dart';
 import 'package:samachar_hub/core/models/language.dart';
@@ -49,7 +48,7 @@ class HoroscopeSettings extends StatelessWidget {
               NotificationChannels.kMorningHoroscopeChannelId,
               NotificationChannels.kMorningHoroscopeChannelName,
               NotificationChannels.kMorningHoroscopeChannelDesc,
-              Time(7, 0, 0));
+              DateTime(2020, 1, 1, 7));
           GetIt.I
               .get<AnalyticsService>()
               .logHoroscopeDailyMorningNotificatoon(notify: true);

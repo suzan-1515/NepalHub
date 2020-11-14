@@ -141,7 +141,7 @@ class GoldSilverGraph extends StatelessWidget {
             margin: 12.0,
             interval: horizontalInterval,
             reservedSize: labelSize,
-            textStyle: Theme.of(context).textTheme.caption,
+            getTextStyles: (value) => Theme.of(context).textTheme.caption,
             getTitles: _getXTitle,
           ),
           leftTitles: SideTitles(
@@ -149,7 +149,7 @@ class GoldSilverGraph extends StatelessWidget {
             margin: 8.0,
             interval: verticalInterval,
             reservedSize: labelSize + 20,
-            textStyle: Theme.of(context).textTheme.caption,
+            getTextStyles: (value) => Theme.of(context).textTheme.caption,
             getTitles: (value) => '${value.formattedString}',
           ),
         ),
