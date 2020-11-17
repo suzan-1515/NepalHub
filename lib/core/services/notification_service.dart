@@ -5,6 +5,8 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:samachar_hub/core/constants/api_keys.dart';
 import 'package:samachar_hub/core/constants/notification_channels.dart';
+import 'package:timezone/data/latest.dart' as tz;
+import 'package:timezone/timezone.dart' as tz;
 
 class NotificationService {
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
@@ -181,13 +183,14 @@ class NotificationService {
   setDefaultLocalNotification() {
     log('[NotificationService] setDefaultLocalNotification');
     this.scheduleNotificationDaily(
-        NotificationChannels.kMorningNewsId,
-        'Good Morning 🌅',
-        'Your personalised daily news is ready. Click to read. 📰',
-        NotificationChannels.kMorningNewsChannelId,
-        NotificationChannels.kMorningNewsChannelName,
-        NotificationChannels.kMorningNewsChannelDesc,
-        DateTime(2020, 1, 1, 7));
+      NotificationChannels.kMorningNewsId,
+      'Good Morning 🌅',
+      'Your personalised daily news is ready. Click to read. 📰',
+      NotificationChannels.kMorningNewsChannelId,
+      NotificationChannels.kMorningNewsChannelName,
+      NotificationChannels.kMorningNewsChannelDesc,
+      tz.TZDateTime.from(DateTime(3000, 1, 1, 13, 15), tz.UTC),
+    );
 
     // this.scheduleNotificationDaily(
     //     NotificationChannels.kMorningHoroscopeId,

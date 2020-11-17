@@ -69,6 +69,7 @@ dependencies:
   scoped_model: ^1.1.0
   uni_links: ^0.4.0
   readmore: ^1.0.0
+  timezone: ^0.5.9
 
   # corona_module:
   #   path: ./corona_module

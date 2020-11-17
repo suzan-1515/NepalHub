@@ -4,6 +4,8 @@ import 'package:get_it/get_it.dart';
 import 'package:samachar_hub/core/constants/notification_channels.dart';
 import 'package:samachar_hub/core/services/services.dart';
 import 'package:samachar_hub/feature_main/presentation/blocs/settings/settings_cubit.dart';
+import 'package:timezone/data/latest.dart' as tz;
+import 'package:timezone/timezone.dart' as tz;
 
 class NewsSettings extends StatelessWidget {
   const NewsSettings({
@@ -17,16 +19,17 @@ class NewsSettings extends StatelessWidget {
     return Switch(
       value: initialValue,
       onChanged: (value) {
-        context.watch<SettingsCubit>().setShowDailyMorningNews(value);
+        context.read<SettingsCubit>().setShowDailyMorningNews(value);
         if (value) {
           GetIt.I.get<NotificationService>().scheduleNotificationDaily(
-              NotificationChannels.kMorningNewsId,
-              'Good Morning  🌅',
-              'Your personalised daily news is ready. Click to read. 📰',
-              NotificationChannels.kMorningNewsChannelId,
-              NotificationChannels.kMorningNewsChannelName,
-              NotificationChannels.kMorningNewsChannelDesc,
-              DateTime(2020, 1, 1, 7));
+                NotificationChannels.kMorningNewsId,
+                'Good Morning  🌅',
+                'Your personalised daily news is ready. Click to read. 📰',
+                NotificationChannels.kMorningNewsChannelId,
+                NotificationChannels.kMorningNewsChannelName,
+                NotificationChannels.kMorningNewsChannelDesc,
+                tz.TZDateTime.from(DateTime(3000, 1, 1, 13, 15), tz.UTC),
+              );
           GetIt.I
               .get<AnalyticsService>()
               .logNewsDailyMorningNotificatoon(notify: true);
@@ -48,7 +51,7 @@ class NewsSettings extends StatelessWidget {
     return Switch(
       value: initialValue,
       onChanged: (value) {
-        context.watch<SettingsCubit>().setNewsNotifications(value);
+        context.read<SettingsCubit>().setNewsNotifications(value);
         if (value) {
           GetIt.I
               .get<NotificationService>()
