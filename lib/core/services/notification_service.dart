@@ -189,7 +189,7 @@ class NotificationService {
       NotificationChannels.kMorningNewsChannelId,
       NotificationChannels.kMorningNewsChannelName,
       NotificationChannels.kMorningNewsChannelDesc,
-      tz.TZDateTime.from(DateTime(3000, 1, 1, 13, 15), tz.UTC),
+      tz.TZDateTime.from(DateTime(3000, 1, 1, 7), tz.UTC),
     );
 
     // this.scheduleNotificationDaily(
