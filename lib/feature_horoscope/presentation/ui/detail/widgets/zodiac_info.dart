@@ -1,10 +1,10 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_advanced_networkimage/provider.dart';
 import 'package:samachar_hub/core/models/language.dart';
+import 'package:samachar_hub/feature_horoscope/domain/entities/horoscope_entity.dart';
+import 'package:samachar_hub/feature_horoscope/presentation/extensions/horoscope_extensions.dart';
 import 'package:samachar_hub/feature_horoscope/presentation/models/horoscope_model.dart';
 import 'package:scoped_model/scoped_model.dart';
-import 'package:samachar_hub/feature_horoscope/presentation/extensions/horoscope_extensions.dart';
-import 'package:samachar_hub/feature_horoscope/domain/entities/horoscope_entity.dart';
 
 class ZodiacInfo extends StatelessWidget {
   const ZodiacInfo({Key key, @required this.signIndex}) : super(key: key);
@@ -25,8 +25,8 @@ class ZodiacInfo extends StatelessWidget {
             tag: HOROSCOPE_SIGNS[Language.NEPALI][signIndex],
             child: CircleAvatar(
               backgroundColor: Theme.of(context).canvasColor,
-              backgroundImage: AdvancedNetworkImage(HOROSCOPE_ICONS[signIndex],
-                  useDiskCache: true),
+              backgroundImage:
+                  CachedNetworkImageProvider(HOROSCOPE_ICONS[signIndex]),
             ),
           ),
           SizedBox(width: 8),

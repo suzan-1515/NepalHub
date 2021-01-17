@@ -1,10 +1,9 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_advanced_networkimage/provider.dart';
-import 'package:flutter_advanced_networkimage/transition.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:samachar_hub/feature_gold/presentation/models/gold_silver_model.dart';
-import 'package:samachar_hub/feature_gold/presentation/extensions/gold_silver_extensions.dart';
 import 'package:samachar_hub/core/extensions/number_extensions.dart';
+import 'package:samachar_hub/feature_gold/presentation/extensions/gold_silver_extensions.dart';
+import 'package:samachar_hub/feature_gold/presentation/models/gold_silver_model.dart';
 import 'package:samachar_hub/feature_gold/presentation/ui/details/gold_silver_detail_screen.dart';
 import 'package:scoped_model/scoped_model.dart';
 
@@ -31,18 +30,14 @@ class GoldSilverListItem extends StatelessWidget {
           children: <Widget>[
             Expanded(
               flex: 1,
-              child: TransitionToImage(
+              child: CachedNetworkImage(
                 width: 24,
                 height: 24,
-                image: AdvancedNetworkImage(
-                  goldSilver.entity.category.icon,
-                  useDiskCache: true,
-                  cacheRule: CacheRule(maxAge: const Duration(days: 3)),
-                ),
+                imageUrl: goldSilver.entity.category.icon,
                 fit: BoxFit.contain,
-                loadingWidgetBuilder: (context, progress, imageData) =>
+                progressIndicatorBuilder: (context, progress, imageData) =>
                     Icon(FontAwesomeIcons.image),
-                placeholderBuilder: (context, reloadImage) =>
+                placeholder: (context, reloadImage) =>
                     Icon(FontAwesomeIcons.image),
               ),
             ),

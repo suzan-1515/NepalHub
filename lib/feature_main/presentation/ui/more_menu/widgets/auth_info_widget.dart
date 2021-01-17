@@ -1,5 +1,5 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_advanced_networkimage/provider.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:samachar_hub/feature_auth/domain/entities/user_entity.dart';
 import 'package:samachar_hub/feature_auth/presentation/blocs/auth_bloc.dart';
@@ -30,7 +30,7 @@ class _AuthInfoState extends State<AuthInfo> {
                 color: Theme.of(context).cardColor,
                 image: DecorationImage(
                     image: (user?.avatar?.isNotEmpty ?? false)
-                        ? AdvancedNetworkImage(user.avatar, useDiskCache: true)
+                        ? CachedNetworkImageProvider(user.avatar)
                         : AssetImage('assets/images/user.png'),
                     fit: BoxFit.cover),
               ),

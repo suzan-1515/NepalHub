@@ -1,9 +1,9 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_advanced_networkimage/provider.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:samachar_hub/core/widgets/icon_badge_widget.dart';
 import 'package:samachar_hub/core/extensions/number_extensions.dart';
+import 'package:samachar_hub/core/widgets/icon_badge_widget.dart';
 
 class CommentBar extends StatelessWidget {
   final VoidCallback onLikeTap;
@@ -54,7 +54,7 @@ class CommentBar extends StatelessWidget {
                       backgroundImage:
                           (userAvatar == null || userAvatar.isEmpty)
                               ? AssetImage('assets/images/user.png')
-                              : AdvancedNetworkImage(userAvatar),
+                              : CachedNetworkImageProvider(userAvatar),
                       backgroundColor:
                           Theme.of(context).primaryColor.withOpacity(0.3),
                     ),

@@ -1,9 +1,9 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:nepali_utils/nepali_utils.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:samachar_hub/core/services/services.dart';
 import 'package:samachar_hub/feature_auth/utils/providers.dart';
 import 'package:samachar_hub/feature_main/presentation/blocs/settings/settings_cubit.dart';
@@ -11,6 +11,7 @@ import 'package:samachar_hub/feature_main/presentation/ui/splash/splash_screen.d
 import 'package:samachar_hub/feature_main/utils/provider.dart';
 import 'package:samachar_hub/global_providers.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
 import 'core/themes.dart' as Themes;
 
 Future<void> main() async {
@@ -25,7 +26,9 @@ Future<void> main() async {
 class App extends StatelessWidget {
   ThemeData _getTheme(bool darkMode, bool pitchBlackMode) {
     return darkMode
-        ? pitchBlackMode ? Themes.pitchBlack : Themes.darkTheme
+        ? pitchBlackMode
+            ? Themes.pitchBlack
+            : Themes.darkTheme
         : Themes.lightTheme;
   }
 

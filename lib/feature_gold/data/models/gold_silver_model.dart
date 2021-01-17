@@ -46,7 +46,7 @@ class GoldSilverModel extends GoldSilverEntity {
   factory GoldSilverModel.fromMap(Map<String, dynamic> json) => GoldSilverModel(
         id: json["id"].toString(),
         price: json["price"].toDouble(),
-        publishedAt: DateTime.parse(json["published_at"]),
+        publishedAt: DateTime.parse(json["publishedAt"]),
         unit: json["unit"],
         category: GoldSilverCategoryModel.fromMap(json["category"]),
         createdAt: DateTime.parse(json["created_at"]),
@@ -64,7 +64,7 @@ class GoldSilverModel extends GoldSilverEntity {
   Map<String, dynamic> toMap() => {
         "id": id,
         "price": price,
-        "published_at":
+        "publishedAt":
             "${publishedAt.year.toString().padLeft(4, '0')}-${publishedAt.month.toString().padLeft(2, '0')}-${publishedAt.day.toString().padLeft(2, '0')}",
         "unit": unit,
         "category": category.toMap(),

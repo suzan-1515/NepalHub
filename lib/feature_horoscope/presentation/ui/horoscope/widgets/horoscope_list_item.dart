@@ -1,5 +1,5 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_advanced_networkimage/provider.dart';
 
 class HoroscopeListItem extends StatelessWidget {
   const HoroscopeListItem({
@@ -27,7 +27,7 @@ class HoroscopeListItem extends StatelessWidget {
           tag: sign,
           child: CircleAvatar(
             backgroundColor: Theme.of(context).canvasColor,
-            backgroundImage: AdvancedNetworkImage(signIcon, useDiskCache: true),
+            backgroundImage: CachedNetworkImageProvider(signIcon),
           ),
         ),
         title: Text(

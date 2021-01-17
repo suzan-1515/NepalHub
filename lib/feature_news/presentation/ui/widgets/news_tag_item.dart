@@ -1,5 +1,5 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_advanced_networkimage/provider.dart';
 
 class NewsTagItem extends StatelessWidget {
   final String title;
@@ -16,7 +16,7 @@ class NewsTagItem extends StatelessWidget {
         style: Theme.of(context).textTheme.button,
       ),
       avatar: CircleAvatar(
-        backgroundImage: AdvancedNetworkImage(icon, useDiskCache: true),
+        backgroundImage: CachedNetworkImageProvider(icon),
       ),
       onPressed: () => onTap(title),
     );

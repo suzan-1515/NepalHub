@@ -1,6 +1,5 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_advanced_networkimage/provider.dart';
-import 'package:flutter_advanced_networkimage/transition.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:samachar_hub/feature_forex/presentation/models/forex_model.dart';
 import 'package:samachar_hub/feature_forex/presentation/ui/forex/widgets/forex_converter_item.dart';
@@ -111,18 +110,14 @@ class _ForexConverterState extends State<ForexConverter> {
             children: <Widget>[
               Expanded(
                 flex: 1,
-                child: TransitionToImage(
+                child: CachedNetworkImage(
+                  imageUrl: 'https://www.countryflags.io/np/flat/48.png',
                   width: 24,
                   height: 24,
-                  image: AdvancedNetworkImage(
-                    'https://www.countryflags.io/np/flat/48.png',
-                    useDiskCache: true,
-                    cacheRule: CacheRule(maxAge: const Duration(days: 3)),
-                  ),
                   fit: BoxFit.contain,
-                  loadingWidgetBuilder: (context, progress, imageData) =>
+                  progressIndicatorBuilder: (context, url, progress) =>
                       Icon(FontAwesomeIcons.image),
-                  placeholderBuilder: (context, reloadImage) =>
+                  placeholder: (context, reloadImage) =>
                       Icon(FontAwesomeIcons.image),
                 ),
               ),

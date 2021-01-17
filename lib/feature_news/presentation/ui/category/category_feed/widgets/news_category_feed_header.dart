@@ -1,5 +1,5 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_advanced_networkimage/provider.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:samachar_hub/feature_news/presentation/blocs/news_category/follow_unfollow/follow_un_follow_bloc.dart';
 import 'package:samachar_hub/feature_news/presentation/models/news_category.dart';
@@ -16,7 +16,7 @@ class NewsCategoryFeedHeader extends StatelessWidget {
     return NewsFilterHeader(
       icon: DecorationImage(
         image: category.entity.isValidIcon
-            ? AdvancedNetworkImage(category.entity.icon)
+            ? CachedNetworkImageProvider(category.entity.icon)
             : AssetImage('assets/images/user.png'),
         fit: BoxFit.cover,
       ),

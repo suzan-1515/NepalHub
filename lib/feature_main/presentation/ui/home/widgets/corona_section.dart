@@ -1,13 +1,13 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_advanced_networkimage/provider.dart';
-import 'package:flutter_advanced_networkimage/transition.dart';
-import 'package:samachar_hub/feature_main/presentation/models/home/corona_model.dart';
+import 'package:samachar_hub/core/widgets/cached_image_widget.dart';
 import 'package:samachar_hub/feature_main/presentation/extensions/home_extensions.dart';
+import 'package:samachar_hub/feature_main/presentation/models/home/corona_model.dart';
 import 'package:samachar_hub/feature_main/presentation/ui/home/widgets/corona_case_item.dart';
 
 class CoronaSection extends StatefulWidget {
   final CoronaUIModel data;
+
   const CoronaSection({Key key, this.data}) : super(key: key);
 
   @override
@@ -89,12 +89,8 @@ class _CoronaSectionState extends State<CoronaSection>
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        TransitionToImage(
-          image: AdvancedNetworkImage(
-            widget.data.coronaEntity.country.flag,
-            width: 24,
-            height: 24,
-          ),
+        CachedImage(
+          widget.data.coronaEntity.country.flag,
           width: 24,
           height: 24,
         ),

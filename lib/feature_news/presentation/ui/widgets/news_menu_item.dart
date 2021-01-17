@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_advanced_networkimage/provider.dart';
-import 'package:flutter_advanced_networkimage/transition.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:samachar_hub/core/widgets/cached_image_widget.dart';
 
 class NewsMenuItem extends StatelessWidget {
   final String title;
@@ -39,18 +37,10 @@ class NewsMenuItem extends StatelessWidget {
                   alignment: Alignment.center,
                   decoration: BoxDecoration(
                       color: Colors.grey[100], shape: BoxShape.circle),
-                  child: TransitionToImage(
+                  child: CachedImage(
+                    icon ?? '',
                     width: 24,
                     height: 24,
-                    fit: BoxFit.cover,
-                    placeholder: Icon(FontAwesomeIcons.image),
-                    loadingWidgetBuilder: (context, progress, imageData) =>
-                        CircularProgressIndicator(
-                      value: progress,
-                    ),
-                    image: AdvancedNetworkImage(
-                      icon ?? '',
-                    ),
                   ),
                 ),
               ),
