@@ -70,7 +70,7 @@ class GoldSilverRemoteService with RemoteService {
       'category.language': language.value,
       'unit': unit,
       '_limit': numOfDays.toString(),
-      '_sort': 'published_at:DESC',
+      '_sort': 'publishedAt:DESC',
     };
     var call =
         await _httpManager.get(path: TIMELINE, query: query, headers: headers);
